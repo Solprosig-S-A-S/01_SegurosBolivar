@@ -1,0 +1,32 @@
+Archivos de Entorno y Secretos
+
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.p12
+*.jks
+credentials.json
+secrets/
+*.keystore
+
+Dependencias y Binarios del Sistema
+
+node_modules/
+dist/
+build/
+coverage/
+.dart_tool/
+.gradle/
+target/
+vendor/
+
+Archivos de IDE y Sistema Operativo
+
+.DS_Store
+Thumbs.db
+.log
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*

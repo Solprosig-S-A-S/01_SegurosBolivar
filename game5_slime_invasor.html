@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nivel 5: Slime Invasor - Control de Derrames | KMA Construcciones • Seguros Bolívar</title>
+
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bolivar: {
+              DEFAULT: '#006738',
+              light: '#008244',
+              gold: '#FFC72C',
+              surface: '#F4F6F8',
+              slate: '#1E293B'
+            }
+          },
+          keyframes: {
+            slimePulse: {
+              '0%, 100%': { transform: 'scale(1)', filter: 'drop-shadow(0 0 8px #10B981)' },
+              '50%': { transform: 'scale(1.05)', filter: 'drop-shadow(0 0 16px #A3E635)' }
+            },
+            screenShake: {
+              '0%, 100%': { transform: 'translate(0, 0)' },
+              '20%': { transform: 'translate(-8px, 6px)' },
+              '40%': { transform: 'translate(8px, -6px)' },
+              '60%': { transform: 'translate(-6px, -4px)' },
+              '80%': { transform: 'translate(6px, 4px)' }
+            }
+          },
+          animation: {
+            'slime-pulse': 'slimePulse 2s infinite ease-in-out',
+            'screen-shake': 'screenShake 0.4s ease-in-out'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome v6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      overflow: hidden;
+    }
+    .comic-bubble-dialog {
+      position: relative;
+      background: #ffffff;
+      border: 3px solid #1E293B;
+      border-radius: 1.25rem;
+    }
+    .comic-bubble-dialog::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 20px;
+      border-width: 12px 10px 0 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+      width: 0;
+    }
+  </style>
+</head>
+<body id="gameBody" class="bg-slate-900 text-slate-100 h-screen w-screen flex flex-col justify-between font-sans relative">
+
+  <!-- TOP HUD -->
+  <header class="bg-bolivar/95 backdrop-blur-md px-4 py-2 border-b-2 border-bolivar-gold shadow-md flex items-center justify-between z-30 flex-shrink-0">
+    <!-- Back to Hub & Brand Logo -->
+    <div class="flex items-center space-x-2">
+      <a href="index.html" class="w-10 h-10 rounded-xl bg-bolivar-light flex items-center justify-center text-white hover:bg-bolivar active:scale-95 transition-all shadow">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div class="w-9 h-9 rounded-xl bg-white p-1 flex items-center justify-center shadow-md flex-shrink-0" title="Solprosig">
+        <svg viewBox="0 0 786 983" class="w-full h-full max-h-full max-w-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+          <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+          <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+          <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+          <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Spill Expansion Risk Bar -->
+    <div class="flex-1 mx-3 max-w-xs">
+      <div class="flex justify-between items-center text-[10px] uppercase font-black text-bolivar-gold mb-0.5">
+        <span><i class="fa-solid fa-biohazard mr-1"></i>Expansión Slime</span>
+        <span id="slimePercent">30%</span>
+      </div>
+      <div class="w-full bg-slate-950/60 rounded-full h-3 p-0.5 border border-white/20">
+        <div id="slimeBar" class="bg-gradient-to-r from-lime-500 to-red-500 h-full rounded-full transition-all duration-300" style="width: 30%;"></div>
+      </div>
+    </div>
+
+    <!-- Score & Audio -->
+    <div class="text-right flex items-center space-x-2">
+      <div class="bg-slate-950/50 px-2.5 py-1 rounded-xl border border-white/10 text-center">
+        <p class="text-[9px] uppercase font-bold text-slate-400">Puntaje</p>
+        <p id="scoreVal" class="text-sm font-black text-bolivar-gold leading-none">0</p>
+      </div>
+      <button id="btnAudio" class="w-10 h-10 rounded-xl bg-slate-800 text-bolivar-gold flex items-center justify-center active:scale-95 shadow">
+        <i id="audioIcon" class="fa-solid fa-volume-high text-xs"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- WORKSHOP SPILL CANVAS AREA -->
+  <main class="relative flex-1 w-full overflow-hidden flex flex-col items-center justify-between p-2 max-w-md mx-auto">
+
+    <!-- Active Step Indicator -->
+    <div class="w-full bg-slate-950/85 rounded-2xl p-2 border border-slate-700 shadow-md z-20 flex items-center justify-between">
+      <span class="text-[10px] uppercase font-black text-bolivar-gold flex items-center">
+        <i class="fa-solid fa-kit-medical mr-1.5"></i> Protocolo 5 Pasos:
+      </span>
+      <span id="activeStepBadge" class="bg-bolivar-gold text-bolivar-slate text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase">
+        Paso 1: Evaluar Químico
+      </span>
+    </div>
+
+    <!-- Canvas Simulation -->
+    <div class="relative w-full flex-1 my-2 rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner">
+      <canvas id="slimeCanvas" class="w-full h-full block"></canvas>
+
+      <div id="spillHint" class="absolute top-2 left-1/2 -translate-x-1/2 bg-slate-950/80 px-3 py-1 rounded-xl text-[10px] font-bold text-slate-300 border border-slate-700 pointer-events-none">
+        Toca el químico para evaluarlo antes de aplicar el kit
+      </div>
+    </div>
+
+    <!-- Slapstick Reaction Mascot -->
+    <div class="w-full flex items-center space-x-3 px-2 z-20">
+      <div class="w-14 h-16 bg-white/10 rounded-2xl border border-white/20 p-1 flex items-center justify-center flex-shrink-0">
+        <svg viewBox="0 0 100 120" class="w-full h-full">
+          <ellipse cx="50" cy="40" rx="36" ry="18" fill="#FFC72C" />
+          <circle id="luchoSkin" cx="50" cy="56" r="24" fill="#FBD38D" />
+          <circle id="eyeL" cx="42" cy="52" r="5" fill="#1E293B" />
+          <circle id="eyeR" cx="58" cy="52" r="5" fill="#1E293B" />
+          <path id="mouth" d="M 44 66 Q 50 72 56 66" stroke="#1E293B" stroke-width="3" fill="none" stroke-linecap="round" />
+          <rect id="bodyOverol" x="26" y="80" width="48" height="40" rx="8" fill="#1E3A8A" />
+        </svg>
+      </div>
+
+      <div class="flex-1 comic-bubble-dialog p-2.5 text-bolivar-slate shadow-xl">
+        <p id="luchoComicText" class="text-xs font-black leading-tight text-bolivar">
+          "¡SANTAS REACCIONES! ¡Ese derrame se expande hacia el desagüe! ¡Aplica el Kit Antiderrame en orden!"
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- 5-STEP SPILL KIT INTERACTIVE TOOLBAR -->
+  <footer class="bg-slate-950 p-2 border-t border-slate-800 z-30">
+    <div class="max-w-md mx-auto grid grid-cols-5 gap-1 text-center">
+      <!-- Paso 1: Evaluar -->
+      <button id="step1Eval" class="kit-btn bg-bolivar-gold text-slate-950 rounded-xl p-1.5 flex flex-col items-center justify-center space-y-0.5 active:scale-95 shadow font-black text-[9px] border-2 border-white">
+        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        <span>1. EVALUAR</span>
+      </button>
+
+      <!-- Paso 2: Proteger -->
+      <button id="step2Protect" class="kit-btn bg-slate-800 text-slate-400 rounded-xl p-1.5 flex flex-col items-center justify-center space-y-0.5 active:scale-95 font-bold text-[9px] border border-slate-700">
+        <i class="fa-solid fa-vest text-xs"></i>
+        <span>2. PROTEGER</span>
+      </button>
+
+      <!-- Paso 3: Contener -->
+      <button id="step3Contain" class="kit-btn bg-slate-800 text-slate-400 rounded-xl p-1.5 flex flex-col items-center justify-center space-y-0.5 active:scale-95 font-bold text-[9px] border border-slate-700">
+        <i class="fa-solid fa-ring text-xs"></i>
+        <span>3. CONTENER</span>
+      </button>
+
+      <!-- Paso 4: Limpiar -->
+      <button id="step4Clean" class="kit-btn bg-slate-800 text-slate-400 rounded-xl p-1.5 flex flex-col items-center justify-center space-y-0.5 active:scale-95 font-bold text-[9px] border border-slate-700">
+        <i class="fa-solid fa-hands-bubbles text-xs"></i>
+        <span>4. LIMPIAR</span>
+      </button>
+
+      <!-- Paso 5: Disponer -->
+      <button id="step5Dispose" class="kit-btn bg-slate-800 text-slate-400 rounded-xl p-1.5 flex flex-col items-center justify-center space-y-0.5 active:scale-95 font-bold text-[9px] border border-slate-700">
+        <i class="fa-solid fa-trash-can text-xs text-red-500"></i>
+        <span>5. DISPONER</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- PRUEBA INTERACTIVA DE CONOCIMIENTOS (KMA CONSTRUCCIONES & SOLPROSIG) -->
+  <div id="quizModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 text-bolivar-slate shadow-2xl border-4 border-bolivar space-y-3.5 animate-pop-in">
+      <!-- Quiz Header -->
+      <div class="flex items-center justify-between border-b pb-2.5 border-slate-200">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-slate-50 p-1 border border-slate-200 flex items-center justify-center shadow-xs flex-shrink-0" title="Solprosig">
+            <svg viewBox="0 0 786 983" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+              <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+              <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+              <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+              <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-[9px] font-black uppercase text-bolivar tracking-wider">Prueba Interactiva • Obra KMA</span>
+            <h4 class="text-xs font-black text-slate-800 leading-none">Kit Antiderrame (5 Pasos Res. 773)</h4>
+          </div>
+        </div>
+        <div class="bg-bolivar/10 text-bolivar text-[10px] font-black px-2 py-0.5 rounded-full" id="quizProgressBadge">
+          1 / 3
+        </div>
+      </div>
+
+      <!-- Quiz Body -->
+      <div id="quizQuestionArea" class="space-y-3">
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200">
+          <p class="text-[10px] font-black uppercase text-slate-400 mb-0.5" id="quizCategoryLabel">Control de Derrames</p>
+          <p class="text-xs font-bold text-slate-900 leading-snug" id="quizQuestionText">Texto...</p>
+        </div>
+
+        <div id="quizOptionsContainer" class="space-y-2"></div>
+
+        <div id="quizFeedbackBox" class="hidden p-2.5 rounded-xl text-xs font-medium border leading-snug"></div>
+      </div>
+
+      <button id="btnQuizNext" class="w-full py-2.5 bg-bolivar text-white font-black rounded-xl hover:bg-bolivar-light shadow-md active:scale-95 text-xs transition-all hidden">
+        Siguiente Pregunta <i class="fa-solid fa-arrow-right ml-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- RESULTS PEDAGOGICAL MODAL -->
+  <div id="resultsModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 text-bolivar-slate shadow-2xl border-4 border-bolivar space-y-4">
+      <div class="text-center space-y-1">
+        <div class="flex justify-center mb-1">
+          <div class="w-10 h-10 rounded-xl bg-slate-50 p-1.5 border border-slate-200 flex items-center justify-center shadow-inner" title="Solprosig">
+            <svg viewBox="0 0 786 983" class="w-full h-full max-h-full max-w-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+              <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+              <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+              <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+              <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+            </svg>
+          </div>
+        </div>
+        <span class="inline-block px-3 py-1 bg-bolivar-gold text-bolivar-slate text-[10px] font-black uppercase rounded-full tracking-wider shadow-sm">
+          Suite Completa al 100%
+        </span>
+        <h3 class="text-xl font-black text-bolivar">¡Comandante de Derrames!</h3>
+        <p class="text-xs text-slate-500">KMA Construcciones • Asesoría Solprosig & Seguros Bolívar</p>
+      </div>
+
+      <div id="resultStars" class="flex justify-center items-center space-x-2 text-2xl text-bolivar-gold py-1"></div>
+
+      <!-- Puntuación Final: Breakdown Completo (Juego + Prueba Interactiva) -->
+      <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-1.5 text-xs">
+        <div class="flex justify-between items-center text-slate-600">
+          <span class="text-[11px] font-semibold"><i class="fa-solid fa-soap text-bolivar mr-1"></i>Destreza Kit Antiderrame:</span>
+          <span id="resultGameScore" class="font-bold text-slate-800">0 Pts</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600">
+          <span class="text-[11px] font-semibold"><i class="fa-solid fa-clipboard-check text-emerald-600 mr-1"></i>Prueba Interactiva:</span>
+          <span id="resultQuizScore" class="font-bold text-emerald-600">+0 Pts</span>
+        </div>
+        <div class="border-t border-slate-200 pt-1.5 flex justify-between items-center">
+          <span class="text-[11px] font-black text-bolivar uppercase">Puntuación Final Total:</span>
+          <span id="resultScore" class="text-base font-black text-bolivar">0 Pts</span>
+        </div>
+        <div class="flex justify-between items-center text-[10px] text-slate-400 font-semibold pt-0.5">
+          <span>Contención en Obra KMA:</span>
+          <span class="text-emerald-600 font-bold">100% LIMPIO</span>
+        </div>
+      </div>
+
+      <div class="bg-emerald-50 rounded-2xl p-3 border border-emerald-200 text-xs">
+        <p class="text-[10px] font-black uppercase text-emerald-900 flex items-center">
+          <i class="fa-solid fa-award mr-1.5 text-bolivar"></i> ¡Insignia Solprosig Obtenida!
+        </p>
+        <p class="text-[11px] font-medium text-emerald-950 mt-1 leading-snug">
+          Has dominado la <strong>Resolución 773 de 2021</strong>: el kit antiderrame exige orden táctico estricto. Jamás se limpia sin antes delimitar el perímetro con cordones absorbentes ni sin EPP de protección química.
+        </p>
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <a href="index.html" class="w-full py-3 bg-bolivar text-white font-black rounded-2xl hover:bg-bolivar-light shadow-lg active:scale-95 text-xs transition-all flex items-center justify-center space-x-2 text-center block">
+          <span>VOLVER AL HUB Y RECLAMAR MEDALLAS</span>
+          <i class="fa-solid fa-trophy text-bolivar-gold"></i>
+        </a>
+        <button id="btnRetryLevel" class="w-full py-2.5 bg-slate-100 text-slate-700 font-extrabold rounded-xl hover:bg-slate-200 active:scale-95 text-xs transition-all">
+          <i class="fa-solid fa-rotate-right mr-1"></i> Reintentar Nivel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * @file game5_slime_invasor.html
+     * @description Minijuego 5: Slime Invasor: Control de Derrames (Kit Antiderrame 5 Pasos - Res. 773/2021)
+     * Motor Gráfico en Primera Persona (POV Hands Engine) con manipulación táctil directa de herramientas.
+     */
+
+    // Canvas roundRect Polyfill for legacy Android WebView / Safari
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, radii) {
+        if (!radii) radii = 0;
+        let r = typeof radii === 'number' ? radii : (radii[0] || 0);
+        r = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.arcTo(x + w, y, x + w, y + h, r);
+        this.arcTo(x + w, y + h, x, y + h, r);
+        this.arcTo(x, y + h, x, y, r);
+        this.arcTo(x, y, x + w, y, r);
+        this.closePath();
+        return this;
+      };
+    }
+
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playTone(freq, type = 'sine', duration = 0.1, vol = 0.15) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      }
+      playBeep() {
+        this.playTone(880, 'sine', 0.08, 0.2);
+        setTimeout(() => this.playTone(1100, 'sine', 0.08, 0.2), 90);
+      }
+      playZip() {
+        for (let i = 0; i < 7; i++) {
+          setTimeout(() => this.playTone(320 + i * 45, 'sawtooth', 0.025, 0.09), i * 22);
+        }
+      }
+      playSnap() {
+        this.playTone(950, 'triangle', 0.03, 0.25);
+        setTimeout(() => this.playTone(350, 'square', 0.05, 0.2), 25);
+      }
+      playThud() {
+        this.playTone(110, 'sine', 0.15, 0.3);
+      }
+      playClean() {
+        this.playTone(550, 'triangle', 0.07, 0.18);
+        setTimeout(() => this.playTone(420, 'sine', 0.06, 0.12), 35);
+      }
+      playSlime() {
+        this.playTone(220, 'sine', 0.15, 0.2);
+        setTimeout(() => this.playTone(160, 'sine', 0.2, 0.22), 70);
+      }
+      playSplash() {
+        this.playTone(140, 'sawtooth', 0.25, 0.35);
+        setTimeout(() => this.playTone(90, 'sine', 0.3, 0.3), 60);
+      }
+      playVictory() {
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => {
+          setTimeout(() => this.playTone(f, 'triangle', 0.18, 0.2), idx * 100);
+        });
+      }
+    }
+    const sfx = new SoundEngine();
+
+    class SpillGame {
+      constructor() {
+        this.canvas = document.getElementById('slimeCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.score = 0;
+        this.step = 1; // 1: Eval, 2: Protect, 3: Contain, 4: Clean, 5: Dispose
+        this.slimeRadius = 52;
+        this.maxRadius = 125;
+        this.isContained = false;
+        this.cleanProgress = 0;
+        this.padStain = 0; // 0 (clean yellow) to 1 (soaked green)
+        this.gameOver = false;
+        
+        // Touch & Pointer Tracking
+        this.pointer = {
+          x: 0,
+          y: 0,
+          active: false,
+          isDragging: false,
+          lastWipeX: 0,
+          lastWipeY: 0
+        };
+
+        // Particles & Slapstick Effects
+        this.bubbles = [];
+        this.particles = [];
+        this.splatters = [];
+        this.confetti = [];
+        this.scannerActive = false;
+        this.scanProgress = 0;
+
+        this.quizQuestions = [
+          {
+            category: "Protocolo Antiderrame en 5 Pasos (Res. 773/2021)",
+            question: "Ante un derrame químico en la obra KMA, ¿cuál es el primer paso indispensable antes de tocar el producto?",
+            options: [
+              "Lavar el área con agua a presión inmediatamente",
+              "Evaluar el peligro, consultar la FDS y equiparse con el EPP adecuado",
+              "Ignorar el derrame y esperar que se evapore"
+            ],
+            correct: 1,
+            explanation: "El orden técnico es innegociable: 1. Evaluar y consultar FDS, 2. Protegerse con EPP antes de intervenir."
+          },
+          {
+            category: "Confinamiento Perimetral",
+            question: "¿Cuál es la función primordial de colocar los cordones absorbentes (salchichas) alrededor del derrame?",
+            options: [
+              "Confinar y represar el fluido para evitar que se extienda o contamine fuentes hídricas y suelos",
+              "Secar completamente el químico por sí solos",
+              "Señalar la zona para el tránsito de volquetas"
+            ],
+            correct: 0,
+            explanation: "Los cordones crean una barrera de contención perimetral evitando que el contaminante alcance alcantarillas o suelo vivo."
+          },
+          {
+            category: "Disposición Final de Contaminantes",
+            question: "Tras limpiar el derrame con los paños absorbentes, ¿dónde deben depositarse todos los materiales impregnados?",
+            options: [
+              "En la basura ordinaria de la obra",
+              "En la bolsa roja de alta densidad para RESPEL debidamente rotulada y sellada",
+              "Enterrarse en una zanja del campamento"
+            ],
+            correct: 1,
+            explanation: "Todos los elementos absorbentes contaminados se convierten en residuos peligrosos (RESPEL) y van a la bolsa roja sellada."
+          }
+        ];
+        this.quizIndex = 0;
+        this.quizScore = 0;
+        this.quizCorrect = 0;
+
+        this.init();
+      }
+
+      init() {
+        document.getElementById('btnQuizNext').addEventListener('click', () => this.nextQuizQuestion());
+
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+
+        this.pointer.x = this.canvas.width * 0.5;
+        this.pointer.y = this.canvas.height * 0.75;
+
+        // Init bubbles inside puddle
+        for (let i = 0; i < 6; i++) {
+          this.bubbles.push({
+            angle: Math.random() * Math.PI * 2,
+            distRatio: Math.random() * 0.7,
+            radius: Math.random() * 5 + 2,
+            speed: Math.random() * 0.02 + 0.01,
+            pulse: Math.random() * Math.PI
+          });
+        }
+
+        this.setupToolbar();
+        this.setupCanvasInteractions();
+        requestAnimationFrame(this.animate.bind(this));
+      }
+
+      setupToolbar() {
+        document.getElementById('step1Eval').addEventListener('click', () => this.handleStepAction(1));
+        document.getElementById('step2Protect').addEventListener('click', () => this.handleStepAction(2));
+        document.getElementById('step3Contain').addEventListener('click', () => this.handleStepAction(3));
+        document.getElementById('step4Clean').addEventListener('click', () => this.handleStepAction(4));
+        document.getElementById('step5Dispose').addEventListener('click', () => this.handleStepAction(5));
+
+        document.getElementById('btnRetryLevel').addEventListener('click', () => window.location.reload());
+
+        const btnAudio = document.getElementById('btnAudio');
+        const audioIcon = document.getElementById('audioIcon');
+        btnAudio.addEventListener('click', () => {
+          sfx.init();
+          sfx.muted = !sfx.muted;
+          audioIcon.className = sfx.muted ? 'fa-solid fa-volume-xmark text-xs' : 'fa-solid fa-volume-high text-xs';
+        });
+      }
+
+      getCanvasPoint(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - rect.left) * (this.canvas.width / rect.width),
+          y: (clientY - rect.top) * (this.canvas.height / rect.height)
+        };
+      }
+
+      setupCanvasInteractions() {
+        const onDown = (e) => {
+          if (e && e.cancelable) e.preventDefault();
+          sfx.init();
+          const p = this.getCanvasPoint(e);
+          this.pointer.x = p.x;
+          this.pointer.y = p.y;
+          this.pointer.active = true;
+          this.pointer.isDragging = true;
+          this.pointer.lastWipeX = p.x;
+          this.pointer.lastWipeY = p.y;
+
+          if (this.step === 1) {
+            this.handleStepAction(1);
+          } else if (this.step === 2) {
+            this.handleStepAction(2);
+          } else if (this.step === 3) {
+            this.handleStepAction(3);
+          } else if (this.step === 4) {
+            this.wipeCleanAt(p.x, p.y);
+          } else if (this.step === 5) {
+            // Drag toward disposal bag
+            this.handleStepAction(5);
+          }
+        };
+
+        const onMove = (e) => {
+          if (e && e.cancelable) e.preventDefault();
+          if (!this.pointer.isDragging && e.type.startsWith('touch')) return;
+          const p = this.getCanvasPoint(e);
+          this.pointer.x = p.x;
+          this.pointer.y = p.y;
+
+          if (this.pointer.isDragging && this.step === 4) {
+            const dist = Math.hypot(p.x - this.pointer.lastWipeX, p.y - this.pointer.lastWipeY);
+            if (dist > 12) {
+              this.wipeCleanAt(p.x, p.y);
+              this.pointer.lastWipeX = p.x;
+              this.pointer.lastWipeY = p.y;
+            }
+          }
+        };
+
+        const onUp = (e) => {
+          this.pointer.isDragging = false;
+        };
+
+        this.canvas.addEventListener('mousedown', onDown);
+        this.canvas.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+
+        this.canvas.addEventListener('touchstart', onDown, { passive: false });
+        this.canvas.addEventListener('touchmove', onMove, { passive: false });
+        window.addEventListener('touchend', onUp, { passive: false });
+      }
+
+      handleStepAction(requestedStep) {
+        if (this.gameOver) return;
+
+        // Slapstick punishment: Out-of-order action
+        if (requestedStep > this.step) {
+          if (requestedStep === 4 && !this.isContained) {
+            // Tried to clean before contain!
+            this.slimeRadius = Math.min(this.maxRadius, this.slimeRadius + 26);
+            sfx.playSplash();
+            this.createSlimeSplatter();
+            this.triggerComic("¡PLOP! ¡Si limpias sin contener con cordones, el químico se desborda! (Res. 773/2021)", "scared");
+            this.shake();
+            return;
+          }
+          this.triggerComic("¡Sigue el protocolo de 5 pasos en orden estricto! Completa el paso actual.", "alert");
+          return;
+        }
+
+        if (requestedStep === 1 && this.step === 1) {
+          sfx.playBeep();
+          this.scannerActive = true;
+          this.score += 150;
+          this.step = 2;
+          this.updateStepUI('Paso 2: Protegerse (EPP Químico)');
+          this.triggerComic("¡Escáner: Solvente Hidrocarburo Clase 3! ¡Ponte el Traje Tyvek y Guantes de Nitrilo!", "happy");
+          this.activateButton('step2Protect');
+          document.getElementById('spillHint').textContent = "Toca para colocarte el Traje Tyvek y guantes químicos";
+        } else if (requestedStep === 2 && this.step === 2) {
+          sfx.playZip();
+          setTimeout(() => sfx.playSnap(), 120);
+          this.score += 150;
+          this.step = 3;
+          document.getElementById('bodyOverol').setAttribute('fill', '#FFFFFF'); // Lucho Tyvek blanco
+          this.updateStepUI('Paso 3: Contener (Desplegar Cordones)');
+          this.triggerComic("¡EPP Nivel C colocado y sellado! Ahora rodea el derrame con cordones absorbentes.", "happy");
+          this.activateButton('step3Contain');
+          document.getElementById('spillHint').textContent = "Desliza para desplegar los cordones absorbentes y cercar el derrame";
+        } else if (requestedStep === 3 && this.step === 3) {
+          this.isContained = true;
+          sfx.playThud();
+          this.score += 250;
+          this.step = 4;
+          this.updateStepUI('Paso 4: Limpiar (Paños Absorbentes)');
+          this.triggerComic("¡Derrame contenido! El cordón detuvo la fuga al desagüe. ¡Frota con paños absorbentes!", "happy");
+          this.activateButton('step4Clean');
+          document.getElementById('spillHint').textContent = "Desliza el paño absorbente sobre el químico para secarlo por completo";
+        } else if (requestedStep === 4 && this.step === 4) {
+          const cx = this.canvas.width / 2;
+          const cy = this.canvas.height / 2;
+          this.wipeCleanAt(cx, cy);
+        } else if (requestedStep === 5 && this.step === 5) {
+          sfx.playVictory();
+          this.score += 400;
+          this.createConfetti();
+          this.triggerComic("¡Bolsa roja RESPEL sellada y rotulada según Dec. 4741/2005! ¡Obra blindada!", "happy");
+          this.endGame();
+        }
+      }
+
+      wipeCleanAt(x, y) {
+        if (!this.isContained) {
+          this.handleStepAction(4); // will trigger comic warning
+          return;
+        }
+
+        const cx = this.canvas.width / 2;
+        const cy = this.canvas.height / 2;
+        const dist = Math.hypot(x - cx, y - cy);
+
+        // Wipe proximity
+        if (dist <= this.slimeRadius + 30) {
+          this.cleanProgress = Math.min(100, this.cleanProgress + 15);
+          this.slimeRadius = Math.max(0, this.slimeRadius - 7);
+          this.padStain = Math.min(1, this.padStain + 0.15);
+          sfx.playClean();
+          this.score += 45;
+          document.getElementById('scoreVal').textContent = this.score;
+
+          // Spawn suction fluid particles
+          for (let i = 0; i < 4; i++) {
+            this.particles.push({
+              x: x + (Math.random() - 0.5) * 20,
+              y: y + (Math.random() - 0.5) * 20,
+              vx: (Math.random() - 0.5) * 2,
+              vy: -Math.random() * 2 - 1,
+              radius: Math.random() * 3 + 2,
+              color: '#84CC16',
+              alpha: 0.9
+            });
+          }
+
+          if (this.cleanProgress >= 100 || this.slimeRadius <= 0) {
+            this.step = 5;
+            this.updateStepUI('Paso 5: Disponer en Bolsa Roja');
+            this.triggerComic("¡Líquido 100% absorbido! Ahora arrastra y deposita el paño en la Bolsa Roja RESPEL.", "happy");
+            this.activateButton('step5Dispose');
+            document.getElementById('spillHint').textContent = "Deposita los paños contaminados en la Bolsa Roja de Residuos Peligrosos";
+          }
+        }
+      }
+
+      createSlimeSplatter() {
+        const count = Math.floor(Math.random() * 4) + 4;
+        for (let i = 0; i < count; i++) {
+          this.splatters.push({
+            x: Math.random() * (this.canvas.width * 0.8) + (this.canvas.width * 0.1),
+            y: Math.random() * (this.canvas.height * 0.6) + (this.canvas.height * 0.1),
+            r: Math.random() * 24 + 14,
+            alpha: 1,
+            color: '#84CC16'
+          });
+        }
+      }
+
+      createConfetti() {
+        const colors = ['#006738', '#FFC72C', '#10B981', '#3B82F6', '#EF4444', '#FFFFFF'];
+        for (let i = 0; i < 60; i++) {
+          this.confetti.push({
+            x: this.canvas.width / 2,
+            y: this.canvas.height / 2,
+            vx: (Math.random() - 0.5) * 8,
+            vy: Math.random() * -8 - 3,
+            size: Math.random() * 6 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: 1,
+            decay: Math.random() * 0.015 + 0.008
+          });
+        }
+      }
+
+      updateStepUI(title) {
+        document.getElementById('activeStepBadge').textContent = title;
+        document.getElementById('scoreVal').textContent = this.score;
+      }
+
+      activateButton(id) {
+        document.querySelectorAll('.kit-btn').forEach(btn => {
+          btn.className = 'kit-btn bg-slate-800 text-slate-400 rounded-xl p-1.5 flex flex-col items-center justify-center space-y-0.5 active:scale-95 font-bold text-[9px] border border-slate-700';
+        });
+        const active = document.getElementById(id);
+        if (active) {
+          active.className = 'kit-btn bg-bolivar-gold text-slate-950 rounded-xl p-1.5 flex flex-col items-center justify-center space-y-0.5 active:scale-95 shadow font-black text-[9px] border-2 border-white';
+        }
+      }
+
+      shake() {
+        const body = document.getElementById('gameBody');
+        body.classList.remove('animate-screen-shake');
+        void body.offsetWidth;
+        body.classList.add('animate-screen-shake');
+      }
+
+      triggerComic(msg, mood) {
+        const comic = document.getElementById('luchoComicText');
+        const skin = document.getElementById('luchoSkin');
+        const eyeL = document.getElementById('eyeL');
+        const eyeR = document.getElementById('eyeR');
+        const mouth = document.getElementById('mouth');
+
+        comic.textContent = `"${msg}"`;
+
+        if (mood === 'scared') {
+          skin.setAttribute('fill', '#FEE2E2');
+          eyeL.setAttribute('r', '7');
+          eyeR.setAttribute('r', '7');
+          mouth.setAttribute('d', 'M 40 68 Q 50 56 60 68');
+        } else if (mood === 'alert') {
+          skin.setAttribute('fill', '#FEF08A');
+          eyeL.setAttribute('r', '6');
+          eyeR.setAttribute('r', '6');
+          mouth.setAttribute('d', 'M 42 66 L 58 66');
+        } else {
+          skin.setAttribute('fill', '#FBD38D');
+          eyeL.setAttribute('r', '5');
+          eyeR.setAttribute('r', '5');
+          mouth.setAttribute('d', 'M 44 66 Q 50 74 56 66');
+        }
+      }
+
+      saveProgress(stars, score) {
+        try {
+          const raw = localStorage.getItem('sb_solprosig_arcade_state') || localStorage.getItem('sb_kma_arcade_state');
+          let state;
+          if (raw) {
+            state = JSON.parse(raw);
+          } else {
+            state = {
+              player: { name: 'Lucho el Operario', avatar: '👷', totalScore: 0, totalStars: 0, xp: 200, level: 1 },
+              levels: {
+                "1": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "2": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "3": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "4": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "5": { unlocked: true, stars: 0, highScore: 0, completed: false }
+              },
+              medals: [
+                { id: "sga_master", unlocked: false, title: "Guardián SGA" },
+                { id: "storage_hero", unlocked: false, title: "Maestro Bodega" },
+                { id: "static_zero", unlocked: false, title: "Cero Chispa" },
+                { id: "respel_pro", unlocked: false, title: "Defensor RESPEL" },
+                { id: "spill_commander", unlocked: false, title: "Líder Antiderrame" }
+              ]
+            };
+          }
+          const lvl = state.levels["5"];
+          if (lvl) {
+            lvl.stars = Math.max(lvl.stars || 0, stars);
+            lvl.highScore = Math.max(lvl.highScore || 0, score);
+            if (stars > 0) lvl.completed = true;
+          }
+          let totalStars = 0;
+          let totalScore = 0;
+          Object.values(state.levels).forEach(l => {
+            totalStars += l.stars || 0;
+            totalScore += l.highScore || 0;
+          });
+          state.player.totalStars = totalStars;
+          state.player.totalScore = totalScore;
+          if (lvl && lvl.completed && state.medals && state.medals[4]) {
+            state.medals[4].unlocked = true;
+          }
+          localStorage.setItem('sb_solprosig_arcade_state', JSON.stringify(state));
+          localStorage.setItem('sb_kma_arcade_state', JSON.stringify(state));
+        } catch(e) {
+          console.error("Error saving state", e);
+        }
+      }
+
+      endGame() {
+        this.gameOver = true;
+        sfx.playVictory();
+        this.startQuiz();
+      }
+
+      startQuiz() {
+        this.quizIndex = 0;
+        this.quizScore = 0;
+        this.quizCorrect = 0;
+        document.getElementById('quizModal').classList.remove('hidden');
+        this.renderQuizQuestion();
+      }
+
+      renderQuizQuestion() {
+        const q = this.quizQuestions[this.quizIndex];
+        document.getElementById('quizProgressBadge').textContent = `${this.quizIndex + 1} / ${this.quizQuestions.length}`;
+        document.getElementById('quizCategoryLabel').textContent = q.category;
+        document.getElementById('quizQuestionText').textContent = q.question;
+
+        const container = document.getElementById('quizOptionsContainer');
+        container.innerHTML = '';
+        const feedbackBox = document.getElementById('quizFeedbackBox');
+        feedbackBox.className = 'hidden p-2.5 rounded-xl text-xs font-medium border leading-snug';
+        feedbackBox.textContent = '';
+        document.getElementById('btnQuizNext').classList.add('hidden');
+
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'w-full text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 active:scale-[0.98] transition-all text-xs font-semibold text-slate-800 flex items-start space-x-2';
+          btn.innerHTML = `<span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-black flex-shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span><span class="flex-1">${opt}</span>`;
+          btn.addEventListener('click', () => this.handleQuizAnswer(idx, btn));
+          container.appendChild(btn);
+        });
+      }
+
+      handleQuizAnswer(selectedIdx, clickedBtn) {
+        const q = this.quizQuestions[this.quizIndex];
+        const container = document.getElementById('quizOptionsContainer');
+        const buttons = container.querySelectorAll('button');
+        buttons.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('quizFeedbackBox');
+        feedbackBox.classList.remove('hidden');
+
+        if (selectedIdx === q.correct) {
+          sfx.playSuccess();
+          this.quizScore += 100;
+          this.quizCorrect++;
+          clickedBtn.className = 'w-full text-left p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 transition-all text-xs font-bold flex items-start space-x-2';
+          feedbackBox.className = 'p-2.5 rounded-xl text-xs font-semibold border border-emerald-300 bg-emerald-50 text-emerald-900 leading-snug';
+          feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> <strong>¡Correcto!</strong> ${q.explanation}`;
+        } else {
+          sfx.playSplash();
+          clickedBtn.className = 'w-full text-left p-2.5 rounded-xl border-2 border-red-500 bg-red-50 text-red-900 transition-all text-xs font-bold flex items-start space-x-2';
+          if (buttons[q.correct]) {
+            buttons[q.correct].className = 'w-full text-left p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 transition-all text-xs font-bold flex items-start space-x-2';
+          }
+          feedbackBox.className = 'p-2.5 rounded-xl text-xs font-semibold border border-red-300 bg-red-50 text-red-900 leading-snug';
+          feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-600 mr-1"></i> <strong>Atención:</strong> ${q.explanation}`;
+        }
+
+        const nextBtn = document.getElementById('btnQuizNext');
+        nextBtn.classList.remove('hidden');
+        if (this.quizIndex + 1 >= this.quizQuestions.length) {
+          nextBtn.innerHTML = 'Ver Puntuación Final <i class="fa-solid fa-trophy ml-1"></i>';
+        } else {
+          nextBtn.innerHTML = 'Siguiente Pregunta <i class="fa-solid fa-arrow-right ml-1"></i>';
+        }
+      }
+
+      nextQuizQuestion() {
+        this.quizIndex++;
+        if (this.quizIndex < this.quizQuestions.length) {
+          this.renderQuizQuestion();
+        } else {
+          document.getElementById('quizModal').classList.add('hidden');
+          this.showFinalResults();
+        }
+      }
+
+      showFinalResults() {
+        const stars = this.quizCorrect >= 2 ? 3 : (this.quizCorrect >= 1 ? 2 : 1);
+        const totalFinalScore = this.score + this.quizScore;
+        this.saveProgress(stars, totalFinalScore);
+
+        const modal = document.getElementById('resultsModal');
+        const gameScoreText = document.getElementById('resultGameScore');
+        const quizScoreText = document.getElementById('resultQuizScore');
+        const finalScoreText = document.getElementById('resultScore');
+
+        if (gameScoreText) gameScoreText.textContent = `${this.score} Pts`;
+        if (quizScoreText) quizScoreText.textContent = `+${this.quizScore} Pts (${this.quizCorrect}/${this.quizQuestions.length})`;
+        finalScoreText.textContent = `${totalFinalScore} Pts`;
+
+        const starsBox = document.getElementById('resultStars');
+        starsBox.innerHTML = '';
+        for (let s = 1; s <= 3; s++) {
+          starsBox.innerHTML += s <= stars 
+            ? '<i class="fa-solid fa-star text-bolivar-gold drop-shadow-md"></i>' 
+            : '<i class="fa-regular fa-star text-slate-300"></i>';
+        }
+
+        modal.classList.remove('hidden');
+      }
+
+      animate(timestamp) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        const cx = this.canvas.width / 2;
+        const cy = this.canvas.height / 2;
+
+        // Subtle industrial floor grid background
+        this.ctx.strokeStyle = '#1E293B';
+        this.ctx.lineWidth = 1;
+        const gridSize = 35;
+        for (let x = 0; x < this.canvas.width; x += gridSize) {
+          this.ctx.beginPath();
+          this.ctx.moveTo(x, 0);
+          this.ctx.lineTo(x, this.canvas.height);
+          this.ctx.stroke();
+        }
+        for (let y = 0; y < this.canvas.height; y += gridSize) {
+          this.ctx.beginPath();
+          this.ctx.moveTo(0, y);
+          this.ctx.lineTo(this.canvas.width, y);
+          this.ctx.stroke();
+        }
+
+        // Industrial Drain (Floor hazard point nearby)
+        this.ctx.fillStyle = '#0F172A';
+        this.ctx.beginPath();
+        this.ctx.roundRect(this.canvas.width - 48, 16, 36, 36, 8);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#334155';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+        this.ctx.fillStyle = '#475569';
+        for (let s = 0; s < 3; s++) {
+          this.ctx.fillRect(this.canvas.width - 44, 22 + s * 8, 28, 3);
+        }
+
+        // Expand slime slightly if not contained
+        if (!this.isContained && !this.gameOver && this.step < 4) {
+          this.slimeRadius = Math.min(this.maxRadius, this.slimeRadius + 0.04);
+        }
+
+        const pct = Math.round((this.slimeRadius / this.maxRadius) * 100);
+        document.getElementById('slimePercent').textContent = `${pct}%`;
+        document.getElementById('slimeBar').style.width = `${pct}%`;
+
+        // Draw Toxic Slime Puddle (Organic animated boundary)
+        if (this.slimeRadius > 0) {
+          this.ctx.save();
+          const t = timestamp ? timestamp * 0.003 : 0;
+          this.ctx.fillStyle = '#84CC16';
+          this.ctx.beginPath();
+          const points = 16;
+          for (let i = 0; i <= points; i++) {
+            const angle = (i / points) * Math.PI * 2;
+            const r = this.slimeRadius + Math.sin(angle * 5 + t * 2) * 3 + Math.cos(angle * 3 - t) * 2;
+            const px = cx + Math.cos(angle) * r;
+            const py = cy + Math.sin(angle) * r;
+            if (i === 0) this.ctx.moveTo(px, py);
+            else this.ctx.lineTo(px, py);
+          }
+          this.ctx.closePath();
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#65A30D';
+          this.ctx.lineWidth = 3.5;
+          this.ctx.stroke();
+
+          // Organic inner lighter fluid ripple
+          this.ctx.fillStyle = '#BEF264';
+          this.ctx.beginPath();
+          this.ctx.ellipse(cx - 8, cy - 6, this.slimeRadius * 0.45, this.slimeRadius * 0.35, 0.2, 0, Math.PI * 2);
+          this.ctx.fill();
+
+          // Slime bubbles that pulse
+          this.bubbles.forEach(b => {
+            b.pulse += 0.05;
+            const bx = cx + Math.cos(b.angle) * (this.slimeRadius * b.distRatio);
+            const by = cy + Math.sin(b.angle) * (this.slimeRadius * b.distRatio);
+            const curR = Math.max(1, b.radius + Math.sin(b.pulse) * 1.5);
+            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            this.ctx.beginPath();
+            this.ctx.arc(bx, by, curR, 0, Math.PI * 2);
+            this.ctx.fill();
+          });
+          this.ctx.restore();
+        }
+
+        // Draw Absorbent Socks Barrier (Cordón Absorbente) if contained
+        if (this.isContained) {
+          this.ctx.save();
+          // Textured cylindrical absorbent sock segments
+          const sockRadius = this.slimeRadius + 22;
+          this.ctx.strokeStyle = '#FFC72C';
+          this.ctx.lineWidth = 14;
+          this.ctx.lineCap = 'round';
+          this.ctx.beginPath();
+          this.ctx.arc(cx, cy, sockRadius, 0, Math.PI * 2);
+          this.ctx.stroke();
+
+          // Chevron hazard texture on sock
+          this.ctx.strokeStyle = '#1E293B';
+          this.ctx.lineWidth = 3;
+          this.ctx.setLineDash([10, 10]);
+          this.ctx.beginPath();
+          this.ctx.arc(cx, cy, sockRadius, 0, Math.PI * 2);
+          this.ctx.stroke();
+          this.ctx.restore();
+        }
+
+        // Render Suction Particles during wiping
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= 0.03;
+          if (p.alpha <= 0) {
+            this.particles.splice(i, 1);
+            continue;
+          }
+          this.ctx.save();
+          this.ctx.globalAlpha = p.alpha;
+          this.ctx.fillStyle = p.color;
+          this.ctx.beginPath();
+          this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.restore();
+        }
+
+        // Render Screen Slime Splatters (Comic slapstick penalty)
+        for (let i = this.splatters.length - 1; i >= 0; i--) {
+          const s = this.splatters[i];
+          s.alpha -= 0.005;
+          if (s.alpha <= 0) {
+            this.splatters.splice(i, 1);
+            continue;
+          }
+          this.ctx.save();
+          this.ctx.globalAlpha = s.alpha;
+          this.ctx.fillStyle = s.color;
+          this.ctx.beginPath();
+          this.ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          this.ctx.fill();
+          // Drip tail
+          this.ctx.fillRect(s.x - 3, s.y, 6, s.r * 1.6);
+          this.ctx.restore();
+        }
+
+        // Render Confetti
+        for (let i = this.confetti.length - 1; i >= 0; i--) {
+          const c = this.confetti[i];
+          c.x += c.vx;
+          c.y += c.vy;
+          c.vy += 0.2; // gravity
+          c.alpha -= c.decay;
+          if (c.alpha <= 0) {
+            this.confetti.splice(i, 1);
+            continue;
+          }
+          this.ctx.save();
+          this.ctx.globalAlpha = c.alpha;
+          this.ctx.fillStyle = c.color;
+          this.ctx.fillRect(c.x, c.y, c.size, c.size);
+          this.ctx.restore();
+        }
+
+        // --- FIRST PERSON POV HANDS & TOOLS RENDERING ---
+        this.drawFirstPersonView();
+
+        requestAnimationFrame(this.animate.bind(this));
+      }
+
+      drawFirstPersonView() {
+        const isInteracting = this.pointer.isDragging;
+        let handX = isInteracting ? this.pointer.x : (this.canvas.width * 0.68 + Math.sin(Date.now() / 400) * 4);
+        let handY = isInteracting ? this.pointer.y : (this.canvas.height * 0.72 + Math.cos(Date.now() / 400) * 3);
+
+        const baseArmX = this.canvas.width * 0.82;
+        const baseArmY = this.canvas.height + 60;
+
+        this.ctx.save();
+
+        if (this.step === 1) {
+          // STEP 1: Hand holding Chemical Scanner / Magnifier Probe
+          this.drawSleeveAndArm(baseArmX, baseArmY, handX, handY, false);
+          this.drawScannerTool(handX, handY);
+        } else if (this.step === 2) {
+          // STEP 2: Donning Chemical Tyvek Suit & Nitrile Hazmat Gloves
+          this.drawTyvekDonning();
+        } else if (this.step === 3) {
+          // STEP 3: Hands unrolling and positioning Absorbent Sock (Cordón)
+          this.drawSockDeploymentHands(handX, handY);
+        } else if (this.step === 4) {
+          // STEP 4: Hand holding Absorbent Pad (Paño Absorbente) wiping spill
+          this.drawSleeveAndArm(baseArmX, baseArmY, handX, handY, true);
+          this.drawAbsorbentPad(handX, handY);
+        } else if (this.step === 5) {
+          // STEP 5: Depositing saturated pad into Red RESPEL Hazmat Bag
+          this.drawBagDisposal(handX, handY);
+        }
+
+        this.ctx.restore();
+      }
+
+      drawSleeveAndArm(baseX, baseY, targetX, targetY, isTyvek = true) {
+        // Forearm Sleeve
+        this.ctx.beginPath();
+        this.ctx.moveTo(baseX - 44, baseY);
+        this.ctx.lineTo(baseX + 44, baseY);
+        this.ctx.lineTo(targetX + 28, targetY + 45);
+        this.ctx.lineTo(targetX - 28, targetY + 45);
+        this.ctx.closePath();
+
+        // Tyvek Suit is pristine white with gray folds; standard uniform is Bolívar Green
+        this.ctx.fillStyle = isTyvek ? '#F8FAFC' : '#006738';
+        this.ctx.fill();
+        this.ctx.strokeStyle = isTyvek ? '#CBD5E1' : '#0F172A';
+        this.ctx.lineWidth = 3;
+        this.ctx.stroke();
+
+        // High-Vis tape or Hazmat Chemical Seal Tape
+        const midX = (baseX + targetX) / 2;
+        const midY = (baseY + targetY) / 2;
+        this.ctx.fillStyle = isTyvek ? '#FFC72C' : '#E2E8F0';
+        this.ctx.beginPath();
+        this.ctx.ellipse(midX, midY, 32, 10, Math.atan2(targetY - baseY, targetX - baseX), 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // Hazmat wrist seal (Yellow with hazard chevrons)
+        this.ctx.fillStyle = '#FFC72C';
+        this.ctx.beginPath();
+        this.ctx.roundRect(targetX - 26, targetY + 34, 52, 13, 3);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#1E293B';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.stroke();
+
+        // Nitrile Hazmat Glove (Green #008244)
+        this.ctx.fillStyle = '#008244';
+        this.ctx.beginPath();
+        this.ctx.ellipse(targetX, targetY + 16, 24, 20, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#FFFFFF';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.stroke();
+      }
+
+      drawScannerTool(x, y) {
+        // Tool handle & body
+        this.ctx.save();
+        this.ctx.translate(x, y);
+
+        // Heavy-duty scanner probe
+        this.ctx.fillStyle = '#1E293B';
+        this.ctx.beginPath();
+        this.ctx.roundRect(-10, -32, 20, 42, 6);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#FFC72C';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+
+        // Sensor lens
+        this.ctx.fillStyle = '#38BDF8';
+        this.ctx.beginPath();
+        this.ctx.arc(0, -32, 8, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // Laser scan cone pointing to slime puddle center
+        const cx = this.canvas.width / 2;
+        const cy = this.canvas.height / 2;
+        this.ctx.restore();
+
+        this.ctx.save();
+        this.ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([4, 4]);
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y - 32);
+        this.ctx.lineTo(cx, cy);
+        this.ctx.stroke();
+
+        // Fingers gripping scanner handle
+        for (let f = 0; f < 4; f++) {
+          const fx = x - 15 + f * 10;
+          const fy = y + 2;
+          this.ctx.fillStyle = '#006738';
+          this.ctx.beginPath();
+          this.ctx.roundRect(fx - 4, fy - 6, 8, 18, 4);
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#FFC72C';
+          this.ctx.lineWidth = 1;
+          this.ctx.stroke();
+        }
+        this.ctx.restore();
+
+        // Scanner HUD Readout Box con Rombo Oficial SGA
+        this.ctx.save();
+        const hudX = Math.max(10, Math.min(this.canvas.width - 205, x - 100));
+        const hudY = Math.max(10, y - 108);
+        this.ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+        this.ctx.beginPath();
+        this.ctx.roundRect(hudX, hudY, 200, 56, 8);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#38BDF8';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.stroke();
+
+        // Mini Rombo SGA UNECE
+        this.ctx.save();
+        this.ctx.translate(hudX + 22, hudY + 28);
+        this.ctx.rotate(Math.PI / 4);
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.fillRect(-12, -12, 24, 24);
+        this.ctx.strokeStyle = '#DA291C';
+        this.ctx.lineWidth = 2.2;
+        this.ctx.strokeRect(-12, -12, 24, 24);
+        this.ctx.rotate(-Math.PI / 4);
+        // Silueta de llama
+        this.ctx.fillStyle = '#000000';
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -7);
+        this.ctx.bezierCurveTo(-4, -1, -5, 3, 0, 8);
+        this.ctx.bezierCurveTo(5, 3, 4, -1, 0, -7);
+        this.ctx.fill();
+        this.ctx.restore();
+
+        this.ctx.fillStyle = '#38BDF8';
+        this.ctx.font = '900 8.5px sans-serif';
+        this.ctx.fillText('ANÁLISIS SGA (Res. 773/2021)', hudX + 44, hudY + 16);
+        this.ctx.fillStyle = '#EF4444';
+        this.ctx.font = 'bold 8px sans-serif';
+        this.ctx.fillText('PELIGRO • H225 (LÍQ. INFLAMABLE)', hudX + 44, hudY + 28);
+        this.ctx.fillStyle = '#94A3B8';
+        this.ctx.font = '600 7px sans-serif';
+        this.ctx.fillText('Solvente Clase 3 • Contener con cordón', hudX + 44, hudY + 42);
+        this.ctx.restore();
+      }
+
+      drawTyvekDonning() {
+        // Dual gloved hands pulling Tyvek Suit zipper up
+        const cx = this.canvas.width / 2;
+        const cy = this.canvas.height * 0.72;
+
+        // Tyvek Suit Chest V-neck
+        this.ctx.fillStyle = '#F8FAFC';
+        this.ctx.beginPath();
+        this.ctx.moveTo(cx - 70, this.canvas.height);
+        this.ctx.lineTo(cx + 70, this.canvas.height);
+        this.ctx.lineTo(cx + 35, cy);
+        this.ctx.lineTo(cx - 35, cy);
+        this.ctx.closePath();
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#CBD5E1';
+        this.ctx.lineWidth = 3;
+        this.ctx.stroke();
+
+        // Heavy-duty zipper
+        this.ctx.strokeStyle = '#FFC72C';
+        this.ctx.lineWidth = 6;
+        this.ctx.beginPath();
+        this.ctx.moveTo(cx, this.canvas.height);
+        this.ctx.lineTo(cx, cy + 15);
+        this.ctx.stroke();
+
+        // Zipper pull slider
+        this.ctx.fillStyle = '#0F172A';
+        this.ctx.beginPath();
+        this.ctx.roundRect(cx - 7, cy + 12, 14, 20, 3);
+        this.ctx.fill();
+
+        // Left Hand Gripping Zipper
+        this.ctx.fillStyle = '#008244';
+        this.ctx.beginPath();
+        this.ctx.ellipse(cx - 18, cy + 22, 16, 14, -0.4, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#FFFFFF';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.stroke();
+
+        // Right Hand Gripping Zipper Slider
+        this.ctx.fillStyle = '#008244';
+        this.ctx.beginPath();
+        this.ctx.ellipse(cx + 18, cy + 22, 16, 14, 0.4, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // Comic Badge "¡ZIP! EPP QUÍMICO NIVEL C"
+        this.ctx.fillStyle = '#FFC72C';
+        this.ctx.beginPath();
+        this.ctx.roundRect(cx - 70, cy - 35, 140, 24, 6);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#0F172A';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+        this.ctx.fillStyle = '#0F172A';
+        this.ctx.font = 'bold 10px sans-serif';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('¡ZIP! TRAJE TYVEK SELLADO', cx, cy - 19);
+      }
+
+      drawSockDeploymentHands(x, y) {
+        // Hands holding and bending the Absorbent Sock around perimeter
+        const cx = this.canvas.width / 2;
+        const cy = this.canvas.height / 2;
+
+        // Draw held absorbent sock in hands
+        this.ctx.strokeStyle = '#FFC72C';
+        this.ctx.lineWidth = 18;
+        this.ctx.lineCap = 'round';
+        this.ctx.beginPath();
+        this.ctx.moveTo(x - 45, y + 10);
+        this.ctx.quadraticCurveTo(x, y - 20, x + 45, y + 10);
+        this.ctx.stroke();
+
+        // Hazard chevron stripes on held sock
+        this.ctx.strokeStyle = '#1E293B';
+        this.ctx.lineWidth = 3;
+        this.ctx.setLineDash([8, 8]);
+        this.ctx.beginPath();
+        this.ctx.moveTo(x - 45, y + 10);
+        this.ctx.quadraticCurveTo(x, y - 20, x + 45, y + 10);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
+
+        // Left Hand Gripping Left end
+        this.ctx.fillStyle = '#008244';
+        this.ctx.beginPath();
+        this.ctx.ellipse(x - 30, y + 12, 16, 14, -0.3, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#FFFFFF';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.stroke();
+
+        // Right Hand Gripping Right end
+        this.ctx.fillStyle = '#008244';
+        this.ctx.beginPath();
+        this.ctx.ellipse(x + 30, y + 12, 16, 14, 0.3, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.stroke();
+      }
+
+      drawAbsorbentPad(x, y) {
+        // Absorbent Pad (Yellow Polypropylene - changes to green as soaked)
+        this.ctx.save();
+        this.ctx.translate(x, y);
+
+        // Blend pad color from yellow to green
+        const r = Math.round(255 - this.padStain * 120);
+        const g = Math.round(199 + this.padStain * 10);
+        const b = Math.round(44 - this.padStain * 20);
+        this.ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+
+        // Quilted dimpled absorbent pad texture
+        this.ctx.beginPath();
+        this.ctx.roundRect(-24, -28, 48, 38, 5);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#FFFFFF';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+
+        // Dimple dots on pad
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+        for (let dx = -16; dx <= 16; dx += 10) {
+          for (let dy = -20; dy <= 0; dy += 10) {
+            this.ctx.beginPath();
+            this.ctx.arc(dx, dy, 1.5, 0, Math.PI * 2);
+            this.ctx.fill();
+          }
+        }
+
+        // Fingers clamping the pad
+        for (let f = 0; f < 4; f++) {
+          const fx = -16 + f * 10;
+          this.ctx.fillStyle = '#006738';
+          this.ctx.beginPath();
+          this.ctx.roundRect(fx - 4, -4, 8, 18, 4);
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#FFC72C';
+          this.ctx.lineWidth = 1;
+          this.ctx.stroke();
+        }
+
+        // Thumb wrapping around pad
+        this.ctx.fillStyle = '#008244';
+        this.ctx.beginPath();
+        this.ctx.ellipse(-20, 8, 8, 14, -0.4, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        this.ctx.restore();
+      }
+
+      drawBagDisposal(x, y) {
+        const bagX = this.canvas.width * 0.32;
+        const bagY = this.canvas.height * 0.70;
+
+        // 1. Heavy-duty Red Hazmat Bag (Bolsa Roja de Polietileno Alta Densidad - Calibre 2.0)
+        this.ctx.fillStyle = '#DC2626';
+        this.ctx.beginPath();
+        this.ctx.roundRect(bagX - 48, bagY - 22, 96, 90, [10, 10, 16, 16]);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#991B1B';
+        this.ctx.lineWidth = 2.5;
+        this.ctx.stroke();
+
+        // Plastic Bag Fold Creases / Textures
+        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.beginPath();
+        this.ctx.moveTo(bagX - 40, bagY);
+        this.ctx.quadraticCurveTo(bagX - 10, bagY + 20, bagX - 30, bagY + 60);
+        this.ctx.moveTo(bagX + 40, bagY);
+        this.ctx.quadraticCurveTo(bagX + 15, bagY + 20, bagX + 32, bagY + 60);
+        this.ctx.stroke();
+
+        // Yellow Plastic Zip-Tie Seal (Precinto de seguridad amarillo en cuello)
+        this.ctx.fillStyle = '#EAB308';
+        this.ctx.beginPath();
+        this.ctx.roundRect(bagX - 22, bagY - 18, 44, 7, 2);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#854D0E';
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke();
+
+        // 2. Official Chemical RESPEL Label (Dec. 4741/2005)
+        const lblW = 74;
+        const lblH = 44;
+        const lblX = bagX - lblW / 2;
+        const lblY = bagY + 12;
+
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.beginPath();
+        this.ctx.roundRect(lblX, lblY, lblW, lblH, 3);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#0F172A';
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke();
+
+        // Yellow Hazard Top Banner
+        this.ctx.fillStyle = '#FACC15';
+        this.ctx.beginPath();
+        this.ctx.roundRect(lblX, lblY, lblW, 10, [3, 3, 0, 0]);
+        this.ctx.fill();
+        this.ctx.fillStyle = '#000000';
+        this.ctx.font = '900 6.5px sans-serif';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('⚠ RESIDUOS PELIGROSOS', lblX + lblW / 2, lblY + 7.5);
+
+        // Mini UN Diamond
+        this.ctx.save();
+        this.ctx.translate(lblX + 12, lblY + 23);
+        this.ctx.rotate(Math.PI / 4);
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.fillRect(-6, -6, 12, 12);
+        this.ctx.strokeStyle = '#DC2626';
+        this.ctx.lineWidth = 1.4;
+        this.ctx.strokeRect(-6, -6, 12, 12);
+        this.ctx.rotate(-Math.PI / 4);
+        this.ctx.fillStyle = '#000000';
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, 3, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+
+        // Legal Label Metadata
+        this.ctx.fillStyle = '#0F172A';
+        this.ctx.font = 'bold 5.5px sans-serif';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText('DEC. 4741/2005', lblX + 22, lblY + 21);
+        this.ctx.fillStyle = '#DC2626';
+        this.ctx.font = '900 5px sans-serif';
+        this.ctx.fillText('KMA CONSTRUCCIONES', lblX + 22, lblY + 28);
+        this.ctx.fillStyle = '#64748B';
+        this.ctx.font = 'bold 4.5px sans-serif';
+        this.ctx.fillText('PAÑOS IMPREGNADOS', lblX + 22, lblY + 35);
+
+        // Warning micro text at bottom of label
+        this.ctx.fillStyle = '#0F172A';
+        this.ctx.font = 'bold 4px sans-serif';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('DISPOSICIÓN FINAL EXCLUSIVA', lblX + lblW / 2, lblY + 41);
+
+        // 3. Left Gloved Hand holding Bag Mouth
+        this.ctx.fillStyle = '#008244';
+        this.ctx.beginPath();
+        this.ctx.ellipse(bagX - 40, bagY - 12, 17, 14, -0.3, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#FFFFFF';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.stroke();
+
+        // 4. Right Hand holding saturated pad over bag mouth
+        this.drawSleeveAndArm(this.canvas.width * 0.85, this.canvas.height + 60, x, y, true);
+        this.drawAbsorbentPad(x, y);
+
+        // Guidance arrow
+        this.ctx.fillStyle = '#FFC72C';
+        this.ctx.font = '900 9.5px sans-serif';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('⬇ DEPOSITAR EN BOLSA RESPEL ⬇', bagX, bagY - 28);
+      }
+    }
+
+    let spillGame;
+    document.addEventListener('DOMContentLoaded', () => {
+      spillGame = new SpillGame();
+      window.spillGame = spillGame;
+    });
+  </script>
+</body>
+</html>

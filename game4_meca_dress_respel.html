@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nivel 4: Meca-Dress & RESPEL Basketball | KMA Construcciones • Seguros Bolívar</title>
+
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bolivar: {
+              DEFAULT: '#006738',
+              light: '#008244',
+              gold: '#FFC72C',
+              surface: '#F4F6F8',
+              slate: '#1E293B'
+            }
+          },
+          keyframes: {
+            popIn: {
+              '0%': { transform: 'scale(0.8)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
+            }
+          },
+          animation: {
+            'pop-in': 'popIn 0.3s ease-out'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome v6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      overflow: hidden;
+    }
+    .comic-bubble-dialog {
+      position: relative;
+      background: #ffffff;
+      border: 3px solid #1E293B;
+      border-radius: 1.25rem;
+    }
+    .comic-bubble-dialog::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 20px;
+      border-width: 12px 10px 0 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+      width: 0;
+    }
+  </style>
+</head>
+<body id="gameBody" class="bg-slate-900 text-slate-100 h-screen w-screen flex flex-col justify-between font-sans relative">
+
+  <!-- TOP HUD -->
+  <header class="bg-bolivar/95 backdrop-blur-md px-4 py-2 border-b-2 border-bolivar-gold shadow-md flex items-center justify-between z-30 flex-shrink-0">
+    <!-- Back to Hub & Brand Logo -->
+    <div class="flex items-center space-x-2">
+      <a href="index.html" class="w-10 h-10 rounded-xl bg-bolivar-light flex items-center justify-center text-white hover:bg-bolivar active:scale-95 transition-all shadow">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div class="w-9 h-9 rounded-xl bg-white p-1 flex items-center justify-center shadow-md flex-shrink-0" title="Solprosig">
+        <svg viewBox="0 0 786 983" class="w-full h-full max-h-full max-w-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+          <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+          <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+          <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+          <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Stage Progress Indicator -->
+    <div class="flex-1 mx-3 max-w-xs text-center">
+      <span id="stageBadge" class="text-[10px] font-black uppercase text-bolivar-gold tracking-widest bg-slate-950/60 px-2.5 py-0.5 rounded-full border border-bolivar-gold/30">
+        FASE 1: EPP DE MECÁNICO
+      </span>
+    </div>
+
+    <!-- Score & Audio -->
+    <div class="text-right flex items-center space-x-2">
+      <div class="bg-slate-950/50 px-2.5 py-1 rounded-xl border border-white/10 text-center">
+        <p class="text-[9px] uppercase font-bold text-slate-400">Puntaje</p>
+        <p id="scoreVal" class="text-sm font-black text-bolivar-gold leading-none">0</p>
+      </div>
+      <button id="btnAudio" class="w-10 h-10 rounded-xl bg-slate-800 text-bolivar-gold flex items-center justify-center active:scale-95 shadow">
+        <i id="audioIcon" class="fa-solid fa-volume-high text-xs"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN DUAL-PHASE CONTAINER -->
+  <main class="relative flex-1 w-full overflow-hidden flex flex-col items-center justify-between p-2 max-w-md mx-auto">
+
+    <!-- FASE A: MECA-DRESS UP (SELECT EPP) -->
+    <div id="phaseADiv" class="w-full flex-1 flex flex-col justify-between z-20">
+      <div class="bg-slate-950/80 rounded-2xl p-2.5 border border-slate-700 text-center">
+        <span class="text-[10px] uppercase font-black text-bolivar-gold">Escenario de Taller:</span>
+        <h3 class="text-xs font-black text-white mt-0.5">Lavado de piezas con solventes y cambio de aceite</h3>
+        <p class="text-[10px] text-slate-400">Toca el EPP correcto para equipar a Lucho (Dec. 1072/2015)</p>
+      </div>
+
+      <!-- Avatar Preview Center -->
+      <div class="flex items-center justify-center my-2 relative">
+        <div class="w-32 h-44 bg-white/10 rounded-3xl border-2 border-slate-700 p-2 flex flex-col items-center justify-center shadow-2xl relative">
+          <!-- Lucho Mechanic Avatar SVG -->
+          <svg viewBox="0 0 100 130" class="w-full h-full">
+            <ellipse cx="50" cy="30" rx="30" ry="14" fill="#FFC72C" />
+            <circle cx="50" cy="46" r="20" fill="#FBD38D" />
+            <circle cx="43" cy="42" r="4" fill="#1E293B" />
+            <circle cx="57" cy="42" r="4" fill="#1E293B" />
+            <!-- Gafas si seleccionadas -->
+            <rect id="svgGoggles" x="35" y="38" width="30" height="10" rx="4" fill="#0284C7" class="hidden" />
+            <!-- Mascara si seleccionada -->
+            <polygon id="svgMask" points="40,48 60,48 50,62" fill="#475569" class="hidden" />
+            <!-- Overol -->
+            <rect x="25" y="66" width="50" height="50" rx="6" fill="#1E3A8A" />
+            <!-- Delantal si seleccionado -->
+            <rect id="svgApron" x="33" y="68" width="34" height="42" rx="4" fill="#059669" class="hidden" />
+            <!-- Manos/Guantes -->
+            <circle id="svgGloveL" cx="20" cy="80" r="7" fill="#FBD38D" />
+            <circle id="svgGloveR" cx="80" cy="80" r="7" fill="#FBD38D" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- EPP Equipment Grid -->
+      <div class="grid grid-cols-2 gap-2 mb-2">
+        <button class="epp-btn bg-slate-800 border-2 border-slate-700 hover:border-bolivar-gold rounded-2xl p-2.5 flex items-center space-x-2 text-left active:scale-95" data-correct="true" data-type="gloves" data-label="Guantes de Nitrilo">
+          <i class="fa-solid fa-mitten text-bolivar-gold text-lg"></i>
+          <div>
+            <p class="text-xs font-black text-white">Guantes Nitrilo</p>
+            <p class="text-[9px] text-slate-400">Resistente a solvente</p>
+          </div>
+        </button>
+
+        <button class="epp-btn bg-slate-800 border-2 border-slate-700 hover:border-red-500 rounded-2xl p-2.5 flex items-center space-x-2 text-left active:scale-95" data-correct="false" data-type="wrong" data-msg="¡Los guantes de tela absorben el solvente y queman la piel!">
+          <i class="fa-solid fa-hand text-slate-400 text-lg"></i>
+          <div>
+            <p class="text-xs font-black text-white">Guantes de Tela</p>
+            <p class="text-[9px] text-red-400">¡Inadecuados!</p>
+          </div>
+        </button>
+
+        <button class="epp-btn bg-slate-800 border-2 border-slate-700 hover:border-bolivar-gold rounded-2xl p-2.5 flex items-center space-x-2 text-left active:scale-95" data-correct="true" data-type="goggles" data-label="Gafas Herméticas">
+          <i class="fa-solid fa-glasses text-bolivar-gold text-lg"></i>
+          <div>
+            <p class="text-xs font-black text-white">Monogafas Químicas</p>
+            <p class="text-[9px] text-slate-400">Cierre hermético</p>
+          </div>
+        </button>
+
+        <button class="epp-btn bg-slate-800 border-2 border-slate-700 hover:border-bolivar-gold rounded-2xl p-2.5 flex items-center space-x-2 text-left active:scale-95" data-correct="true" data-type="respirator" data-label="Respirador Vapores">
+          <i class="fa-solid fa-head-side-mask text-bolivar-gold text-lg"></i>
+          <div>
+            <p class="text-xs font-black text-white">Respirador Vapores</p>
+            <p class="text-[9px] text-slate-400">Filtro de carbón activo</p>
+          </div>
+        </button>
+      </div>
+
+      <!-- Slapstick Reaction Mascot -->
+      <div class="comic-bubble-dialog p-2.5 text-bolivar-slate shadow-xl mb-1">
+        <p id="dressComicText" class="text-xs font-black leading-tight text-bolivar">
+          "¡Maestro! Si no me pongo guantes de nitrilo, ese thinner me come las manos."
+        </p>
+      </div>
+    </div>
+
+    <!-- FASE B: RESPEL BASKETBALL (CANVAS PARABOLIC THROW) -->
+    <div id="phaseBDiv" class="w-full flex-1 flex flex-col justify-between z-20 hidden">
+      <div class="bg-slate-950/80 rounded-2xl p-2 border border-slate-700 flex items-center justify-between text-xs">
+        <div>
+          <span class="text-[9px] font-black uppercase text-bolivar-gold">Residuo a Clasificar:</span>
+          <h4 id="currentRespelName" class="text-xs font-black text-white">Filtro de Aceite Usado</h4>
+        </div>
+        <span class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full text-[10px] font-bold">
+          Dec. 4741/2005
+        </span>
+      </div>
+
+      <!-- Canvas for trajectory & basketball throw -->
+      <div class="relative w-full flex-1 my-2 rounded-2xl overflow-hidden border border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900 shadow-inner">
+        <canvas id="basketballCanvas" class="w-full h-full block"></canvas>
+
+        <div class="absolute top-2 left-2 text-[10px] text-slate-400 bg-slate-950/80 px-2.5 py-1 rounded-xl pointer-events-none">
+          <i class="fa-solid fa-hand-pointer text-bolivar-gold mr-1"></i> Arrastra hacia atrás para apuntar la parábola
+        </div>
+      </div>
+
+      <!-- Bins legend -->
+      <div class="grid grid-cols-2 gap-2 text-center text-[10px] font-black uppercase mb-1">
+        <div class="bg-red-950/50 border border-red-500 text-red-400 py-1.5 rounded-xl">
+          <i class="fa-solid fa-biohazard mr-1"></i> Caneca Roja (RESPEL)
+        </div>
+        <div class="bg-amber-950/50 border border-amber-500 text-amber-400 py-1.5 rounded-xl">
+          <i class="fa-solid fa-recycle mr-1"></i> Caneca Amarilla (Reciclable)
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- PRUEBA INTERACTIVA DE CONOCIMIENTOS (KMA CONSTRUCCIONES & SOLPROSIG) -->
+  <div id="quizModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 text-bolivar-slate shadow-2xl border-4 border-bolivar space-y-3.5 animate-pop-in">
+      <!-- Quiz Header -->
+      <div class="flex items-center justify-between border-b pb-2.5 border-slate-200">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-slate-50 p-1 border border-slate-200 flex items-center justify-center shadow-xs flex-shrink-0" title="Solprosig">
+            <svg viewBox="0 0 786 983" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+              <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+              <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+              <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+              <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-[9px] font-black uppercase text-bolivar tracking-wider">Prueba Interactiva • Obra KMA</span>
+            <h4 class="text-xs font-black text-slate-800 leading-none">Manejo RESPEL & EPP Mecánico</h4>
+          </div>
+        </div>
+        <div class="bg-bolivar/10 text-bolivar text-[10px] font-black px-2 py-0.5 rounded-full" id="quizProgressBadge">
+          1 / 3
+        </div>
+      </div>
+
+      <!-- Quiz Body -->
+      <div id="quizQuestionArea" class="space-y-3">
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200">
+          <p class="text-[10px] font-black uppercase text-slate-400 mb-0.5" id="quizCategoryLabel">Gestión RESPEL</p>
+          <p class="text-xs font-bold text-slate-900 leading-snug" id="quizQuestionText">Texto...</p>
+        </div>
+
+        <div id="quizOptionsContainer" class="space-y-2"></div>
+
+        <div id="quizFeedbackBox" class="hidden p-2.5 rounded-xl text-xs font-medium border leading-snug"></div>
+      </div>
+
+      <button id="btnQuizNext" class="w-full py-2.5 bg-bolivar text-white font-black rounded-xl hover:bg-bolivar-light shadow-md active:scale-95 text-xs transition-all hidden">
+        Siguiente Pregunta <i class="fa-solid fa-arrow-right ml-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- RESULTS MODAL -->
+  <div id="resultsModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 text-bolivar-slate shadow-2xl border-4 border-bolivar space-y-4">
+      <div class="text-center space-y-1">
+        <div class="flex justify-center mb-1">
+          <div class="w-10 h-10 rounded-xl bg-slate-50 p-1.5 border border-slate-200 flex items-center justify-center shadow-inner" title="Solprosig">
+            <svg viewBox="0 0 786 983" class="w-full h-full max-h-full max-w-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+              <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+              <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+              <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+              <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+            </svg>
+          </div>
+        </div>
+        <span id="resultBadge" class="inline-block px-3 py-1 bg-bolivar-gold text-bolivar-slate text-[10px] font-black uppercase rounded-full tracking-wider shadow-sm">
+          Nivel 4 Completado
+        </span>
+        <h3 id="resultTitle" class="text-xl font-black text-bolivar">¡Mecánico Certificado!</h3>
+        <p class="text-xs text-slate-500">KMA Construcciones • Asesoría Solprosig & Seguros Bolívar</p>
+      </div>
+
+      <div id="resultStars" class="flex justify-center items-center space-x-2 text-2xl text-bolivar-gold py-1"></div>
+
+      <!-- Puntuación Final: Breakdown Completo (Juego + Prueba Interactiva) -->
+      <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-1.5 text-xs">
+        <div class="flex justify-between items-center text-slate-600">
+          <span class="text-[11px] font-semibold"><i class="fa-solid fa-screwdriver-wrench text-bolivar mr-1"></i>Destreza Taller & Basketball:</span>
+          <span id="resultGameScore" class="font-bold text-slate-800">0 Pts</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600">
+          <span class="text-[11px] font-semibold"><i class="fa-solid fa-clipboard-check text-emerald-600 mr-1"></i>Prueba Interactiva:</span>
+          <span id="resultQuizScore" class="font-bold text-emerald-600">+0 Pts</span>
+        </div>
+        <div class="border-t border-slate-200 pt-1.5 flex justify-between items-center">
+          <span class="text-[11px] font-black text-bolivar uppercase">Puntuación Final Total:</span>
+          <span id="resultScore" class="text-base font-black text-bolivar">0 Pts</span>
+        </div>
+        <div class="flex justify-between items-center text-[10px] text-slate-400 font-semibold pt-0.5">
+          <span>RESPEL Encestados en Taller KMA:</span>
+          <span class="text-slate-600 font-bold">6 / 6</span>
+        </div>
+      </div>
+
+      <div class="bg-purple-50 rounded-2xl p-3 border border-purple-200 text-xs">
+        <p class="text-[10px] font-black uppercase text-purple-900 flex items-center">
+          <i class="fa-solid fa-book-bookmark mr-1.5 text-bolivar"></i> Fundamento Normativo
+        </p>
+        <p class="text-[11px] font-medium text-purple-950 mt-1 leading-snug">
+          El <strong>Decreto 4741 de 2005</strong> clasifica los aceites usados, filtros y trapos impregnados de hidrocarburos como Residuos Peligrosos (RESPEL), obligando a su segregación en caneca roja rotulada y con manifiesto de disposición final.
+        </p>
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <button id="btnNextLevel" class="w-full py-3 bg-bolivar text-white font-black rounded-2xl hover:bg-bolivar-light shadow-lg active:scale-95 text-xs transition-all flex items-center justify-center space-x-2">
+          <span>SIGUIENTE NIVEL (CONTROL DE DERRAMES)</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btnRetryLevel" class="py-2.5 bg-slate-100 text-slate-700 font-extrabold rounded-xl hover:bg-slate-200 active:scale-95 text-xs transition-all">
+            <i class="fa-solid fa-rotate-right mr-1"></i> Reintentar
+          </button>
+          <a href="index.html" class="py-2.5 bg-slate-800 text-white font-extrabold rounded-xl hover:bg-slate-900 active:scale-95 text-xs transition-all text-center block">
+            <i class="fa-solid fa-house mr-1"></i> Menú Hub
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    /**
+     * @file game4_meca_dress_respel.html
+     * @description Minijuego 4: Meca-Dress & RESPEL Basketball (EPP Taller y Dec. 4741/2005)
+     */
+
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playTone(freq, type = 'sine', duration = 0.1, vol = 0.15) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      }
+      playSwish() {
+        this.playTone(600, 'sine', 0.1, 0.2);
+        setTimeout(() => this.playTone(850, 'sine', 0.15, 0.25), 80);
+      }
+      playMiss() {
+        this.playTone(180, 'sawtooth', 0.2, 0.25);
+      }
+    }
+    const sfx = new SoundEngine();
+
+    // Canvas roundRect polyfill
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        const radius = typeof r === 'number' ? r : 4;
+        this.beginPath();
+        this.moveTo(x + radius, y);
+        this.lineTo(x + w - radius, y);
+        this.quadraticCurveTo(x + w, y, x + w, y + radius);
+        this.lineTo(x + w, y + h - radius);
+        this.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+        this.lineTo(x + radius, y + h);
+        this.quadraticCurveTo(x, y + h, x, y + h - radius);
+        this.lineTo(x + radius, y);
+        this.quadraticCurveTo(x, y, x + radius, y);
+        this.closePath();
+        return this;
+      };
+    }
+
+    const RESPEL_ITEMS = [
+      { name: "Filtro de Aceite Usado", isRespel: true, color: "#1E293B" },
+      { name: "Trapo Impregnado con Grasa", isRespel: true, color: "#78350F" },
+      { name: "Envase Vacío de Químico", isRespel: true, color: "#DC2626" },
+      { name: "Batería Usada Plomo-Ácido", isRespel: true, color: "#312E81" },
+      { name: "Tornillos Metálicos Limpios", isRespel: false, color: "#94A3B8" },
+      { name: "Lata de Aluminio de Bebida", isRespel: false, color: "#F59E0B" }
+    ];
+
+    class MecaGame {
+      constructor() {
+        this.score = 0;
+        this.phase = 'A';
+        this.equippedCount = 0;
+        this.canvas = document.getElementById('basketballCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.currentRespelIndex = 0;
+        this.dragStart = null;
+        this.ball = { x: 50, y: 150, vx: 0, vy: 0, isFlying: false };
+        this.bins = [];
+
+        this.quizQuestions = [
+          {
+            category: "Gestión de Residuos Peligrosos (Dec. 4741/2005)",
+            question: "Según el Decreto 4741 de 2005, ¿en qué caneca deben disponerse las estopas y trapos impregnados con aceite usado en el taller de KMA?",
+            options: [
+              "En la caneca verde de basura ordinaria",
+              "En la caneca roja rotulada de Residuos Peligrosos (RESPEL)",
+              "En la caneca blanca de reciclaje"
+            ],
+            correct: 1,
+            explanation: "Todo material impregnado de hidrocarburos es un residuo peligroso (RESPEL) y debe ir a la caneca roja con rotulado normativo."
+          },
+          {
+            category: "Protección Personal en Taller (Dec. 1072/2015)",
+            question: "¿Cuáles son los EPP obligatorios e indispensables para un mecánico al drenar aceite caliente o manipular solventes?",
+            options: [
+              "Guantes de nitrilo/neopreno, gafas de seguridad monogafa y peto resistente",
+              "Guantes de lana y zapatillas deportivas",
+              "Solo tapabocas de tela sencillo"
+            ],
+            correct: 0,
+            explanation: "El contacto dérmico u ocular con hidrocarburos y solventes exige guantes químicos de nitrilo y protección ocular hermética."
+          },
+          {
+            category: "Disposición Final y Trazabilidad RESPEL",
+            question: "¿Los filtros de aceite usados de la maquinaria pesada de KMA pueden desecharse con los escombros de la obra?",
+            options: [
+              "Sí, si se dejan escurrir 24 horas al sol",
+              "No, son RESPEL y deben almacenarse en zona techada y entregarse a un gestor ambiental autorizado",
+              "Solo si se trituran primero"
+            ],
+            correct: 1,
+            explanation: "Los filtros retienen hidrocarburos pesados y metales; su disposición requiere manifiesto de entrega a gestor con licencia ambiental."
+          }
+        ];
+        this.quizIndex = 0;
+        this.quizScore = 0;
+        this.quizCorrect = 0;
+
+        this.init();
+      }
+
+      init() {
+        this.setupPhaseA();
+        this.setupPhaseB();
+
+        document.getElementById('btnQuizNext').addEventListener('click', () => this.nextQuizQuestion());
+
+        document.getElementById('btnNextLevel').addEventListener('click', () => {
+          window.location.href = 'game5_slime_invasor.html';
+        });
+        document.getElementById('btnRetryLevel').addEventListener('click', () => {
+          window.location.reload();
+        });
+
+        const btnAudio = document.getElementById('btnAudio');
+        const audioIcon = document.getElementById('audioIcon');
+        btnAudio.addEventListener('click', () => {
+          sfx.init();
+          sfx.muted = !sfx.muted;
+          audioIcon.className = sfx.muted ? 'fa-solid fa-volume-xmark text-xs' : 'fa-solid fa-volume-high text-xs';
+        });
+      }
+
+      setupPhaseA() {
+        const buttons = document.querySelectorAll('.epp-btn');
+        buttons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const isCorrect = btn.dataset.correct === 'true';
+            const type = btn.dataset.type;
+
+            if (isCorrect) {
+              sfx.playTone(550, 'triangle', 0.1, 0.2);
+              btn.classList.add('border-emerald-500', 'bg-emerald-950/40');
+              btn.disabled = true;
+
+              if (type === 'gloves') {
+                document.getElementById('svgGloveL').setAttribute('fill', '#006738');
+                document.getElementById('svgGloveR').setAttribute('fill', '#006738');
+              } else if (type === 'goggles') {
+                document.getElementById('svgGoggles').classList.remove('hidden');
+              } else if (type === 'respirator') {
+                document.getElementById('svgMask').classList.remove('hidden');
+              }
+
+              this.score += 150;
+              document.getElementById('scoreVal').textContent = this.score;
+              this.equippedCount++;
+
+              if (this.equippedCount >= 3) {
+                document.getElementById('dressComicText').textContent = "¡EPP COMPLETO! ¡Ahora vamos a encestar los RESPEL!";
+                setTimeout(() => this.startPhaseB(), 1200);
+              }
+            } else {
+              sfx.playMiss();
+              document.getElementById('dressComicText').textContent = `"${btn.dataset.msg}"`;
+            }
+          });
+        });
+      }
+
+      startPhaseB() {
+        this.phase = 'B';
+        document.getElementById('phaseADiv').classList.add('hidden');
+        document.getElementById('phaseBDiv').classList.remove('hidden');
+        document.getElementById('stageBadge').textContent = 'FASE 2: RESPEL BASKETBALL';
+
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+
+        // Position 2 Bins: Red RESPEL (Left) and Yellow Recyclable (Right)
+        this.bins = [
+          { name: "ROJA RESPEL", isRespel: true, x: this.canvas.width * 0.44, y: this.canvas.height - 82, w: 68, h: 74, color: "#DC2626" },
+          { name: "AMARILLA", isRespel: false, x: this.canvas.width * 0.74, y: this.canvas.height - 82, w: 68, h: 74, color: "#D97706" }
+        ];
+
+        this.resetBall();
+        this.updateCurrentRespelUI();
+        requestAnimationFrame(this.animate.bind(this));
+      }
+
+      resetBall() {
+        this.ball.x = 40;
+        this.ball.y = this.canvas.height - 40;
+        this.ball.vx = 0;
+        this.ball.vy = 0;
+        this.ball.isFlying = false;
+      }
+
+      updateCurrentRespelUI() {
+        const item = RESPEL_ITEMS[this.currentRespelIndex];
+        if (item) {
+          document.getElementById('currentRespelName').textContent = item.name;
+        }
+      }
+
+      setupPhaseB() {
+        const handleDown = (clientX, clientY) => {
+          if (this.phase !== 'B' || this.ball.isFlying) return;
+          const rect = this.canvas.getBoundingClientRect();
+          this.dragStart = { x: clientX - rect.left, y: clientY - rect.top };
+          this.dragCurrent = { ...this.dragStart };
+        };
+
+        const handleMove = (clientX, clientY) => {
+          if (!this.dragStart || this.ball.isFlying) return;
+          const rect = this.canvas.getBoundingClientRect();
+          this.dragCurrent = { x: clientX - rect.left, y: clientY - rect.top };
+        };
+
+        const handleUp = (clientX, clientY) => {
+          if (!this.dragStart || this.ball.isFlying) return;
+          const rect = this.canvas.getBoundingClientRect();
+          const current = { x: clientX - rect.left, y: clientY - rect.top };
+          const dx = this.dragStart.x - current.x;
+          const dy = this.dragStart.y - current.y;
+
+          // Launch ball
+          this.ball.vx = dx * 0.14;
+          this.ball.vy = dy * 0.14;
+          this.ball.isFlying = true;
+          this.ball.scored = false;
+          this.dragStart = null;
+          this.dragCurrent = null;
+          sfx.playTone(320, 'sine', 0.1, 0.15);
+        };
+
+        this.canvas.addEventListener('mousedown', (e) => handleDown(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+        window.addEventListener('mouseup', (e) => handleUp(e.clientX, e.clientY));
+
+        this.canvas.addEventListener('touchstart', (e) => {
+          if (e.cancelable) e.preventDefault();
+          handleDown(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: false });
+        this.canvas.addEventListener('touchmove', (e) => {
+          if (e.cancelable) e.preventDefault();
+          handleMove(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: false });
+        this.canvas.addEventListener('touchend', (e) => {
+          if (e.cancelable) e.preventDefault();
+          const t = e.changedTouches[0];
+          handleUp(t.clientX, t.clientY);
+        }, { passive: false });
+      }
+
+      checkBasket() {
+        const item = RESPEL_ITEMS[this.currentRespelIndex];
+        let scored = false;
+
+        this.bins.forEach(bin => {
+          if (this.ball.x >= bin.x - 10 && this.ball.x <= bin.x + bin.w + 10 &&
+              this.ball.y >= bin.y - 10 && this.ball.y <= bin.y + bin.h + 20) {
+            if (bin.isRespel === item.isRespel) {
+              sfx.playSwish();
+              this.score += 250;
+              document.getElementById('scoreVal').textContent = this.score;
+              scored = true;
+            } else {
+              sfx.playMiss();
+            }
+          }
+        });
+
+        if (!scored && !this.ball.scored) {
+          sfx.playMiss();
+        }
+
+        this.currentRespelIndex++;
+        if (this.currentRespelIndex >= RESPEL_ITEMS.length) {
+          this.endGame();
+        } else {
+          this.resetBall();
+          this.updateCurrentRespelUI();
+        }
+      }
+
+      saveProgress(stars, score) {
+        try {
+          const raw = localStorage.getItem('sb_solprosig_arcade_state') || localStorage.getItem('sb_kma_arcade_state');
+          let state;
+          if (raw) {
+            state = JSON.parse(raw);
+          } else {
+            state = {
+              player: { name: 'Lucho el Operario', avatar: '👷', totalScore: 0, totalStars: 0, xp: 200, level: 1 },
+              levels: {
+                "1": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "2": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "3": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "4": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "5": { unlocked: false, stars: 0, highScore: 0, completed: false }
+              },
+              medals: [
+                { id: "sga_master", unlocked: false, title: "Guardián SGA" },
+                { id: "storage_hero", unlocked: false, title: "Maestro Bodega" },
+                { id: "static_zero", unlocked: false, title: "Cero Chispa" },
+                { id: "respel_pro", unlocked: false, title: "Defensor RESPEL" },
+                { id: "spill_commander", unlocked: false, title: "Líder Antiderrame" }
+              ]
+            };
+          }
+          const lvl = state.levels["4"];
+          if (lvl) {
+            lvl.stars = Math.max(lvl.stars || 0, stars);
+            lvl.highScore = Math.max(lvl.highScore || 0, score);
+            if (stars > 0) lvl.completed = true;
+          }
+          if (stars > 0 && state.levels["5"]) {
+            state.levels["5"].unlocked = true;
+          }
+          let totalStars = 0;
+          let totalScore = 0;
+          Object.values(state.levels).forEach(l => {
+            totalStars += l.stars || 0;
+            totalScore += l.highScore || 0;
+          });
+          state.player.totalStars = totalStars;
+          state.player.totalScore = totalScore;
+          if (lvl && lvl.completed && state.medals && state.medals[3]) {
+            state.medals[3].unlocked = true;
+          }
+          localStorage.setItem('sb_solprosig_arcade_state', JSON.stringify(state));
+          localStorage.setItem('sb_kma_arcade_state', JSON.stringify(state));
+        } catch(e) {
+          console.error("Error saving state", e);
+        }
+      }
+
+      endGame() {
+        sfx.playSuccess();
+        this.startQuiz();
+      }
+
+      startQuiz() {
+        this.quizIndex = 0;
+        this.quizScore = 0;
+        this.quizCorrect = 0;
+        document.getElementById('quizModal').classList.remove('hidden');
+        this.renderQuizQuestion();
+      }
+
+      renderQuizQuestion() {
+        const q = this.quizQuestions[this.quizIndex];
+        document.getElementById('quizProgressBadge').textContent = `${this.quizIndex + 1} / ${this.quizQuestions.length}`;
+        document.getElementById('quizCategoryLabel').textContent = q.category;
+        document.getElementById('quizQuestionText').textContent = q.question;
+
+        const container = document.getElementById('quizOptionsContainer');
+        container.innerHTML = '';
+        const feedbackBox = document.getElementById('quizFeedbackBox');
+        feedbackBox.className = 'hidden p-2.5 rounded-xl text-xs font-medium border leading-snug';
+        feedbackBox.textContent = '';
+        document.getElementById('btnQuizNext').classList.add('hidden');
+
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'w-full text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 active:scale-[0.98] transition-all text-xs font-semibold text-slate-800 flex items-start space-x-2';
+          btn.innerHTML = `<span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-black flex-shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span><span class="flex-1">${opt}</span>`;
+          btn.addEventListener('click', () => this.handleQuizAnswer(idx, btn));
+          container.appendChild(btn);
+        });
+      }
+
+      handleQuizAnswer(selectedIdx, clickedBtn) {
+        const q = this.quizQuestions[this.quizIndex];
+        const container = document.getElementById('quizOptionsContainer');
+        const buttons = container.querySelectorAll('button');
+        buttons.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('quizFeedbackBox');
+        feedbackBox.classList.remove('hidden');
+
+        if (selectedIdx === q.correct) {
+          sfx.playSuccess();
+          this.quizScore += 100;
+          this.quizCorrect++;
+          clickedBtn.className = 'w-full text-left p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 transition-all text-xs font-bold flex items-start space-x-2';
+          feedbackBox.className = 'p-2.5 rounded-xl text-xs font-semibold border border-emerald-300 bg-emerald-50 text-emerald-900 leading-snug';
+          feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> <strong>¡Correcto!</strong> ${q.explanation}`;
+        } else {
+          sfx.playMiss();
+          clickedBtn.className = 'w-full text-left p-2.5 rounded-xl border-2 border-red-500 bg-red-50 text-red-900 transition-all text-xs font-bold flex items-start space-x-2';
+          if (buttons[q.correct]) {
+            buttons[q.correct].className = 'w-full text-left p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 transition-all text-xs font-bold flex items-start space-x-2';
+          }
+          feedbackBox.className = 'p-2.5 rounded-xl text-xs font-semibold border border-red-300 bg-red-50 text-red-900 leading-snug';
+          feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-600 mr-1"></i> <strong>Atención:</strong> ${q.explanation}`;
+        }
+
+        const nextBtn = document.getElementById('btnQuizNext');
+        nextBtn.classList.remove('hidden');
+        if (this.quizIndex + 1 >= this.quizQuestions.length) {
+          nextBtn.innerHTML = 'Ver Puntuación Final <i class="fa-solid fa-trophy ml-1"></i>';
+        } else {
+          nextBtn.innerHTML = 'Siguiente Pregunta <i class="fa-solid fa-arrow-right ml-1"></i>';
+        }
+      }
+
+      nextQuizQuestion() {
+        this.quizIndex++;
+        if (this.quizIndex < this.quizQuestions.length) {
+          this.renderQuizQuestion();
+        } else {
+          document.getElementById('quizModal').classList.add('hidden');
+          this.showFinalResults();
+        }
+      }
+
+      showFinalResults() {
+        const stars = this.quizCorrect >= 2 ? 3 : (this.quizCorrect >= 1 ? 2 : 1);
+        const totalFinalScore = this.score + this.quizScore;
+        this.saveProgress(stars, totalFinalScore);
+
+        const modal = document.getElementById('resultsModal');
+        const gameScoreText = document.getElementById('resultGameScore');
+        const quizScoreText = document.getElementById('resultQuizScore');
+        const finalScoreText = document.getElementById('resultScore');
+
+        if (gameScoreText) gameScoreText.textContent = `${this.score} Pts`;
+        if (quizScoreText) quizScoreText.textContent = `+${this.quizScore} Pts (${this.quizCorrect}/${this.quizQuestions.length})`;
+        finalScoreText.textContent = `${totalFinalScore} Pts`;
+
+        const starsBox = document.getElementById('resultStars');
+        starsBox.innerHTML = '';
+        for (let s = 1; s <= 3; s++) {
+          starsBox.innerHTML += s <= stars 
+            ? '<i class="fa-solid fa-star text-bolivar-gold drop-shadow-md"></i>' 
+            : '<i class="fa-regular fa-star text-slate-300"></i>';
+        }
+
+        modal.classList.remove('hidden');
+      }
+
+      animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw Bins con Rótulos Oficiales de Residuos (Dec. 4741/2005)
+        this.bins.forEach(bin => {
+          this.ctx.save();
+
+          // 1. Bin Canister Body (Tapered industrial caneca con base reforzada)
+          this.ctx.fillStyle = bin.isRespel ? '#B91C1C' : '#D97706';
+          this.ctx.beginPath();
+          this.ctx.roundRect(bin.x, bin.y + 10, bin.w, bin.h - 10, [0, 0, 8, 8]);
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#FFFFFF';
+          this.ctx.lineWidth = 1.5;
+          this.ctx.stroke();
+
+          // Bin Ribs / Mold lines
+          this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+          this.ctx.lineWidth = 2;
+          this.ctx.beginPath();
+          this.ctx.moveTo(bin.x + 4, bin.y + 26);
+          this.ctx.lineTo(bin.x + bin.w - 4, bin.y + 26);
+          this.ctx.moveTo(bin.x + 4, bin.y + bin.h - 12);
+          this.ctx.lineTo(bin.x + bin.w - 4, bin.y + bin.h - 12);
+          this.ctx.stroke();
+
+          // Bin Top Rim & Mouth (Apertura superior vaivén)
+          this.ctx.fillStyle = bin.isRespel ? '#7F1D1D' : '#92400E';
+          this.ctx.beginPath();
+          this.ctx.roundRect(bin.x - 2, bin.y, bin.w + 4, 12, 4);
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#F8FAFC';
+          this.ctx.lineWidth = 1;
+          this.ctx.stroke();
+
+          // Interior mouth dark shadow
+          this.ctx.fillStyle = '#0F172A';
+          this.ctx.beginPath();
+          this.ctx.ellipse(bin.x + bin.w / 2, bin.y + 6, bin.w / 2 - 4, 4, 0, 0, Math.PI * 2);
+          this.ctx.fill();
+
+          // Foot Pedal at bottom base
+          this.ctx.fillStyle = '#334155';
+          this.ctx.fillRect(bin.x + bin.w / 2 - 8, bin.y + bin.h - 2, 16, 4);
+
+          // 2. Official Regulatory Label Plate
+          const lblW = 46;
+          const lblH = 34;
+          const lblX = bin.x + (bin.w - lblW) / 2;
+          const lblY = bin.y + 20;
+
+          this.ctx.fillStyle = '#FFFFFF';
+          this.ctx.beginPath();
+          this.ctx.roundRect(lblX, lblY, lblW, lblH, 3);
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#1E293B';
+          this.ctx.lineWidth = 1;
+          this.ctx.stroke();
+
+          if (bin.isRespel) {
+            // ETIQUETA OFICIAL RESPEL (Decreto 4741 de 2005)
+            // Top Yellow Hazard Header Band
+            this.ctx.fillStyle = '#FACC15';
+            this.ctx.beginPath();
+            this.ctx.roundRect(lblX, lblY, lblW, 8, [3, 3, 0, 0]);
+            this.ctx.fill();
+            this.ctx.fillStyle = '#000000';
+            this.ctx.font = '900 5.5px sans-serif';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('⚠ RESPEL PELIGROSO', lblX + lblW / 2, lblY + 6);
+
+            // Mini UN Hazard Diamond (Inflamable / Tóxico)
+            this.ctx.save();
+            this.ctx.translate(lblX + 11, lblY + 18);
+            this.ctx.rotate(Math.PI / 4);
+            this.ctx.fillStyle = '#FFFFFF';
+            this.ctx.fillRect(-5, -5, 10, 10);
+            this.ctx.strokeStyle = '#DC2626';
+            this.ctx.lineWidth = 1.2;
+            this.ctx.strokeRect(-5, -5, 10, 10);
+            this.ctx.rotate(-Math.PI / 4);
+            this.ctx.fillStyle = '#000000';
+            this.ctx.beginPath();
+            this.ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.restore();
+
+            // Legal text lines
+            this.ctx.fillStyle = '#0F172A';
+            this.ctx.font = 'bold 5px sans-serif';
+            this.ctx.textAlign = 'left';
+            this.ctx.fillText('DEC. 4741/05', lblX + 19, lblY + 16);
+            this.ctx.fillStyle = '#DC2626';
+            this.ctx.font = '900 4.5px sans-serif';
+            this.ctx.fillText('KMA OBRA', lblX + 19, lblY + 22);
+
+            this.ctx.fillStyle = '#64748B';
+            this.ctx.font = 'bold 4px sans-serif';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('SOLO RESIDUOS TOXICOS', lblX + lblW / 2, lblY + 30);
+          } else {
+            // ETIQUETA DE RECICLAJE (No Peligroso)
+            this.ctx.fillStyle = '#10B981';
+            this.ctx.beginPath();
+            this.ctx.roundRect(lblX, lblY, lblW, 8, [3, 3, 0, 0]);
+            this.ctx.fill();
+            this.ctx.fillStyle = '#FFFFFF';
+            this.ctx.font = '900 5.5px sans-serif';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('♻ RECICLABLES', lblX + lblW / 2, lblY + 6);
+
+            // Universal 3-arrow Möbius loop symbol
+            this.ctx.fillStyle = '#059669';
+            this.ctx.font = 'bold 12px sans-serif';
+            this.ctx.fillText('♻', lblX + lblW / 2, lblY + 22);
+
+            this.ctx.fillStyle = '#0F172A';
+            this.ctx.font = 'bold 4.5px sans-serif';
+            this.ctx.fillText('METALES / PLÁSTICOS', lblX + lblW / 2, lblY + 30);
+          }
+
+          this.ctx.restore();
+        });
+
+        // Draw Slingshot aim and trajectory prediction dots
+        if (this.dragStart && this.dragCurrent && !this.ball.isFlying) {
+          const dx = this.dragStart.x - this.dragCurrent.x;
+          const dy = this.dragStart.y - this.dragCurrent.y;
+
+          // Aiming cord
+          this.ctx.beginPath();
+          this.ctx.moveTo(this.ball.x, this.ball.y);
+          this.ctx.lineTo(this.ball.x - dx, this.ball.y - dy);
+          this.ctx.strokeStyle = '#EF4444';
+          this.ctx.lineWidth = 3;
+          this.ctx.stroke();
+
+          // Dotted trajectory arc
+          let simX = this.ball.x;
+          let simY = this.ball.y;
+          let simVx = dx * 0.14;
+          let simVy = dy * 0.14;
+          this.ctx.fillStyle = '#FFC72C';
+          for (let step = 0; step < 16; step++) {
+            simX += simVx;
+            simY += simVy;
+            simVy += 0.35;
+            this.ctx.beginPath();
+            this.ctx.arc(simX, simY, 2.5, 0, Math.PI * 2);
+            this.ctx.fill();
+          }
+        }
+
+        // Update Ball
+        if (this.ball.isFlying) {
+          this.ball.x += this.ball.vx;
+          this.ball.y += this.ball.vy;
+          this.ball.vy += 0.35; // Gravity
+
+          // In-flight hoop detection
+          const item = RESPEL_ITEMS[this.currentRespelIndex];
+          this.bins.forEach(bin => {
+            if (!this.ball.scored &&
+                this.ball.x >= bin.x && this.ball.x <= bin.x + bin.w &&
+                this.ball.y >= bin.y && this.ball.y <= bin.y + bin.h) {
+              this.ball.scored = true;
+              if (bin.isRespel === item.isRespel) {
+                sfx.playSwish();
+                this.score += 250;
+                document.getElementById('scoreVal').textContent = this.score;
+              }
+            }
+          });
+
+          if (this.ball.y > this.canvas.height - 15) {
+            this.checkBasket();
+          }
+        }
+
+        // Draw Ball / Debris
+        const currentItem = RESPEL_ITEMS[this.currentRespelIndex] || { color: '#FFC72C' };
+        this.ctx.fillStyle = currentItem.color;
+        this.ctx.beginPath();
+        this.ctx.arc(this.ball.x, this.ball.y, 11, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#FFFFFF';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+
+        // --- FIRST PERSON POV BASKETBALL SHOOTER HANDS ---
+        this.drawFirstPersonShooterHands();
+
+        requestAnimationFrame(this.animate.bind(this));
+      }
+
+      drawFirstPersonShooterHands() {
+        this.ctx.save();
+
+        let handX = this.ball.x;
+        let handY = this.ball.y;
+
+        if (this.dragStart && this.dragCurrent && !this.ball.isFlying) {
+          const dx = this.dragStart.x - this.dragCurrent.x;
+          const dy = this.dragStart.y - this.dragCurrent.y;
+          handX = this.ball.x - dx * 0.4;
+          handY = this.ball.y - dy * 0.4;
+        } else if (this.ball.isFlying) {
+          // Resting at launch origin
+          handX = 40;
+          handY = this.canvas.height - 40;
+        }
+
+        const armOriginY = this.canvas.height + 40;
+
+        // 1. Left Support Arm & Hand (High-Vis Sleeve + Blue/Nitrile Mechanic Glove)
+        this.ctx.beginPath();
+        this.ctx.moveTo(10, armOriginY);
+        this.ctx.lineTo(40, armOriginY);
+        this.ctx.lineTo(handX - 8, handY + 28);
+        this.ctx.lineTo(handX - 35, handY + 28);
+        this.ctx.closePath();
+        this.ctx.fillStyle = '#1E3A8A'; // Mechanic Navy Overol
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#0F172A';
+        this.ctx.lineWidth = 2.5;
+        this.ctx.stroke();
+
+        // Left Glove Palm
+        this.ctx.fillStyle = '#006738'; // Nitrile Glove
+        this.ctx.beginPath();
+        this.ctx.ellipse(handX - 16, handY + 12, 14, 16, -0.3, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#FFFFFF';
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke();
+
+        // 2. Right Shooting Hand (Main Power Hand underneath the waste)
+        this.ctx.beginPath();
+        this.ctx.moveTo(handX + 15, armOriginY);
+        this.ctx.lineTo(handX + 55, armOriginY);
+        this.ctx.lineTo(handX + 28, handY + 30);
+        this.ctx.lineTo(handX - 2, handY + 30);
+        this.ctx.closePath();
+        this.ctx.fillStyle = '#1E3A8A';
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // Right Glove Palm
+        this.ctx.fillStyle = '#008244';
+        this.ctx.beginPath();
+        this.ctx.ellipse(handX + 12, handY + 14, 16, 18, 0.2, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // Curled fingers cradling the waste object
+        for (let i = 0; i < 4; i++) {
+          this.ctx.fillStyle = '#006738';
+          this.ctx.beginPath();
+          this.ctx.roundRect(handX - 4 + (i * 7), handY + 2, 6, 14, 3);
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#FFC72C';
+          this.ctx.lineWidth = 1;
+          this.ctx.stroke();
+        }
+
+        this.ctx.restore();
+      }
+    }
+
+    let mecaGame;
+    document.addEventListener('DOMContentLoaded', () => {
+      mecaGame = new MecaGame();
+    });
+  </script>
+</body>
+</html>

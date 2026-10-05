@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Siggy - Mascota Oficial 2D | KMA Construcciones • Asesoría Solprosig & Seguros Bolívar</title>
+
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bolivar: {
+              DEFAULT: '#006738',
+              light: '#008244',
+              gold: '#FFC72C',
+              surface: '#F4F6F8',
+              slate: '#1E293B'
+            },
+            siggy: {
+              orange: '#D97026',
+              orangeDark: '#B85614',
+              orangeLight: '#E67E22',
+              cream: '#FDF3E3',
+              creamDark: '#F3DEBA',
+              blue: '#89C4E8',
+              blueDark: '#599ECB',
+              pants: '#4A5568',
+              shoes: '#4B6B94'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome v6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* --- ANIMACIONES CSS DE SIGGY --- */
+    @keyframes siggyBreathe {
+      0%, 100% { transform: translateY(0) scaleY(1); }
+      50% { transform: translateY(-4px) scaleY(1.015); }
+    }
+
+    @keyframes siggyTailSway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(4deg) translateY(-2px); }
+    }
+
+    @keyframes siggyEarTwitchL {
+      0%, 90%, 100% { transform: rotate(0deg); }
+      92% { transform: rotate(-5deg); }
+      96% { transform: rotate(4deg); }
+    }
+
+    @keyframes siggyEarTwitchR {
+      0%, 88%, 100% { transform: rotate(0deg); }
+      90% { transform: rotate(5deg); }
+      94% { transform: rotate(-4deg); }
+    }
+
+    @keyframes siggyBlink {
+      0%, 92%, 100% { transform: scaleY(1); }
+      94%, 96% { transform: scaleY(0.08); }
+    }
+
+    @keyframes siggyWave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(7deg) translateY(-3px); }
+      75% { transform: rotate(-5deg) translateY(2px); }
+    }
+
+    @keyframes siggyTalk {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(1.35) translateY(2px); }
+    }
+
+    @keyframes siggyCelebrate {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-16px) rotate(-3deg); }
+      75% { transform: translateY(-12px) rotate(3deg); }
+    }
+
+    @keyframes siggyScared {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-3px, 2px); }
+      40% { transform: translate(3px, -2px); }
+      60% { transform: translate(-3px, -2px); }
+      80% { transform: translate(3px, 2px); }
+    }
+
+    /* Clases de Estado */
+    .siggy-breathing { animation: siggyBreathe 3.2s ease-in-out infinite; transform-origin: bottom center; }
+    .siggy-tail-anim { animation: siggyTailSway 3.6s ease-in-out infinite; transform-origin: 190px 380px; }
+    .siggy-ear-l { animation: siggyEarTwitchL 4.5s ease-in-out infinite; transform-origin: 165px 120px; }
+    .siggy-ear-r { animation: siggyEarTwitchR 4.2s ease-in-out infinite; transform-origin: 310px 125px; }
+    .siggy-eyelids { animation: siggyBlink 4s ease-in-out infinite; transform-origin: center 215px; }
+    .siggy-wave-arm { animation: siggyWave 1.8s ease-in-out infinite; transform-origin: 185px 285px; }
+    
+    .siggy-talking #mouthOpening { animation: siggyTalk 0.28s ease-in-out infinite alternate; transform-origin: 242px 285px; }
+    .siggy-jumping { animation: siggyCelebrate 0.6s ease-in-out infinite; }
+    .siggy-fear { animation: siggyScared 0.15s ease-in-out infinite; }
+
+    .comic-bubble-siggy {
+      position: relative;
+      background: #ffffff;
+      border: 3px solid #1E293B;
+      border-radius: 1.5rem;
+    }
+    .comic-bubble-siggy::after {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 36px;
+      border-width: 14px 12px 0 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+      width: 0;
+    }
+    .comic-bubble-siggy::before {
+      content: '';
+      position: absolute;
+      bottom: -18px;
+      left: 34px;
+      border-width: 17px 15px 0 0;
+      border-style: solid;
+      border-color: #1E293B transparent;
+      display: block;
+      width: 0;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans select-none pb-12">
+
+  <!-- TOP HEADER -->
+  <header class="bg-bolivar/95 backdrop-blur-md px-4 py-3 border-b-2 border-bolivar-gold shadow-lg sticky top-0 z-40">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="index.html" class="w-10 h-10 rounded-xl bg-bolivar-light flex items-center justify-center text-white hover:bg-bolivar active:scale-95 transition-all shadow">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <!-- Emblema Oficial S Solprosig -->
+        <div class="w-10 h-10 rounded-xl bg-white p-1.5 flex items-center justify-center shadow-md flex-shrink-0" title="Solprosig">
+          <svg viewBox="0 0 786 983" class="w-full h-full max-h-full max-w-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+            <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+            <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+            <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+            <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xs uppercase tracking-widest text-bolivar-gold font-bold">Mascota Institucional</h1>
+          <p class="text-sm font-black text-white leading-tight">Siggy: Modelo Fiel 2D Animado</p>
+        </div>
+      </div>
+      <span class="text-[10px] bg-bolivar-gold text-slate-900 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+        Vector 2D
+      </span>
+    </div>
+  </header>
+
+  <!-- MAIN SHOWCASE CONTAINER -->
+  <main class="max-w-md mx-auto w-full px-4 flex-1 flex flex-col items-center mt-3 space-y-4">
+
+    <!-- DIALOG BOX -->
+    <div class="w-full comic-bubble-siggy p-3.5 shadow-2xl text-slate-800">
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-xs font-black uppercase text-bolivar flex items-center">
+          <i class="fa-solid fa-paw mr-1.5 text-bolivar-gold"></i> Siggy te dice:
+        </span>
+        <span id="stateBadge" class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full uppercase">
+          Estado: Saludo
+        </span>
+      </div>
+      <p id="siggyDialogue" class="text-xs font-semibold text-slate-700 leading-snug">
+        "¡Hola, equipo de KMA Construcciones y Seguros Bolívar! ¡Soy Siggy! Con la asesoría de Solprosig, estoy aquí para acompañarte en toda la obra y recordarte las normas de seguridad química."
+      </p>
+    </div>
+
+    <!-- SIGGY CHARACTER 2D STAGE -->
+    <div class="relative w-full max-w-sm aspect-[4/5] bg-gradient-to-b from-slate-800/80 to-slate-950 rounded-3xl p-4 shadow-2xl border-2 border-slate-700 flex items-center justify-center overflow-hidden">
+      
+      <!-- Stage spotlight / ground shadow -->
+      <div class="absolute bottom-4 w-48 h-8 bg-black/40 rounded-full blur-md"></div>
+      
+      <!-- SIGGY SVG RIG (FIDELIDAD TOTAL AL DISEÑO 3D) -->
+      <div id="siggyStage" class="relative w-full h-full flex items-center justify-center siggy-breathing">
+        <svg id="siggySvg" viewBox="0 0 480 620" class="w-full h-full drop-shadow-2xl overflow-visible">
+          <defs>
+            <!-- Gradientes de Pelaje -->
+            <radialGradient id="furGradient" cx="50%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#E67E22" />
+              <stop offset="60%" stop-color="#D97026" />
+              <stop offset="100%" stop-color="#B85614" />
+            </radialGradient>
+
+            <linearGradient id="tailGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#E67E22" />
+              <stop offset="45%" stop-color="#D97026" />
+              <stop offset="85%" stop-color="#B85614" />
+              <stop offset="100%" stop-color="#8F3E0B" />
+            </linearGradient>
+
+            <linearGradient id="tailRimGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FDF3E3" />
+              <stop offset="100%" stop-color="#F3DEBA" />
+            </linearGradient>
+
+            <radialGradient id="creamMuzzle" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#FFFFFF" />
+              <stop offset="55%" stop-color="#FDF3E3" />
+              <stop offset="100%" stop-color="#EED8B6" />
+            </radialGradient>
+
+            <linearGradient id="earInner" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FAD2B5" />
+              <stop offset="100%" stop-color="#EFA884" />
+            </linearGradient>
+
+            <!-- Gradiente de Polo Azul Celeste -->
+            <linearGradient id="shirtGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#A2D2EE" />
+              <stop offset="50%" stop-color="#89C4E8" />
+              <stop offset="100%" stop-color="#6FAED5" />
+            </linearGradient>
+
+            <linearGradient id="collarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#B6DEFA" />
+              <stop offset="100%" stop-color="#89C4E8" />
+            </linearGradient>
+
+            <!-- Gradiente Pantalón Gris Pizarra -->
+            <linearGradient id="pantsGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#5A6678" />
+              <stop offset="60%" stop-color="#4A5568" />
+              <stop offset="100%" stop-color="#333C48" />
+            </linearGradient>
+
+            <!-- Gradiente Zapatillas -->
+            <linearGradient id="shoesGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#5E7EA6" />
+              <stop offset="100%" stop-color="#3B577D" />
+            </linearGradient>
+
+            <!-- Ojos Realistas con Reflejo 3D -->
+            <radialGradient id="eyeGradient" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#3D2012" />
+              <stop offset="70%" stop-color="#1F1008" />
+              <stop offset="100%" stop-color="#0A0502" />
+            </radialGradient>
+          </defs>
+
+          <!-- 1. COLA DE ARDILLA GIGANTE (FONDO IZQUIERDO) -->
+          <g id="siggyTailGroup" class="siggy-tail-anim">
+            <!-- Capa externa / borde crema de la cola -->
+            <path d="M 195 440 C 120 460 70 380 75 280 C 80 180 125 110 185 105 C 220 102 235 125 210 160 C 185 195 145 250 145 320 C 145 375 165 410 195 440 Z"
+                  fill="url(#tailRimGradient)" stroke="#EED8B6" stroke-width="2" />
+            <!-- Cuerpo naranja exuberante de la cola -->
+            <path d="M 185 435 C 130 445 92 375 96 285 C 100 195 138 125 188 120 C 215 118 222 135 202 165 C 178 200 152 260 155 325 C 158 375 170 410 185 435 Z"
+                  fill="url(#tailGradient)" />
+          </g>
+
+          <!-- 2. PIERNAS Y PANTALONES GRISES -->
+          <g id="siggyPantsGroup">
+            <!-- Pierna Izquierda -->
+            <path d="M 175 410 L 165 470 C 165 480 205 480 205 470 L 210 415 Z" fill="url(#pantsGradient)" stroke="#2D3748" stroke-width="2" />
+            <!-- Pierna Derecha -->
+            <path d="M 270 415 L 275 470 C 275 480 315 480 315 470 L 305 410 Z" fill="url(#pantsGradient)" stroke="#2D3748" stroke-width="2" />
+            <!-- Tiro central de pantalón -->
+            <path d="M 205 425 C 235 445 245 445 275 425 L 270 410 L 210 410 Z" fill="#3E4756" />
+          </g>
+
+          <!-- 3. ZAPATILLAS DEPORTIVAS (AZUL + PUNTERA Y SUELA BLANCA) -->
+          <g id="siggyShoesGroup">
+            <!-- Zapatilla Izquierda -->
+            <g id="shoeLeft">
+              <!-- Suela de goma blanca -->
+              <ellipse cx="185" cy="505" rx="36" ry="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2" />
+              <ellipse cx="185" cy="508" rx="36" ry="6" fill="#94A3B8" />
+              <!-- Empeine azul -->
+              <path d="M 152 498 C 152 475 175 465 195 468 C 212 470 218 485 218 500 Z" fill="url(#shoesGradient)" stroke="#2D3748" stroke-width="2" />
+              <!-- Puntera redonda blanca icónica -->
+              <ellipse cx="168" cy="498" rx="16" ry="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+              <!-- Cordones Celestes Brillantes -->
+              <line x1="185" y1="476" x2="200" y2="480" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+              <line x1="184" y1="483" x2="201" y2="487" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+            </g>
+
+            <!-- Zapatilla Derecha -->
+            <g id="shoeRight">
+              <!-- Suela de goma blanca -->
+              <ellipse cx="295" cy="505" rx="36" ry="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2" />
+              <ellipse cx="295" cy="508" rx="36" ry="6" fill="#94A3B8" />
+              <!-- Empeine azul -->
+              <path d="M 262 500 C 262 485 268 470 285 468 C 305 465 328 475 328 498 Z" fill="url(#shoesGradient)" stroke="#2D3748" stroke-width="2" />
+              <!-- Puntera redonda blanca icónica -->
+              <ellipse cx="312" cy="498" rx="16" ry="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+              <!-- Cordones Celestes Brillantes -->
+              <line x1="280" y1="480" x2="295" y2="476" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+              <line x1="279" y1="487" x2="296" y2="483" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+            </g>
+          </g>
+
+          <!-- 4. BRAZO IZQUIERDO (EN REPOSO AL COSTADO) -->
+          <g id="siggyLeftArm">
+            <!-- Manga Celeste Izquierda -->
+            <path d="M 315 295 L 348 315 L 332 355 L 298 335 Z" fill="url(#shirtGradient)" stroke="#599ECB" stroke-width="2" />
+            <!-- Brazo y mano de pelaje naranja -->
+            <path d="M 330 348 C 345 370 350 405 342 430 C 338 440 330 445 325 435 C 322 425 326 395 315 375 L 305 340 Z"
+                  fill="url(#furGradient)" stroke="#B85614" stroke-width="2" />
+            <!-- Dedos pata izquierda -->
+            <circle cx="328" cy="436" r="5" fill="#E67E22" />
+            <circle cx="335" cy="438" r="5" fill="#E67E22" />
+          </g>
+
+          <!-- 5. TORSO Y POLO CELESTE INSTITUCIONAL -->
+          <g id="siggyTorsoGroup">
+            <!-- Cinturón de Cuero Marrón con Hebilla -->
+            <rect x="188" y="402" width="104" height="12" rx="3" fill="#6B3310" stroke="#3D1A04" stroke-width="1.5" />
+            <rect x="230" y="399" width="20" height="18" rx="3" fill="#E2E8F0" stroke="#64748B" stroke-width="2" />
+            <rect x="235" y="404" width="10" height="8" rx="1" fill="#475569" />
+
+            <!-- Torso / Camisa Polo Celeste -->
+            <path d="M 180 290 Q 240 280 300 290 L 312 405 C 312 410 168 410 168 405 Z" fill="url(#shirtGradient)" stroke="#599ECB" stroke-width="2.5" />
+
+            <!-- Tapeta central con botones -->
+            <path d="M 235 285 L 245 285 L 243 405 L 237 405 Z" fill="#6FAED5" opacity="0.6" />
+            <!-- Botones blancos (3 botones como el modelo 3D) -->
+            <circle cx="240" cy="318" r="3.5" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+            <circle cx="240" cy="348" r="3.5" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+            <circle cx="240" cy="378" r="3.5" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+
+            <!-- Cuello tipo Polo abierto -->
+            <!-- Cuello solapa izquierda -->
+            <path d="M 205 280 L 238 315 L 238 290 L 218 275 Z" fill="url(#collarGradient)" stroke="#599ECB" stroke-width="2" />
+            <!-- Cuello solapa derecha -->
+            <path d="M 275 280 L 242 315 L 242 290 L 262 275 Z" fill="url(#collarGradient)" stroke="#599ECB" stroke-width="2" />
+
+            <!-- LOGO / EMBLEMA "S" OFICIAL EN EL PECHO (LADO DERECHO DEL ESPECTADOR / IZQUIERDO DE SIGGY) -->
+            <g id="siggyChestBadge" transform="translate(268, 308)">
+              <!-- Base circular bordada de contraste -->
+              <circle cx="14" cy="16" r="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+              <!-- Logotipo S Solprosig Oficial (Gris #878786 y Cyan #0080A8) -->
+              <svg x="4" y="4" width="20" height="24" viewBox="0 0 786 983" class="overflow-visible">
+                <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+                <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+                <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+                <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+                <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+              </svg>
+            </g>
+          </g>
+
+          <!-- 6. BRAZO DERECHO EXTENDIDO / SALUDANDO (ANIMADO) -->
+          <g id="siggyRightArm" class="siggy-wave-arm">
+            <!-- Manga Celeste Derecha -->
+            <path d="M 175 295 L 140 315 L 155 352 L 190 330 Z" fill="url(#shirtGradient)" stroke="#599ECB" stroke-width="2" />
+            <!-- Antebrazo extendido hacia el espectador con perspectiva 3D -->
+            <path d="M 150 338 C 130 350 100 355 85 340 C 75 330 85 305 105 295 C 125 285 145 305 155 320 Z"
+                  fill="url(#furGradient)" stroke="#B85614" stroke-width="2" />
+            <!-- Mano abierta y palma acogedora -->
+            <ellipse cx="90" cy="325" rx="20" ry="22" fill="#E67E22" stroke="#B85614" stroke-width="1.5" />
+            <!-- Almohadilla de la palma suave -->
+            <ellipse cx="92" cy="326" rx="13" ry="14" fill="#F5A05B" opacity="0.6" />
+            <!-- 4 Dedos regordetes de ardilla -->
+            <circle cx="70" cy="315" r="7.5" fill="#E67E22" stroke="#B85614" stroke-width="1" />
+            <circle cx="72" cy="300" r="7.5" fill="#E67E22" stroke="#B85614" stroke-width="1" />
+            <circle cx="82" cy="290" r="7.5" fill="#E67E22" stroke="#B85614" stroke-width="1" />
+            <circle cx="98" cy="288" r="7" fill="#E67E22" stroke="#B85614" stroke-width="1" />
+          </g>
+
+          <!-- 7. OREJAS CON MOVIMIENTO REACTIVO -->
+          <!-- Oreja Izquierda -->
+          <g id="siggyEarLeft" class="siggy-ear-l">
+            <path d="M 165 145 C 145 85 175 40 198 65 C 215 85 210 135 190 155 Z" fill="url(#furGradient)" stroke="#B85614" stroke-width="2.5" />
+            <path d="M 175 135 C 162 95 182 65 194 80 C 205 95 200 130 185 142 Z" fill="url(#earInner)" />
+          </g>
+
+          <!-- Oreja Derecha -->
+          <g id="siggyEarRight" class="siggy-ear-r">
+            <path d="M 315 145 C 335 85 305 40 282 65 C 265 85 270 135 290 155 Z" fill="url(#furGradient)" stroke="#B85614" stroke-width="2.5" />
+            <path d="M 305 135 C 318 95 298 65 286 80 C 275 95 280 130 295 142 Z" fill="url(#earInner)" />
+          </g>
+
+          <!-- 8. CABEZA Y ROSTRO DE SIGGY -->
+          <g id="siggyHeadGroup">
+            <!-- Base redondeada de cabeza naranja -->
+            <path d="M 160 170 C 130 200 130 250 160 270 C 180 285 300 285 320 270 C 350 250 350 200 320 170 C 290 120 190 120 160 170 Z"
+                  fill="url(#furGradient)" stroke="#B85614" stroke-width="2.5" />
+
+            <!-- Mechón de pelaje en la coronilla (como en el render 3D) -->
+            <path d="M 230 122 C 235 105 245 102 248 112 C 252 105 260 108 258 122 Z" fill="#E67E22" stroke="#B85614" stroke-width="1.5" />
+
+            <!-- MEJILLAS RECHONCHAS Y HOCICO CREMA (GRAN VOLUMEN CARACTERÍSTICO) -->
+            <path d="M 155 240 C 130 250 135 305 185 315 C 215 320 225 310 240 305 C 255 310 265 320 295 315 C 345 305 350 250 325 240 C 305 230 295 250 240 250 C 185 250 175 230 155 240 Z"
+                  fill="url(#creamMuzzle)" stroke="#E8CFAC" stroke-width="2" />
+
+            <!-- Puntos de bigotes en mejillas -->
+            <circle cx="185" cy="275" r="1.8" fill="#A87A50" />
+            <circle cx="178" cy="282" r="1.8" fill="#A87A50" />
+            <circle cx="188" cy="288" r="1.8" fill="#A87A50" />
+            <circle cx="295" cy="275" r="1.8" fill="#A87A50" />
+            <circle cx="302" cy="282" r="1.8" fill="#A87A50" />
+            <circle cx="292" cy="288" r="1.8" fill="#A87A50" />
+
+            <!-- Bigotes sutiles -->
+            <path d="M 175 278 Q 140 275 125 285" stroke="#D1B18C" stroke-width="1.5" fill="none" stroke-linecap="round" />
+            <path d="M 175 285 Q 140 288 128 300" stroke="#D1B18C" stroke-width="1.5" fill="none" stroke-linecap="round" />
+            <path d="M 305 278 Q 340 275 355 285" stroke="#D1B18C" stroke-width="1.5" fill="none" stroke-linecap="round" />
+            <path d="M 305 285 Q 340 288 352 300" stroke="#D1B18C" stroke-width="1.5" fill="none" stroke-linecap="round" />
+
+            <!-- BOCA SONRIENTE Y DIENTES PALETOS (BUCK TEETH) -->
+            <!-- Interior de la boca -->
+            <path id="mouthOpening" d="M 215 280 Q 240 308 265 280 Z" fill="#881B24" stroke="#450A0A" stroke-width="2" />
+            <!-- Lengua rosa suave -->
+            <path d="M 228 296 Q 240 290 252 296 Q 240 308 228 296 Z" fill="#F472B6" />
+            <!-- Dos dientes paletos de ardilla cuadrados y prominentes -->
+            <g id="buckTeeth">
+              <rect x="233" y="278" width="7" height="9" rx="1.5" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+              <rect x="240" y="278" width="7" height="9" rx="1.5" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+              <!-- Línea divisoria central -->
+              <line x1="240" y1="278" x2="240" y2="287" stroke="#94A3B8" stroke-width="1" />
+            </g>
+            <!-- Línea labial superior del hocico -->
+            <path d="M 212 280 Q 240 290 268 280" stroke="#4A260F" stroke-width="2.5" fill="none" stroke-linecap="round" />
+
+            <!-- NARIZ DE BOTÓN COLOR CHOCOLATE OSCURO -->
+            <ellipse cx="240" cy="254" rx="12" ry="8.5" fill="#2E1C14" />
+            <ellipse cx="237" cy="252" rx="4" ry="2.5" fill="#FFFFFF" opacity="0.6" />
+
+            <!-- CEJAS MARRONES EXPRESIVAS -->
+            <path id="eyebrowL" d="M 180 182 Q 198 174 216 182" stroke="#8F3E0B" stroke-width="4.5" fill="none" stroke-linecap="round" />
+            <path id="eyebrowR" d="M 264 182 Q 282 174 300 182" stroke="#8F3E0B" stroke-width="4.5" fill="none" stroke-linecap="round" />
+
+            <!-- OJOS GRANDES EXPRESIVOS CON PESTAÑAS Y BRILLO 3D -->
+            <!-- Ojo Izquierdo -->
+            <g id="eyeLeftGroup" class="siggy-eyelids">
+              <ellipse cx="198" cy="214" rx="20" ry="24" fill="#FFFFFF" stroke="#6B3310" stroke-width="2" />
+              <!-- Iris y pupila profunda -->
+              <ellipse cx="201" cy="214" rx="17" ry="21" fill="url(#eyeGradient)" />
+              <!-- Reflejo primario grande superior blanco -->
+              <circle cx="196" cy="205" r="7.5" fill="#FFFFFF" />
+              <!-- Reflejo secundario inferior -->
+              <circle cx="207" cy="222" r="3" fill="#FFFFFF" opacity="0.8" />
+            </g>
+
+            <!-- Ojo Derecho -->
+            <g id="eyeRightGroup" class="siggy-eyelids">
+              <ellipse cx="282" cy="214" rx="20" ry="24" fill="#FFFFFF" stroke="#6B3310" stroke-width="2" />
+              <!-- Iris y pupila profunda -->
+              <ellipse cx="279" cy="214" rx="17" ry="21" fill="url(#eyeGradient)" />
+              <!-- Reflejo primario grande superior blanco -->
+              <circle cx="274" cy="205" r="7.5" fill="#FFFFFF" />
+              <!-- Reflejo secundario inferior -->
+              <circle cx="285" cy="222" r="3" fill="#FFFFFF" opacity="0.8" />
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- CONTROL PANEL FOR ANIMATIONS & EMOTIONS -->
+    <div class="w-full bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-2">
+      <div class="flex items-center justify-between text-xs font-bold text-slate-400">
+        <span><i class="fa-solid fa-gamepad mr-1 text-bolivar-gold"></i> Animaciones y Expresiones:</span>
+        <span class="text-[10px] text-bolivar-gold">Interactivo</span>
+      </div>
+
+      <div class="grid grid-cols-4 gap-1.5 text-center text-xs">
+        <button id="btnStateWave" class="bg-bolivar hover:bg-bolivar-light text-white font-bold py-2 rounded-xl active:scale-95 transition-all shadow flex flex-col items-center justify-center space-y-1">
+          <i class="fa-solid fa-hand text-sm text-bolivar-gold"></i>
+          <span class="text-[10px]">Saludo</span>
+        </button>
+
+        <button id="btnStateTalk" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 rounded-xl active:scale-95 transition-all shadow flex flex-col items-center justify-center space-y-1">
+          <i class="fa-solid fa-comment-dots text-sm text-sky-400"></i>
+          <span class="text-[10px]">Hablar</span>
+        </button>
+
+        <button id="btnStateCelebrate" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 rounded-xl active:scale-95 transition-all shadow flex flex-col items-center justify-center space-y-1">
+          <i class="fa-solid fa-trophy text-sm text-bolivar-gold"></i>
+          <span class="text-[10px]">Celebrar</span>
+        </button>
+
+        <button id="btnStateScared" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 rounded-xl active:scale-95 transition-all shadow flex flex-col items-center justify-center space-y-1">
+          <i class="fa-solid fa-triangle-exclamation text-sm text-red-400"></i>
+          <span class="text-[10px]">Alerta</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TECHNICAL DESIGN SPECIFICATIONS CARD -->
+    <div class="w-full bg-slate-800/60 p-3.5 rounded-2xl border border-slate-700 text-xs space-y-2 text-slate-300">
+      <h3 class="font-black text-bolivar-gold text-xs uppercase flex items-center">
+        <i class="fa-solid fa-certificate mr-1.5"></i> Fidelidad al Modelo 3D de Seguros Bolívar
+      </h3>
+      <ul class="space-y-1 text-[11px] list-disc list-inside text-slate-300">
+        <li><strong>Fisonomía:</strong> Ardilla antropomórfica con mejillas regordetas crema, pelaje caramelo y dos dientes paletos frontales.</li>
+        <li><strong>Vestimenta:</strong> Camisa polo celeste con cuello abierto, 3 botones y logotipo bordado circular con la "S".</li>
+        <li><strong>Pantalones y Calzado:</strong> Pantalón gris pizarra con cinturón marrón y zapatillas azul marino con puntera y suela blanca y cordones celestes.</li>
+        <li><strong>Cola Frondosa:</strong> Silueta en curvatura pronunciada de dos tonos que aporta dinamismo y balance anatómico.</li>
+        <li><strong>Formatos:</strong> 100% SVG nativo, responsive, 0 KB de imágenes rasterizadas externas y 60 FPS estables.</li>
+      </ul>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="w-full space-y-2 pt-1">
+      <a href="index.html" class="w-full py-3 bg-bolivar text-white font-black rounded-2xl hover:bg-bolivar-light shadow-xl active:scale-95 text-xs transition-all flex items-center justify-center space-x-2 text-center block">
+        <i class="fa-solid fa-house text-bolivar-gold"></i>
+        <span>VOLVER AL HUB DE SEGURIDAD</span>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT CONTROLLER DE SIGGY -->
+  <script>
+    /**
+     * @file siggy_mascot.html
+     * @description Controlador reactivo de animación y estados emocionales de Siggy.
+     */
+
+    class SiggyController {
+      constructor() {
+        this.stage = document.getElementById('siggyStage');
+        this.svg = document.getElementById('siggySvg');
+        this.dialogue = document.getElementById('siggyDialogue');
+        this.badge = document.getElementById('stateBadge');
+        this.mouth = document.getElementById('mouthOpening');
+        this.eyebrowL = document.getElementById('eyebrowL');
+        this.eyebrowR = document.getElementById('eyebrowR');
+        this.armRight = document.getElementById('siggyRightArm');
+        this.currentState = 'wave';
+
+        this.init();
+      }
+
+      init() {
+        document.getElementById('btnStateWave').addEventListener('click', () => this.setState('wave'));
+        document.getElementById('btnStateTalk').addEventListener('click', () => this.setState('talk'));
+        document.getElementById('btnStateCelebrate').addEventListener('click', () => this.setState('celebrate'));
+        document.getElementById('btnStateScared').addEventListener('click', () => this.setState('scared'));
+
+        // Permitir click/tap sobre Siggy para saludar interactivamente
+        this.svg.addEventListener('click', () => {
+          this.setState('talk');
+        });
+      }
+
+      resetClasses() {
+        this.stage.classList.remove('siggy-jumping', 'siggy-fear', 'siggy-talking');
+        this.armRight.classList.remove('siggy-wave-arm');
+        
+        // Reset cejas
+        this.eyebrowL.setAttribute('d', 'M 180 182 Q 198 174 216 182');
+        this.eyebrowR.setAttribute('d', 'M 264 182 Q 282 174 300 182');
+
+        // Reset boca
+        this.mouth.setAttribute('d', 'M 215 280 Q 240 308 265 280 Z');
+
+        // Reset botones de la UI
+        ['btnStateWave', 'btnStateTalk', 'btnStateCelebrate', 'btnStateScared'].forEach(id => {
+          const btn = document.getElementById(id);
+          btn.className = 'bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 rounded-xl active:scale-95 transition-all shadow flex flex-col items-center justify-center space-y-1';
+        });
+      }
+
+      setState(state) {
+        this.resetClasses();
+        this.currentState = state;
+
+        if (state === 'wave') {
+          document.getElementById('btnStateWave').className = 'bg-bolivar hover:bg-bolivar-light text-white font-bold py-2 rounded-xl active:scale-95 transition-all shadow flex flex-col items-center justify-center space-y-1';
+          this.armRight.classList.add('siggy-wave-arm');
+          this.badge.textContent = 'Estado: Saludo';
+          this.badge.className = 'text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full uppercase';
+          this.dialogue.textContent = '"¡Hola, equipo de KMA Construcciones y Seguros Bolívar! ¡Soy Siggy! Con la asesoría de Solprosig, estoy aquí para acompañarte en toda la obra y recordarte las normas de seguridad química."';
+        } else if (state === 'talk') {
+          document.getElementById('btnStateTalk').className = 'bg-bolivar hover:bg-bolivar-light text-white font-bold py-2 rounded-xl active:scale-95 transition-all shadow flex flex-col items-center justify-center space-y-1';
+          this.stage.classList.add('siggy-talking');
+          this.armRight.classList.add('siggy-wave-arm');
+          this.badge.textContent = 'Estado: Explicando Norma';
+          this.badge.className = 'text-[9px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded-full uppercase';
+          this.dialogue.textContent = '"¡Recuerda! La Resolución 773 de 2021 exige que cada caneca tenga su pictograma SGA y que consultes siempre la FDS de 16 secciones antes de manipular cualquier químico."';
+        } else if (state === 'celebrate') {
+          document.getElementById('btnStateCelebrate').className = 'bg-bolivar hover:bg-bolivar-light text-white font-bold py-2 rounded-xl active:scale-95 transition-all shadow flex flex-col items-center justify-center space-y-1';
+          this.stage.classList.add('siggy-jumping');
+          this.armRight.classList.add('siggy-wave-arm');
+          this.eyebrowL.setAttribute('d', 'M 180 178 Q 198 168 216 178');
+          this.eyebrowR.setAttribute('d', 'M 264 178 Q 282 168 300 178');
+          this.badge.textContent = 'Estado: ¡Celebración!';
+          this.badge.className = 'text-[9px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full uppercase';
+          this.dialogue.textContent = '"¡EXTRAORDINARIO! ¡Has dominado el módulo con cero incidentes! ¡La obra de KMA Construcciones está 100% blindada contra riesgos químicos!"';
+        } else if (state === 'scared') {
+          document.getElementById('btnStateScared').className = 'bg-red-600 text-white font-bold py-2 rounded-xl active:scale-95 transition-all shadow flex flex-col items-center justify-center space-y-1';
+          this.stage.classList.add('siggy-fear');
+          // Cejas inclinadas de pánico
+          this.eyebrowL.setAttribute('d', 'M 180 174 Q 198 186 216 182');
+          this.eyebrowR.setAttribute('d', 'M 264 182 Q 282 186 300 174');
+          // Boca de sorpresa abierta
+          this.mouth.setAttribute('d', 'M 225 282 Q 240 315 255 282 Z');
+          this.badge.textContent = 'Estado: ¡Alerta Química!';
+          this.badge.className = 'text-[9px] bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded-full uppercase';
+          this.dialogue.textContent = '"¡CUIDADO! ¡Incompatibilidad química detectada o trasiego sin polo a tierra! ¡Detén la maniobra de inmediato antes de que ocurra un accidente!"';
+        }
+      }
+    }
+
+    let siggy;
+    document.addEventListener('DOMContentLoaded', () => {
+      siggy = new SiggyController();
+      window.siggy = siggy;
+    });
+  </script>
+</body>
+</html>

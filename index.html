@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Seguridad Química Arcade | KMA Construcciones • Seguros Bolívar</title>
+  
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bolivar: {
+              DEFAULT: '#006738',
+              light: '#008244',
+              gold: '#FFC72C',
+              surface: '#F4F6F8',
+              slate: '#1E293B'
+            }
+          },
+          animation: {
+            'bounce-soft': 'bounceSoft 2s infinite ease-in-out',
+            'pulse-glow': 'pulseGlow 2s infinite',
+            'shake': 'shake 0.5s ease-in-out'
+          },
+          keyframes: {
+            bounceSoft: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-6px)' }
+            },
+            pulseGlow: {
+              '0%, 100%': { opacity: '1', filter: 'drop-shadow(0 0 8px rgba(255, 199, 44, 0.6))' },
+              '50%': { opacity: '0.8', filter: 'drop-shadow(0 0 2px rgba(255, 199, 44, 0.2))' }
+            },
+            shake: {
+              '0%, 100%': { transform: 'translateX(0)' },
+              '20%, 60%': { transform: 'translateX(-6px)' },
+              '40%, 80%': { transform: 'translateX(6px)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome v6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* Prevent accidental bounce/scroll behavior on mobile touch */
+    body {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .comic-bubble {
+      position: relative;
+      background: #ffffff;
+      border: 3px solid #1E293B;
+      border-radius: 1.25rem;
+    }
+    .comic-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 32px;
+      border-width: 14px 12px 0 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+      width: 0;
+    }
+    .comic-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -18px;
+      left: 30px;
+      border-width: 17px 15px 0 0;
+      border-style: solid;
+      border-color: #1E293B transparent;
+      display: block;
+      width: 0;
+    }
+
+    /* --- ANIMACIONES SIGGY --- */
+    @keyframes siggyBreathe {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    @keyframes siggyTailSway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(4deg) translateY(-2px); }
+    }
+    @keyframes siggyBlink {
+      0%, 92%, 100% { transform: scaleY(1); }
+      94%, 96% { transform: scaleY(0.08); }
+    }
+    @keyframes siggyWave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(7deg) translateY(-2px); }
+      75% { transform: rotate(-5deg) translateY(2px); }
+    }
+    .siggy-idle { animation: siggyBreathe 3.2s ease-in-out infinite; transform-origin: bottom center; }
+    .siggy-tail { animation: siggyTailSway 3.6s ease-in-out infinite; transform-origin: 190px 380px; }
+    .siggy-eyes { animation: siggyBlink 4s ease-in-out infinite; transform-origin: center 214px; }
+    .siggy-arm { animation: siggyWave 1.8s ease-in-out infinite; transform-origin: 185px 285px; }
+  </style>
+</head>
+<body class="bg-bolivar-surface text-bolivar-slate min-h-screen flex flex-col font-sans antialiased selection:bg-bolivar-gold selection:text-bolivar-slate pb-10">
+
+  <!-- TOP HEADER BRANDING -->
+  <header class="bg-bolivar text-white px-4 py-3 shadow-lg sticky top-0 z-50">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <!-- Logos & Title -->
+      <div class="flex items-center space-x-3">
+        <!-- SVG Logo Emblema Oficial S Solprosig / Bolívar -->
+        <div class="w-10 h-10 rounded-xl bg-white p-1.5 flex items-center justify-center shadow-md flex-shrink-0" title="Solprosig">
+          <svg viewBox="0 0 786 983" class="w-full h-full max-h-full max-w-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+            <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+            <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+            <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+            <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xs uppercase tracking-widest text-bolivar-gold font-bold">KMA Construcciones | Seguros Bolívar</h1>
+          <p class="text-sm font-black tracking-tight leading-tight">Arcade Seguridad Química • Asesoría Solprosig</p>
+        </div>
+      </div>
+
+      <!-- Quick Audio Toggle & Reset -->
+      <div class="flex items-center space-x-2">
+        <button id="btnSoundToggle" aria-label="Alternar Sonido" class="w-10 h-10 rounded-xl bg-bolivar-light flex items-center justify-center text-bolivar-gold hover:bg-bolivar transition-all shadow active:scale-95">
+          <i id="soundIcon" class="fa-solid fa-volume-high text-sm"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER (Mobile-First Viewport) -->
+  <main class="max-w-md mx-auto w-full px-4 flex-1 flex flex-col space-y-4 mt-3">
+
+    <!-- USER PROFILE & SCORECARD -->
+    <section class="bg-white rounded-3xl p-4 shadow-xl border-2 border-slate-100 relative overflow-hidden">
+      <!-- Decorative background stripes -->
+      <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-bolivar-gold/10 rounded-full pointer-events-none"></div>
+
+      <div class="flex items-center space-x-3">
+        <!-- Avatar Preview + Click to Change -->
+        <button id="btnChangeAvatar" title="Cambiar Avatar" class="relative group cursor-pointer focus:outline-none">
+          <div id="avatarContainer" class="w-16 h-16 rounded-2xl bg-amber-100 border-2 border-bolivar-gold flex items-center justify-center text-3xl shadow-inner group-hover:scale-105 transition-transform">
+            👷
+          </div>
+          <span class="absolute -bottom-1 -right-1 bg-bolivar text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold shadow">
+            <i class="fa-solid fa-pen"></i>
+          </span>
+        </button>
+
+        <!-- Player Details -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between">
+            <h2 id="playerName" class="font-extrabold text-base text-bolivar-slate truncate">Lucho el Operario</h2>
+            <span id="playerLevelBadge" class="bg-bolivar-gold text-bolivar-slate text-[11px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+              Nivel 1
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 font-medium">Brigadista de Obra KMA</p>
+          
+          <!-- XP Bar -->
+          <div class="w-full bg-slate-100 rounded-full h-2.5 mt-2 overflow-hidden border border-slate-200">
+            <div id="xpBarFill" class="bg-gradient-to-r from-bolivar to-bolivar-light h-full rounded-full transition-all duration-500" style="width: 20%;"></div>
+          </div>
+          <div class="flex justify-between items-center text-[10px] text-slate-400 mt-1 font-semibold">
+            <span id="xpText">200 / 1000 XP</span>
+            <span id="scoreText"><i class="fa-solid fa-trophy text-bolivar-gold mr-1"></i>0 Pts</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 text-center">
+        <div class="bg-bolivar-surface rounded-2xl p-2 border border-slate-200/60">
+          <p class="text-[10px] uppercase font-bold text-slate-400">Estrellas Obtenidas</p>
+          <div class="flex items-center justify-center space-x-1 mt-0.5">
+            <i class="fa-solid fa-star text-bolivar-gold text-base"></i>
+            <span id="totalStars" class="text-lg font-black text-bolivar-slate">0</span>
+            <span class="text-xs text-slate-400 font-bold">/ 15</span>
+          </div>
+        </div>
+
+        <div class="bg-bolivar-surface rounded-2xl p-2 border border-slate-200/60">
+          <p class="text-[10px] uppercase font-bold text-slate-400">Medallas de Seguridad KMA</p>
+          <div class="flex items-center justify-center space-x-1 mt-0.5">
+            <i class="fa-solid fa-medal text-emerald-600 text-base"></i>
+            <span id="unlockedMedalsCount" class="text-lg font-black text-bolivar-slate">0</span>
+            <span class="text-xs text-slate-400 font-bold">/ 5</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMIC MASCOT INTRO BANNER (SIGGY - MASCOTA INSTITUCIONAL) -->
+    <section class="flex items-end space-x-2 bg-white/80 backdrop-blur-sm rounded-3xl p-3 shadow-lg border border-slate-100 relative overflow-hidden">
+      <!-- Decorative background glow -->
+      <div class="absolute -left-10 -bottom-10 w-28 h-28 bg-bolivar-gold/15 rounded-full pointer-events-none"></div>
+
+      <!-- Mascot Siggy (SVG Vectorial 2D Animado Fiel al 3D) -->
+      <a href="siggy_mascot.html" title="Ver modelo animado completo de Siggy" class="w-20 h-28 flex-shrink-0 relative group cursor-pointer focus:outline-none block">
+        <svg viewBox="0 0 480 620" class="w-full h-full drop-shadow-md siggy-idle overflow-visible">
+          <defs>
+            <radialGradient id="furGradHub" cx="50%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#E67E22" />
+              <stop offset="60%" stop-color="#D97026" />
+              <stop offset="100%" stop-color="#B85614" />
+            </radialGradient>
+            <linearGradient id="tailGradHub" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#E67E22" />
+              <stop offset="70%" stop-color="#D97026" />
+              <stop offset="100%" stop-color="#8F3E0B" />
+            </linearGradient>
+            <radialGradient id="creamMuzzleHub" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#FFFFFF" />
+              <stop offset="60%" stop-color="#FDF3E3" />
+              <stop offset="100%" stop-color="#EED8B6" />
+            </radialGradient>
+            <linearGradient id="shirtGradHub" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#A2D2EE" />
+              <stop offset="50%" stop-color="#89C4E8" />
+              <stop offset="100%" stop-color="#6FAED5" />
+            </linearGradient>
+            <linearGradient id="pantsGradHub" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#5A6678" />
+              <stop offset="100%" stop-color="#333C48" />
+            </linearGradient>
+            <radialGradient id="eyeGradHub" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#3D2012" />
+              <stop offset="70%" stop-color="#1F1008" />
+              <stop offset="100%" stop-color="#0A0502" />
+            </radialGradient>
+          </defs>
+
+          <!-- Cola Frondosa -->
+          <g class="siggy-tail">
+            <path d="M 195 440 C 120 460 70 380 75 280 C 80 180 125 110 185 105 C 220 102 235 125 210 160 C 185 195 145 250 145 320 C 145 375 165 410 195 440 Z" fill="#FDF3E3" />
+            <path d="M 185 435 C 130 445 92 375 96 285 C 100 195 138 125 188 120 C 215 118 222 135 202 165 C 178 200 152 260 155 325 C 158 375 170 410 185 435 Z" fill="url(#tailGradHub)" />
+          </g>
+
+          <!-- Piernas y Pantalón Gris -->
+          <path d="M 175 410 L 165 470 C 165 480 205 480 205 470 L 210 415 Z" fill="url(#pantsGradHub)" />
+          <path d="M 270 415 L 275 470 C 275 480 315 480 315 470 L 305 410 Z" fill="url(#pantsGradHub)" />
+
+          <!-- Zapatillas Azules y Blancas -->
+          <ellipse cx="185" cy="505" rx="36" ry="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2" />
+          <path d="M 152 498 C 152 475 175 465 195 468 C 212 470 218 485 218 500 Z" fill="#4B6B94" />
+          <ellipse cx="168" cy="498" rx="16" ry="10" fill="#FFFFFF" />
+          <ellipse cx="295" cy="505" rx="36" ry="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2" />
+          <path d="M 262 500 C 262 485 268 470 285 468 C 305 465 328 475 328 498 Z" fill="#4B6B94" />
+          <ellipse cx="312" cy="498" rx="16" ry="10" fill="#FFFFFF" />
+
+          <!-- Brazo Izquierdo -->
+          <path d="M 315 295 L 345 315 L 332 355 L 298 335 Z" fill="url(#shirtGradHub)" />
+          <path d="M 330 348 C 345 370 350 405 342 430 C 338 440 330 445 325 435 C 322 425 326 395 315 375 L 305 340 Z" fill="url(#furGradHub)" />
+
+          <!-- Torso / Polo Celeste con Cuello y Botones -->
+          <rect x="188" y="402" width="104" height="12" rx="3" fill="#6B3310" />
+          <rect x="230" y="399" width="20" height="18" rx="3" fill="#E2E8F0" />
+          <path d="M 180 290 Q 240 280 300 290 L 312 405 C 312 410 168 410 168 405 Z" fill="url(#shirtGradHub)" stroke="#599ECB" stroke-width="2" />
+          <circle cx="240" cy="318" r="3.5" fill="#FFFFFF" />
+          <circle cx="240" cy="348" r="3.5" fill="#FFFFFF" />
+          <circle cx="240" cy="378" r="3.5" fill="#FFFFFF" />
+          <path d="M 205 280 L 238 315 L 238 290 L 218 275 Z" fill="#B6DEFA" />
+          <path d="M 275 280 L 242 315 L 242 290 L 262 275 Z" fill="#B6DEFA" />
+
+          <!-- Emblema Oficial "S" Solprosig en el Pecho -->
+          <g id="siggyHubBadge" transform="translate(268, 308)">
+            <circle cx="14" cy="16" r="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
+            <svg x="4" y="4" width="20" height="24" viewBox="0 0 786 983" class="overflow-visible">
+              <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+              <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+              <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+              <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+              <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+            </svg>
+          </g>
+
+          <!-- Brazo Derecho Saludando -->
+          <g class="siggy-arm">
+            <path d="M 175 295 L 140 315 L 155 352 L 190 330 Z" fill="url(#shirtGradHub)" />
+            <path d="M 150 338 C 130 350 100 355 85 340 C 75 330 85 305 105 295 C 125 285 145 305 155 320 Z" fill="url(#furGradHub)" />
+            <ellipse cx="90" cy="325" rx="18" ry="20" fill="#E67E22" />
+            <circle cx="72" cy="315" r="7" fill="#E67E22" />
+            <circle cx="74" cy="300" r="7" fill="#E67E22" />
+            <circle cx="84" cy="290" r="7" fill="#E67E22" />
+            <circle cx="98" cy="288" r="6.5" fill="#E67E22" />
+          </g>
+
+          <!-- Orejas -->
+          <path d="M 165 145 C 145 85 175 40 198 65 C 215 85 210 135 190 155 Z" fill="url(#furGradHub)" />
+          <path d="M 175 135 C 162 95 182 65 194 80 C 205 95 200 130 185 142 Z" fill="#FAD2B5" />
+          <path d="M 315 145 C 335 85 305 40 282 65 C 265 85 270 135 290 155 Z" fill="url(#furGradHub)" />
+          <path d="M 305 135 C 318 95 298 65 286 80 C 275 95 280 130 295 142 Z" fill="#FAD2B5" />
+
+          <!-- Cabeza y Mofletes -->
+          <path d="M 160 170 C 130 200 130 250 160 270 C 180 285 300 285 320 270 C 350 250 350 200 320 170 C 290 120 190 120 160 170 Z" fill="url(#furGradHub)" />
+          <path d="M 230 122 C 235 105 245 102 248 112 C 252 105 260 108 258 122 Z" fill="#E67E22" />
+          <path d="M 155 240 C 130 250 135 305 185 315 C 215 320 225 310 240 305 C 255 310 265 320 295 315 C 345 305 350 250 325 240 C 305 230 295 250 240 250 C 185 250 175 230 155 240 Z" fill="url(#creamMuzzleHub)" stroke="#E8CFAC" stroke-width="1.5" />
+
+          <!-- Boca, Dientes Paletos y Nariz -->
+          <path d="M 215 280 Q 240 308 265 280 Z" fill="#881B24" />
+          <path d="M 228 296 Q 240 290 252 296 Q 240 308 228 296 Z" fill="#F472B6" />
+          <rect x="233" y="278" width="7" height="9" rx="1.5" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+          <rect x="240" y="278" width="7" height="9" rx="1.5" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+          <path d="M 212 280 Q 240 290 268 280" stroke="#4A260F" stroke-width="2.5" fill="none" stroke-linecap="round" />
+          <ellipse cx="240" cy="254" rx="12" ry="8.5" fill="#2E1C14" />
+          <ellipse cx="237" cy="252" rx="4" ry="2.5" fill="#FFFFFF" opacity="0.6" />
+
+          <!-- Cejas y Ojos Animados -->
+          <path d="M 180 182 Q 198 174 216 182" stroke="#8F3E0B" stroke-width="4.5" fill="none" stroke-linecap="round" />
+          <path d="M 264 182 Q 282 174 300 182" stroke="#8F3E0B" stroke-width="4.5" fill="none" stroke-linecap="round" />
+          <g class="siggy-eyes">
+            <ellipse cx="198" cy="214" rx="20" ry="24" fill="#FFFFFF" />
+            <ellipse cx="201" cy="214" rx="17" ry="21" fill="url(#eyeGradHub)" />
+            <circle cx="196" cy="205" r="7.5" fill="#FFFFFF" />
+            <circle cx="207" cy="222" r="3" fill="#FFFFFF" opacity="0.8" />
+            <ellipse cx="282" cy="214" rx="20" ry="24" fill="#FFFFFF" />
+            <ellipse cx="279" cy="214" rx="17" ry="21" fill="url(#eyeGradHub)" />
+            <circle cx="274" cy="205" r="7.5" fill="#FFFFFF" />
+            <circle cx="285" cy="222" r="3" fill="#FFFFFF" opacity="0.8" />
+          </g>
+        </svg>
+
+        <!-- Tooltip animado al posar ratón -->
+        <span class="absolute -top-1 -right-1 bg-bolivar-gold text-slate-900 text-[9px] font-black px-1.5 py-0.5 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity">
+          Ver 2D
+        </span>
+      </a>
+
+      <!-- Comic Dialogue Box -->
+      <div class="flex-1 comic-bubble p-3 shadow-md mb-1 bg-white">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-bold text-bolivar uppercase tracking-wider flex items-center">
+            <i class="fa-solid fa-paw mr-1 text-bolivar-gold"></i> Siggy (Mascota Oficial)
+          </p>
+          <a href="siggy_mascot.html" class="text-[9px] text-sky-600 hover:text-sky-800 font-extrabold underline">
+            Estudio 2D <i class="fa-solid fa-arrow-up-right-from-square ml-0.5"></i>
+          </a>
+        </div>
+        <p id="botSpeech" class="text-xs font-semibold text-slate-700 leading-snug mt-1">
+          "¡Hola, equipo de KMA Construcciones y Seguros Bolívar! ¡Soy Siggy! Supera los 5 minijuegos arcade con asesoría de Solprosig para blindar la obra y proteger a tus compañeros contra riesgos químicos."
+        </p>
+      </div>
+    </section>
+
+    <!-- MEDALS CAROUSEL -->
+    <section class="bg-white rounded-3xl p-3.5 shadow-md border border-slate-100">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-600 flex items-center">
+          <i class="fa-solid fa-award text-bolivar-gold mr-1.5 text-sm"></i> Insignias de Seguridad
+        </h3>
+        <span class="text-[10px] text-slate-400 font-bold">Res. 773 / 2021</span>
+      </div>
+      <div id="medalsContainer" class="flex space-x-2 overflow-x-auto pb-1.5 scrollbar-none">
+        <!-- Rendered reactively via JS -->
+      </div>
+    </section>
+
+    <!-- LEVELS SELECTION GRID -->
+    <section class="space-y-3">
+      <div class="flex items-center justify-between px-1">
+        <h3 class="text-sm font-black uppercase tracking-wider text-slate-700 flex items-center">
+          <i class="fa-solid fa-gamepad text-bolivar mr-2"></i> Módulos Arcade
+        </h3>
+        <span class="text-[11px] font-bold text-bolivar bg-bolivar/10 px-2 py-0.5 rounded-full">
+          5 Niveles
+        </span>
+      </div>
+
+      <!-- LEVEL CARDS CONTAINER -->
+      <div id="levelsList" class="space-y-3">
+        <!-- Generados dinámicamente con JavaScript -->
+      </div>
+    </section>
+
+    <!-- RESET / OPTIONS BUTTON -->
+    <div class="pt-2 pb-6 text-center">
+      <button id="btnResetProgress" class="text-xs text-slate-400 hover:text-red-500 transition-colors font-semibold py-2 px-4 rounded-xl">
+        <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Reiniciar progreso para demostración
+      </button>
+    </div>
+
+  </main>
+
+  <!-- AVATAR SELECTION MODAL -->
+  <div id="avatarModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xs w-full p-5 shadow-2xl border-4 border-bolivar space-y-4 animate-bounce-soft">
+      <div class="text-center">
+        <h3 class="text-base font-black text-bolivar">Elige tu Personaje de Obra KMA</h3>
+        <p class="text-xs text-slate-500">Selecciona el avatar de tu operario</p>
+      </div>
+
+      <div class="grid grid-cols-4 gap-3 py-2 text-3xl text-center">
+        <button class="avatar-option p-2 rounded-2xl border-2 hover:border-bolivar-gold active:scale-95 transition-all bg-slate-50" data-avatar="👷">👷</button>
+        <button class="avatar-option p-2 rounded-2xl border-2 hover:border-bolivar-gold active:scale-95 transition-all bg-slate-50" data-avatar="👷‍♂️">👷‍♂️</button>
+        <button class="avatar-option p-2 rounded-2xl border-2 hover:border-bolivar-gold active:scale-95 transition-all bg-slate-50" data-avatar="👷‍♀️">👷‍♀️</button>
+        <button class="avatar-option p-2 rounded-2xl border-2 hover:border-bolivar-gold active:scale-95 transition-all bg-slate-50" data-avatar="🧑‍🔬">🧑‍🔬</button>
+        <button class="avatar-option p-2 rounded-2xl border-2 hover:border-bolivar-gold active:scale-95 transition-all bg-slate-50" data-avatar="👨‍🔧">👨‍🔧</button>
+        <button class="avatar-option p-2 rounded-2xl border-2 hover:border-bolivar-gold active:scale-95 transition-all bg-slate-50" data-avatar="👩‍🔧">👩‍🔧</button>
+        <button class="avatar-option p-2 rounded-2xl border-2 hover:border-bolivar-gold active:scale-95 transition-all bg-slate-50" data-avatar="🦸">🦸</button>
+        <button class="avatar-option p-2 rounded-2xl border-2 hover:border-bolivar-gold active:scale-95 transition-all bg-slate-50" data-avatar="🐿️" title="Siggy la Mascota">🐿️</button>
+      </div>
+
+      <div class="space-y-2">
+        <label for="inputPlayerName" class="text-xs font-bold text-slate-600 block">Nombre del Operario:</label>
+        <input id="inputPlayerName" type="text" maxlength="20" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-bold text-slate-700 focus:outline-none focus:border-bolivar" />
+      </div>
+
+      <button id="btnSaveAvatar" class="w-full py-3 bg-bolivar text-white font-extrabold rounded-2xl hover:bg-bolivar-light shadow-lg active:scale-95 transition-all">
+        Guardar Perfil
+      </button>
+    </div>
+  </div>
+
+  <!-- CLIENT-SIDE APPLICATION LOGIC -->
+  <script>
+    /**
+     * @file index.html
+     * @description Hub principal y gestor de persistencia de la Suite de Videojuegos de Seguridad Química Solprosig - Seguros Bolívar.
+     */
+
+    // --- 1. WEB AUDIO API SYNTHESIZER ---
+    class SoundFX {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playTone(freq, type = 'sine', duration = 0.15, vol = 0.1) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+          gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          console.warn('Audio play error', e);
+        }
+      }
+
+      playTap() {
+        this.playTone(480, 'triangle', 0.08, 0.15);
+      }
+
+      playUnlock() {
+        this.playTone(523.25, 'sine', 0.1, 0.2); // C5
+        setTimeout(() => this.playTone(659.25, 'sine', 0.1, 0.2), 100); // E5
+        setTimeout(() => this.playTone(783.99, 'sine', 0.2, 0.25), 200); // G5
+      }
+
+      playDeny() {
+        this.playTone(180, 'sawtooth', 0.2, 0.2);
+      }
+    }
+
+    const audio = new SoundFX();
+
+    // --- 2. LOCALSTORAGE PERSISTENCE CONTRACT (SOLPROSIG & SEGUROS BOLÍVAR) ---
+    const STORAGE_KEY = 'sb_solprosig_arcade_state';
+    const LEGACY_STORAGE_KEY = 'sb_kma_arcade_state';
+
+    const DEFAULT_STATE = {
+      player: {
+        name: 'Lucho el Operario',
+        avatar: '👷',
+        totalScore: 0,
+        totalStars: 0,
+        xp: 200,
+        level: 1
+      },
+      levels: {
+        "1": { unlocked: true, stars: 0, highScore: 0, completed: false },
+        "2": { unlocked: false, stars: 0, highScore: 0, completed: false },
+        "3": { unlocked: false, stars: 0, highScore: 0, completed: false },
+        "4": { unlocked: false, stars: 0, highScore: 0, completed: false },
+        "5": { unlocked: false, stars: 0, highScore: 0, completed: false }
+      },
+      medals: [
+        { id: "sga_master", unlocked: false, title: "Guardián SGA", icon: "fa-triangle-exclamation", norm: "Res. 773/2021" },
+        { id: "storage_hero", unlocked: false, title: "Maestro Bodega", icon: "fa-boxes-stacked", norm: "Dec. 4741/2005" },
+        { id: "static_zero", unlocked: false, title: "Cero Chispa", icon: "fa-bolt", norm: "Ley 55/1993" },
+        { id: "respel_pro", unlocked: false, title: "Defensor RESPEL", icon: "fa-recycle", norm: "Dec. 1072/2015" },
+        { id: "spill_commander", unlocked: false, title: "Líder Antiderrame", icon: "fa-shield-virus", norm: "Kit 5 Pasos" }
+      ]
+    };
+
+    class StateManager {
+      static load() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+          if (!raw) return DEFAULT_STATE;
+          const parsed = JSON.parse(raw);
+          // Merge with default to guarantee backwards compatibility
+          return {
+            ...DEFAULT_STATE,
+            ...parsed,
+            player: { ...DEFAULT_STATE.player, ...parsed.player },
+            levels: { ...DEFAULT_STATE.levels, ...parsed.levels }
+          };
+        } catch (e) {
+          console.error("Error al cargar estado de LocalStorage", e);
+          return DEFAULT_STATE;
+        }
+      }
+
+      static save(state) {
+        try {
+          const serialized = JSON.stringify(state);
+          localStorage.setItem(STORAGE_KEY, serialized);
+          localStorage.setItem(LEGACY_STORAGE_KEY, serialized);
+        } catch (e) {
+          console.error("Error al guardar estado en LocalStorage", e);
+        }
+      }
+
+      static reset() {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
+      }
+    }
+
+    let appState = StateManager.load();
+
+    // --- 3. LEVEL DEFINITIONS METADATA ---
+    const LEVEL_METADATA = [
+      {
+        id: 1,
+        slug: "game1_sga_hazard.html",
+        module: "Módulo 1 - Transversal",
+        title: "SGA Hazard Catch & Smash",
+        description: "Clasifica frascos reales según el pictograma SGA y usa la lupa de FDS de 16 secciones antes de que se rompan.",
+        norm: "Resolución 773/2021 & Dec. 1496/2018",
+        color: "from-emerald-600 to-teal-700",
+        icon: "fa-biohazard",
+        badge: "Pictogramas y FDS"
+      },
+      {
+        id: 2,
+        slug: "game2_bodega_peligro.html",
+        module: "Módulo 2 - Almacenistas",
+        title: "Tetris Químico: Bodega en Peligro",
+        description: "Organiza la estantería por matriz de compatibilidad química y elimina botellas de gaseosa reenvaseadas ilegalmente.",
+        norm: "Res. 773/2021 & Dec. 4741/2005",
+        color: "from-amber-500 to-orange-600",
+        icon: "fa-warehouse",
+        badge: "Matriz & Anti-Reenvase"
+      },
+      {
+        id: 3,
+        slug: "game3_combustible_nitro.html",
+        module: "Módulo 3 - Despachadores",
+        title: "Combustible Nitro: Trasiego Extremo",
+        description: "Ejecuta la puesta a tierra con pinza interactiva, apaga motores y dispensa combustible libre de electricidad estática.",
+        norm: "Ley 55/1993 & Dec. 1079/2015",
+        color: "from-blue-600 to-indigo-700",
+        icon: "fa-gas-pump",
+        badge: "Polo a Tierra & Chispas"
+      },
+      {
+        id: 4,
+        slug: "game4_meca_dress_respel.html",
+        module: "Módulo 4 - Mecánicos",
+        title: "Meca-Dress & RESPEL Basketball",
+        description: "Viste a Lucho con el EPP adecuado para taller y encesta con tiro parabólico los residuos peligrosos en la caneca correcta.",
+        norm: "Dec. 4741/2005 & Dec. 1072/2015",
+        color: "from-purple-600 to-indigo-800",
+        icon: "fa-wrench",
+        badge: "EPP & Manejo RESPEL"
+      },
+      {
+        id: 5,
+        slug: "game5_slime_invasor.html",
+        module: "Módulo 5 - Emergencias",
+        title: "Slime Invasor: Control de Derrames",
+        description: "Detén la expansión del químico viscoso aplicando el protocolo de 5 pasos con cordones, paños y bolsa roja.",
+        norm: "Res. 773/2021 (Kit Antiderrame)",
+        color: "from-rose-600 to-red-700",
+        icon: "fa-shield-halved",
+        badge: "Kit Antiderrame en 5 Pasos"
+      }
+    ];
+
+    // --- 4. RENDER FUNCTIONS ---
+    function recalculateTotals() {
+      let stars = 0;
+      let score = 0;
+      Object.values(appState.levels).forEach(lvl => {
+        stars += lvl.stars || 0;
+        score += lvl.highScore || 0;
+      });
+      appState.player.totalStars = stars;
+      appState.player.totalScore = score;
+      
+      // Auto-unlock logic: completing a level unlocks the next
+      for (let i = 1; i < 5; i++) {
+        if (appState.levels[i] && (appState.levels[i].completed || appState.levels[i].stars > 0)) {
+          if (appState.levels[i + 1]) {
+            appState.levels[i + 1].unlocked = true;
+          }
+        }
+      }
+
+      // Check medal unlocks
+      if (appState.levels["1"].completed) appState.medals[0].unlocked = true;
+      if (appState.levels["2"].completed) appState.medals[1].unlocked = true;
+      if (appState.levels["3"].completed) appState.medals[2].unlocked = true;
+      if (appState.levels["4"].completed) appState.medals[3].unlocked = true;
+      if (appState.levels["5"].completed) appState.medals[4].unlocked = true;
+
+      StateManager.save(appState);
+    }
+
+    function renderUI() {
+      recalculateTotals();
+
+      // Profile details
+      document.getElementById('playerName').textContent = appState.player.name;
+      document.getElementById('avatarContainer').textContent = appState.player.avatar;
+      document.getElementById('playerLevelBadge').textContent = `Nivel ${appState.player.level || 1}`;
+      document.getElementById('totalStars').textContent = appState.player.totalStars;
+      document.getElementById('scoreText').innerHTML = `<i class="fa-solid fa-trophy text-bolivar-gold mr-1"></i>${appState.player.totalScore.toLocaleString()} Pts`;
+
+      // XP calculation
+      const xp = appState.player.xp || 200;
+      const targetXp = 1000;
+      const xpPct = Math.min(100, Math.round((xp / targetXp) * 100));
+      document.getElementById('xpBarFill').style.width = `${xpPct}%`;
+      document.getElementById('xpText').textContent = `${xp} / ${targetXp} XP`;
+
+      // Medals
+      const unlockedMedals = appState.medals.filter(m => m.unlocked).length;
+      document.getElementById('unlockedMedalsCount').textContent = unlockedMedals;
+
+      const medalsContainer = document.getElementById('medalsContainer');
+      medalsContainer.innerHTML = '';
+      appState.medals.forEach(m => {
+        const medalEl = document.createElement('div');
+        medalEl.className = `flex-shrink-0 flex items-center space-x-2 px-3 py-1.5 rounded-2xl border ${
+          m.unlocked 
+            ? 'bg-amber-50 border-bolivar-gold text-bolivar shadow-sm' 
+            : 'bg-slate-100 border-slate-200 text-slate-400 opacity-60'
+        }`;
+        medalEl.innerHTML = `
+          <div class="w-7 h-7 rounded-xl flex items-center justify-center ${m.unlocked ? 'bg-bolivar-gold text-bolivar-slate' : 'bg-slate-200 text-slate-400'}">
+            <i class="fa-solid ${m.icon} text-xs"></i>
+          </div>
+          <div class="text-left">
+            <p class="text-[11px] font-black leading-tight">${m.title}</p>
+            <p class="text-[9px] font-semibold text-slate-500">${m.norm}</p>
+          </div>
+        `;
+        medalsContainer.appendChild(medalEl);
+      });
+
+      // Level cards
+      const levelsList = document.getElementById('levelsList');
+      levelsList.innerHTML = '';
+
+      LEVEL_METADATA.forEach(lvl => {
+        const stateLvl = appState.levels[lvl.id] || { unlocked: false, stars: 0, highScore: 0 };
+        const isUnlocked = stateLvl.unlocked;
+
+        const card = document.createElement('div');
+        card.className = `bg-white rounded-3xl p-4 shadow-xl border-2 transition-all duration-300 ${
+          isUnlocked 
+            ? 'border-slate-200 hover:border-bolivar active:scale-[0.99] cursor-pointer' 
+            : 'border-slate-100 opacity-70 bg-slate-50'
+        }`;
+
+        let starsHtml = '';
+        for (let s = 1; s <= 3; s++) {
+          if (s <= stateLvl.stars) {
+            starsHtml += '<i class="fa-solid fa-star text-bolivar-gold text-xs"></i>';
+          } else {
+            starsHtml += '<i class="fa-regular fa-star text-slate-300 text-xs"></i>';
+          }
+        }
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${lvl.color} text-white flex items-center justify-center text-xl shadow-md flex-shrink-0">
+                <i class="fa-solid ${lvl.icon}"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">${lvl.module}</span>
+                <h4 class="text-sm font-black text-bolivar-slate leading-snug">${lvl.title}</h4>
+                <span class="inline-block bg-slate-100 text-slate-600 text-[10px] font-extrabold px-2 py-0.5 rounded-md mt-0.5">
+                  ${lvl.badge}
+                </span>
+              </div>
+            </div>
+
+            <div class="text-right">
+              ${isUnlocked 
+                ? `<div class="flex items-center space-x-1">${starsHtml}</div>
+                   <p class="text-[10px] font-bold text-slate-400 mt-1">${stateLvl.highScore.toLocaleString()} pts</p>`
+                : `<span class="w-8 h-8 rounded-xl bg-slate-200 text-slate-500 flex items-center justify-center text-sm shadow-inner"><i class="fa-solid fa-lock"></i></span>`
+              }
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-600 mt-2.5 font-medium leading-relaxed">${lvl.description}</p>
+
+          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[10px] font-bold text-slate-500 flex items-center">
+              <i class="fa-solid fa-scale-balanced mr-1 text-bolivar"></i> ${lvl.norm}
+            </span>
+
+            ${isUnlocked 
+              ? `<a href="${lvl.slug}" class="btn-play inline-flex items-center space-x-1.5 px-4 py-2 bg-bolivar hover:bg-bolivar-light text-white text-xs font-black rounded-xl shadow-md active:scale-95 transition-transform" data-slug="${lvl.slug}">
+                  <span>JUGAR</span>
+                  <i class="fa-solid fa-play text-[10px]"></i>
+                 </a>`
+              : `<button disabled class="px-3 py-1.5 bg-slate-200 text-slate-400 text-xs font-bold rounded-xl cursor-not-allowed">
+                  Bloqueado
+                 </button>`
+            }
+          </div>
+        `;
+
+        levelsList.appendChild(card);
+      });
+
+      // Attach click sound to buttons
+      document.querySelectorAll('.btn-play').forEach(btn => {
+        btn.addEventListener('click', () => {
+          audio.playUnlock();
+        });
+      });
+    }
+
+    // --- 5. EVENT LISTENERS ---
+    document.addEventListener('DOMContentLoaded', () => {
+      renderUI();
+
+      // Sound toggle
+      const btnSoundToggle = document.getElementById('btnSoundToggle');
+      const soundIcon = document.getElementById('soundIcon');
+      btnSoundToggle.addEventListener('click', () => {
+        audio.init();
+        audio.muted = !audio.muted;
+        soundIcon.className = audio.muted ? 'fa-solid fa-volume-xmark text-sm' : 'fa-solid fa-volume-high text-sm';
+        if (!audio.muted) audio.playTap();
+      });
+
+      // Avatar modal open/close
+      const btnChangeAvatar = document.getElementById('btnChangeAvatar');
+      const avatarModal = document.getElementById('avatarModal');
+      const inputPlayerName = document.getElementById('inputPlayerName');
+      let selectedAvatar = appState.player.avatar;
+
+      btnChangeAvatar.addEventListener('click', () => {
+        audio.playTap();
+        inputPlayerName.value = appState.player.name;
+        selectedAvatar = appState.player.avatar;
+        avatarModal.classList.remove('hidden');
+      });
+
+      avatarModal.addEventListener('click', (e) => {
+        if (e.target === avatarModal) {
+          avatarModal.classList.add('hidden');
+        }
+      });
+
+      document.querySelectorAll('.avatar-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          audio.playTap();
+          document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('border-bolivar-gold', 'bg-amber-50'));
+          opt.classList.add('border-bolivar-gold', 'bg-amber-50');
+          selectedAvatar = opt.getAttribute('data-avatar');
+        });
+      });
+
+      document.getElementById('btnSaveAvatar').addEventListener('click', () => {
+        audio.playUnlock();
+        const trimmed = inputPlayerName.value.trim();
+        if (trimmed) appState.player.name = trimmed;
+        appState.player.avatar = selectedAvatar;
+        StateManager.save(appState);
+        avatarModal.classList.add('hidden');
+        renderUI();
+      });
+
+      // Reset progress confirmation
+      document.getElementById('btnResetProgress').addEventListener('click', () => {
+        audio.playDeny();
+        if (confirm('¿Deseas reiniciar todo el progreso a los valores iniciales para pruebas de demostración?')) {
+          StateManager.reset();
+          appState = StateManager.load();
+          renderUI();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

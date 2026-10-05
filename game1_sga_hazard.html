@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nivel 1: SGA Hazard Catch & Smash | KMA Construcciones • Seguros Bolívar</title>
+
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bolivar: {
+              DEFAULT: '#006738',
+              light: '#008244',
+              gold: '#FFC72C',
+              surface: '#F4F6F8',
+              slate: '#1E293B'
+            }
+          },
+          keyframes: {
+            screenShake: {
+              '0%, 100%': { transform: 'translate(0, 0)' },
+              '20%': { transform: 'translate(-8px, 6px)' },
+              '40%': { transform: 'translate(8px, -6px)' },
+              '60%': { transform: 'translate(-6px, -4px)' },
+              '80%': { transform: 'translate(6px, 4px)' }
+            },
+            popIn: {
+              '0%': { transform: 'scale(0.8)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
+            }
+          },
+          animation: {
+            'screen-shake': 'screenShake 0.4s ease-in-out',
+            'pop-in': 'popIn 0.3s ease-out'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome v6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      overflow: hidden;
+    }
+    .comic-bubble-dialog {
+      position: relative;
+      background: #ffffff;
+      border: 3px solid #1E293B;
+      border-radius: 1.25rem;
+    }
+    .comic-bubble-dialog::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 24px;
+      border-width: 12px 10px 0 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+      width: 0;
+    }
+  </style>
+</head>
+<body id="gameBody" class="bg-slate-900 text-slate-100 h-screen w-screen flex flex-col justify-between font-sans relative">
+
+  <!-- TOP HUD (HEADER) -->
+  <header class="bg-bolivar/95 backdrop-blur-md px-4 py-2 border-b-2 border-bolivar-gold shadow-md flex items-center justify-between z-30 flex-shrink-0">
+    <!-- Back to Hub & Brand Logo -->
+    <div class="flex items-center space-x-2">
+      <a href="index.html" id="btnBackHub" class="w-10 h-10 rounded-xl bg-bolivar-light flex items-center justify-center text-white hover:bg-bolivar active:scale-95 transition-all shadow">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div class="w-9 h-9 rounded-xl bg-white p-1 flex items-center justify-center shadow-md flex-shrink-0" title="Solprosig">
+        <svg viewBox="0 0 786 983" class="w-full h-full max-h-full max-w-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+          <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+          <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+          <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+          <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Security Health Bar -->
+    <div class="flex-1 mx-3 max-w-xs">
+      <div class="flex justify-between items-center text-[10px] uppercase font-black text-bolivar-gold mb-0.5">
+        <span><i class="fa-solid fa-shield-virus mr-1"></i>Seguridad Obra</span>
+        <span id="healthText">100%</span>
+      </div>
+      <div class="w-full bg-slate-950/60 rounded-full h-3 p-0.5 border border-white/20">
+        <div id="healthBar" class="bg-gradient-to-r from-emerald-500 to-bolivar-gold h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+      </div>
+    </div>
+
+    <!-- Score & Time -->
+    <div class="text-right flex items-center space-x-2">
+      <div class="bg-slate-950/50 px-2.5 py-1 rounded-xl border border-white/10 text-center">
+        <p class="text-[9px] uppercase font-bold text-slate-400">Puntaje</p>
+        <p id="scoreVal" class="text-sm font-black text-bolivar-gold leading-none">0</p>
+      </div>
+      <button id="btnAudio" class="w-10 h-10 rounded-xl bg-slate-800 text-bolivar-gold flex items-center justify-center active:scale-95 shadow">
+        <i id="audioIcon" class="fa-solid fa-volume-high text-xs"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- CANVASES AREA -->
+  <main class="relative flex-1 w-full overflow-hidden bg-gradient-to-b from-slate-900 via-slate-800 to-slate-950 flex flex-col items-center justify-center">
+    <!-- Background Canvas for Grid/Particles -->
+    <canvas id="gameCanvas" class="absolute inset-0 w-full h-full block z-10"></canvas>
+
+    <!-- Slapstick Mascot Reaction Overlay (Lucho) -->
+    <div id="luchoReactions" class="absolute bottom-28 left-3 z-20 pointer-events-none transition-all duration-300">
+      <div id="comicBubble" class="comic-bubble-dialog p-2.5 shadow-xl text-bolivar-slate max-w-[190px] mb-2 hidden animate-pop-in">
+        <p id="comicText" class="text-[11px] font-black leading-tight">¡SANTAS REACCIONES!</p>
+      </div>
+
+      <!-- Avatar Vectorial Lucho (SVG) -->
+      <div class="w-16 h-20 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-1 shadow-lg flex items-center justify-center">
+        <svg id="luchoAvatarSvg" viewBox="0 0 100 120" class="w-full h-full">
+          <!-- Casco Amarillo Solprosig -->
+          <ellipse cx="50" cy="40" rx="36" ry="18" fill="#FFC72C" />
+          <path d="M 18 40 Q 50 14 82 40" fill="#FFC72C" />
+          <rect x="42" y="16" width="16" height="12" rx="4" fill="#006738" />
+          <!-- Cara -->
+          <circle cx="50" cy="56" r="24" fill="#FBD38D" />
+          <!-- Ojos cómicos estándar -->
+          <circle id="luchoEyeLeft" cx="42" cy="52" r="5" fill="#1E293B" />
+          <circle id="luchoEyeRight" cx="58" cy="52" r="5" fill="#1E293B" />
+          <!-- Boca cómica estándar -->
+          <path id="luchoMouth" d="M 44 66 Q 50 72 56 66" stroke="#1E293B" stroke-width="3" fill="none" stroke-linecap="round" />
+          <!-- Overol Azul / Solprosig -->
+          <rect x="26" y="80" width="48" height="40" rx="8" fill="#1E3A8A" />
+          <rect x="34" y="90" width="32" height="16" rx="2" fill="#FFC72C" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Active Chemical Info Banner (Top of Canvas) -->
+    <div id="targetHint" class="absolute top-2 left-1/2 -translate-x-1/2 z-20 bg-slate-950/80 backdrop-blur border border-bolivar-gold/40 px-3 py-1.5 rounded-2xl shadow-xl flex items-center space-x-2 pointer-events-none">
+      <span class="w-2.5 h-2.5 rounded-full bg-bolivar-gold animate-ping"></span>
+      <p class="text-xs font-bold text-slate-200">
+        Arrastra cada envase a su pictograma SGA o toca la <i class="fa-solid fa-magnifying-glass text-bolivar-gold"></i> Lupa FDS
+      </p>
+    </div>
+  </main>
+
+  <!-- BOTTOM CATCH BASKETS / PICTOGRAM TARGETS -->
+  <footer class="bg-slate-950/90 backdrop-blur-md border-t-2 border-slate-700 p-2 z-30 flex-shrink-0">
+    <div class="max-w-md mx-auto">
+      <div class="flex items-center justify-between text-[11px] font-black text-slate-400 mb-1 px-1">
+        <span><i class="fa-solid fa-arrows-down-to-line mr-1 text-bolivar-gold"></i>CESTAS DE CLASIFICACIÓN SGA</span>
+        <span class="text-bolivar-gold font-bold">Res. 773/2021</span>
+      </div>
+      <!-- 4 Baskets shown per wave, dynamically cycled -->
+      <div id="basketsContainer" class="grid grid-cols-4 gap-1.5">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </footer>
+
+  <!-- FDS (FICHA DE DATOS DE SEGURIDAD) MODAL INSPECTOR -->
+  <div id="fdsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-4 text-bolivar-slate shadow-2xl border-4 border-bolivar-gold animate-pop-in space-y-3">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b pb-2 border-slate-200">
+        <div class="flex items-center space-x-2">
+          <span class="w-8 h-8 rounded-xl bg-bolivar-gold text-bolivar font-black flex items-center justify-center text-sm shadow">
+            <i class="fa-solid fa-file-shield"></i>
+          </span>
+          <div>
+            <span class="text-[9px] font-black uppercase text-bolivar tracking-wider">FDS - 16 Secciones (Res. 773)</span>
+            <h3 id="fdsChemicalName" class="text-sm font-black text-slate-900 leading-tight">Nombre del Químico</h3>
+          </div>
+        </div>
+        <button id="btnCloseFds" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 font-bold active:scale-95">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Pictograma Oficial SGA Grande y Palabra de Advertencia Legal (Res. 773/2021) -->
+      <div class="flex items-center space-x-3 bg-white p-2 rounded-2xl border-2 border-slate-100 shadow-sm">
+        <div id="fdsPictogramContainer" class="w-14 h-14 flex-shrink-0 flex items-center justify-center">
+          <!-- Inyectado dinámicamente con SVG oficial UNECE -->
+        </div>
+        <div class="flex-1">
+          <span id="fdsSignalBadge" class="inline-block px-2 py-0.5 rounded text-[9px] font-black uppercase text-white bg-red-600 mb-0.5 shadow-xs">
+            PELIGRO
+          </span>
+          <p id="fdsGhsName" class="text-xs font-black text-slate-800 leading-tight">Clase SGA Oficial</p>
+          <p id="fdsHazardCode" class="text-[10px] font-mono font-bold text-slate-500 mt-0.5">H225 • P210</p>
+        </div>
+      </div>
+
+      <!-- FDS Core Excerpt (Section 2 & 8) -->
+      <div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs">
+        <div class="border-b border-slate-200 pb-1.5">
+          <p class="text-[10px] font-black uppercase text-slate-500">Sección 2: Identificación de Peligros</p>
+          <p id="fdsHazardExcerpt" class="font-bold text-red-600 mt-0.5">Indicaciones de peligro SGA...</p>
+        </div>
+        <div>
+          <p class="text-[10px] font-black uppercase text-slate-500">Sección 8: Control de Exposición / EPP</p>
+          <p id="fdsEppExcerpt" class="font-semibold text-slate-700 mt-0.5">Guantes recomendados, protección ocular...</p>
+        </div>
+      </div>
+
+      <!-- Countdown Freeze Alert -->
+      <div class="flex items-center justify-between text-[11px] text-slate-500 font-bold px-1">
+        <span><i class="fa-regular fa-clock mr-1 text-bolivar"></i>Tiempo congelado:</span>
+        <span id="fdsTimerText" class="text-bolivar font-black">3.0s</span>
+      </div>
+
+      <button id="btnResumeGame" class="w-full py-2.5 bg-bolivar text-white font-black rounded-xl hover:bg-bolivar-light shadow-md active:scale-95 text-xs transition-all">
+        ¡ENTENDIDO, CLASIFICAR!
+      </button>
+    </div>
+  </div>
+
+  <!-- PRUEBA INTERACTIVA DE CONOCIMIENTOS (KMA CONSTRUCCIONES & SOLPROSIG) -->
+  <div id="quizModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 text-bolivar-slate shadow-2xl border-4 border-bolivar space-y-3.5 animate-pop-in">
+      <!-- Quiz Header -->
+      <div class="flex items-center justify-between border-b pb-2.5 border-slate-200">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-slate-50 p-1 border border-slate-200 flex items-center justify-center shadow-xs flex-shrink-0" title="Solprosig">
+            <svg viewBox="0 0 786 983" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+              <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+              <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+              <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+              <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-[9px] font-black uppercase text-bolivar tracking-wider">Prueba Interactiva • Obra KMA</span>
+            <h4 class="text-xs font-black text-slate-800 leading-none">Validación SGA & FDS (Res. 773)</h4>
+          </div>
+        </div>
+        <div class="bg-bolivar/10 text-bolivar text-[10px] font-black px-2 py-0.5 rounded-full" id="quizProgressBadge">
+          1 / 3
+        </div>
+      </div>
+
+      <!-- Quiz Body -->
+      <div id="quizQuestionArea" class="space-y-3">
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200">
+          <p class="text-[10px] font-black uppercase text-slate-400 mb-0.5" id="quizCategoryLabel">SGA</p>
+          <p class="text-xs font-bold text-slate-900 leading-snug" id="quizQuestionText">Texto...</p>
+        </div>
+
+        <div id="quizOptionsContainer" class="space-y-2"></div>
+
+        <div id="quizFeedbackBox" class="hidden p-2.5 rounded-xl text-xs font-medium border leading-snug"></div>
+      </div>
+
+      <button id="btnQuizNext" class="w-full py-2.5 bg-bolivar text-white font-black rounded-xl hover:bg-bolivar-light shadow-md active:scale-95 text-xs transition-all hidden">
+        Siguiente Pregunta <i class="fa-solid fa-arrow-right ml-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- GAME OVER / RESULTS PEDAGOGICAL MODAL -->
+  <div id="resultsModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 text-bolivar-slate shadow-2xl border-4 border-bolivar space-y-4 animate-pop-in">
+      <div class="text-center space-y-1">
+        <div class="flex justify-center mb-1">
+          <div class="w-10 h-10 rounded-xl bg-slate-50 p-1.5 border border-slate-200 flex items-center justify-center shadow-inner" title="Solprosig">
+            <svg viewBox="0 0 786 983" class="w-full h-full max-h-full max-w-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+              <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+              <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+              <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+              <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+            </svg>
+          </div>
+        </div>
+        <span id="resultBadge" class="inline-block px-3 py-1 bg-bolivar-gold text-bolivar-slate text-[10px] font-black uppercase rounded-full tracking-wider shadow-sm">
+          Misión Completada
+        </span>
+        <h3 id="resultTitle" class="text-xl font-black text-bolivar">¡Excelente Operación!</h3>
+        <p class="text-xs text-slate-500">KMA Construcciones • Asesoría Solprosig & Seguros Bolívar</p>
+      </div>
+
+      <!-- Stars Graphic -->
+      <div id="resultStars" class="flex justify-center items-center space-x-2 text-2xl text-bolivar-gold py-1">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Puntuación Final: Breakdown Completo (Juego + Prueba Interactiva) -->
+      <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-1.5 text-xs">
+        <div class="flex justify-between items-center text-slate-600">
+          <span class="text-[11px] font-semibold"><i class="fa-solid fa-gamepad text-bolivar mr-1"></i>Destreza en Juego:</span>
+          <span id="resultGameScore" class="font-bold text-slate-800">0 Pts</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600">
+          <span class="text-[11px] font-semibold"><i class="fa-solid fa-clipboard-check text-emerald-600 mr-1"></i>Prueba Interactiva:</span>
+          <span id="resultQuizScore" class="font-bold text-emerald-600">+0 Pts</span>
+        </div>
+        <div class="border-t border-slate-200 pt-1.5 flex justify-between items-center">
+          <span class="text-[11px] font-black text-bolivar uppercase">Puntuación Final Total:</span>
+          <span id="resultScore" class="text-base font-black text-bolivar">0 Pts</span>
+        </div>
+        <div class="flex justify-between items-center text-[10px] text-slate-400 font-semibold pt-0.5">
+          <span>Clasificaciones SGA Obra:</span>
+          <span id="resultAccuracy" class="text-slate-600 font-bold">0 / 0</span>
+        </div>
+      </div>
+
+      <!-- Colombian Legal Feedback Box -->
+      <div class="bg-emerald-50 rounded-2xl p-3 border border-emerald-200 text-xs">
+        <p class="text-[10px] font-black uppercase text-emerald-800 flex items-center">
+          <i class="fa-solid fa-book-bookmark mr-1.5 text-bolivar"></i> Fundamento Normativo
+        </p>
+        <p id="resultNormFeedback" class="text-[11px] font-medium text-emerald-950 mt-1 leading-snug">
+          Según la <strong>Resolución 773 de 2021</strong> y el <strong>Decreto 1496 de 2018</strong>, todo producto químico en obra debe estar rotulado con el pictograma SGA correspondiente y contar con su FDS visible de 16 secciones.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2 pt-1">
+        <button id="btnNextLevel" class="w-full py-3 bg-bolivar text-white font-black rounded-2xl hover:bg-bolivar-light shadow-lg active:scale-95 text-xs transition-all flex items-center justify-center space-x-2">
+          <span>SIGUIENTE NIVEL (BODEGA)</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btnRetryLevel" class="py-2.5 bg-slate-100 text-slate-700 font-extrabold rounded-xl hover:bg-slate-200 active:scale-95 text-xs transition-all">
+            <i class="fa-solid fa-rotate-right mr-1"></i> Reintentar
+          </button>
+          <a href="index.html" class="py-2.5 bg-slate-800 text-white font-extrabold rounded-xl hover:bg-slate-900 active:scale-95 text-xs transition-all text-center block">
+            <i class="fa-solid fa-house mr-1"></i> Menú Hub
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT CODE SCRIPT -->
+  <script>
+    /**
+     * @file game1_sga_hazard.html
+     * @description Minijuego Arcade 1: SGA Hazard Catch & Smash (FDS 16 Secciones & Pictogramas SGA)
+     * Res. 773/2021 y Dec. 1496/2018.
+     */
+
+    // --- 1. WEB AUDIO SYNTHESIZER ---
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playTone(freq, type = 'sine', duration = 0.12, vol = 0.15) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      }
+      playClank() {
+        this.playTone(150, 'sawtooth', 0.25, 0.3);
+      }
+      playCorrect() {
+        this.playTone(523.25, 'triangle', 0.1, 0.2);
+        setTimeout(() => this.playTone(783.99, 'triangle', 0.15, 0.25), 90);
+      }
+      playFreeze() {
+        this.playTone(880, 'sine', 0.3, 0.15);
+      }
+      playVictory() {
+        [440, 554, 659, 880].forEach((f, idx) => {
+          setTimeout(() => this.playTone(f, 'triangle', 0.2, 0.2), idx * 110);
+        });
+      }
+    }
+    const sfx = new SoundEngine();
+
+    // Canvas roundRect polyfill for maximum mobile browser compatibility
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        const radius = typeof r === 'number' ? r : 4;
+        this.beginPath();
+        this.moveTo(x + radius, y);
+        this.lineTo(x + w - radius, y);
+        this.quadraticCurveTo(x + w, y, x + w, y + radius);
+        this.lineTo(x + w, y + h - radius);
+        this.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+        this.lineTo(x + radius, y + h);
+        this.quadraticCurveTo(x, y + h, x, y + h - radius);
+        this.lineTo(x, y + radius);
+        this.quadraticCurveTo(x, y, x + radius, y);
+        this.closePath();
+        return this;
+      };
+    }
+
+    // --- 2. LOS 9 PICTOGRAMAS OFICIALES DEL SGA (Naciones Unidas - UNECE & Res. 773/2021) ---
+    const SGA_PICTOGRAMS = {
+      FLAME: { id: "FLAME", ghsCode: "GHS02", name: "Inflamable", color: "#EF4444" },
+      CORROSION: { id: "CORROSION", ghsCode: "GHS05", name: "Corrosivo", color: "#F59E0B" },
+      TOXIC: { id: "TOXIC", ghsCode: "GHS06", name: "Toxicidad Aguda", color: "#DC2626" },
+      GAS: { id: "GAS", ghsCode: "GHS04", name: "Gas a Presión", color: "#0284C7" },
+      HEALTH: { id: "HEALTH", ghsCode: "GHS08", name: "Peligro Salud", color: "#7C3AED" },
+      ENV: { id: "ENV", ghsCode: "GHS09", name: "Medio Ambiente", color: "#059669" },
+      EXPLOSIVE: { id: "EXPLOSIVE", ghsCode: "GHS01", name: "Explosivo", color: "#EA580C" },
+      OXIDIZING: { id: "OXIDIZING", ghsCode: "GHS03", name: "Comburente", color: "#D97706" },
+      IRRITANT: { id: "IRRITANT", ghsCode: "GHS07", name: "Irritante / Nocivo", color: "#475569" }
+    };
+
+    /**
+     * Generador vectorial idéntico a las especificaciones oficiales de la UNECE (Res. 773/2021).
+     * Rombo rojo reglamentario a 45° (#DA291C), fondo blanco y siluetas negras normalizadas.
+     */
+    function getGhsSvg(id, size = 36) {
+      const svgs = {
+        EXPLOSIVE: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><circle cx="50" cy="55" r="14" fill="#000000"/><path d="M 48 38 L 52 38 L 52 32 L 48 32 Z" fill="#000000"/><polygon points="50,22 47,28 53,28" fill="#000000"/><polygon points="32,32 38,36 35,40" fill="#000000"/><polygon points="68,32 65,40 62,36" fill="#000000"/><polygon points="26,52 34,50 32,56" fill="#000000"/><polygon points="74,52 68,56 66,50" fill="#000000"/><polygon points="32,70 38,64 34,62" fill="#000000"/><polygon points="68,70 66,62 62,64" fill="#000000"/><polygon points="46,75 54,75 50,82" fill="#000000"/><circle cx="38" cy="24" r="2" fill="#000000"/><circle cx="62" cy="24" r="2" fill="#000000"/></svg>`,
+        FLAME: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 28 72 L 72 72 L 72 75 L 28 75 Z" fill="#000000"/><path d="M 50 20 C 50 20 42 32 46 42 C 40 38 38 32 38 32 C 34 38 32 46 34 54 C 36 62 42 70 50 70 C 58 70 64 62 66 54 C 68 46 64 36 58 32 C 58 38 54 44 50 44 C 54 36 50 20 50 20 Z" fill="#000000"/><path d="M 50 48 C 47 52 46 56 47 60 C 48 64 50 66 52 66 C 55 66 57 62 56 58 C 55 54 52 50 50 48 Z" fill="#FFFFFF"/></svg>`,
+        OXIDIZING: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><circle cx="50" cy="58" r="14" fill="none" stroke="#000000" stroke-width="5"/><path d="M 50 22 C 50 22 44 32 47 40 C 42 36 40 32 40 32 C 37 37 36 43 38 48 C 41 45 44 45 47 47 C 45 43 48 38 50 36 C 52 38 55 43 53 47 C 56 45 59 45 62 48 C 64 43 63 37 60 32 C 60 32 58 36 53 40 C 56 32 50 22 50 22 Z" fill="#000000"/><path d="M 30 76 L 70 76 L 70 79 L 30 79 Z" fill="#000000"/></svg>`,
+        GAS: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 28 50 C 28 44 32 42 40 42 L 68 42 C 72 42 74 44 74 50 C 74 56 72 58 68 58 L 40 58 C 32 58 28 56 28 50 Z" fill="#000000"/><rect x="74" y="47" width="4" height="6" fill="#000000"/><rect x="78" y="45" width="2" height="10" fill="#000000"/><rect x="25" y="46" width="3" height="8" rx="1" fill="#000000"/></svg>`,
+        CORROSION: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 28 28 L 38 34 L 32 44 L 22 38 Z" fill="none" stroke="#000000" stroke-width="2.5"/><path d="M 32 44 C 34 50 36 56 37 62" stroke="#000000" stroke-width="2.5" fill="none"/><path d="M 72 28 L 62 34 L 68 44 L 78 38 Z" fill="none" stroke="#000000" stroke-width="2.5"/><path d="M 68 44 C 66 50 64 56 63 62" stroke="#000000" stroke-width="2.5" fill="none"/><path d="M 26 62 L 48 62 L 48 66 C 44 68 40 68 36 66 L 26 66 Z" fill="#000000"/><path d="M 54 68 C 54 64 58 62 64 62 C 67 65 69 66 74 66 L 74 72 L 66 72 C 60 72 54 70 54 68 Z" fill="#000000"/><circle cx="63" cy="63" r="3" fill="#FFFFFF"/></svg>`,
+        TOXIC: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 30 36 L 70 68 M 70 36 L 30 68" stroke="#000000" stroke-width="5" stroke-linecap="round"/><circle cx="28" cy="34" r="3.5" fill="#000000"/><circle cx="72" cy="34" r="3.5" fill="#000000"/><circle cx="28" cy="70" r="3.5" fill="#000000"/><circle cx="72" cy="70" r="3.5" fill="#000000"/><path d="M 36 44 C 36 34 42 30 50 30 C 58 30 64 34 64 44 C 64 50 60 54 58 58 L 42 58 C 40 54 36 50 36 44 Z" fill="#000000"/><circle cx="44" cy="44" r="3.5" fill="#FFFFFF"/><circle cx="56" cy="44" r="3.5" fill="#FFFFFF"/><polygon points="50,49 48,53 52,53" fill="#FFFFFF"/><rect x="44" y="55" width="2" height="4" fill="#FFFFFF"/><rect x="47" y="55" width="2" height="4" fill="#FFFFFF"/><rect x="51" y="55" width="2" height="4" fill="#FFFFFF"/><rect x="54" y="55" width="2" height="4" fill="#FFFFFF"/></svg>`,
+        IRRITANT: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 46 26 L 54 26 L 52 56 L 48 56 Z" fill="#000000"/><circle cx="50" cy="68" r="4.5" fill="#000000"/></svg>`,
+        HEALTH: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><circle cx="50" cy="30" r="7" fill="#000000"/><path d="M 38 42 C 34 46 32 54 32 64 L 68 64 C 68 54 66 46 62 42 C 58 40 42 40 38 42 Z" fill="#000000"/><polygon points="50,38 52,47 60,45 54,51 58,58 50,54 42,58 46,51 40,45 48,47" fill="#FFFFFF"/></svg>`,
+        ENV: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 38 42 C 38 34 35 28 35 28 C 35 34 32 38 30 42 C 33 42 35 44 35 48 L 35 62 L 41 62 L 41 50 C 41 46 44 44 47 44 C 44 40 42 34 42 28 C 42 34 40 38 38 42 Z" fill="#000000"/><path d="M 28 64 L 72 64 C 70 68 66 70 60 70 C 54 70 50 68 46 68 C 42 68 38 70 34 70 C 30 70 28 66 28 64 Z" fill="#000000"/><path d="M 64 56 C 58 54 52 56 48 59 C 52 62 58 64 64 62 L 68 65 L 68 53 Z" fill="#000000"/><circle cx="52" cy="58" r="1" fill="#FFFFFF"/></svg>`
+      };
+      return svgs[id] || svgs.FLAME;
+    }
+
+    // Pre-cache de imágenes bitmap vectoriales para renderizado a 60 FPS en Canvas
+    const GHS_CANVAS_IMAGES = {};
+    Object.keys(SGA_PICTOGRAMS).forEach(key => {
+      const img = new Image();
+      img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(getGhsSvg(key, 80));
+      GHS_CANVAS_IMAGES[key] = img;
+    });
+
+    const CHEMICAL_DATABASE = [
+      {
+        id: "acpm",
+        name: "ACPM (Combustible Diésel B10)",
+        pictogram: "FLAME",
+        color: "#B45309",
+        symbolText: "ACPM B10",
+        signalWord: "PELIGRO",
+        hazardCode: "H226 • H304",
+        sec2: "H226: Líquidos y vapores inflamables. H304: Puede ser mortal en caso de ingestión y penetración en vías respiratorias.",
+        sec8: "Guantes de nitrilo caña larga, botas de seguridad dieléctricas con suela resistente a hidrocarburos y gafas herméticas."
+      },
+      {
+        id: "acido_muriatico",
+        name: "Ácido Muriático (HCl 37%)",
+        pictogram: "CORROSION",
+        color: "#BE123C",
+        symbolText: "HCl 37%",
+        signalWord: "PELIGRO",
+        hazardCode: "H314 • H335",
+        sec2: "H314: Provoca quemaduras graves en la piel y lesiones oculares graves. H335: Puede irritar las vías respiratorias.",
+        sec8: "Guantes de caucho butilo o PVC caña alta, respirador de cara completa con filtro gases ácidos y delantal químico."
+      },
+      {
+        id: "thinner",
+        name: "Thinner Fuerte para Limpieza",
+        pictogram: "FLAME",
+        color: "#C2410C",
+        symbolText: "THINNER",
+        signalWord: "PELIGRO",
+        hazardCode: "H225 • H315",
+        sec2: "H225: Líquido y vapores muy inflamables. H315: Provoca irritación cutánea grave y somnolencia.",
+        sec8: "Respirador para vapores orgánicos con cartucho químico, guantes de nitrilo resistente y gafas panorámicas."
+      },
+      {
+        id: "acetileno",
+        name: "Acetileno para Soldadura",
+        pictogram: "GAS",
+        color: "#1D4ED8",
+        symbolText: "ACETILENO",
+        signalWord: "PELIGRO",
+        hazardCode: "H220 • H280",
+        sec2: "H220: Gas extremadamente inflamable. H280: Contiene gas a presión; peligro de explosión en caso de calentamiento.",
+        sec8: "Guantes de carnaza tipo soldador, careta facial, válvulas arrestallamas obligatorias y ventilación constante."
+      },
+      {
+        id: "soda_caustica",
+        name: "Soda Cáustica (NaOH Escamas)",
+        pictogram: "CORROSION",
+        color: "#C2410C",
+        symbolText: "NaOH 99%",
+        signalWord: "PELIGRO",
+        hazardCode: "H314 • H290",
+        sec2: "H314: Corrosivo cutáneo severo clase 1A. H290: Puede ser corrosivo para los metales con reacción exotérmica violenta.",
+        sec8: "Monogafas herméticas de policarbonato, protector facial completo y guantes pesados de neopreno/butilo."
+      },
+      {
+        id: "pintura_epoxica",
+        name: "Pintura Epóxica para Pavimentos",
+        pictogram: "HEALTH",
+        color: "#7E22CE",
+        symbolText: "EPÓXICO A+B",
+        signalWord: "PELIGRO",
+        hazardCode: "H317 • H373",
+        sec2: "H317: Puede provocar una reacción alérgica en la piel. H373: Puede provocar daños en órganos por exposición prolongada.",
+        sec8: "Semimáscara con filtro combinado vapores/partículas P100 y guantes de nitrilo descartables de 8 mil."
+      },
+      {
+        id: "desmoldante",
+        name: "Desmoldante Base Hidrocarburo",
+        pictogram: "ENV",
+        color: "#047857",
+        symbolText: "DESMOLDANTE",
+        signalWord: "ATENCIÓN",
+        hazardCode: "H411 • P273",
+        sec2: "H411: Tóxico para los organismos acuáticos con efectos nocivos duraderos. P273: No dispersar en el medio ambiente.",
+        sec8: "Impedir vertimientos a fuentes hídricas o alcantarillado. Usar guantes de caucho y pechera impermeable."
+      },
+      {
+        id: "cloro",
+        name: "Hipoclorito de Sodio Industrial",
+        pictogram: "TOXIC",
+        color: "#B91C1C",
+        symbolText: "HIPOCLORITO",
+        signalWord: "PELIGRO",
+        hazardCode: "H331 • H314",
+        sec2: "H331: Tóxico en caso de inhalación. En contacto con ácidos libera gases tóxicos de cloro libre letales.",
+        sec8: "Máscara media cara con cartuchos para halógenos/cloro, guantes de caucho grueso y botas de seguridad impermeables."
+      },
+      {
+        id: "oxigeno",
+        name: "Oxígeno Industrial (Oxicorte)",
+        pictogram: "OXIDIZING",
+        color: "#0284C7",
+        symbolText: "OXÍGENO O2",
+        signalWord: "PELIGRO",
+        hazardCode: "H270 • H280",
+        sec2: "H270: Puede provocar o agravar un incendio; comburente. H280: Contiene gas a presión; peligro de explosión.",
+        sec8: "Guantes limpios libres de grasas o aceites, ropa 100% de algodón antiestática y extintor adyacente."
+      },
+      {
+        id: "dinamita",
+        name: "Cordón Detonante / Dinamita",
+        pictogram: "EXPLOSIVE",
+        color: "#B45309",
+        symbolText: "EXPLOSIVO",
+        signalWord: "PELIGRO",
+        hazardCode: "H201 • P210",
+        sec2: "H201: Explosivo inestable; peligro de explosión en masa. P210: Mantener alejado del calor, chispas y llamas.",
+        sec8: "Operación exclusiva por personal certificado con polvorín reglamentario y prohibición total de celulares."
+      },
+      {
+        id: "cemento",
+        name: "Cemento Portland / Cal Viva",
+        pictogram: "IRRITANT",
+        color: "#475569",
+        symbolText: "CEMENTO",
+        signalWord: "ATENCIÓN",
+        hazardCode: "H315 • H335",
+        sec2: "H315: Provoca irritación cutánea y lesiones oculares. H335: Puede irritar las vías respiratorias por polución.",
+        sec8: "Respirador para material particulado N95, gafas de seguridad con ventilación indirecta y guantes de nitrilo."
+      }
+    ];
+
+    // --- 3. GAME STATE MACHINE ---
+    class GameEngine {
+      constructor() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.score = 0;
+        this.health = 100;
+        this.hits = 0;
+        this.totalSpawned = 0;
+        this.targetToWin = 8;
+        this.isFrozen = false;
+        this.freezeTimeRemaining = 0;
+        this.activeBottles = [];
+        this.particles = [];
+        this.currentBaskets = [];
+        this.draggedBottle = null;
+        this.touchStartOffset = { x: 0, y: 0 };
+        this.pointer = { x: 0, y: 0, active: false };
+        this.lastSpawnTime = 0;
+        this.spawnInterval = 3200; // ms
+        this.gameOver = false;
+
+        this.quizQuestions = [
+          {
+            category: "Sistema Globalmente Armonizado (SGA)",
+            question: "¿Cuál es el pictograma obligatorio del SGA para el combustible o solvente inflamable en obras de KMA?",
+            options: [
+              "Llama sobre un círculo (Comburente)",
+              "Llama (Líquidos Inflamables - GHS02)",
+              "Signo de exclamación únicamente"
+            ],
+            correct: 1,
+            explanation: "La llama (GHS02) identifica líquidos y vapores inflamables como ACPM, thinner y gasolina según la Res. 773/2021."
+          },
+          {
+            category: "Ficha de Datos de Seguridad (FDS)",
+            question: "Según la Resolución 773 de 2021, ¿cuántas secciones estandarizadas debe contener una FDS en obra?",
+            options: [
+              "8 secciones básicas",
+              "16 secciones obligatorias",
+              "12 secciones técnicas"
+            ],
+            correct: 1,
+            explanation: "La norma adopta el estándar internacional de 16 secciones obligatorias para garantizar información completa de SST."
+          },
+          {
+            category: "Etiquetado y Advertencia en Obra",
+            question: "Al observar la palabra de advertencia 'PELIGRO' en un tambor químico de KMA, ¿qué indica?",
+            options: [
+              "Indica un nivel de peligro más grave que 'ATENCIÓN'",
+              "Indica que el producto es inofensivo si se usa de día",
+              "Indica únicamente que el envase está sellado"
+            ],
+            correct: 0,
+            explanation: "El SGA reserva 'PELIGRO' para las categorías de riesgo más severas, superando a la palabra 'ATENCIÓN'."
+          }
+        ];
+        this.quizIndex = 0;
+        this.quizScore = 0;
+        this.quizCorrect = 0;
+
+        this.initCanvasSize();
+        this.setupEventListeners();
+        this.setupBaskets();
+        this.animate = this.animate.bind(this);
+      }
+
+      initCanvasSize() {
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+      }
+
+      setupBaskets() {
+        // Pick 4 distinct pictograms for the bottom baskets
+        const keys = Object.keys(SGA_PICTOGRAMS);
+        this.currentBaskets = keys.slice(0, 4).map(k => SGA_PICTOGRAMS[k]);
+        this.renderBasketsUI();
+      }
+
+      renderBasketsUI() {
+        const container = document.getElementById('basketsContainer');
+        container.innerHTML = '';
+        this.currentBaskets.forEach((pic, index) => {
+          const btn = document.createElement('div');
+          btn.className = `basket-box bg-slate-900 border-2 rounded-2xl p-1.5 flex flex-col items-center justify-center text-center transition-transform shadow-lg cursor-pointer hover:border-bolivar-gold`;
+          btn.style.borderColor = pic.color;
+          btn.dataset.pictogramId = pic.id;
+          btn.innerHTML = `
+            <div class="w-10 h-10 flex items-center justify-center mb-1 drop-shadow-md">
+              ${getGhsSvg(pic.id, 38)}
+            </div>
+            <span class="text-[9px] font-black text-slate-100 uppercase tracking-tighter leading-tight">${pic.name}</span>
+            <span class="text-[8px] font-bold text-bolivar-gold mt-0.5">${pic.ghsCode}</span>
+          `;
+          container.appendChild(btn);
+        });
+      }
+
+      spawnBottle() {
+        if (this.isFrozen || this.gameOver) return;
+        const chem = CHEMICAL_DATABASE[Math.floor(Math.random() * CHEMICAL_DATABASE.length)];
+        
+        // Ensure the chemical's pictogram is present in the 4 baskets
+        const hasBasket = this.currentBaskets.some(b => b.id === chem.pictogram);
+        if (!hasBasket) {
+          this.currentBaskets[Math.floor(Math.random() * this.currentBaskets.length)] = SGA_PICTOGRAMS[chem.pictogram];
+          this.renderBasketsUI();
+        }
+
+        const width = 64;
+        const height = 90;
+        const x = Math.max(20, Math.min(this.canvas.width - width - 20, Math.random() * (this.canvas.width - width)));
+
+        const bottle = {
+          chemical: chem,
+          x: x,
+          y: -height,
+          vx: (Math.random() - 0.5) * 0.8,
+          vy: 1.4 + (this.hits * 0.1), // Speed increases progressively
+          width: width,
+          height: height,
+          isDragging: false
+        };
+
+        this.activeBottles.push(bottle);
+        this.totalSpawned++;
+      }
+
+      setupEventListeners() {
+        window.addEventListener('resize', () => this.initCanvasSize());
+
+        // Touch & Mouse Drag on Canvas
+        const handleDown = (clientX, clientY) => {
+          if (this.isFrozen || this.gameOver) return;
+          const rect = this.canvas.getBoundingClientRect();
+          const x = clientX - rect.left;
+          const y = clientY - rect.top;
+
+          for (let i = this.activeBottles.length - 1; i >= 0; i--) {
+            const b = this.activeBottles[i];
+            if (x >= b.x && x <= b.x + b.width && y >= b.y && y <= b.y + b.height) {
+              // Check if tapped on top magnifier badge (Lupa FDS)
+              if (y <= b.y + 30 && x >= b.x + b.width - 30) {
+                this.openFdsModal(b.chemical);
+                return;
+              }
+
+              this.draggedBottle = b;
+              b.isDragging = true;
+              this.touchStartOffset.x = x - b.x;
+              this.touchStartOffset.y = y - b.y;
+              sfx.playTone(350, 'sine', 0.05, 0.1);
+              break;
+            }
+          }
+        };
+
+        const handleMove = (clientX, clientY) => {
+          if (!this.draggedBottle) return;
+          const rect = this.canvas.getBoundingClientRect();
+          const x = clientX - rect.left;
+          const y = clientY - rect.top;
+          this.draggedBottle.x = x - this.touchStartOffset.x;
+          this.draggedBottle.y = y - this.touchStartOffset.y;
+        };
+
+        const handleUp = () => {
+          if (!this.draggedBottle) return;
+          const b = this.draggedBottle;
+          b.isDragging = false;
+          this.draggedBottle = null;
+
+          // Check if dropped into a basket at bottom
+          if (b.y + b.height >= this.canvas.height - 40) {
+            this.evaluateDrop(b);
+          }
+        };
+
+        this.canvas.addEventListener('touchstart', (e) => {
+          if (e.cancelable) e.preventDefault();
+          const t = e.touches[0];
+          const rect = this.canvas.getBoundingClientRect();
+          this.pointer.x = t.clientX - rect.left;
+          this.pointer.y = t.clientY - rect.top;
+          this.pointer.active = true;
+          handleDown(t.clientX, t.clientY);
+        }, { passive: false });
+
+        this.canvas.addEventListener('touchmove', (e) => {
+          if (e.cancelable) e.preventDefault();
+          const t = e.touches[0];
+          const rect = this.canvas.getBoundingClientRect();
+          this.pointer.x = t.clientX - rect.left;
+          this.pointer.y = t.clientY - rect.top;
+          handleMove(t.clientX, t.clientY);
+        }, { passive: false });
+
+        this.canvas.addEventListener('touchend', (e) => {
+          if (e.cancelable) e.preventDefault();
+          this.pointer.active = false;
+          handleUp();
+        }, { passive: false });
+
+        this.canvas.addEventListener('mousedown', (e) => {
+          const rect = this.canvas.getBoundingClientRect();
+          this.pointer.x = e.clientX - rect.left;
+          this.pointer.y = e.clientY - rect.top;
+          this.pointer.active = true;
+          handleDown(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+          const rect = this.canvas.getBoundingClientRect();
+          this.pointer.x = e.clientX - rect.left;
+          this.pointer.y = e.clientY - rect.top;
+          handleMove(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('mouseup', () => {
+          this.pointer.active = false;
+          handleUp();
+        });
+      }
+
+      evaluateDrop(bottle) {
+        // Map x position to one of the 4 baskets
+        const basketIndex = Math.min(3, Math.max(0, Math.floor((bottle.x + bottle.width / 2) / (this.canvas.width / 4))));
+        const chosenBasket = this.currentBaskets[basketIndex];
+
+        // Remove from list
+        this.activeBottles = this.activeBottles.filter(item => item !== bottle);
+
+        if (chosenBasket && chosenBasket.id === bottle.chemical.pictogram) {
+          // Success
+          this.score += 250;
+          this.hits++;
+          sfx.playCorrect();
+          this.createExplosion(bottle.x + bottle.width / 2, bottle.y + bottle.height / 2, '#10B981', 20);
+          this.triggerLuchoReaction('¡BIEN CLASIFICADO!', 'happy');
+          this.updateHud();
+
+          if (this.hits >= this.targetToWin) {
+            this.endGame(true);
+          }
+        } else {
+          // Smash / Error
+          this.applySmashPenalty(bottle);
+        }
+      }
+
+      applySmashPenalty(bottle) {
+        this.health = Math.max(0, this.health - 25);
+        sfx.playClank();
+        this.createExplosion(bottle.x + bottle.width / 2, bottle.y + bottle.height / 2, '#EF4444', 30);
+        this.triggerLuchoReaction('¡SANTAS REACCIONES! ¡CLANK!', 'scared');
+        
+        // Screen shake
+        const body = document.getElementById('gameBody');
+        body.classList.remove('animate-screen-shake');
+        void body.offsetWidth;
+        body.classList.add('animate-screen-shake');
+
+        this.updateHud();
+
+        if (this.health <= 0) {
+          this.endGame(false);
+        }
+      }
+
+      triggerLuchoReaction(text, mood = 'neutral') {
+        const bubble = document.getElementById('comicBubble');
+        const comicText = document.getElementById('comicText');
+        const mouth = document.getElementById('luchoMouth');
+        const eyeLeft = document.getElementById('luchoEyeLeft');
+        const eyeRight = document.getElementById('luchoEyeRight');
+
+        comicText.textContent = text;
+        bubble.classList.remove('hidden');
+
+        if (mood === 'scared') {
+          // Big comic scared eyes and open mouth
+          eyeLeft.setAttribute('r', '7');
+          eyeRight.setAttribute('r', '7');
+          mouth.setAttribute('d', 'M 40 70 Q 50 60 60 70'); // Inverted mouth
+        } else {
+          eyeLeft.setAttribute('r', '5');
+          eyeRight.setAttribute('r', '5');
+          mouth.setAttribute('d', 'M 42 64 Q 50 74 58 64'); // Wide smile
+        }
+
+        setTimeout(() => {
+          bubble.classList.add('hidden');
+          eyeLeft.setAttribute('r', '5');
+          eyeRight.setAttribute('r', '5');
+          mouth.setAttribute('d', 'M 44 66 Q 50 72 56 66');
+        }, 1800);
+      }
+
+      openFdsModal(chemical) {
+        this.isFrozen = true;
+        sfx.playFreeze();
+
+        document.getElementById('fdsChemicalName').textContent = chemical.name;
+        document.getElementById('fdsHazardExcerpt').textContent = chemical.sec2;
+        document.getElementById('fdsEppExcerpt').textContent = chemical.sec8;
+
+        // Render official UN GHS SVG diamond and legal attributes (Res. 773/2021)
+        const pic = SGA_PICTOGRAMS[chemical.pictogram];
+        const picContainer = document.getElementById('fdsPictogramContainer');
+        if (picContainer) {
+          picContainer.innerHTML = getGhsSvg(chemical.pictogram, 52);
+        }
+        const signalBadge = document.getElementById('fdsSignalBadge');
+        if (signalBadge) {
+          signalBadge.textContent = chemical.signalWord || 'PELIGRO';
+          signalBadge.className = `inline-block px-2 py-0.5 rounded text-[9px] font-black uppercase text-white ${chemical.signalWord === 'ATENCIÓN' ? 'bg-amber-600' : 'bg-red-600'} mb-0.5 shadow-xs`;
+        }
+        const ghsNameEl = document.getElementById('fdsGhsName');
+        if (ghsNameEl) {
+          ghsNameEl.textContent = pic ? `${pic.ghsCode} - ${pic.name}` : chemical.symbolText;
+        }
+        const hazardCodeEl = document.getElementById('fdsHazardCode');
+        if (hazardCodeEl) {
+          hazardCodeEl.textContent = chemical.hazardCode || 'Norma SGA UNECE';
+        }
+
+        const modal = document.getElementById('fdsModal');
+        modal.classList.remove('hidden');
+
+        let freezeTimer = 3.0;
+        const timerEl = document.getElementById('fdsTimerText');
+        timerEl.textContent = `${freezeTimer.toFixed(1)}s`;
+
+        clearInterval(this.freezeInterval);
+        this.freezeInterval = setInterval(() => {
+          freezeTimer -= 0.1;
+          if (freezeTimer <= 0) {
+            clearInterval(this.freezeInterval);
+            this.closeFdsModal();
+          } else {
+            timerEl.textContent = `${freezeTimer.toFixed(1)}s`;
+          }
+        }, 100);
+      }
+
+      closeFdsModal() {
+        clearInterval(this.freezeInterval);
+        document.getElementById('fdsModal').classList.add('hidden');
+        this.isFrozen = false;
+      }
+
+      createExplosion(x, y, color, count = 25) {
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 5 + 2;
+          this.particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: Math.random() * 4 + 2,
+            color: color,
+            alpha: 1,
+            decay: Math.random() * 0.03 + 0.02
+          });
+        }
+      }
+
+      updateHud() {
+        document.getElementById('scoreVal').textContent = this.score;
+        document.getElementById('healthText').textContent = `${this.health}%`;
+        const healthBar = document.getElementById('healthBar');
+        healthBar.style.width = `${this.health}%`;
+        if (this.health <= 25) {
+          healthBar.className = 'bg-red-600 h-full rounded-full transition-all duration-300';
+        } else if (this.health <= 50) {
+          healthBar.className = 'bg-amber-500 h-full rounded-full transition-all duration-300';
+        } else {
+          healthBar.className = 'bg-gradient-to-r from-emerald-500 to-bolivar-gold h-full rounded-full transition-all duration-300';
+        }
+      }
+
+      saveProgress(stars, score) {
+        try {
+          const raw = localStorage.getItem('sb_solprosig_arcade_state') || localStorage.getItem('sb_kma_arcade_state');
+          let state;
+          if (raw) {
+            state = JSON.parse(raw);
+          } else {
+            state = {
+              player: { name: 'Lucho el Operario', avatar: '👷', totalScore: 0, totalStars: 0, xp: 200, level: 1 },
+              levels: {
+                "1": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "2": { unlocked: false, stars: 0, highScore: 0, completed: false },
+                "3": { unlocked: false, stars: 0, highScore: 0, completed: false },
+                "4": { unlocked: false, stars: 0, highScore: 0, completed: false },
+                "5": { unlocked: false, stars: 0, highScore: 0, completed: false }
+              },
+              medals: [
+                { id: "sga_master", unlocked: false, title: "Guardián SGA" },
+                { id: "storage_hero", unlocked: false, title: "Maestro Bodega" },
+                { id: "static_zero", unlocked: false, title: "Cero Chispa" },
+                { id: "respel_pro", unlocked: false, title: "Defensor RESPEL" },
+                { id: "spill_commander", unlocked: false, title: "Líder Antiderrame" }
+              ]
+            };
+          }
+          const lvl = state.levels["1"];
+          if (lvl) {
+            lvl.stars = Math.max(lvl.stars || 0, stars);
+            lvl.highScore = Math.max(lvl.highScore || 0, score);
+            if (stars > 0) lvl.completed = true;
+          }
+          // Unlock level 2
+          if (stars > 0 && state.levels["2"]) {
+            state.levels["2"].unlocked = true;
+          }
+          let totalStars = 0;
+          let totalScore = 0;
+          Object.values(state.levels).forEach(l => {
+            totalStars += l.stars || 0;
+            totalScore += l.highScore || 0;
+          });
+          state.player.totalStars = totalStars;
+          state.player.totalScore = totalScore;
+          if (lvl && lvl.completed && state.medals && state.medals[0]) {
+            state.medals[0].unlocked = true;
+          }
+          localStorage.setItem('sb_solprosig_arcade_state', JSON.stringify(state));
+          localStorage.setItem('sb_kma_arcade_state', JSON.stringify(state));
+        } catch(e) {
+          console.error("Error saving progress", e);
+        }
+      }
+
+      endGame(won) {
+        this.gameOver = true;
+        if (won) {
+          sfx.playVictory();
+          this.startQuiz();
+        } else {
+          this.showFinalResults(false);
+        }
+      }
+
+      startQuiz() {
+        this.quizIndex = 0;
+        this.quizScore = 0;
+        this.quizCorrect = 0;
+        document.getElementById('quizModal').classList.remove('hidden');
+        this.renderQuizQuestion();
+      }
+
+      renderQuizQuestion() {
+        const q = this.quizQuestions[this.quizIndex];
+        document.getElementById('quizProgressBadge').textContent = `${this.quizIndex + 1} / ${this.quizQuestions.length}`;
+        document.getElementById('quizCategoryLabel').textContent = q.category;
+        document.getElementById('quizQuestionText').textContent = q.question;
+
+        const container = document.getElementById('quizOptionsContainer');
+        container.innerHTML = '';
+        const feedbackBox = document.getElementById('quizFeedbackBox');
+        feedbackBox.className = 'hidden p-2.5 rounded-xl text-xs font-medium border leading-snug';
+        feedbackBox.textContent = '';
+        document.getElementById('btnQuizNext').classList.add('hidden');
+
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'w-full text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 active:scale-[0.98] transition-all text-xs font-semibold text-slate-800 flex items-start space-x-2';
+          btn.innerHTML = `<span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-black flex-shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span><span class="flex-1">${opt}</span>`;
+          btn.addEventListener('click', () => this.handleQuizAnswer(idx, btn));
+          container.appendChild(btn);
+        });
+      }
+
+      handleQuizAnswer(selectedIdx, clickedBtn) {
+        const q = this.quizQuestions[this.quizIndex];
+        const container = document.getElementById('quizOptionsContainer');
+        const buttons = container.querySelectorAll('button');
+        buttons.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('quizFeedbackBox');
+        feedbackBox.classList.remove('hidden');
+
+        if (selectedIdx === q.correct) {
+          sfx.playSuccess();
+          this.quizScore += 100;
+          this.quizCorrect++;
+          clickedBtn.className = 'w-full text-left p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 transition-all text-xs font-bold flex items-start space-x-2';
+          feedbackBox.className = 'p-2.5 rounded-xl text-xs font-semibold border border-emerald-300 bg-emerald-50 text-emerald-900 leading-snug';
+          feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> <strong>¡Correcto!</strong> ${q.explanation}`;
+        } else {
+          sfx.playZap();
+          clickedBtn.className = 'w-full text-left p-2.5 rounded-xl border-2 border-red-500 bg-red-50 text-red-900 transition-all text-xs font-bold flex items-start space-x-2';
+          if (buttons[q.correct]) {
+            buttons[q.correct].className = 'w-full text-left p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 transition-all text-xs font-bold flex items-start space-x-2';
+          }
+          feedbackBox.className = 'p-2.5 rounded-xl text-xs font-semibold border border-red-300 bg-red-50 text-red-900 leading-snug';
+          feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-600 mr-1"></i> <strong>Atención:</strong> ${q.explanation}`;
+        }
+
+        const nextBtn = document.getElementById('btnQuizNext');
+        nextBtn.classList.remove('hidden');
+        if (this.quizIndex + 1 >= this.quizQuestions.length) {
+          nextBtn.innerHTML = 'Ver Puntuación Final <i class="fa-solid fa-trophy ml-1"></i>';
+        } else {
+          nextBtn.innerHTML = 'Siguiente Pregunta <i class="fa-solid fa-arrow-right ml-1"></i>';
+        }
+      }
+
+      nextQuizQuestion() {
+        this.quizIndex++;
+        if (this.quizIndex < this.quizQuestions.length) {
+          this.renderQuizQuestion();
+        } else {
+          document.getElementById('quizModal').classList.add('hidden');
+          this.showFinalResults(true);
+        }
+      }
+
+      showFinalResults(won) {
+        let stars = 0;
+        const totalFinalScore = this.score + this.quizScore;
+        if (won) {
+          if (this.health >= 60 && this.quizCorrect >= 2) {
+            stars = 3;
+          } else if (this.health >= 30 || this.quizCorrect >= 1) {
+            stars = 2;
+          } else {
+            stars = 1;
+          }
+        }
+
+        this.saveProgress(stars, totalFinalScore);
+
+        const modal = document.getElementById('resultsModal');
+        const badge = document.getElementById('resultBadge');
+        const title = document.getElementById('resultTitle');
+        const gameScoreText = document.getElementById('resultGameScore');
+        const quizScoreText = document.getElementById('resultQuizScore');
+        const finalScoreText = document.getElementById('resultScore');
+        const accText = document.getElementById('resultAccuracy');
+        const starsBox = document.getElementById('resultStars');
+
+        badge.textContent = won ? "NIVEL 1 COMPLETADO" : "SEGURIDAD COMPROMETIDA";
+        badge.className = `inline-block px-3 py-1 ${won ? 'bg-bolivar-gold text-bolivar-slate' : 'bg-red-500 text-white'} text-[10px] font-black uppercase rounded-full tracking-wider shadow-sm`;
+        title.textContent = won ? "¡Guardianes del SGA!" : "¡Accidente en Obra!";
+        title.className = `text-xl font-black ${won ? 'text-bolivar' : 'text-red-600'}`;
+
+        if (gameScoreText) gameScoreText.textContent = `${this.score} Pts`;
+        if (quizScoreText) quizScoreText.textContent = `+${this.quizScore} Pts (${this.quizCorrect}/${this.quizQuestions.length})`;
+        finalScoreText.textContent = `${totalFinalScore} Pts`;
+        if (accText) accText.textContent = `${this.hits} / ${this.targetToWin}`;
+
+        starsBox.innerHTML = '';
+        for (let s = 1; s <= 3; s++) {
+          starsBox.innerHTML += s <= stars 
+            ? '<i class="fa-solid fa-star text-bolivar-gold drop-shadow-md"></i>' 
+            : '<i class="fa-regular fa-star text-slate-300"></i>';
+        }
+
+        modal.classList.remove('hidden');
+      }
+
+      animate(timestamp) {
+        if (!this.lastSpawnTime) this.lastSpawnTime = timestamp;
+
+        // Spawn logic
+        if (!this.isFrozen && !this.gameOver && timestamp - this.lastSpawnTime > this.spawnInterval) {
+          this.spawnBottle();
+          this.lastSpawnTime = timestamp;
+        }
+
+        // Clear canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Update & Render falling bottles
+        for (let i = this.activeBottles.length - 1; i >= 0; i--) {
+          const b = this.activeBottles[i];
+          if (!this.isFrozen && !b.isDragging) {
+            b.x += b.vx;
+            b.y += b.vy;
+          }
+
+          // Render Chemical Drum / Caneca
+          this.ctx.save();
+          this.ctx.translate(b.x, b.y);
+
+          // Shadow
+          this.ctx.fillStyle = 'rgba(0,0,0,0.3)';
+          this.ctx.beginPath();
+          this.ctx.ellipse(b.width / 2, b.height + 4, b.width / 2 - 4, 8, 0, 0, Math.PI * 2);
+          this.ctx.fill();
+
+          // 1. Drum Body (Caneca industrial 55 galones con anillo metálico)
+          this.ctx.fillStyle = b.chemical.color;
+          this.ctx.beginPath();
+          this.ctx.roundRect(0, 14, b.width, b.height - 14, 8);
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#FFFFFF';
+          this.ctx.lineWidth = 2;
+          this.ctx.stroke();
+
+          // Industrial Drum Rolling Hoops / Ribs (Aros de refuerzo)
+          this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+          this.ctx.lineWidth = 2;
+          this.ctx.beginPath();
+          this.ctx.moveTo(2, 38);
+          this.ctx.lineTo(b.width - 2, 38);
+          this.ctx.moveTo(2, 72);
+          this.ctx.lineTo(b.width - 2, 72);
+          this.ctx.stroke();
+
+          // Drum Top Bung Plugs (Tapones roscados de 2" y 3/4")
+          this.ctx.fillStyle = '#0F172A';
+          this.ctx.fillRect(b.width / 2 - 14, 4, 16, 10);
+          this.ctx.strokeRect(b.width / 2 - 14, 4, 16, 10);
+          this.ctx.fillStyle = '#475569';
+          this.ctx.fillRect(b.width / 2 + 6, 8, 8, 6);
+
+          // 2. Official Chemical Label Plate (Res. 773/2021 Art. 6)
+          const lblX = 5;
+          const lblY = 24;
+          const lblW = b.width - 10;
+          const lblH = 54;
+          this.ctx.fillStyle = '#FFFFFF';
+          this.ctx.beginPath();
+          this.ctx.roundRect(lblX, lblY, lblW, lblH, 4);
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#94A3B8';
+          this.ctx.lineWidth = 1;
+          this.ctx.stroke();
+
+          // Legal Signal Word Banner (PELIGRO / ATENCIÓN)
+          const isDanger = b.chemical.signalWord !== 'ATENCIÓN';
+          this.ctx.fillStyle = isDanger ? '#DA291C' : '#D97706';
+          this.ctx.beginPath();
+          this.ctx.roundRect(lblX, lblY, lblW, 9, [4, 4, 0, 0]);
+          this.ctx.fill();
+          this.ctx.fillStyle = '#FFFFFF';
+          this.ctx.font = '900 6.5px sans-serif';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText(b.chemical.signalWord || 'PELIGRO', lblX + lblW / 2, lblY + 7);
+
+          // Authentic UNECE GHS Vector Diamond Blit
+          const ghsImg = GHS_CANVAS_IMAGES[b.chemical.pictogram];
+          if (ghsImg && ghsImg.complete) {
+            this.ctx.drawImage(ghsImg, b.width / 2 - 13, lblY + 11, 26, 26);
+          } else {
+            // Fallback border
+            this.ctx.strokeStyle = '#DA291C';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(b.width / 2 - 11, lblY + 13, 22, 22);
+          }
+
+          // Chemical Symbol & Product ID
+          this.ctx.fillStyle = '#0F172A';
+          this.ctx.font = 'bold 7px sans-serif';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText(b.chemical.symbolText, b.width / 2, lblY + 44);
+
+          // Hazard statement microcode
+          this.ctx.fillStyle = '#64748B';
+          this.ctx.font = '600 5.5px monospace';
+          const shortCode = (b.chemical.hazardCode || 'SGA').split('•')[0].trim();
+          this.ctx.fillText(shortCode, b.width / 2, lblY + 51);
+
+          // 3. Magnifier Badge (Tap to Freeze & View 16-Section FDS)
+          this.ctx.fillStyle = '#FFC72C';
+          this.ctx.beginPath();
+          this.ctx.arc(b.width - 6, 14, 11, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#006738';
+          this.ctx.lineWidth = 2;
+          this.ctx.stroke();
+          this.ctx.fillStyle = '#006738';
+          this.ctx.font = 'bold 11px sans-serif';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText('🔍', b.width - 6, 18);
+
+          this.ctx.restore();
+
+          // Fall off screen without classification -> penalty
+          if (b.y > this.canvas.height) {
+            this.activeBottles.splice(i, 1);
+            this.applySmashPenalty(b);
+          }
+        }
+
+        // Render Particles
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= p.decay;
+
+          if (p.alpha <= 0) {
+            this.particles.splice(i, 1);
+            continue;
+          }
+
+          this.ctx.save();
+          this.ctx.globalAlpha = p.alpha;
+          this.ctx.fillStyle = p.color;
+          this.ctx.beginPath();
+          this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.restore();
+        }
+
+        // --- FIRST PERSON POV GLOVED HAND RENDERING ---
+        this.drawFirstPersonHand();
+
+        requestAnimationFrame(this.animate);
+      }
+
+      drawFirstPersonHand() {
+        const isDragging = !!this.draggedBottle;
+        const targetX = isDragging ? (this.draggedBottle.x + this.draggedBottle.width / 2) : (this.pointer.active ? this.pointer.x : (this.canvas.width * 0.72));
+        const targetY = isDragging ? (this.draggedBottle.y + this.draggedBottle.height * 0.85) : (this.pointer.active ? this.pointer.y : (this.canvas.height - 30));
+
+        const baseArmX = this.canvas.width * 0.78;
+        const baseArmY = this.canvas.height + 60;
+
+        this.ctx.save();
+
+        // 1. Forearm Sleeve (Solprosig Safety Uniform - Bolívar Green)
+        this.ctx.beginPath();
+        this.ctx.moveTo(baseArmX - 45, baseArmY);
+        this.ctx.lineTo(baseArmX + 45, baseArmY);
+        this.ctx.lineTo(targetX + 26, targetY + 45);
+        this.ctx.lineTo(targetX - 26, targetY + 45);
+        this.ctx.closePath();
+        this.ctx.fillStyle = '#006738';
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#0F172A';
+        this.ctx.lineWidth = 3;
+        this.ctx.stroke();
+
+        // 2. High-Visibility Reflective Silver Stripe
+        const midX = (baseArmX + targetX) / 2;
+        const midY = (baseArmY + targetY) / 2;
+        this.ctx.fillStyle = '#E2E8F0';
+        this.ctx.beginPath();
+        this.ctx.ellipse(midX, midY, 32, 10, Math.atan2(targetY - baseArmY, targetX - baseArmX), 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // 3. Heavy-Duty Safety Cuff (Bolívar Gold)
+        this.ctx.fillStyle = '#FFC72C';
+        this.ctx.beginPath();
+        this.ctx.roundRect(targetX - 26, targetY + 32, 52, 14, 4);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // 4. Nitrile Protective Glove (Palm & Thumb)
+        this.ctx.fillStyle = '#008244';
+        this.ctx.beginPath();
+        this.ctx.ellipse(targetX, targetY + 16, 24, 20, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#FFFFFF';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.stroke();
+
+        // 5. Gloved Fingers (Wrapping firmly around container if dragging)
+        if (isDragging) {
+          for (let f = 0; f < 4; f++) {
+            const fx = targetX - 18 + (f * 12);
+            const fy = targetY - 4;
+            this.ctx.fillStyle = '#006738';
+            this.ctx.beginPath();
+            this.ctx.roundRect(fx - 5, fy - 8, 10, 20, 5);
+            this.ctx.fill();
+            this.ctx.strokeStyle = '#FFC72C';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.stroke();
+          }
+          // Gripping thumb
+          this.ctx.fillStyle = '#008244';
+          this.ctx.beginPath();
+          this.ctx.ellipse(targetX - 22, targetY + 10, 8, 14, -0.4, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.stroke();
+        } else {
+          // Open ready fingers
+          for (let f = 0; f < 4; f++) {
+            const fx = targetX - 16 + (f * 11);
+            const fy = targetY - 14;
+            this.ctx.fillStyle = '#008244';
+            this.ctx.beginPath();
+            this.ctx.roundRect(fx - 4, fy - 10, 8, 22, 4);
+            this.ctx.fill();
+            this.ctx.strokeStyle = '#1E293B';
+            this.ctx.lineWidth = 1;
+            this.ctx.stroke();
+          }
+        }
+
+        this.ctx.restore();
+      }
+    }
+
+    // --- 4. BOOTSTRAP ---
+    let engine;
+    document.addEventListener('DOMContentLoaded', () => {
+      engine = new GameEngine();
+      requestAnimationFrame(engine.animate);
+
+      // Buttons
+      document.getElementById('btnCloseFds').addEventListener('click', () => engine.closeFdsModal());
+      document.getElementById('btnResumeGame').addEventListener('click', () => engine.closeFdsModal());
+      document.getElementById('btnQuizNext').addEventListener('click', () => engine.nextQuizQuestion());
+      
+      document.getElementById('btnNextLevel').addEventListener('click', () => {
+        window.location.href = 'game2_bodega_peligro.html';
+      });
+      document.getElementById('btnRetryLevel').addEventListener('click', () => {
+        window.location.reload();
+      });
+
+      const btnAudio = document.getElementById('btnAudio');
+      const audioIcon = document.getElementById('audioIcon');
+      btnAudio.addEventListener('click', () => {
+        sfx.init();
+        sfx.muted = !sfx.muted;
+        audioIcon.className = sfx.muted ? 'fa-solid fa-volume-xmark text-xs' : 'fa-solid fa-volume-high text-xs';
+      });
+    });
+  </script>
+</body>
+</html>

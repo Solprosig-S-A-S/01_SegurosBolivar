@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nivel 2: Tetris Químico - Bodega en Peligro | KMA Construcciones • Seguros Bolívar</title>
+
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bolivar: {
+              DEFAULT: '#006738',
+              light: '#008244',
+              gold: '#FFC72C',
+              surface: '#F4F6F8',
+              slate: '#1E293B'
+            }
+          },
+          keyframes: {
+            screenShake: {
+              '0%, 100%': { transform: 'translate(0, 0)' },
+              '20%': { transform: 'translate(-8px, 6px)' },
+              '40%': { transform: 'translate(8px, -6px)' },
+              '60%': { transform: 'translate(-6px, -4px)' },
+              '80%': { transform: 'translate(6px, 4px)' }
+            },
+            popIn: {
+              '0%': { transform: 'scale(0.85)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
+            }
+          },
+          animation: {
+            'screen-shake': 'screenShake 0.4s ease-in-out',
+            'pop-in': 'popIn 0.3s ease-out'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome v6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      overflow: hidden;
+    }
+    .comic-bubble-dialog {
+      position: relative;
+      background: #ffffff;
+      border: 3px solid #1E293B;
+      border-radius: 1.25rem;
+    }
+    .comic-bubble-dialog::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 20px;
+      border-width: 12px 10px 0 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+      width: 0;
+    }
+  </style>
+</head>
+<body id="gameBody" class="bg-slate-900 text-slate-100 h-screen w-screen flex flex-col justify-between font-sans relative">
+
+  <!-- TOP HUD -->
+  <header class="bg-bolivar/95 backdrop-blur-md px-4 py-2 border-b-2 border-bolivar-gold shadow-md flex items-center justify-between z-30 flex-shrink-0">
+    <!-- Back to Hub & Brand Logo -->
+    <div class="flex items-center space-x-2">
+      <a href="index.html" class="w-10 h-10 rounded-xl bg-bolivar-light flex items-center justify-center text-white hover:bg-bolivar active:scale-95 transition-all shadow">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+      <div class="w-9 h-9 rounded-xl bg-white p-1 flex items-center justify-center shadow-md flex-shrink-0" title="Solprosig">
+        <svg viewBox="0 0 786 983" class="w-full h-full max-h-full max-w-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+          <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+          <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+          <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+          <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Warehouse Stability Bar -->
+    <div class="flex-1 mx-3 max-w-xs">
+      <div class="flex justify-between items-center text-[10px] uppercase font-black text-bolivar-gold mb-0.5">
+        <span><i class="fa-solid fa-boxes-stacked mr-1"></i>Estabilidad Bodega</span>
+        <span id="healthText">100%</span>
+      </div>
+      <div class="w-full bg-slate-950/60 rounded-full h-3 p-0.5 border border-white/20">
+        <div id="healthBar" class="bg-gradient-to-r from-emerald-500 to-bolivar-gold h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+      </div>
+    </div>
+
+    <!-- Score & Sound -->
+    <div class="text-right flex items-center space-x-2">
+      <div class="bg-slate-950/50 px-2.5 py-1 rounded-xl border border-white/10 text-center">
+        <p class="text-[9px] uppercase font-bold text-slate-400">Puntaje</p>
+        <p id="scoreVal" class="text-sm font-black text-bolivar-gold leading-none">0</p>
+      </div>
+      <button id="btnAudio" class="w-10 h-10 rounded-xl bg-slate-800 text-bolivar-gold flex items-center justify-center active:scale-95 shadow">
+        <i id="audioIcon" class="fa-solid fa-volume-high text-xs"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- GAME AREA -->
+  <main class="relative flex-1 w-full overflow-hidden flex flex-col items-center justify-between p-2 max-w-md mx-auto">
+
+    <!-- Active Falling Item Area (Top Conveyor) -->
+    <div class="w-full bg-slate-950/80 rounded-2xl p-2.5 border border-slate-700 flex items-center justify-between z-20 shadow-md">
+      <div class="flex items-center space-x-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-bolivar-gold animate-ping"></span>
+        <span class="text-[10px] uppercase font-black text-slate-300">En Cinta Transportadora:</span>
+      </div>
+      <span class="text-[10px] font-bold text-bolivar-gold bg-bolivar/30 px-2 py-0.5 rounded-full">
+        Dec. 4741/2005
+      </span>
+    </div>
+
+    <!-- Active Chemical Card or Trap Bottle -->
+    <div id="activeItemContainer" class="w-full flex justify-center py-2 z-20">
+      <!-- Generado dinámicamente -->
+    </div>
+
+    <!-- Warning / Instruction Banner -->
+    <div id="instructionBanner" class="bg-amber-500/20 border border-amber-500/50 px-3 py-1 rounded-xl text-center text-xs font-bold text-amber-300 z-20">
+      Organiza por cuadrantes. ¡Toca las botellas de gaseosa para incinerarlas!
+    </div>
+
+    <!-- 4-QUADRANT WAREHOUSE SHELVING -->
+    <!-- 4-QUADRANT WAREHOUSE SHELVING CON ROMBOS SGA OFICIALES UNECE -->
+    <div id="warehouseGrid" class="w-full grid grid-cols-2 gap-2 flex-1 my-2 z-20">
+      <!-- Quadrant 1: Inflamables (GHS02) -->
+      <div class="shelf-quadrant bg-red-950/40 border-2 border-red-500/60 rounded-2xl p-2 flex flex-col justify-between relative cursor-pointer active:scale-98 transition-transform" data-zone="FLAMMABLE">
+        <div class="flex items-center justify-between border-b border-red-500/40 pb-1">
+          <span class="text-[10px] font-black text-red-400 uppercase tracking-tight flex items-center space-x-1.5">
+            <svg viewBox="0 0 100 100" class="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/>
+              <path d="M 28 72 L 72 72 L 72 75 L 28 75 Z" fill="#000000"/>
+              <path d="M 50 20 C 50 20 42 32 46 42 C 40 38 38 32 38 32 C 34 38 32 46 34 54 C 36 62 42 70 50 70 C 58 70 64 62 66 54 C 68 46 64 36 58 32 C 58 38 54 44 50 44 C 54 36 50 20 50 20 Z" fill="#000000"/>
+              <path d="M 50 48 C 47 52 46 56 47 60 C 48 64 50 66 52 66 C 55 66 57 62 56 58 C 55 54 52 50 50 48 Z" fill="#FFFFFF"/>
+            </svg>
+            <span>Inflamables</span>
+          </span>
+          <span class="text-[9px] bg-red-500/20 text-red-300 px-1 rounded font-bold">GHS02</span>
+        </div>
+        <div id="slot-FLAMMABLE" class="grid grid-cols-3 gap-1 py-1 min-h-[65px] content-start"></div>
+        <button class="btn-deposit w-full py-1 bg-red-600/80 hover:bg-red-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider shadow">
+          Ubicar Aquí
+        </button>
+      </div>
+
+      <!-- Quadrant 2: Corrosivos (GHS05) -->
+      <div class="shelf-quadrant bg-amber-950/40 border-2 border-amber-500/60 rounded-2xl p-2 flex flex-col justify-between relative cursor-pointer active:scale-98 transition-transform" data-zone="CORROSIVE">
+        <div class="flex items-center justify-between border-b border-amber-500/40 pb-1">
+          <span class="text-[10px] font-black text-amber-400 uppercase tracking-tight flex items-center space-x-1.5">
+            <svg viewBox="0 0 100 100" class="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/>
+              <path d="M 28 28 L 38 34 L 32 44 L 22 38 Z" fill="none" stroke="#000000" stroke-width="2.5"/>
+              <path d="M 32 44 C 34 50 36 56 37 62" stroke="#000000" stroke-width="2.5" fill="none"/>
+              <path d="M 72 28 L 62 34 L 68 44 L 78 38 Z" fill="none" stroke="#000000" stroke-width="2.5"/>
+              <path d="M 68 44 C 66 50 64 56 63 62" stroke="#000000" stroke-width="2.5" fill="none"/>
+              <path d="M 26 62 L 48 62 L 48 66 C 44 68 40 68 36 66 L 26 66 Z" fill="#000000"/>
+              <path d="M 54 68 C 54 64 58 62 64 62 C 67 65 69 66 74 66 L 74 72 L 66 72 C 60 72 54 70 54 68 Z" fill="#000000"/>
+              <circle cx="63" cy="63" r="3" fill="#FFFFFF"/>
+            </svg>
+            <span>Corrosivos</span>
+          </span>
+          <span class="text-[9px] bg-amber-500/20 text-amber-300 px-1 rounded font-bold">GHS05</span>
+        </div>
+        <div id="slot-CORROSIVE" class="grid grid-cols-3 gap-1 py-1 min-h-[65px] content-start"></div>
+        <button class="btn-deposit w-full py-1 bg-amber-600/80 hover:bg-amber-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider shadow">
+          Ubicar Aquí
+        </button>
+      </div>
+
+      <!-- Quadrant 3: Oxidantes (GHS03) -->
+      <div class="shelf-quadrant bg-blue-950/40 border-2 border-blue-500/60 rounded-2xl p-2 flex flex-col justify-between relative cursor-pointer active:scale-98 transition-transform" data-zone="OXIDIZER">
+        <div class="flex items-center justify-between border-b border-blue-500/40 pb-1">
+          <span class="text-[10px] font-black text-blue-400 uppercase tracking-tight flex items-center space-x-1.5">
+            <svg viewBox="0 0 100 100" class="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/>
+              <circle cx="50" cy="58" r="14" fill="none" stroke="#000000" stroke-width="5"/>
+              <path d="M 50 22 C 50 22 44 32 47 40 C 42 36 40 32 40 32 C 37 37 36 43 38 48 C 41 45 44 45 47 47 C 45 43 48 38 50 36 C 52 38 55 43 53 47 C 56 45 59 45 62 48 C 64 43 63 37 60 32 C 60 32 58 36 53 40 C 56 32 50 22 50 22 Z" fill="#000000"/>
+              <path d="M 30 76 L 70 76 L 70 79 L 30 79 Z" fill="#000000"/>
+            </svg>
+            <span>Oxidantes</span>
+          </span>
+          <span class="text-[9px] bg-blue-500/20 text-blue-300 px-1 rounded font-bold">GHS03</span>
+        </div>
+        <div id="slot-OXIDIZER" class="grid grid-cols-3 gap-1 py-1 min-h-[65px] content-start"></div>
+        <button class="btn-deposit w-full py-1 bg-blue-600/80 hover:bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider shadow">
+          Ubicar Aquí
+        </button>
+      </div>
+
+      <!-- Quadrant 4: Lubricantes / Irritantes (GHS07) -->
+      <div class="shelf-quadrant bg-emerald-950/40 border-2 border-emerald-500/60 rounded-2xl p-2 flex flex-col justify-between relative cursor-pointer active:scale-98 transition-transform" data-zone="GENERAL">
+        <div class="flex items-center justify-between border-b border-emerald-500/40 pb-1">
+          <span class="text-[10px] font-black text-emerald-400 uppercase tracking-tight flex items-center space-x-1.5">
+            <svg viewBox="0 0 100 100" class="w-5 h-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/>
+              <path d="M 46 26 L 54 26 L 52 56 L 48 56 Z" fill="#000000"/>
+              <circle cx="50" cy="68" r="4.5" fill="#000000"/>
+            </svg>
+            <span>Lubricantes</span>
+          </span>
+          <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1 rounded font-bold">GHS07</span>
+        </div>
+        <div id="slot-GENERAL" class="grid grid-cols-3 gap-1 py-1 min-h-[65px] content-start"></div>
+        <button class="btn-deposit w-full py-1 bg-emerald-600/80 hover:bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider shadow">
+          Ubicar Aquí
+        </button>
+      </div>
+    </div>
+
+    <!-- Slapstick Reaction Mascot Overlay -->
+    <div id="luchoOverlay" class="w-full flex items-center space-x-3 px-2 z-20">
+      <div class="w-14 h-16 bg-white/10 rounded-2xl border border-white/20 p-1 flex items-center justify-center flex-shrink-0">
+        <!-- Lucho SVG -->
+        <svg id="luchoFace" viewBox="0 0 100 120" class="w-full h-full">
+          <ellipse cx="50" cy="40" rx="36" ry="18" fill="#FFC72C" />
+          <path d="M 18 40 Q 50 14 82 40" fill="#FFC72C" />
+          <circle id="luchoSkin" cx="50" cy="56" r="24" fill="#FBD38D" />
+          <!-- Ojos -->
+          <circle id="luchoLeftEye" cx="42" cy="52" r="5" fill="#1E293B" />
+          <circle id="luchoRightEye" cx="58" cy="52" r="5" fill="#1E293B" />
+          <!-- Boca -->
+          <path id="luchoMouthPath" d="M 44 66 Q 50 72 56 66" stroke="#1E293B" stroke-width="3" fill="none" stroke-linecap="round" />
+          <rect x="26" y="80" width="48" height="40" rx="8" fill="#1E3A8A" />
+        </svg>
+      </div>
+
+      <div id="luchoComicBubble" class="flex-1 comic-bubble-dialog p-2.5 text-bolivar-slate shadow-xl">
+        <p id="luchoComicText" class="text-xs font-black leading-tight text-bolivar">
+          "¡Cuidado con mezclar inflamables con oxidantes! ¡O saldremos volando!"
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- CANECA ROJA DISPOSAL CONTAINER BUTTON (TAP TO DESTROY SODA BOTTLES) -->
+  <footer class="bg-slate-950 p-2 border-t border-slate-800 z-30">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <button id="btnTrapDisposal" class="w-full py-2.5 bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center space-x-2 border-2 border-red-400">
+        <i class="fa-solid fa-ban text-sm text-bolivar-gold"></i>
+        <span>INCINERAR ENVASE TRAMPA (ANTI-REENVASE)</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- PRUEBA INTERACTIVA DE CONOCIMIENTOS (KMA CONSTRUCCIONES & SOLPROSIG) -->
+  <div id="quizModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 text-bolivar-slate shadow-2xl border-4 border-bolivar space-y-3.5 animate-pop-in">
+      <!-- Quiz Header -->
+      <div class="flex items-center justify-between border-b pb-2.5 border-slate-200">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-slate-50 p-1 border border-slate-200 flex items-center justify-center shadow-xs flex-shrink-0" title="Solprosig">
+            <svg viewBox="0 0 786 983" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+              <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+              <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+              <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+              <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-[9px] font-black uppercase text-bolivar tracking-wider">Prueba Interactiva • Obra KMA</span>
+            <h4 class="text-xs font-black text-slate-800 leading-none">Matriz de Bodega & Anti-Reenvase</h4>
+          </div>
+        </div>
+        <div class="bg-bolivar/10 text-bolivar text-[10px] font-black px-2 py-0.5 rounded-full" id="quizProgressBadge">
+          1 / 3
+        </div>
+      </div>
+
+      <!-- Quiz Body -->
+      <div id="quizQuestionArea" class="space-y-3">
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200">
+          <p class="text-[10px] font-black uppercase text-slate-400 mb-0.5" id="quizCategoryLabel">Norma</p>
+          <p class="text-xs font-bold text-slate-900 leading-snug" id="quizQuestionText">Texto...</p>
+        </div>
+
+        <div id="quizOptionsContainer" class="space-y-2"></div>
+
+        <div id="quizFeedbackBox" class="hidden p-2.5 rounded-xl text-xs font-medium border leading-snug"></div>
+      </div>
+
+      <button id="btnQuizNext" class="w-full py-2.5 bg-bolivar text-white font-black rounded-xl hover:bg-bolivar-light shadow-md active:scale-95 text-xs transition-all hidden">
+        Siguiente Pregunta <i class="fa-solid fa-arrow-right ml-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- RESULTS PEDAGOGICAL MODAL -->
+  <div id="resultsModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 text-bolivar-slate shadow-2xl border-4 border-bolivar space-y-4 animate-pop-in">
+      <div class="text-center space-y-1">
+        <div class="flex justify-center mb-1">
+          <div class="w-10 h-10 rounded-xl bg-slate-50 p-1.5 border border-slate-200 flex items-center justify-center shadow-inner" title="Solprosig">
+            <svg viewBox="0 0 786 983" class="w-full h-full max-h-full max-w-full drop-shadow-xs" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="401,0 777,228 641,313 397,175 163,313 1,231" fill="#878786" />
+              <polygon points="776,229 782,359 651,425 642,313" fill="#0080A8" />
+              <polygon points="396,292 779,513 777,756 632,685 633,570 268,365" fill="#0080A8" />
+              <polygon points="1,240 153,315 158,431 519,638 388,715 152,579 151,683 13,767 8,645 140,572 6,495" fill="#0080A8" />
+              <polygon points="154,679 398,817 639,684 784,762 396,982 18,765" fill="#878786" />
+            </svg>
+          </div>
+        </div>
+        <span id="resultBadge" class="inline-block px-3 py-1 bg-bolivar-gold text-bolivar-slate text-[10px] font-black uppercase rounded-full tracking-wider shadow-sm">
+          Nivel 2 Completado
+        </span>
+        <h3 id="resultTitle" class="text-xl font-black text-bolivar">¡Bodega Segura!</h3>
+        <p class="text-xs text-slate-500">KMA Construcciones • Asesoría Solprosig & Seguros Bolívar</p>
+      </div>
+
+      <!-- Stars Graphic -->
+      <div id="resultStars" class="flex justify-center items-center space-x-2 text-2xl text-bolivar-gold py-1"></div>
+
+      <!-- Puntuación Final: Breakdown Completo (Juego + Prueba Interactiva) -->
+      <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-1.5 text-xs">
+        <div class="flex justify-between items-center text-slate-600">
+          <span class="text-[11px] font-semibold"><i class="fa-solid fa-gamepad text-bolivar mr-1"></i>Destreza en Juego:</span>
+          <span id="resultGameScore" class="font-bold text-slate-800">0 Pts</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600">
+          <span class="text-[11px] font-semibold"><i class="fa-solid fa-clipboard-check text-emerald-600 mr-1"></i>Prueba Interactiva:</span>
+          <span id="resultQuizScore" class="font-bold text-emerald-600">+0 Pts</span>
+        </div>
+        <div class="border-t border-slate-200 pt-1.5 flex justify-between items-center">
+          <span class="text-[11px] font-black text-bolivar uppercase">Puntuación Final Total:</span>
+          <span id="resultScore" class="text-base font-black text-bolivar">0 Pts</span>
+        </div>
+        <div class="flex justify-between items-center text-[10px] text-slate-400 font-semibold pt-0.5">
+          <span>Clasificaciones en Estantería:</span>
+          <span id="resultAccuracy" class="text-slate-600 font-bold">0 / 8</span>
+        </div>
+      </div>
+
+      <!-- Colombian Legal Feedback -->
+      <div class="bg-amber-50 rounded-2xl p-3 border border-amber-200 text-xs">
+        <p class="text-[10px] font-black uppercase text-amber-800 flex items-center">
+          <i class="fa-solid fa-book-bookmark mr-1.5 text-bolivar"></i> Fundamento Normativo
+        </p>
+        <p class="text-[11px] font-medium text-amber-950 mt-1 leading-snug">
+          La <strong>Resolución 773 de 2021</strong> prohíbe tajantemente el reenvase de sustancias químicas en botellas de bebidas o alimentos. Además, el <strong>Decreto 4741 de 2005</strong> exige la segregación estricta por Matriz de Incompatibilidad Química para evitar reacciones exotérmicas o explosiones.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2 pt-1">
+        <button id="btnNextLevel" class="w-full py-3 bg-bolivar text-white font-black rounded-2xl hover:bg-bolivar-light shadow-lg active:scale-95 text-xs transition-all flex items-center justify-center space-x-2">
+          <span>SIGUIENTE NIVEL (COMBUSTIBLE)</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btnRetryLevel" class="py-2.5 bg-slate-100 text-slate-700 font-extrabold rounded-xl hover:bg-slate-200 active:scale-95 text-xs transition-all">
+            <i class="fa-solid fa-rotate-right mr-1"></i> Reintentar
+          </button>
+          <a href="index.html" class="py-2.5 bg-slate-800 text-white font-extrabold rounded-xl hover:bg-slate-900 active:scale-95 text-xs transition-all text-center block">
+            <i class="fa-solid fa-house mr-1"></i> Menú Hub
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    /**
+     * @file game2_bodega_peligro.html
+     * @description Minijuego 2: Tetris Químico - Bodega en Peligro (Matriz de Compatibilidad & Anti-Reenvase)
+     */
+
+    // --- 1. SOUND ENGINE ---
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playTone(freq, type = 'sine', duration = 0.12, vol = 0.15) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      }
+      playBoom() {
+        this.playTone(90, 'sawtooth', 0.4, 0.4);
+        setTimeout(() => this.playTone(60, 'sawtooth', 0.5, 0.3), 100);
+      }
+      playSuccess() {
+        this.playTone(523.25, 'triangle', 0.1, 0.2);
+        setTimeout(() => this.playTone(659.25, 'triangle', 0.12, 0.25), 80);
+      }
+      playDisposal() {
+        this.playTone(700, 'sine', 0.15, 0.2);
+        setTimeout(() => this.playTone(950, 'sine', 0.2, 0.2), 100);
+      }
+    }
+    const sfx = new SoundEngine();
+
+    // --- 2. LOS 9 PICTOGRAMAS OFICIALES DEL SGA (UNECE & Res. 773/2021) ---
+    function getGhsSvg(id, size = 36) {
+      const svgs = {
+        EXPLOSIVE: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><circle cx="50" cy="55" r="14" fill="#000000"/><path d="M 48 38 L 52 38 L 52 32 L 48 32 Z" fill="#000000"/><polygon points="50,22 47,28 53,28" fill="#000000"/><polygon points="32,32 38,36 35,40" fill="#000000"/><polygon points="68,32 65,40 62,36" fill="#000000"/><polygon points="26,52 34,50 32,56" fill="#000000"/><polygon points="74,52 68,56 66,50" fill="#000000"/><polygon points="32,70 38,64 34,62" fill="#000000"/><polygon points="68,70 66,62 62,64" fill="#000000"/><polygon points="46,75 54,75 50,82" fill="#000000"/><circle cx="38" cy="24" r="2" fill="#000000"/><circle cx="62" cy="24" r="2" fill="#000000"/></svg>`,
+        FLAME: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 28 72 L 72 72 L 72 75 L 28 75 Z" fill="#000000"/><path d="M 50 20 C 50 20 42 32 46 42 C 40 38 38 32 38 32 C 34 38 32 46 34 54 C 36 62 42 70 50 70 C 58 70 64 62 66 54 C 68 46 64 36 58 32 C 58 38 54 44 50 44 C 54 36 50 20 50 20 Z" fill="#000000"/><path d="M 50 48 C 47 52 46 56 47 60 C 48 64 50 66 52 66 C 55 66 57 62 56 58 C 55 54 52 50 50 48 Z" fill="#FFFFFF"/></svg>`,
+        OXIDIZING: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><circle cx="50" cy="58" r="14" fill="none" stroke="#000000" stroke-width="5"/><path d="M 50 22 C 50 22 44 32 47 40 C 42 36 40 32 40 32 C 37 37 36 43 38 48 C 41 45 44 45 47 47 C 45 43 48 38 50 36 C 52 38 55 43 53 47 C 56 45 59 45 62 48 C 64 43 63 37 60 32 C 60 32 58 36 53 40 C 56 32 50 22 50 22 Z" fill="#000000"/><path d="M 30 76 L 70 76 L 70 79 L 30 79 Z" fill="#000000"/></svg>`,
+        GAS: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 28 50 C 28 44 32 42 40 42 L 68 42 C 72 42 74 44 74 50 C 74 56 72 58 68 58 L 40 58 C 32 58 28 56 28 50 Z" fill="#000000"/><rect x="74" y="47" width="4" height="6" fill="#000000"/><rect x="78" y="45" width="2" height="10" fill="#000000"/><rect x="25" y="46" width="3" height="8" rx="1" fill="#000000"/></svg>`,
+        CORROSION: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 28 28 L 38 34 L 32 44 L 22 38 Z" fill="none" stroke="#000000" stroke-width="2.5"/><path d="M 32 44 C 34 50 36 56 37 62" stroke="#000000" stroke-width="2.5" fill="none"/><path d="M 72 28 L 62 34 L 68 44 L 78 38 Z" fill="none" stroke="#000000" stroke-width="2.5"/><path d="M 68 44 C 66 50 64 56 63 62" stroke="#000000" stroke-width="2.5" fill="none"/><path d="M 26 62 L 48 62 L 48 66 C 44 68 40 68 36 66 L 26 66 Z" fill="#000000"/><path d="M 54 68 C 54 64 58 62 64 62 C 67 65 69 66 74 66 L 74 72 L 66 72 C 60 72 54 70 54 68 Z" fill="#000000"/><circle cx="63" cy="63" r="3" fill="#FFFFFF"/></svg>`,
+        TOXIC: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 30 36 L 70 68 M 70 36 L 30 68" stroke="#000000" stroke-width="5" stroke-linecap="round"/><circle cx="28" cy="34" r="3.5" fill="#000000"/><circle cx="72" cy="34" r="3.5" fill="#000000"/><circle cx="28" cy="70" r="3.5" fill="#000000"/><circle cx="72" cy="70" r="3.5" fill="#000000"/><path d="M 36 44 C 36 34 42 30 50 30 C 58 30 64 34 64 44 C 64 50 60 54 58 58 L 42 58 C 40 54 36 50 36 44 Z" fill="#000000"/><circle cx="44" cy="44" r="3.5" fill="#FFFFFF"/><circle cx="56" cy="44" r="3.5" fill="#FFFFFF"/><polygon points="50,49 48,53 52,53" fill="#FFFFFF"/><rect x="44" y="55" width="2" height="4" fill="#FFFFFF"/><rect x="47" y="55" width="2" height="4" fill="#FFFFFF"/><rect x="51" y="55" width="2" height="4" fill="#FFFFFF"/><rect x="54" y="55" width="2" height="4" fill="#FFFFFF"/></svg>`,
+        IRRITANT: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 46 26 L 54 26 L 52 56 L 48 56 Z" fill="#000000"/><circle cx="50" cy="68" r="4.5" fill="#000000"/></svg>`,
+        HEALTH: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><circle cx="50" cy="30" r="7" fill="#000000"/><path d="M 38 42 C 34 46 32 54 32 64 L 68 64 C 68 54 66 46 62 42 C 58 40 42 40 38 42 Z" fill="#000000"/><polygon points="50,38 52,47 60,45 54,51 58,58 50,54 42,58 46,51 40,45 48,47" fill="#FFFFFF"/></svg>`,
+        ENV: `<svg viewBox="0 0 100 100" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 96,50 50,96 4,50" fill="#FFFFFF" stroke="#DA291C" stroke-width="7" stroke-linejoin="round"/><path d="M 38 42 C 38 34 35 28 35 28 C 35 34 32 38 30 42 C 33 42 35 44 35 48 L 35 62 L 41 62 L 41 50 C 41 46 44 44 47 44 C 44 40 42 34 42 28 C 42 34 40 38 38 42 Z" fill="#000000"/><path d="M 28 64 L 72 64 C 70 68 66 70 60 70 C 54 70 50 68 46 68 C 42 68 38 70 34 70 C 30 70 28 66 28 64 Z" fill="#000000"/><path d="M 64 56 C 58 54 52 56 48 59 C 52 62 58 64 64 62 L 68 65 L 68 53 Z" fill="#000000"/><circle cx="52" cy="58" r="1" fill="#FFFFFF"/></svg>`
+      };
+      return svgs[id] || svgs.FLAME;
+    }
+
+    // --- 3. BASE DE DATOS DE BODEGA QUÍMICA ---
+    const STORAGE_ITEMS = [
+      { id: "gasolina", name: "Gasolina Corriente", zone: "FLAMMABLE", ghs: "FLAME", signal: "PELIGRO", code: "H224 • GHS02", color: "#DC2626" },
+      { id: "thinner", name: "Thinner Acrílico", zone: "FLAMMABLE", ghs: "FLAME", signal: "PELIGRO", code: "H225 • GHS02", color: "#EA580C" },
+      { id: "acpm", name: "Caneca ACPM Diésel", zone: "FLAMMABLE", ghs: "FLAME", signal: "PELIGRO", code: "H226 • GHS02", color: "#B45309" },
+      { id: "acido_clorhidrico", name: "Ácido Muriático 37%", zone: "CORROSIVE", ghs: "CORROSION", signal: "PELIGRO", code: "H314 • GHS05", color: "#B91C1C" },
+      { id: "soda_caustica", name: "Soda Cáustica (NaOH)", zone: "CORROSIVE", ghs: "CORROSION", signal: "PELIGRO", code: "H314 • GHS05", color: "#D97706" },
+      { id: "acido_sulfurico", name: "Ácido de Baterías", zone: "CORROSIVE", ghs: "CORROSION", signal: "PELIGRO", code: "H314 • GHS05", color: "#7C2D12" },
+      { id: "oxigeno", name: "Cilindro de Oxígeno O2", zone: "OXIDIZER", ghs: "OXIDIZING", signal: "PELIGRO", code: "H270 • GHS03", color: "#0284C7" },
+      { id: "peroxido", name: "Peróxido Catalizador", zone: "OXIDIZER", ghs: "OXIDIZING", signal: "PELIGRO", code: "H242 • GHS03", color: "#2563EB" },
+      { id: "grasa_chasis", name: "Grasa Litio para Chasis", zone: "GENERAL", ghs: "IRRITANT", signal: "ATENCIÓN", code: "H315 • GHS07", color: "#059669" },
+      { id: "desmoldante", name: "Desmoldante Biodegradable", zone: "GENERAL", ghs: "IRRITANT", signal: "ATENCIÓN", code: "H319 • GHS07", color: "#047857" },
+      // TRAP BOTTLE (Infracción Grave a la Res. 773/2021)
+      { id: "soda_trap", name: "¡Botella de Gaseosa con Solvente!", isTrap: true, color: "#EC4899" }
+    ];
+
+    class WarehouseGame {
+      constructor() {
+        this.score = 0;
+        this.health = 100;
+        this.placedCount = 0;
+        this.targetCount = 8;
+        this.currentItem = null;
+        this.gameOver = false;
+        this.shelfSlots = {
+          FLAMMABLE: [],
+          CORROSIVE: [],
+          OXIDIZER: [],
+          GENERAL: []
+        };
+
+        this.quizQuestions = [
+          {
+            category: "Prohibición de Reenvase (Res. 773/2021)",
+            question: "Según el Art. 12 de la Resolución 773/2021, ¿está permitido envasar thiner o químicos en botellas de bebidas en KMA?",
+            options: [
+              "Sí, marcando claramente la botella con plumón",
+              "Está tajantemente prohibido bajo sanción y riesgo de intoxicación mortal",
+              "Solo si el producto se usa el mismo día"
+            ],
+            correct: 1,
+            explanation: "La norma prohíbe de forma taxativa envasar químicos en recipientes que hayan contenido o simulen bebidas o alimentos."
+          },
+          {
+            category: "Incompatibilidad Química (Dec. 4741/2005)",
+            question: "¿Por qué no se deben almacenar sustancias oxidantes junto a líquidos inflamables en la bodega?",
+            options: [
+              "Porque el oxidante aporta oxígeno y acelera combustiones espontáneas o violentas",
+              "Porque ambos químicos pierden su efectividad técnica",
+              "Por razones únicamente de espacio en la estantería"
+            ],
+            correct: 0,
+            explanation: "Los oxidantes en contacto o proximidad con vapores inflamables pueden detonar incendios incontrolables."
+          },
+          {
+            category: "Inspección en Bodega de Obra",
+            question: "Si encuentras un tambor sin etiqueta ni rótulo de identificación en la bodega de KMA, ¿qué debes hacer?",
+            options: [
+              "Abrirlo con cuidado y olerlo para saber qué químico es",
+              "Aislarlo preventivamente, no manipularlo y notificar al responsable de SST",
+              "Desecharlo inmediatamente en el desagüe"
+            ],
+            correct: 1,
+            explanation: "Cualquier recipiente sin rotulado SGA representa un peligro desconocido; debe aislarse e informarse a SST de inmediato."
+          }
+        ];
+        this.quizIndex = 0;
+        this.quizScore = 0;
+        this.quizCorrect = 0;
+
+        this.init();
+      }
+
+      init() {
+        this.setupButtons();
+        this.spawnNextItem();
+      }
+
+      setupButtons() {
+        document.querySelectorAll('.shelf-quadrant').forEach(zoneEl => {
+          zoneEl.addEventListener('click', () => {
+            const zone = zoneEl.dataset.zone;
+            this.handleDeposit(zone);
+          });
+        });
+
+        document.getElementById('btnTrapDisposal').addEventListener('click', () => {
+          this.handleTrapDisposal();
+        });
+
+        document.getElementById('btnNextLevel').addEventListener('click', () => {
+          window.location.href = 'game3_combustible_nitro.html';
+        });
+
+        document.getElementById('btnRetryLevel').addEventListener('click', () => {
+          window.location.reload();
+        });
+
+        const btnAudio = document.getElementById('btnAudio');
+        const audioIcon = document.getElementById('audioIcon');
+        btnAudio.addEventListener('click', () => {
+          sfx.init();
+          sfx.muted = !sfx.muted;
+          audioIcon.className = sfx.muted ? 'fa-solid fa-volume-xmark text-xs' : 'fa-solid fa-volume-high text-xs';
+        });
+      }
+
+      spawnNextItem() {
+        if (this.gameOver) return;
+
+        // 25% chance of spawning an illegal trap bottle
+        const isTrapChance = Math.random() < 0.25;
+        if (isTrapChance) {
+          this.currentItem = STORAGE_ITEMS.find(item => item.isTrap);
+        } else {
+          const standardItems = STORAGE_ITEMS.filter(item => !item.isTrap);
+          this.currentItem = standardItems[Math.floor(Math.random() * standardItems.length)];
+        }
+
+        this.renderCurrentItem();
+      }
+
+      renderCurrentItem() {
+        const container = document.getElementById('activeItemContainer');
+        const item = this.currentItem;
+
+        const leftHandSvg = `
+          <div class="w-14 h-24 -mr-2 z-10 pointer-events-none transform -rotate-6 flex-shrink-0">
+            <svg viewBox="0 0 100 160" class="w-full h-full drop-shadow-xl">
+              <path d="M 10 160 L 38 85 L 82 90 L 62 160 Z" fill="#006738" stroke="#0F172A" stroke-width="4" />
+              <rect x="25" y="118" width="46" height="14" fill="#E2E8F0" rx="3" />
+              <rect x="34" y="75" width="48" height="16" rx="4" fill="#FFC72C" stroke="#0F172A" stroke-width="3" />
+              <ellipse cx="66" cy="60" rx="22" ry="18" fill="#008244" stroke="#FFFFFF" stroke-width="2" />
+              <rect x="70" y="34" width="10" height="20" rx="4" fill="#006738" stroke="#FFC72C" stroke-width="1.5" />
+              <rect x="78" y="38" width="10" height="20" rx="4" fill="#006738" stroke="#FFC72C" stroke-width="1.5" />
+              <rect x="86" y="44" width="10" height="18" rx="4" fill="#006738" stroke="#FFC72C" stroke-width="1.5" />
+            </svg>
+          </div>
+        `;
+
+        const rightHandSvg = `
+          <div class="w-14 h-24 -ml-2 z-10 pointer-events-none transform rotate-6 flex-shrink-0">
+            <svg viewBox="0 0 100 160" class="w-full h-full drop-shadow-xl">
+              <path d="M 90 160 L 62 85 L 18 90 L 38 160 Z" fill="#006738" stroke="#0F172A" stroke-width="4" />
+              <rect x="29" y="118" width="46" height="14" fill="#E2E8F0" rx="3" />
+              <rect x="18" y="75" width="48" height="16" rx="4" fill="#FFC72C" stroke="#0F172A" stroke-width="3" />
+              <ellipse cx="34" cy="60" rx="22" ry="18" fill="#008244" stroke="#FFFFFF" stroke-width="2" />
+              <rect x="20" y="34" width="10" height="20" rx="4" fill="#006738" stroke="#FFC72C" stroke-width="1.5" />
+              <rect x="12" y="38" width="10" height="20" rx="4" fill="#006738" stroke="#FFC72C" stroke-width="1.5" />
+              <rect x="4" y="44" width="10" height="18" rx="4" fill="#006738" stroke="#FFC72C" stroke-width="1.5" />
+            </svg>
+          </div>
+        `;
+
+        if (item.isTrap) {
+          container.innerHTML = `
+            <div id="povHandsWrapper" class="flex items-center justify-center w-full max-w-sm transition-all duration-300">
+              ${leftHandSvg}
+              <div class="flex-1 bg-gradient-to-r from-rose-900 to-red-700 text-white rounded-2xl p-2.5 border-2 border-yellow-400 shadow-2xl flex items-center space-x-2.5 animate-bounce cursor-pointer z-20" onclick="window.game && window.game.handleTrapDisposal()">
+                <!-- Soda Bottle Graphic with Illegal Chemical Hazard Warning Tape -->
+                <div class="w-12 h-14 bg-white/20 rounded-xl p-1 flex items-center justify-center shadow-inner relative flex-shrink-0">
+                  <svg viewBox="0 0 50 100" class="w-full h-full drop-shadow">
+                    <!-- Soda bottle silhouette -->
+                    <rect x="20" y="4" width="10" height="10" rx="2" fill="#EF4444" />
+                    <path d="M 20 14 Q 15 26 12 36 L 12 88 Q 12 96 25 96 Q 38 96 38 88 L 38 36 Q 35 26 30 14 Z" fill="#F43F5E" opacity="0.85" />
+                    <!-- Makeshift masking tape with handwritten label -->
+                    <rect x="14" y="45" width="22" height="20" fill="#FEF08A" stroke="#CA8A04" stroke-width="1" rx="2" />
+                    <text x="25" y="55" font-size="6" font-weight="900" fill="#7F1D1D" text-anchor="middle">ACIDO</text>
+                    <text x="25" y="62" font-size="5" font-weight="bold" fill="#000000" text-anchor="middle">¡PELIGRO!</text>
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <span class="inline-block text-[8px] bg-yellow-400 text-slate-950 px-1.5 py-0.5 rounded font-black uppercase tracking-tight">
+                    ¡PROHIBIDO REENVASE! Res. 773/2021
+                  </span>
+                  <p class="text-xs font-black leading-tight mt-0.5 truncate text-white">${item.name}</p>
+                  <p class="text-[9px] text-yellow-200 font-bold flex items-center mt-0.5">
+                    <i class="fa-solid fa-fire mr-1"></i> Toca botón inferior para incinerar
+                  </p>
+                </div>
+              </div>
+              ${rightHandSvg}
+            </div>
+          `;
+          this.triggerLuchoReaction('¡OJO! ¡Eso es una botella de refresco con ácido! ¡La Res. 773/2021 prohíbe el reenvase en recipientes de alimentos!', 'alert');
+        } else {
+          container.innerHTML = `
+            <div id="povHandsWrapper" class="flex items-center justify-center w-full max-w-sm transition-all duration-300">
+              ${leftHandSvg}
+              <div class="flex-1 bg-slate-800 text-white rounded-2xl p-2.5 border-2 border-slate-600 shadow-xl flex items-center space-x-2.5 z-20">
+                <!-- Authentic UNECE GHS Vector Diamond -->
+                <div class="w-12 h-12 rounded-xl bg-white p-0.5 flex items-center justify-center shadow-md flex-shrink-0 border border-slate-200">
+                  ${getGhsSvg(item.ghs, 44)}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center space-x-1.5 mb-0.5">
+                    <span class="text-[8px] ${item.signal === 'ATENCIÓN' ? 'bg-amber-600' : 'bg-red-600'} text-white px-1.5 py-0.2 rounded font-black uppercase">
+                      ${item.signal}
+                    </span>
+                    <span class="text-[8px] font-mono font-bold text-slate-400">${item.code}</span>
+                  </div>
+                  <p class="text-xs font-black text-slate-100 leading-tight truncate">${item.name}</p>
+                  <p class="text-[9px] text-slate-400 font-medium">Asigna a la Zona compatible de Bodega</p>
+                </div>
+              </div>
+              ${rightHandSvg}
+            </div>
+          `;
+        }
+      }
+
+      handleDeposit(zone) {
+        if (!this.currentItem || this.gameOver) return;
+
+        // If trying to deposit a trap bottle into the warehouse shelves -> Severe penalty!
+        if (this.currentItem.isTrap) {
+          this.health = Math.max(0, this.health - 35);
+          sfx.playBoom();
+          this.triggerLuchoReaction('¡NOOO! ¡La Res. 773/2021 PROHÍBE reenvasar químicos en botellas de bebida!', 'soot');
+          this.shakeScreen();
+          this.updateHud();
+          this.spawnNextItem();
+          if (this.health <= 0) this.endGame(false);
+          return;
+        }
+
+        // Compatibility check:
+        // Incompatible rule: FLAMMABLE placed in OXIDIZER or OXIDIZER in FLAMMABLE
+        const item = this.currentItem;
+        const isIncompatible = (item.zone === 'FLAMMABLE' && zone === 'OXIDIZER') || 
+                               (item.zone === 'OXIDIZER' && zone === 'FLAMMABLE');
+
+        if (isIncompatible) {
+          this.health = Math.max(0, this.health - 30);
+          sfx.playBoom();
+          this.triggerLuchoReaction('¡INCOMPATIBILIDAD QUÍMICA! ¡Oxidantes e inflamables provocan fuego espontáneo!', 'soot');
+          this.shakeScreen();
+          this.updateHud();
+          this.spawnNextItem();
+          if (this.health <= 0) this.endGame(false);
+          return;
+        }
+
+        // Correct zone placement
+        if (item.zone === zone) {
+          this.score += 200;
+          this.placedCount++;
+          sfx.playSuccess();
+          this.addPillToShelf(zone, item);
+          this.triggerLuchoReaction('¡Excelente almacenista! Cuadrante compatible y rotulado.', 'happy');
+          this.updateHud();
+          if (this.placedCount >= this.targetCount) {
+            this.endGame(true);
+            return;
+          }
+        } else {
+          // Wrong zone but not explosive (minor penalty)
+          this.health = Math.max(0, this.health - 15);
+          sfx.playTone(180, 'sawtooth', 0.2, 0.2);
+          this.triggerLuchoReaction('¡Zona equivocada! Revisa el rótulo del químico.', 'alert');
+          this.updateHud();
+          if (this.health <= 0) {
+            this.endGame(false);
+            return;
+          }
+        }
+
+        this.spawnNextItem();
+      }
+
+      handleTrapDisposal() {
+        if (!this.currentItem || this.gameOver) return;
+
+        if (this.currentItem.isTrap) {
+          this.score += 300;
+          this.placedCount++;
+          sfx.playDisposal();
+          this.triggerLuchoReaction('¡Bien visto! Envase reenvaseado destruido. ¡Cumpliste la Res. 773!', 'happy');
+          this.updateHud();
+          if (this.placedCount >= this.targetCount) {
+            this.endGame(true);
+            return;
+          }
+        } else {
+          // Disposed of a genuine chemical can
+          this.health = Math.max(0, this.health - 10);
+          sfx.playTone(180, 'sawtooth', 0.2, 0.2);
+          this.triggerLuchoReaction('¡Ese envase sí estaba rotulado! No lo destruyas.', 'alert');
+          this.updateHud();
+        }
+
+        this.spawnNextItem();
+      }
+
+      addPillToShelf(zone, item) {
+        const slot = document.getElementById(`slot-${zone}`);
+        const pill = document.createElement('div');
+        pill.className = 'w-7 h-7 rounded-lg bg-white/10 border border-white/20 p-0.5 flex items-center justify-center shadow-sm animate-pop-in';
+        pill.title = `${item.name} (${item.code})`;
+        pill.innerHTML = getGhsSvg(item.ghs || 'FLAME', 22);
+        slot.appendChild(pill);
+      }
+
+      shakeScreen() {
+        const body = document.getElementById('gameBody');
+        body.classList.remove('animate-screen-shake');
+        void body.offsetWidth;
+        body.classList.add('animate-screen-shake');
+      }
+
+      triggerLuchoReaction(text, mood) {
+        const comic = document.getElementById('luchoComicText');
+        const skin = document.getElementById('luchoSkin');
+        const eyeL = document.getElementById('luchoLeftEye');
+        const eyeR = document.getElementById('luchoRightEye');
+        const mouth = document.getElementById('luchoMouthPath');
+
+        comic.textContent = `"${text}"`;
+
+        if (mood === 'soot') {
+          // Lucho soot face cartoon
+          skin.setAttribute('fill', '#475569'); // Tiznado de gris/carbón
+          eyeL.setAttribute('r', '7');
+          eyeR.setAttribute('r', '7');
+          mouth.setAttribute('d', 'M 40 70 Q 50 60 60 70');
+        } else if (mood === 'happy') {
+          skin.setAttribute('fill', '#FBD38D');
+          eyeL.setAttribute('r', '5');
+          eyeR.setAttribute('r', '5');
+          mouth.setAttribute('d', 'M 42 64 Q 50 74 58 64');
+        } else {
+          skin.setAttribute('fill', '#FBD38D');
+          eyeL.setAttribute('r', '6');
+          eyeR.setAttribute('r', '6');
+          mouth.setAttribute('d', 'M 44 66 Q 50 70 56 66');
+        }
+
+        setTimeout(() => {
+          skin.setAttribute('fill', '#FBD38D');
+          eyeL.setAttribute('r', '5');
+          eyeR.setAttribute('r', '5');
+          mouth.setAttribute('d', 'M 44 66 Q 50 72 56 66');
+        }, 2200);
+      }
+
+      updateHud() {
+        document.getElementById('scoreVal').textContent = this.score;
+        document.getElementById('healthText').textContent = `${this.health}%`;
+        const healthBar = document.getElementById('healthBar');
+        healthBar.style.width = `${this.health}%`;
+        if (this.health <= 25) {
+          healthBar.className = 'bg-red-600 h-full rounded-full transition-all duration-300';
+        } else if (this.health <= 50) {
+          healthBar.className = 'bg-amber-500 h-full rounded-full transition-all duration-300';
+        } else {
+          healthBar.className = 'bg-gradient-to-r from-emerald-500 to-bolivar-gold h-full rounded-full transition-all duration-300';
+        }
+      }
+
+      saveProgress(stars, score) {
+        try {
+          const raw = localStorage.getItem('sb_solprosig_arcade_state') || localStorage.getItem('sb_kma_arcade_state');
+          let state;
+          if (raw) {
+            state = JSON.parse(raw);
+          } else {
+            state = {
+              player: { name: 'Lucho el Operario', avatar: '👷', totalScore: 0, totalStars: 0, xp: 200, level: 1 },
+              levels: {
+                "1": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "2": { unlocked: true, stars: 0, highScore: 0, completed: false },
+                "3": { unlocked: false, stars: 0, highScore: 0, completed: false },
+                "4": { unlocked: false, stars: 0, highScore: 0, completed: false },
+                "5": { unlocked: false, stars: 0, highScore: 0, completed: false }
+              },
+              medals: [
+                { id: "sga_master", unlocked: false, title: "Guardián SGA" },
+                { id: "storage_hero", unlocked: false, title: "Maestro Bodega" },
+                { id: "static_zero", unlocked: false, title: "Cero Chispa" },
+                { id: "respel_pro", unlocked: false, title: "Defensor RESPEL" },
+                { id: "spill_commander", unlocked: false, title: "Líder Antiderrame" }
+              ]
+            };
+          }
+          const lvl = state.levels["2"];
+          if (lvl) {
+            lvl.stars = Math.max(lvl.stars || 0, stars);
+            lvl.highScore = Math.max(lvl.highScore || 0, score);
+            if (stars > 0) lvl.completed = true;
+          }
+          if (stars > 0 && state.levels["3"]) {
+            state.levels["3"].unlocked = true;
+          }
+          let totalStars = 0;
+          let totalScore = 0;
+          Object.values(state.levels).forEach(l => {
+            totalStars += l.stars || 0;
+            totalScore += l.highScore || 0;
+          });
+          state.player.totalStars = totalStars;
+          state.player.totalScore = totalScore;
+          if (lvl && lvl.completed && state.medals && state.medals[1]) {
+            state.medals[1].unlocked = true;
+          }
+          localStorage.setItem('sb_solprosig_arcade_state', JSON.stringify(state));
+          localStorage.setItem('sb_kma_arcade_state', JSON.stringify(state));
+        } catch(e) {
+          console.error("Error saving state", e);
+        }
+      }
+
+      endGame(won) {
+        this.gameOver = true;
+        if (won) {
+          sfx.playSuccess();
+          this.startQuiz();
+        } else {
+          this.showFinalResults(false);
+        }
+      }
+
+      startQuiz() {
+        this.quizIndex = 0;
+        this.quizScore = 0;
+        this.quizCorrect = 0;
+        document.getElementById('quizModal').classList.remove('hidden');
+        this.renderQuizQuestion();
+      }
+
+      renderQuizQuestion() {
+        const q = this.quizQuestions[this.quizIndex];
+        document.getElementById('quizProgressBadge').textContent = `${this.quizIndex + 1} / ${this.quizQuestions.length}`;
+        document.getElementById('quizCategoryLabel').textContent = q.category;
+        document.getElementById('quizQuestionText').textContent = q.question;
+
+        const container = document.getElementById('quizOptionsContainer');
+        container.innerHTML = '';
+        const feedbackBox = document.getElementById('quizFeedbackBox');
+        feedbackBox.className = 'hidden p-2.5 rounded-xl text-xs font-medium border leading-snug';
+        feedbackBox.textContent = '';
+        document.getElementById('btnQuizNext').classList.add('hidden');
+
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'w-full text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 active:scale-[0.98] transition-all text-xs font-semibold text-slate-800 flex items-start space-x-2';
+          btn.innerHTML = `<span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-black flex-shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span><span class="flex-1">${opt}</span>`;
+          btn.addEventListener('click', () => this.handleQuizAnswer(idx, btn));
+          container.appendChild(btn);
+        });
+      }
+
+      handleQuizAnswer(selectedIdx, clickedBtn) {
+        const q = this.quizQuestions[this.quizIndex];
+        const container = document.getElementById('quizOptionsContainer');
+        const buttons = container.querySelectorAll('button');
+        buttons.forEach(b => b.disabled = true);
+
+        const feedbackBox = document.getElementById('quizFeedbackBox');
+        feedbackBox.classList.remove('hidden');
+
+        if (selectedIdx === q.correct) {
+          sfx.playSuccess();
+          this.quizScore += 100;
+          this.quizCorrect++;
+          clickedBtn.className = 'w-full text-left p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 transition-all text-xs font-bold flex items-start space-x-2';
+          feedbackBox.className = 'p-2.5 rounded-xl text-xs font-semibold border border-emerald-300 bg-emerald-50 text-emerald-900 leading-snug';
+          feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> <strong>¡Correcto!</strong> ${q.explanation}`;
+        } else {
+          sfx.playBoom();
+          clickedBtn.className = 'w-full text-left p-2.5 rounded-xl border-2 border-red-500 bg-red-50 text-red-900 transition-all text-xs font-bold flex items-start space-x-2';
+          if (buttons[q.correct]) {
+            buttons[q.correct].className = 'w-full text-left p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 transition-all text-xs font-bold flex items-start space-x-2';
+          }
+          feedbackBox.className = 'p-2.5 rounded-xl text-xs font-semibold border border-red-300 bg-red-50 text-red-900 leading-snug';
+          feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-600 mr-1"></i> <strong>Atención:</strong> ${q.explanation}`;
+        }
+
+        const nextBtn = document.getElementById('btnQuizNext');
+        nextBtn.classList.remove('hidden');
+        if (this.quizIndex + 1 >= this.quizQuestions.length) {
+          nextBtn.innerHTML = 'Ver Puntuación Final <i class="fa-solid fa-trophy ml-1"></i>';
+        } else {
+          nextBtn.innerHTML = 'Siguiente Pregunta <i class="fa-solid fa-arrow-right ml-1"></i>';
+        }
+      }
+
+      nextQuizQuestion() {
+        this.quizIndex++;
+        if (this.quizIndex < this.quizQuestions.length) {
+          this.renderQuizQuestion();
+        } else {
+          document.getElementById('quizModal').classList.add('hidden');
+          this.showFinalResults(true);
+        }
+      }
+
+      showFinalResults(won) {
+        let stars = 0;
+        const totalFinalScore = this.score + this.quizScore;
+        if (won) {
+          if (this.health >= 60 && this.quizCorrect >= 2) {
+            stars = 3;
+          } else if (this.health >= 30 || this.quizCorrect >= 1) {
+            stars = 2;
+          } else {
+            stars = 1;
+          }
+        }
+
+        this.saveProgress(stars, totalFinalScore);
+
+        const modal = document.getElementById('resultsModal');
+        const badge = document.getElementById('resultBadge');
+        const title = document.getElementById('resultTitle');
+        const gameScoreText = document.getElementById('resultGameScore');
+        const quizScoreText = document.getElementById('resultQuizScore');
+        const finalScoreText = document.getElementById('resultScore');
+        const accText = document.getElementById('resultAccuracy');
+        const starsBox = document.getElementById('resultStars');
+
+        badge.textContent = won ? "NIVEL 2 COMPLETADO" : "BODEGA COLAPSADA";
+        badge.className = `inline-block px-3 py-1 ${won ? 'bg-bolivar-gold text-bolivar-slate' : 'bg-red-500 text-white'} text-[10px] font-black uppercase rounded-full tracking-wider shadow-sm`;
+        title.textContent = won ? "¡Maestro de Almacén!" : "¡Reacción Química No Controlada!";
+        title.className = `text-xl font-black ${won ? 'text-bolivar' : 'text-red-600'}`;
+
+        if (gameScoreText) gameScoreText.textContent = `${this.score} Pts`;
+        if (quizScoreText) quizScoreText.textContent = `+${this.quizScore} Pts (${this.quizCorrect}/${this.quizQuestions.length})`;
+        finalScoreText.textContent = `${totalFinalScore} Pts`;
+        if (accText) accText.textContent = `${this.placedCount} / ${this.targetCount}`;
+
+        starsBox.innerHTML = '';
+        for (let s = 1; s <= 3; s++) {
+          starsBox.innerHTML += s <= stars 
+            ? '<i class="fa-solid fa-star text-bolivar-gold drop-shadow-md"></i>' 
+            : '<i class="fa-regular fa-star text-slate-300"></i>';
+        }
+
+        modal.classList.remove('hidden');
+      }
+    }
+
+    let game;
+    document.addEventListener('DOMContentLoaded', () => {
+      game = new WarehouseGame();
+      window.game = game;
+      document.getElementById('btnQuizNext').addEventListener('click', () => game.nextQuizQuestion());
+    });
+  </script>
+</body>
+</html>
