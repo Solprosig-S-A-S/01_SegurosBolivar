@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mando de Control: Trasiego Seguro y Combustibles | Seguros Bolívar & KMA</title>
+    
+    <!-- GSAP v3 CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Outfit & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==============================================================
+           SISTEMA DE DISEÑO NATIVO CSS (SIN DEPENDENCIAS TAILWIND)
+           Variables de control centralizado (Single Source of Truth)
+           ============================================================== */
+        :root {
+            /* Paleta de Colores Corporativa e Industrial */
+            --bg-body: #050811;
+            --bg-viewport: #0a1120;
+            --bg-panel: #0f172a;
+            --bg-card: #152238;
+            --bg-card-hover: #1e314f;
+            --bg-card-active: #090e1a;
+            --border-subtle: #243552;
+            --border-strong: #3b5278;
+            
+            --bolivar-green: #006738;
+            --bolivar-green-light: #008244;
+            --bolivar-green-glow: #10b981;
+            --bolivar-yellow: #FFC72C;
+            --bolivar-yellow-dark: #d99b00;
+            
+            --hazard-red: #ef4444;
+            --hazard-red-dark: #991b1b;
+            --hazard-amber: #f59e0b;
+            --hazard-purple: #a855f7;
+            --hazard-cyan: #06b6d4;
+
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-subtle: #64748b;
+
+            /* Tipografía Ergonomía y Escalabilidad */
+            --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --font-xs: 0.8125rem;  /* 13px */
+            --font-sm: 0.9375rem;  /* 15px */
+            --font-base: 1.0625rem;/* 17px */
+            --font-lg: 1.25rem;    /* 20px */
+            --font-xl: 1.5rem;     /* 24px */
+            --font-2xl: 1.875rem;  /* 30px */
+
+            /* Radios y Sombras */
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+
+            --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+            --shadow-glow-green: 0 0 20px rgba(16, 185, 129, 0.45);
+            --shadow-glow-red: 0 0 20px rgba(239, 68, 68, 0.55);
+            --shadow-glow-yellow: 0 0 20px rgba(255, 199, 44, 0.45);
+        }
+
+        /* Reset & Base */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+            padding: 10px;
+        }
+
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.8);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: var(--bolivar-green-light);
+            border-radius: var(--radius-full);
+        }
+
+        /* Layout Primitives */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .flex-row { flex-direction: row; }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .flex-1 { flex: 1 1 0%; }
+        .shrink-0 { flex-shrink: 0; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .gap-1 { gap: 6px; }
+        .gap-2 { gap: 10px; }
+        .gap-3 { gap: 14px; }
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .w-full { width: 100%; }
+
+        /* Contenedor Principal (Cockpit Táctico) */
+        .app-viewport {
+            width: 100%;
+            max-width: 820px;
+            height: 96vh;
+            max-height: 980px;
+            background-color: var(--bg-viewport);
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 103, 56, 0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 15%, rgba(0, 103, 56, 0.18) 0%, transparent 65%),
+                linear-gradient(rgba(36, 53, 82, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(36, 53, 82, 0.3) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+        }
+
+        /* Encabezado Industrial */
+        .header-bar {
+            background: rgba(11, 18, 32, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--border-subtle);
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 30;
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--bolivar-green), var(--bolivar-green-glow));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(0, 103, 56, 0.4);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .brand-info h1 {
+            font-size: var(--font-xs);
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .brand-info .title {
+            font-size: var(--font-base);
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tag-pill {
+            font-size: var(--font-xs);
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            background: rgba(16, 185, 129, 0.18);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        /* Botones de Control */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer-display {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(5, 8, 17, 0.9);
+            border: 1px solid var(--border-strong);
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-family: var(--font-mono);
+            font-size: var(--font-sm);
+            font-weight: 800;
+            color: var(--bolivar-yellow);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .btn-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-icon:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-strong);
+        }
+        .btn-icon:active {
+            transform: scale(0.95);
+        }
+
+        /* Botones Principales */
+        .btn {
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans);
+            font-size: var(--font-sm);
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+        }
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--bolivar-green), var(--bolivar-green-light));
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 103, 56, 0.4);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--bolivar-green-light), #059669);
+            box-shadow: var(--shadow-glow-green);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--bolivar-yellow), var(--bolivar-yellow-dark));
+            color: #050811;
+            font-weight: 900;
+            box-shadow: 0 6px 20px rgba(255, 199, 44, 0.35);
+        }
+        .btn-gold:hover {
+            filter: brightness(1.1);
+            box-shadow: var(--shadow-glow-yellow);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #b91c1c, var(--hazard-red));
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+        }
+        .btn-danger:hover {
+            filter: brightness(1.15);
+            box-shadow: var(--shadow-glow-red);
+        }
+
+        .btn-secondary {
+            background: var(--bg-panel);
+            color: var(--text-main);
+            border: 1px solid var(--border-subtle);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-strong);
+        }
+
+        /* Stepper Pills del Tutorial */
+        .stepper-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .stepper-pill {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-subtle);
+            text-align: center;
+            font-size: var(--font-sm);
+            font-weight: 800;
+            color: var(--text-muted);
+            transition: all 0.25s;
+        }
+        .stepper-pill.active {
+            background: rgba(0, 103, 56, 0.35);
+            border-color: var(--bolivar-green-glow);
+            color: #6ee7b7;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+        }
+
+        /* Diálogo Bolívar Safety Bot */
+        .bot-dialogue-card {
+            background: linear-gradient(180deg, rgba(21, 34, 56, 0.95), rgba(10, 17, 32, 0.95));
+            border: 2px solid var(--border-strong);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-card);
+        }
+        .bot-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--bolivar-green), var(--bolivar-yellow));
+            border: 2px solid rgba(255, 199, 44, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(255, 199, 44, 0.3);
+            animation: botBobbing 3s ease-in-out infinite;
+        }
+        @keyframes botBobbing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .bot-content-box h4 {
+            font-size: var(--font-sm);
+            font-weight: 900;
+            color: var(--bolivar-yellow);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+        .bot-content-box p {
+            font-size: var(--font-sm);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        /* Tarjeta de Situación de Maquinaria */
+        .machine-card {
+            background: linear-gradient(145deg, #101c30, #0a1120);
+            border: 2px solid var(--border-strong);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 12px;
+            animation: cardEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes cardEnter {
+            from { opacity: 0; transform: scale(0.96) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .machine-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+        .machine-svg-wrap {
+            width: 68px;
+            height: 68px;
+            border-radius: var(--radius-md);
+            background: #060b14;
+            border: 1px solid var(--border-subtle);
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .machine-titles h3 {
+            font-size: var(--font-lg);
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.2;
+        }
+        .machine-titles .location {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .machine-fuel-badge {
+            font-size: var(--font-xs);
+            font-weight: 800;
+            font-family: var(--font-mono);
+            background: rgba(255, 199, 44, 0.15);
+            color: var(--bolivar-yellow);
+            border: 1px solid rgba(255, 199, 44, 0.35);
+            padding: 3px 8px;
+            border-radius: var(--radius-sm);
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* Grid de Telemetría de Obra */
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .telemetry-item {
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-xs);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(10, 16, 30, 0.9);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+        }
+        .telemetry-item.alert-danger {
+            background: rgba(153, 27, 27, 0.4);
+            border-color: var(--hazard-red);
+            color: #fca5a5;
+            animation: pulseAlert 1.4s infinite;
+        }
+        .telemetry-item.alert-warning {
+            background: rgba(217, 155, 0, 0.25);
+            border-color: var(--bolivar-yellow);
+            color: #fef08a;
+        }
+        .telemetry-item.full-col {
+            grid-column: span 2;
+        }
+        @keyframes pulseAlert {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.65; }
+        }
+
+        .alert-callout {
+            background: rgba(6, 11, 20, 0.9);
+            border-left: 4px solid var(--bolivar-yellow);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: var(--font-sm);
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        /* Consola de Control de Switches */
+        .switchboard-panel {
+            background: #080f1d;
+            border: 2px solid var(--border-strong);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .switchboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .switchboard-title {
+            font-size: var(--font-sm);
+            font-weight: 900;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .master-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: var(--font-sm);
+            font-weight: 800;
+        }
+
+        /* Indicador LED */
+        .led-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: var(--radius-full);
+            transition: all 0.25s ease;
+        }
+        .led-dot.red {
+            background-color: var(--hazard-red);
+            box-shadow: 0 0 10px var(--hazard-red), 0 0 20px rgba(239, 68, 68, 0.7);
+        }
+        .led-dot.green {
+            background-color: var(--bolivar-green-glow);
+            box-shadow: 0 0 12px var(--bolivar-green-glow), 0 0 24px rgba(16, 185, 129, 0.9);
+        }
+
+        /* Switch Card Táctil */
+        .switch-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .switch-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .switch-card:hover {
+            border-color: var(--border-strong);
+            background: var(--bg-card);
+        }
+        .switch-card:active {
+            transform: scale(0.98);
+        }
+        .switch-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .switch-icon-box {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            background: #070d18;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-sm);
+            color: var(--bolivar-yellow);
+        }
+        .switch-labels .name {
+            font-size: var(--font-sm);
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+        }
+        .switch-labels .desc {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            line-height: 1.2;
+        }
+
+        /* Toggle Track & Thumb */
+        .toggle-track {
+            width: 44px;
+            height: 24px;
+            border-radius: var(--radius-full);
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .toggle-track.active {
+            background: rgba(0, 103, 56, 0.55);
+            border-color: var(--bolivar-green-glow);
+        }
+        .toggle-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: var(--radius-full);
+            background: #94a3b8;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .toggle-track.active .toggle-thumb {
+            transform: translateX(20px);
+            background: var(--bolivar-green-glow);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.7);
+        }
+
+        /* Barra de Doble Decisión de Mando */
+        .decision-bar {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle);
+        }
+        .btn-decision {
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        /* Modal de Desenlace (Branching Outcome) */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 100;
+        }
+        .modal-box {
+            background: #0d1527;
+            border: 2px solid var(--border-strong);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 580px;
+            padding: 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+            text-align: center;
+            animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .outcome-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+        .outcome-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: var(--font-xs);
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            margin-bottom: 10px;
+        }
+        .outcome-title {
+            font-size: var(--font-xl);
+            font-weight: 900;
+            margin-bottom: 12px;
+            line-height: 1.25;
+        }
+        .outcome-desc {
+            font-size: var(--font-base);
+            color: var(--text-main);
+            line-height: 1.5;
+            margin-bottom: 16px;
+            text-align: left;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 14px;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--border-strong);
+        }
+        .outcome-legal {
+            font-size: var(--font-sm);
+            color: #cbd5e1;
+            line-height: 1.45;
+            text-align: left;
+            margin-bottom: 20px;
+            background: rgba(5, 8, 17, 0.85);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--border-strong);
+        }
+
+        /* Fase de Auditoría */
+        .audit-ring {
+            width: 110px;
+            height: 110px;
+            border-radius: var(--radius-full);
+            background: rgba(16, 185, 129, 0.2);
+            border: 5px solid var(--bolivar-green-glow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.35);
+        }
+        .audit-ring .score {
+            font-size: var(--font-2xl);
+            font-weight: 900;
+            color: #fff;
+            line-height: 1;
+        }
+        .audit-ring .label {
+            font-size: var(--font-xs);
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--bolivar-green-glow);
+            letter-spacing: 0.05em;
+        }
+
+        .stat-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            text-align: center;
+        }
+        .stat-card .num {
+            font-size: var(--font-xl);
+            font-weight: 900;
+            color: #fff;
+        }
+        .stat-card .title {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .finding-item {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+        .finding-item.success { border-color: rgba(16, 185, 129, 0.4); background: rgba(6, 78, 59, 0.2); }
+        .finding-item.danger { border-color: rgba(239, 68, 68, 0.4); background: rgba(127, 29, 29, 0.2); }
+        .finding-item.warning { border-color: rgba(245, 158, 11, 0.4); background: rgba(120, 53, 15, 0.2); }
+
+        /* Pantalla de Temblor de Cámara (Screen Shake) */
+        .shake-camera {
+            animation: screenShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+        @keyframes screenShake {
+            10%, 90% { transform: translate3d(-3px, 0, 0); }
+            20%, 80% { transform: translate3d(5px, -2px, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 3px, 0); }
+            40%, 60% { transform: translate3d(6px, 1px, 0); }
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 0; }
+            .app-viewport { height: 100vh; max-height: none; border-radius: 0; border: none; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .switch-grid { grid-template-columns: 1fr; }
+            .telemetry-grid { grid-template-columns: 1fr; }
+            .telemetry-item.full-col { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MAIN APP WRAPPER (Responsive SaaS/Tactical Cockpit Container) -->
+    <main id="app-viewport" class="app-viewport">
+
+        <!-- ============================================================== -->
+        <!-- HEADER INDUSTRIAL Y STATUS BAR -->
+        <!-- ============================================================== -->
+        <header class="header-bar">
+            <div class="brand-badge">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-gas-pump"></i>
+                </div>
+                <div class="brand-info">
+                    <h1>Seguros Bolívar • KMA</h1>
+                    <div class="title">
+                        <span>Mando de Trasiego Seguro</span>
+                        <span class="tag-pill">Dec. 1079</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Controls: Timer, Protocol Matrix Button, Audio Toggle -->
+            <div class="header-actions">
+                <div id="ui-timer-pill" class="timer-display hidden">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="game-timer-display">02:00</span>
+                </div>
+
+                <button id="btn-open-matrix" class="btn-icon" title="Consultar Normativa SST">
+                    <i class="fa-solid fa-book-shield text-bolivar-yellow"></i>
+                </button>
+
+                <button id="btn-sound-toggle" class="btn-icon" title="Activar/Silenciar Audio">
+                    <i id="sound-icon" class="fa-solid fa-volume-high" style="color: var(--bolivar-green-glow);"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- ============================================================== -->
+        <!-- CANVAS OVERLAY DE EFECTOS (Chispas, Humo, Derrames, Confeti) -->
+        <!-- ============================================================== -->
+        <canvas id="fx-canvas" style="position: absolute; inset: 0; pointer-events: none; z-index: 50; width: 100%; height: 100%;"></canvas>
+
+        <!-- ============================================================== -->
+        <!-- CONTENEDOR DE FASES DEL JUEGO -->
+        <!-- ============================================================== -->
+        <div class="flex-1 flex flex-col justify-between" style="position: relative; overflow: hidden;">
+
+            <!-- ========================================================== -->
+            <!-- FASE 1: TUTORIAL GUIADO CON BOLÍVAR SAFETY BOT -->
+            <!-- ========================================================== -->
+            <section id="phase-tutorial" class="flex-1 flex flex-col justify-between custom-scroll" style="padding: 20px; overflow-y: auto;">
+                
+                <!-- Stepper Progress Header -->
+                <div class="stepper-container">
+                    <div id="tut-pill-1" class="stepper-pill active">
+                        <span>1. Controles Base</span>
+                    </div>
+                    <div id="tut-pill-2" class="stepper-pill">
+                        <span>2. Decisiones & Fallas</span>
+                    </div>
+                    <div id="tut-pill-3" class="stepper-pill">
+                        <span>3. Consola Táctica</span>
+                    </div>
+                </div>
+
+                <!-- Bolívar Safety Bot Dialogue Bubble -->
+                <div class="bot-dialogue-card">
+                    <div class="bot-avatar">🤖</div>
+                    <div class="bot-content-box">
+                        <div class="flex items-center justify-between" style="margin-bottom: 4px;">
+                            <h4>Bolívar Safety Bot</h4>
+                            <span class="tag-pill" style="font-size: var(--font-xs);">Operaciones KMA</span>
+                        </div>
+                        <p id="tut-dialogue-text">
+                            ¡Bienvenido al Mando de Trasiego! Cada frente de obra tiene condiciones únicas. Aprenderás a configurar controles específicos (cuñas, celulares) y a decidir cuándo autorizar o SUSPENDER el trasiego ante riesgos no mitigables.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tutorial Step Interactive Demos -->
+                <div id="tut-step-content" class="flex-1 flex flex-col justify-center" style="padding: 10px 0;">
+                    <!-- Dinámicamente poblado con Step 1, Step 2 o Step 3 -->
+                </div>
+
+                <!-- Tutorial Navigation Controls -->
+                <div class="flex items-center gap-2" style="padding-top: 10px;">
+                    <button id="btn-tut-prev-step" class="btn btn-secondary hidden" style="flex: 0 0 auto;">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Anterior</span>
+                    </button>
+                    
+                    <button id="btn-tut-next-step" class="btn btn-primary" style="flex: 1;">
+                        <span>Siguiente Protocolo</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    
+                    <button id="btn-tut-start-exam" class="btn btn-gold hidden" style="flex: 1;">
+                        <i class="fa-solid fa-play"></i>
+                        <span>¡Tomar el Mando (120 Segundos)!</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ========================================================== -->
+            <!-- FASE 2: DESAFÍO DE CONTROL (MÁQUINAS CONSECUTIVAS) -->
+            <!-- ========================================================== -->
+            <section id="phase-challenge" class="flex-1 flex flex-col justify-between custom-scroll hidden" style="padding: 16px; overflow-y: auto; gap: 12px;">
+                
+                <!-- Machine Status Banner & Score Pills -->
+                <div class="flex items-center justify-between" style="background: rgba(6, 11, 20, 0.85); border: 1px solid var(--border-subtle); padding: 8px 14px; border-radius: var(--radius-md);">
+                    <div class="flex items-center gap-2">
+                        <span style="font-size: var(--font-xs); font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Máquina en Pista:</span>
+                        <span id="challenge-stage-badge" class="tag-pill" style="font-family: var(--font-mono); font-weight: 900;">1 / 6</span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <span class="led-dot green" style="width: 8px; height: 8px;"></span>
+                        <span id="challenge-flow-status" style="font-size: var(--font-xs); font-weight: 800; color: var(--bolivar-green-glow); text-transform: uppercase;">Bomba en Espera</span>
+                    </div>
+                </div>
+
+                <!-- SITUATION CARD (FRENTE DE OBRA) -->
+                <div id="machine-situation-card" class="machine-card">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
+                <!-- INDUSTRIAL SWITCHBOARD CONSOLE (6 INTERRUPTORES INDUSTRIALES + DECISIÓN TÁCTICA) -->
+                <div class="switchboard-panel">
+                    <div class="switchboard-header">
+                        <div class="switchboard-title">
+                            <i class="fa-solid fa-sliders" style="color: var(--bolivar-yellow);"></i>
+                            <span>Consola Táctica de Mitigación SST</span>
+                        </div>
+                        <div class="master-indicator">
+                            <span class="led-dot red" id="console-master-led"></span>
+                            <span id="console-master-label" style="color: var(--hazard-red);">CONDICIÓN INSEGURA</span>
+                        </div>
+                    </div>
+
+                    <!-- 6 Safety Switches Grid -->
+                    <div class="switch-grid">
+                        
+                        <!-- SWITCH 1: MOTOR E IGNICIÓN -->
+                        <div class="switch-card" data-switch="motor">
+                            <div class="switch-info">
+                                <div class="switch-icon-box">
+                                    <i class="fa-solid fa-power-off"></i>
+                                </div>
+                                <div class="switch-labels">
+                                    <div class="name">1. Motor Apagado</div>
+                                    <div class="desc">Sin ignición ni chispas</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="led-dot red" id="led-switch-motor"></span>
+                                <div class="toggle-track" id="track-switch-motor">
+                                    <div class="toggle-thumb" id="thumb-switch-motor"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SWITCH 2: POLO A TIERRA -->
+                        <div class="switch-card" data-switch="ground">
+                            <div class="switch-info">
+                                <div class="switch-icon-box">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                                <div class="switch-labels">
+                                    <div class="name">2. Polo a Tierra</div>
+                                    <div class="desc">Pinza equipotencial estática</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="led-dot red" id="led-switch-ground"></span>
+                                <div class="toggle-track" id="track-switch-ground">
+                                    <div class="toggle-thumb" id="thumb-switch-ground"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SWITCH 3: BANDEJA DE GOTEO -->
+                        <div class="switch-card" data-switch="tray">
+                            <div class="switch-info">
+                                <div class="switch-icon-box">
+                                    <i class="fa-solid fa-box-tissue"></i>
+                                </div>
+                                <div class="switch-labels">
+                                    <div class="name">3. Bandeja Goteo</div>
+                                    <div class="desc">Contención de derrames</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="led-dot red" id="led-switch-tray"></span>
+                                <div class="toggle-track" id="track-switch-tray">
+                                    <div class="toggle-thumb" id="thumb-switch-tray"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SWITCH 4: EXTINTOR PQS -->
+                        <div class="switch-card" data-switch="extinguisher">
+                            <div class="switch-info">
+                                <div class="switch-icon-box">
+                                    <i class="fa-solid fa-fire-extinguisher"></i>
+                                </div>
+                                <div class="switch-labels">
+                                    <div class="name">4. Extintor PQS</div>
+                                    <div class="desc">A barlovento &lt; 5m</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="led-dot red" id="led-switch-extinguisher"></span>
+                                <div class="toggle-track" id="track-switch-extinguisher">
+                                    <div class="toggle-thumb" id="thumb-switch-extinguisher"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SWITCH 5: CUÑAS DE BLOQUEO MECÁNICO -->
+                        <div class="switch-card" data-switch="chocks">
+                            <div class="switch-info">
+                                <div class="switch-icon-box">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </div>
+                                <div class="switch-labels">
+                                    <div class="name">5. Cuñas Bloqueo</div>
+                                    <div class="desc">Tacos en llantas en pendiente</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="led-dot red" id="led-switch-chocks"></span>
+                                <div class="toggle-track" id="track-switch-chocks">
+                                    <div class="toggle-thumb" id="thumb-switch-chocks"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SWITCH 6: AISLAR CELULARES Y RADIOS -->
+                        <div class="switch-card" data-switch="noCell">
+                            <div class="switch-info">
+                                <div class="switch-icon-box">
+                                    <i class="fa-solid fa-ban"></i>
+                                </div>
+                                <div class="switch-labels">
+                                    <div class="name">6. Aislar Celular</div>
+                                    <div class="desc">Cero radiofrecuencia en tanque</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="led-dot red" id="led-switch-noCell"></span>
+                                <div class="toggle-track" id="track-switch-noCell">
+                                    <div class="toggle-thumb" id="thumb-switch-noCell"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- DUAL COMMAND DECISION BAR -->
+                    <div class="decision-bar">
+                        <!-- DECISIÓN 1: SUSPENDER OPERACIÓN -->
+                        <button id="btn-abort-hazard" class="btn-decision btn-danger">
+                            <i class="fa-solid fa-hand"></i>
+                            <span>Suspender Operación</span>
+                        </button>
+
+                        <!-- DECISIÓN 2: AUTORIZAR DESPACHO -->
+                        <button id="btn-master-lever" class="btn-decision btn-gold">
+                            <i class="fa-solid fa-faucet-drip"></i>
+                            <span>Autorizar Despacho</span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ========================================================== -->
+            <!-- MODAL / OVERLAY: FEEDBACK DE FINAL RAMIFICADO (BRANCHING) -->
+            <!-- ========================================================== -->
+            <div id="modal-branching-outcome" class="modal-overlay hidden">
+                <div id="outcome-card" class="modal-box">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <!-- ========================================================== -->
+            <!-- FASE 3: AUDITORÍA DE TRASIEGO Y CERTIFICACIÓN SST -->
+            <!-- ========================================================== -->
+            <section id="phase-audit" class="flex-1 flex flex-col justify-between custom-scroll hidden" style="padding: 20px; overflow-y: auto;">
+                
+                <!-- Audit Header & Score Badge -->
+                <div class="text-center" style="padding: 10px 0;">
+                    <div id="audit-score-ring" class="audit-ring">
+                        <span id="audit-score-num" class="score">100%</span>
+                        <span class="label">Puntaje</span>
+                    </div>
+                    <h2 id="audit-title" style="font-size: var(--font-xl); font-weight: 900; color: #fff;">Trasiego Conforme y Seguro</h2>
+                    <p id="audit-subtitle" style="font-size: var(--font-sm); color: var(--text-muted); margin-top: 4px;">
+                        Cumplimiento integral del Decreto 1079 de 2015, Decreto 4741 de 2005 y estándares KMA.
+                    </p>
+                </div>
+
+                <!-- Metrics Breakdown -->
+                <div class="grid-3" style="margin-bottom: 14px;">
+                    <div class="stat-card">
+                        <div id="audit-stat-success" class="num" style="color: var(--bolivar-green-glow);">0</div>
+                        <div class="title">Despachos Seguros</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="audit-stat-fires" class="num" style="color: var(--hazard-red);">0</div>
+                        <div class="title">Conatos/Explosiones</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="audit-stat-spills" class="num" style="color: var(--hazard-amber);">0</div>
+                        <div class="title">Derrames/Fugas</div>
+                    </div>
+                </div>
+
+                <!-- Findings Detailed Log -->
+                <div style="margin-bottom: 14px;">
+                    <h3 style="font-size: var(--font-sm); font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
+                        <i class="fa-solid fa-clipboard-check" style="color: var(--bolivar-yellow);"></i>
+                        Registro Técnico de Decisiones de Mando
+                    </h3>
+                    <div id="audit-findings-list">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- Regulatory Framework -->
+                <div class="alert-callout" style="margin-bottom: 14px;">
+                    <div style="font-weight: 800; text-transform: uppercase; font-size: var(--font-xs); color: var(--bolivar-yellow); margin-bottom: 4px;">
+                        <i class="fa-solid fa-scale-balanced"></i> Normativa Colombiana Aplicada
+                    </div>
+                    <p style="font-size: var(--font-xs); color: #cbd5e1; line-height: 1.4;">
+                        <strong>Dec. 1079 de 2015:</strong> Regulación del transporte y distribución de combustibles líquidos. 
+                        <strong>Dec. 4741 de 2005:</strong> Prevención de derrames y RESPEL. 
+                        <strong>RETIE Art. 19 / NFPA 780:</strong> Protección contra tormentas eléctricas y descargas atmosféricas.
+                    </p>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-2">
+                    <button id="btn-audit-matrix" class="btn btn-secondary" style="flex: 0 0 auto;">
+                        <i class="fa-solid fa-book-shield"></i>
+                        <span>Protocolo</span>
+                    </button>
+                    <button id="btn-restart-game" class="btn btn-primary" style="flex: 1;">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Reintentar Desafío</span>
+                    </button>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- MODAL: PROTOCOLO TÉCNICO NORMATIVO (Dec. 1079 & Dec. 4741) -->
+        <!-- ============================================================== -->
+        <div id="modal-matrix" class="modal-overlay hidden">
+            <div class="modal-box" style="text-align: left; max-width: 650px;">
+                <div class="flex items-center justify-between" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; margin-bottom: 14px;">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-book-shield" style="color: var(--bolivar-yellow); font-size: 1.3rem;"></i>
+                        <h3 style="font-size: var(--font-lg); font-weight: 900; color: #fff;">Protocolo de Trasiego y Descarga</h3>
+                    </div>
+                    <button id="btn-close-matrix" class="btn-icon">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div class="custom-scroll" style="max-height: 65vh; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 6px;">
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm);">
+                        <strong style="color: var(--bolivar-yellow); font-size: var(--font-sm);">1. Apagado de Motor e Ignición (Dec. 1079 de 2015):</strong>
+                        <p style="font-size: var(--font-xs); color: #cbd5e1; margin-top: 4px; line-height: 1.4;">
+                            El motor de la máquina receptora debe estar completamente apagado y con freno de parqueo. Se prohíben fuentes de calor o celulares en un radio de 15 metros.
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm);">
+                        <strong style="color: #67e8f9; font-size: var(--font-sm);">2. Pinza Equipotencial a Tierra (Res. 2400 de 1979):</strong>
+                        <p style="font-size: var(--font-xs); color: #cbd5e1; margin-top: 4px; line-height: 1.4;">
+                            Conectar la pinza de cobre a una parte metálica sin pintura antes de abrir la tapa de llenado para disipar cargas electrostáticas acumuladas.
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm);">
+                        <strong style="color: var(--bolivar-green-glow); font-size: var(--font-sm);">3. Bandeja Antiderrame de Contención (Dec. 4741 de 2005):</strong>
+                        <p style="font-size: var(--font-xs); color: #cbd5e1; margin-top: 4px; line-height: 1.4;">
+                            Toda boquilla, válvula y acople debe tener una bandeja plástica con material absorbente justo debajo para retener el goteo residual del cierre.
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm);">
+                        <strong style="color: var(--hazard-red); font-size: var(--font-sm);">4. Extintor Satélite ABC / PQS:</strong>
+                        <p style="font-size: var(--font-xs); color: #cbd5e1; margin-top: 4px; line-height: 1.4;">
+                            Extintor con carga vigente posicionado a barlovento (viento en la espalda del operador) y a menos de 5 metros de distancia durante todo el suministro.
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm);">
+                        <strong style="color: var(--hazard-amber); font-size: var(--font-sm);">5. Cuñas de Bloqueo Mecánico (Tacos - OSHA 1910.178):</strong>
+                        <p style="font-size: var(--font-xs); color: #cbd5e1; margin-top: 4px; line-height: 1.4;">
+                            Calzado obligatorio en llantas de vehículos en pendiente o terreno inestable para evitar rodamiento accidental por pérdida de presión de frenos.
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm);">
+                        <strong style="color: var(--hazard-purple); font-size: var(--font-sm);">6. Suspensión Obligatoria por Tormenta (RETIE / NFPA 780):</strong>
+                        <p style="font-size: var(--font-xs); color: #cbd5e1; margin-top: 4px; line-height: 1.4;">
+                            Prohibición absoluta de trasiego con actividad eléctrica atmosférica a menos de 5 km. Ningún polo a tierra protege contra descargas directas de un rayo.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px; text-align: right;">
+                    <button id="btn-understood-matrix" class="btn btn-primary">
+                        Entendido, Volver al Mando
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================== -->
+    <!-- LOGICA DEL JUEGO: JAVASCRIPT ES6 INTEGRADO -->
+    <!-- ============================================================== -->
+    <script>
+        /**
+         * ============================================================
+         * 1. BASE DE DATOS DE ESCENARIOS / MÁQUINAS EN OBRA
+         * ============================================================
+         */
+        const MACHINERY_SCENARIOS = [
+            {
+                id: 'scen_excavator',
+                name: 'Excavadora sobre Orugas (CAT 320)',
+                location: 'Corte de Talud Seco • Km 14+200',
+                fuelType: 'ACPM / Diésel (90 Gal)',
+                telemetry: {
+                    weather: { label: 'Despejado / Viento Seco', isAlert: false, icon: 'fa-sun' },
+                    slope: { label: 'Plataforma Nivelada (0°)', isAlert: false, icon: 'fa-arrows-left-right' },
+                    rf: { label: '¡CELULAR EN BOCA DE TANQUE!', isAlert: true, icon: 'fa-mobile-screen-button' },
+                    environment: { label: 'Suelo Industrial Seco', isAlert: false, icon: 'fa-mountain' },
+                    load: { label: 'Motor en Ralentí / Standby', isAlert: false, icon: 'fa-clock' }
+                },
+                requires: {
+                    motor: true,
+                    ground: true,
+                    tray: true,
+                    extinguisher: true,
+                    chocks: false,
+                    noCell: true,
+                    abortRequired: false
+                },
+                warningText: 'Operador distraído hablando por celular en la tapa de llenado. Chasis con alta estática acumulada.',
+                dangerProfile: 'Riesgo de arco por radiofrecuencia móvil y chispa estática en chasis de orugas.',
+                svgIcon: `
+                    <svg viewBox="0 0 72 72" style="width: 100%; height: 100%;">
+                        <rect x="10" y="52" width="52" height="12" rx="6" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+                        <circle cx="16" cy="58" r="3.5" fill="#64748b"/>
+                        <circle cx="28" cy="58" r="3.5" fill="#64748b"/>
+                        <circle cx="44" cy="58" r="3.5" fill="#64748b"/>
+                        <circle cx="56" cy="58" r="3.5" fill="#64748b"/>
+                        <path d="M16 52 L22 36 L44 36 L52 52 Z" fill="#eab308"/>
+                        <rect x="24" y="38" width="10" height="8" rx="1.5" fill="#0284c7" opacity="0.8"/>
+                        <path d="M44 42 L62 26 L56 16" fill="none" stroke="#ca8a04" stroke-width="4.5" stroke-linecap="round"/>
+                        <path d="M56 16 L66 12 L64 22 Z" fill="#1e293b"/>
+                    </svg>
+                `
+            },
+            {
+                id: 'scen_dump_truck',
+                name: 'Volqueta Doble Troque (Kenworth T880)',
+                location: 'Zona de Botadero • Terraplén Sur',
+                fuelType: 'ACPM / Diésel (110 Gal)',
+                telemetry: {
+                    weather: { label: 'Despejado', isAlert: false, icon: 'fa-sun' },
+                    slope: { label: '¡PENDIENTE CRÍTICA 18% EN GRAVA!', isAlert: true, icon: 'fa-triangle-exclamation' },
+                    rf: { label: 'Dispositivos Aislados', isAlert: false, icon: 'fa-check' },
+                    environment: { label: 'Grava Suelta en Bajada', isAlert: true, icon: 'fa-road' },
+                    load: { label: 'Motor Caliente Reciente', isAlert: false, icon: 'fa-temperature-three-quarters' }
+                },
+                requires: {
+                    motor: true,
+                    ground: true,
+                    tray: true,
+                    extinguisher: true,
+                    chocks: true,
+                    noCell: true,
+                    abortRequired: false
+                },
+                warningText: 'Pendiente pronunciada (18%) con grava inestable. Riesgo de rodamiento por pérdida de presión de aire en frenos.',
+                dangerProfile: 'Deslizamiento involuntario de 25 toneladas con ruptura violenta de manguera a presión.',
+                svgIcon: `
+                    <svg viewBox="0 0 72 72" style="width: 100%; height: 100%;">
+                        <rect x="12" y="46" width="48" height="6" fill="#334155"/>
+                        <circle cx="18" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <circle cx="36" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <circle cx="48" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <path d="M12 46 V32 H24 L28 46 Z" fill="#dc2626"/>
+                        <rect x="16" y="34" width="7" height="6" fill="#38bdf8" opacity="0.8"/>
+                        <polygon points="26,46 58,46 62,30 28,30" fill="#cbd5e1"/>
+                    </svg>
+                `
+            },
+            {
+                id: 'scen_motorgrader',
+                name: 'Motoniveladora de Pista (CAT 140K)',
+                location: 'Pista Central • Tramo Asfalto Abierto',
+                fuelType: 'ACPM / Diésel (75 Gal)',
+                telemetry: {
+                    weather: { label: '⚡ ALERTA: TORMENTA ELÉCTRICA (<3 km)', isAlert: true, icon: 'fa-cloud-bolt' },
+                    slope: { label: 'Pista Nivelada', isAlert: false, icon: 'fa-road' },
+                    rf: { label: 'Dispositivos Aislados', isAlert: false, icon: 'fa-check' },
+                    environment: { label: '¡CAMPO ABIERTO EXPUESTO A RAYOS!', isAlert: true, icon: 'fa-bolt' },
+                    load: { label: 'Motor Apagado', isAlert: false, icon: 'fa-power-off' }
+                },
+                requires: {
+                    motor: true,
+                    ground: true,
+                    tray: true,
+                    extinguisher: true,
+                    chocks: false,
+                    noCell: true,
+                    abortRequired: true
+                },
+                warningText: '¡ALERTA ROJA METEOROLÓGICA! Truenos activos y detector de tormentas sonando a menos de 3 km. Rayos inminentes.',
+                dangerProfile: 'Descarga atmosférica masiva directa. Ningún polo a tierra protege contra un rayo de 300,000V.',
+                svgIcon: `
+                    <svg viewBox="0 0 72 72" style="width: 100%; height: 100%;">
+                        <circle cx="16" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <circle cx="48" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <circle cx="58" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <path d="M16 49 L38 40 L50 46" fill="none" stroke="#eab308" stroke-width="4"/>
+                        <rect x="28" y="52" width="14" height="3" fill="#334155" transform="rotate(-10 28 52)"/>
+                        <rect x="42" y="32" width="10" height="12" fill="#ca8a04"/>
+                    </svg>
+                `
+            },
+            {
+                id: 'scen_mixer',
+                name: 'Camión Mezclador Mixer (Concrete)',
+                location: 'Sector Puente Río Claro • Talud Hídrico',
+                fuelType: 'ACPM / Diésel (80 Gal)',
+                telemetry: {
+                    weather: { label: 'Nublado Moderado', isAlert: false, icon: 'fa-cloud' },
+                    slope: { label: 'Inclinación Leve 5%', isAlert: true, icon: 'fa-triangle-exclamation' },
+                    rf: { label: 'Dispositivos Aislados', isAlert: false, icon: 'fa-check' },
+                    environment: { label: '¡RONDA DE RÍO PROTEGIDO (<8m)!', isAlert: true, icon: 'fa-water' },
+                    load: { label: 'Trompo Inercial Frenado', isAlert: false, icon: 'fa-circle-stop' }
+                },
+                requires: {
+                    motor: true,
+                    ground: true,
+                    tray: true,
+                    extinguisher: true,
+                    chocks: true,
+                    noCell: true,
+                    abortRequired: false
+                },
+                warningText: 'Ubicado a 8 metros de un afluente ecológico protegido. El suelo arenoso filtra cualquier goteo hacia el agua en minutos.',
+                dangerProfile: 'Contaminación directa de fuentes de agua superficiales con sanciones penales por Delito Ambiental (Ley 1333).',
+                svgIcon: `
+                    <svg viewBox="0 0 72 72" style="width: 100%; height: 100%;">
+                        <circle cx="18" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <circle cx="46" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <circle cx="56" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <path d="M12 48 V34 H22 L26 48 Z" fill="#0284c7"/>
+                        <ellipse cx="40" cy="38" rx="14" ry="9" fill="#94a3b8" transform="rotate(-18 40 38)"/>
+                        <path d="M30 40 L50 36" stroke="#475569" stroke-width="2"/>
+                    </svg>
+                `
+            },
+            {
+                id: 'scen_generator',
+                name: 'Generador Diésel Principal (500 kVA)',
+                location: 'Campamento Central • Turno Nocturno',
+                fuelType: 'ACPM / Diésel (120 Gal)',
+                telemetry: {
+                    weather: { label: 'Noche Despejada', isAlert: false, icon: 'fa-moon' },
+                    slope: { label: 'Plataforma Nivelada', isAlert: false, icon: 'fa-square' },
+                    rf: { label: 'Dispositivos Aislados', isAlert: false, icon: 'fa-check' },
+                    environment: { label: 'Sala Insonorizada Cerrada', isAlert: false, icon: 'fa-industry' },
+                    load: { label: '¡GENERADOR CON CARGA ACTIVA 500kVA!', isAlert: true, icon: 'fa-bolt-lightning' }
+                },
+                requires: {
+                    motor: true,
+                    ground: true,
+                    tray: true,
+                    extinguisher: true,
+                    chocks: false,
+                    noCell: true,
+                    abortRequired: false
+                },
+                warningText: 'Generador alimentando iluminación y sistemas críticos. Personal pide tanquear encendido para no cortar el fluido eléctrico.',
+                dangerProfile: 'Chispa de inducción en alternador/escobillas en recinto cerrado con vapores de diésel.',
+                svgIcon: `
+                    <svg viewBox="0 0 72 72" style="width: 100%; height: 100%;">
+                        <rect x="14" y="24" width="44" height="32" rx="4" fill="#006738" stroke="#008244" stroke-width="2"/>
+                        <rect x="18" y="28" width="8" height="12" fill="#0f172a"/>
+                        <line x1="18" y1="32" x2="26" y2="32" stroke="#475569"/>
+                        <line x1="18" y1="36" x2="26" y2="36" stroke="#475569"/>
+                        <rect x="36" y="28" width="16" height="8" fill="#0f172a"/>
+                        <circle cx="40" cy="32" r="1.5" fill="#10b981"/>
+                        <circle cx="46" cy="32" r="1.5" fill="#ef4444"/>
+                        <rect x="22" y="16" width="4" height="8" fill="#475569"/>
+                    </svg>
+                `
+            },
+            {
+                id: 'scen_tanker_cisterna',
+                name: 'Carro-Tanque Cisterna Nodriza (5,000 Gal)',
+                location: 'Patio Central de Combustibles • Base KMA',
+                fuelType: 'ACPM / Diésel a Granel',
+                telemetry: {
+                    weather: { label: '⚡ VIENTO >65 km/h & RAYOS EN RADAR', isAlert: true, icon: 'fa-wind' },
+                    slope: { label: 'Patio Pavimentado Plano', isAlert: false, icon: 'fa-square' },
+                    rf: { label: 'Dispositivos Aislados', isAlert: false, icon: 'fa-check' },
+                    environment: { label: 'Patio de Gran Capacidad (RESPEL)', isAlert: true, icon: 'fa-gas-pump' },
+                    load: { label: 'Bomba Presurizada de Alto Flujo', isAlert: false, icon: 'fa-gauge-high' }
+                },
+                requires: {
+                    motor: true,
+                    ground: true,
+                    tray: true,
+                    extinguisher: true,
+                    chocks: true,
+                    noCell: true,
+                    abortRequired: true
+                },
+                warningText: 'Vientos huracanados y tormenta eléctrica en radar a 2 km. Presión del despachador por llenar los depósitos antes del cierre.',
+                dangerProfile: 'Deflagración de 5,000 galones con onda expansiva en toda la base logística.',
+                svgIcon: `
+                    <svg viewBox="0 0 72 72" style="width: 100%; height: 100%;">
+                        <circle cx="16" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <circle cx="46" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <circle cx="56" cy="54" r="5" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+                        <path d="M10 48 V34 H20 L24 48 Z" fill="#475569"/>
+                        <rect x="24" y="28" width="38" height="20" rx="8" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
+                        <rect x="34" y="34" width="18" height="8" rx="2" fill="#ef4444"/>
+                    </svg>
+                `
+            }
+        ];
+
+        /**
+         * ============================================================
+         * 2. MOTOR DE AUDIO PROCEDURAL (Web Audio API)
+         * ============================================================
+         */
+        class ProceduralSound {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+            }
+
+            init() {
+                try {
+                    if (!this.ctx) {
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (AudioContext) {
+                            this.ctx = new AudioContext();
+                        }
+                    }
+                    if (this.ctx && this.ctx.state === 'suspended') {
+                        this.ctx.resume().catch(() => {});
+                    }
+                } catch(e) {}
+            }
+
+            playTone(freq, type, duration, vol = 0.2) {
+                if (!this.enabled) return;
+                try {
+                    this.init();
+                    if (!this.ctx) return;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) {}
+            }
+
+            tap() {
+                this.playTone(600, 'sine', 0.04, 0.1);
+            }
+
+            switchClick(on = true) {
+                this.playTone(on ? 850 : 420, 'square', 0.05, 0.15);
+                setTimeout(() => this.playTone(on ? 1200 : 300, 'triangle', 0.04, 0.1), 30);
+            }
+
+            leverClack() {
+                this.playTone(220, 'sawtooth', 0.1, 0.3);
+                setTimeout(() => this.playTone(440, 'triangle', 0.12, 0.25), 60);
+            }
+
+            flowPumping() {
+                this.playTone(280, 'sine', 0.25, 0.2);
+                setTimeout(() => this.playTone(360, 'sine', 0.2, 0.18), 80);
+                setTimeout(() => this.playTone(480, 'triangle', 0.3, 0.2), 160);
+            }
+
+            explosionAlarm() {
+                this.playTone(90, 'sawtooth', 0.45, 0.45);
+                setTimeout(() => this.playTone(60, 'sawtooth', 0.6, 0.5), 100);
+            }
+
+            spillWarning() {
+                this.playTone(320, 'sine', 0.2, 0.25);
+                setTimeout(() => this.playTone(240, 'sine', 0.35, 0.3), 90);
+            }
+
+            fanfare() {
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((f, idx) => {
+                    setTimeout(() => this.playTone(f, 'triangle', 0.2, 0.25), idx * 90);
+                });
+            }
+        }
+
+        const sound = new ProceduralSound();
+
+        /**
+         * ============================================================
+         * 3. MOTOR DE PARTÍCULAS CANVAS (Canvas 2D: Chispas, Confeti)
+         * ============================================================
+         */
+        class ParticleEngine {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas ? canvas.getContext('2d') : null;
+                this.particles = [];
+                this.running = false;
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+
+            resize() {
+                if (!this.canvas || !this.canvas.parentElement) return;
+                this.canvas.width = this.canvas.parentElement.clientWidth || window.innerWidth;
+                this.canvas.height = this.canvas.parentElement.clientHeight || window.innerHeight;
+            }
+
+            sparks(x, y, count = 30, color = '#FFC72C') {
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 100 + Math.random() * 220;
+                    this.particles.push({
+                        x, y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        gravity: 280,
+                        size: 2 + Math.random() * 3,
+                        color,
+                        life: 0.4 + Math.random() * 0.4,
+                        maxLife: 0.8
+                    });
+                }
+                this.start();
+            }
+
+            confetti(x, y, count = 45) {
+                const colors = ['#FFC72C', '#10B981', '#006738', '#ffffff', '#0284c7'];
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 140 + Math.random() * 260;
+                    this.particles.push({
+                        x, y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed - 120,
+                        gravity: 420,
+                        size: 4 + Math.random() * 4,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        life: 0.8 + Math.random() * 0.5,
+                        maxLife: 1.3
+                    });
+                }
+                this.start();
+            }
+
+            start() {
+                if (!this.running) {
+                    this.running = true;
+                    this.lastTime = performance.now();
+                    requestAnimationFrame((t) => this.loop(t));
+                }
+            }
+
+            loop(timestamp) {
+                const dt = Math.min((timestamp - this.lastTime) / 1000, 0.1);
+                this.lastTime = timestamp;
+
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const p = this.particles[i];
+                    p.life -= dt;
+                    if (p.life <= 0) {
+                        this.particles.splice(i, 1);
+                        continue;
+                    }
+                    p.x += p.vx * dt;
+                    p.y += p.vy * dt;
+                    p.vy += p.gravity * dt;
+
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+                    this.ctx.fillRect(p.x, p.y, p.size, p.size);
+                }
+                this.ctx.globalAlpha = 1;
+
+                if (this.particles.length > 0) {
+                    requestAnimationFrame((t) => this.loop(t));
+                } else {
+                    this.running = false;
+                }
+            }
+        }
+
+        /**
+         * ============================================================
+         * 4. CONTROLADOR PRINCIPAL DEL JUEGO (GAME CONTROLLER ES6)
+         * ============================================================
+         */
+        class TrasiegoGameController {
+            constructor() {
+                this.phase = 'tutorial';
+                this.tutorialStep = 1;
+                this.currentScenarioIndex = 0;
+                this.timeLeft = 120;
+                this.timerInterval = null;
+
+                // Estado de los 6 switches tácticos de mitigación
+                this.switchesState = {
+                    motor: false,
+                    ground: false,
+                    tray: false,
+                    extinguisher: false,
+                    chocks: false,
+                    noCell: false
+                };
+
+                // Auditoría y registro de finales y decisiones de mando
+                this.auditResults = [];
+                this.stats = {
+                    success: 0,
+                    fires: 0,
+                    spills: 0,
+                    criticalAborts: 0,
+                    falseAborts: 0,
+                    totalAttempts: 0
+                };
+
+                this.initDOM();
+                try {
+                    this.fx = new ParticleEngine(this.dom.fxCanvas);
+                } catch(e) {
+                    this.fx = { sparks: () => {}, confetti: () => {} };
+                }
+                this.bindEvents();
+                this.renderTutorialStep(1);
+            }
+
+            initDOM() {
+                this.dom = {
+                    appViewport: document.getElementById('app-viewport'),
+                    fxCanvas: document.getElementById('fx-canvas'),
+                    btnSoundToggle: document.getElementById('btn-sound-toggle'),
+                    soundIcon: document.getElementById('sound-icon'),
+                    btnOpenMatrix: document.getElementById('btn-open-matrix'),
+                    btnCloseMatrix: document.getElementById('btn-close-matrix'),
+                    btnUnderstoodMatrix: document.getElementById('btn-understood-matrix'),
+                    modalMatrix: document.getElementById('modal-matrix'),
+                    timerPill: document.getElementById('ui-timer-pill'),
+                    timerDisplay: document.getElementById('game-timer-display'),
+
+                    // Tutorial
+                    phaseTutorial: document.getElementById('phase-tutorial'),
+                    tutDialogueText: document.getElementById('tut-dialogue-text'),
+                    tutStepContent: document.getElementById('tut-step-content'),
+                    btnTutPrevStep: document.getElementById('btn-tut-prev-step'),
+                    btnTutNextStep: document.getElementById('btn-tut-next-step'),
+                    btnTutStartExam: document.getElementById('btn-tut-start-exam'),
+                    tutPill1: document.getElementById('tut-pill-1'),
+                    tutPill2: document.getElementById('tut-pill-2'),
+                    tutPill3: document.getElementById('tut-pill-3'),
+
+                    // Challenge
+                    phaseChallenge: document.getElementById('phase-challenge'),
+                    challengeStageBadge: document.getElementById('challenge-stage-badge'),
+                    challengeFlowStatus: document.getElementById('challenge-flow-status'),
+                    machineSituationCard: document.getElementById('machine-situation-card'),
+                    consoleMasterLed: document.getElementById('console-master-led'),
+                    consoleMasterLabel: document.getElementById('console-master-label'),
+                    btnAbortHazard: document.getElementById('btn-abort-hazard'),
+                    btnMasterLever: document.getElementById('btn-master-lever'),
+
+                    // Switches
+                    switchItems: document.querySelectorAll('.switch-card'),
+
+                    // Outcome Modal
+                    modalBranchingOutcome: document.getElementById('modal-branching-outcome'),
+                    outcomeCard: document.getElementById('outcome-card'),
+
+                    // Audit
+                    phaseAudit: document.getElementById('phase-audit'),
+                    auditScoreNum: document.getElementById('audit-score-num'),
+                    auditScoreRing: document.getElementById('audit-score-ring'),
+                    auditTitle: document.getElementById('audit-title'),
+                    auditSubtitle: document.getElementById('audit-subtitle'),
+                    auditStatSuccess: document.getElementById('audit-stat-success'),
+                    auditStatFires: document.getElementById('audit-stat-fires'),
+                    auditStatSpills: document.getElementById('audit-stat-spills'),
+                    auditFindingsList: document.getElementById('audit-findings-list'),
+                    btnRestartGame: document.getElementById('btn-restart-game'),
+                    btnAuditMatrix: document.getElementById('btn-audit-matrix')
+                };
+            }
+
+            bindEvents() {
+                // Sonido
+                this.dom.btnSoundToggle.addEventListener('click', () => {
+                    sound.enabled = !sound.enabled;
+                    this.dom.soundIcon.className = sound.enabled 
+                        ? 'fa-solid fa-volume-high' 
+                        : 'fa-solid fa-volume-xmark';
+                    this.dom.soundIcon.style.color = sound.enabled ? 'var(--bolivar-green-glow)' : 'var(--text-muted)';
+                });
+
+                // Protocolo Normativo Modal
+                this.dom.btnOpenMatrix.addEventListener('click', () => this.dom.modalMatrix.classList.remove('hidden'));
+                this.dom.btnCloseMatrix.addEventListener('click', () => this.dom.modalMatrix.classList.add('hidden'));
+                if (this.dom.btnUnderstoodMatrix) {
+                    this.dom.btnUnderstoodMatrix.addEventListener('click', () => this.dom.modalMatrix.classList.add('hidden'));
+                }
+                if (this.dom.btnAuditMatrix) {
+                    this.dom.btnAuditMatrix.addEventListener('click', () => this.dom.modalMatrix.classList.remove('hidden'));
+                }
+
+                // Tutorial Navigation
+                this.dom.btnTutNextStep.addEventListener('click', () => this.nextTutorialStep());
+                this.dom.btnTutPrevStep.addEventListener('click', () => this.prevTutorialStep());
+                this.dom.btnTutStartExam.addEventListener('click', () => this.startChallengePhase());
+
+                // Switches Interaction
+                this.dom.switchItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const switchKey = item.dataset.switch;
+                        this.toggleSwitch(switchKey);
+                    });
+                });
+
+                // Decisión de Mando 1: Suspender Operación (Riesgo No Mitigable)
+                if (this.dom.btnAbortHazard) {
+                    this.dom.btnAbortHazard.addEventListener('click', () => {
+                        this.triggerAbortOperation();
+                    });
+                }
+
+                // Decisión de Mando 2: Palanca Master Autorizar Despacho
+                if (this.dom.btnMasterLever) {
+                    this.dom.btnMasterLever.addEventListener('click', () => {
+                        this.triggerMasterLever();
+                    });
+                }
+
+                // Reinicio de Juego
+                this.dom.btnRestartGame.addEventListener('click', () => {
+                    this.restartGame();
+                });
+            }
+
+            toggleSwitch(key) {
+                if (this.phase !== 'challenge' && this.tutorialStep !== 3) return;
+
+                this.switchesState[key] = !this.switchesState[key];
+                const isOn = this.switchesState[key];
+                sound.switchClick(isOn);
+
+                this.updateSwitchVisual(key, isOn);
+                this.updateConsoleMasterStatus();
+            }
+
+            updateSwitchVisual(key, isOn) {
+                const led = document.getElementById(`led-switch-${key}`);
+                const track = document.getElementById(`track-switch-${key}`);
+
+                if (led && track) {
+                    if (isOn) {
+                        led.className = 'led-dot green';
+                        track.classList.add('active');
+                    } else {
+                        led.className = 'led-dot red';
+                        track.classList.remove('active');
+                    }
+                }
+            }
+
+            resetSwitches() {
+                ['motor', 'ground', 'tray', 'extinguisher', 'chocks', 'noCell'].forEach(k => {
+                    this.switchesState[k] = false;
+                    this.updateSwitchVisual(k, false);
+                });
+                this.updateConsoleMasterStatus();
+            }
+
+            updateConsoleMasterStatus() {
+                const currentScen = (this.phase === 'challenge') 
+                    ? MACHINERY_SCENARIOS[this.currentScenarioIndex] 
+                    : null;
+
+                if (currentScen && currentScen.requires.abortRequired) {
+                    this.dom.consoleMasterLed.className = 'led-dot red';
+                    this.dom.consoleMasterLabel.textContent = 'ALERTA: CLIMA CRÍTICO';
+                    this.dom.consoleMasterLabel.style.color = 'var(--hazard-red)';
+                    return;
+                }
+
+                const { motor, ground, tray, extinguisher, chocks, noCell } = this.switchesState;
+                let safe = motor && ground && tray && extinguisher;
+                if (currentScen) {
+                    if (currentScen.requires.chocks && !chocks) safe = false;
+                    if (currentScen.requires.noCell && !noCell) safe = false;
+                }
+
+                if (safe) {
+                    this.dom.consoleMasterLed.className = 'led-dot green';
+                    this.dom.consoleMasterLabel.textContent = 'LÍNEA SEGURA 100%';
+                    this.dom.consoleMasterLabel.style.color = 'var(--bolivar-green-glow)';
+                } else {
+                    this.dom.consoleMasterLed.className = 'led-dot red';
+                    this.dom.consoleMasterLabel.textContent = 'CONDICIÓN INSEGURA';
+                    this.dom.consoleMasterLabel.style.color = 'var(--hazard-red)';
+                }
+            }
+
+            nextTutorialStep() {
+                sound.tap();
+                if (this.tutorialStep < 3) {
+                    this.tutorialStep++;
+                    this.renderTutorialStep(this.tutorialStep);
+                }
+            }
+
+            prevTutorialStep() {
+                sound.tap();
+                if (this.tutorialStep > 1) {
+                    this.tutorialStep--;
+                    this.renderTutorialStep(this.tutorialStep);
+                }
+            }
+
+            renderTutorialStep(step) {
+                // Update Stepper Pills
+                this.dom.tutPill1.className = step === 1 ? 'stepper-pill active' : 'stepper-pill';
+                this.dom.tutPill2.className = step === 2 ? 'stepper-pill active' : 'stepper-pill';
+                this.dom.tutPill3.className = step === 3 ? 'stepper-pill active' : 'stepper-pill';
+
+                this.dom.btnTutPrevStep.classList.toggle('hidden', step === 1);
+                this.dom.btnTutNextStep.classList.toggle('hidden', step === 3);
+                this.dom.btnTutStartExam.classList.toggle('hidden', step !== 3);
+
+                if (step === 1) {
+                    this.dom.tutDialogueText.textContent = 
+                        "Protocolo Base: Todo trasiego requiere asegurar los 4 controles fundamentales: Motor apagado, Polo a tierra equipotencial, Bandeja antiderrame y Extintor PQS a mano.";
+                    this.dom.tutStepContent.innerHTML = `
+                        <div class="grid-2" style="max-width: 520px; margin: 0 auto;">
+                            <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 12px;">
+                                <div style="font-size: 1.8rem;">🔌</div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: var(--font-sm); color: #fff;">1. Motor Apagado</div>
+                                    <div style="font-size: var(--font-xs); color: var(--text-muted);">Sin ignición ni chispas</div>
+                                </div>
+                            </div>
+                            <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 12px;">
+                                <div style="font-size: 1.8rem;">🧲</div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: var(--font-sm); color: #fff;">2. Polo a Tierra</div>
+                                    <div style="font-size: var(--font-xs); color: var(--text-muted);">Pinza equipotencial estática</div>
+                                </div>
+                            </div>
+                            <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 12px;">
+                                <div style="font-size: 1.8rem;">🥣</div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: var(--font-sm); color: #fff;">3. Bandeja Goteo</div>
+                                    <div style="font-size: var(--font-xs); color: var(--text-muted);">Contención ambiental</div>
+                                </div>
+                            </div>
+                            <div class="stat-card" style="text-align: left; display: flex; align-items: center; gap: 12px;">
+                                <div style="font-size: 1.8rem;">🧯</div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: var(--font-sm); color: #fff;">4. Extintor PQS</div>
+                                    <div style="font-size: var(--font-xs); color: var(--text-muted);">A barlovento &lt; 5m</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (step === 2) {
+                    this.dom.tutDialogueText.textContent = 
+                        "Decisiones Tácticas y Fallas Reales: En obra enfrentarás pendientes (exigen Cuñas), celulares en boca de tanque, y Tormentas Eléctricas que OBLIGAN a SUSPENDER la operación.";
+                    this.dom.tutStepContent.innerHTML = `
+                        <div class="card" style="background: rgba(10, 16, 30, 0.9); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; max-width: 520px; margin: 0 auto; text-align: center;">
+                            <div style="font-size: var(--font-sm); font-weight: 900; color: var(--bolivar-yellow); text-transform: uppercase; margin-bottom: 10px;">
+                                ⚖️ Doble Salida de Mando SST
+                            </div>
+                            <div class="grid-2" style="text-align: left;">
+                                <div style="background: rgba(153, 27, 27, 0.3); border: 1px solid var(--hazard-red); padding: 12px; border-radius: var(--radius-sm); font-size: var(--font-xs);">
+                                    <strong style="color: #fca5a5; display: block; margin-bottom: 4px;">🔴 Suspender Operación:</strong>
+                                    Cuando hay Tormenta Eléctrica (NFPA 780 / RETIE). ¡Despachar bajo rayo es fatal!
+                                </div>
+                                <div style="background: rgba(6, 78, 59, 0.3); border: 1px solid var(--bolivar-green-glow); padding: 12px; border-radius: var(--radius-sm); font-size: var(--font-xs);">
+                                    <strong style="color: #6ee7b7; display: block; margin-bottom: 4px;">⚡ Autorizar Despacho:</strong>
+                                    Cuando mitigas todos los riesgos (ej: Cuñas en pendientes, Aislar celular, etc.).
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (step === 3) {
+                    this.dom.tutDialogueText.textContent = 
+                        "¡Práctica en Consola! Prueba abajo los 6 interruptores tácticos. Observa cómo cambia la telemetría y el indicador de seguridad. ¡Luego toma el mando del frente de obra!";
+                    this.dom.tutStepContent.innerHTML = `
+                        <div style="background: rgba(6, 78, 59, 0.25); border: 2px dashed var(--bolivar-green-glow); border-radius: var(--radius-md); padding: 18px; max-width: 520px; margin: 0 auto; text-align: center;">
+                            <div style="font-size: 2.2rem; margin-bottom: 8px;">👇</div>
+                            <div style="font-size: var(--font-base); font-weight: 900; color: #6ee7b7; margin-bottom: 6px;">
+                                ¡Interactúa con los 6 switches en la consola inferior!
+                            </div>
+                            <div style="font-size: var(--font-xs); color: var(--text-muted); line-height: 1.4;">
+                                Nota cómo los LEDs y el estado de la línea cambian de rojo a verde según actives cada control.
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            startChallengePhase() {
+                sound.tap();
+                this.phase = 'challenge';
+                this.currentScenarioIndex = 0;
+                this.auditResults = [];
+                this.stats = { success: 0, fires: 0, spills: 0, criticalAborts: 0, falseAborts: 0, totalAttempts: 0 };
+
+                this.dom.phaseTutorial.classList.add('hidden');
+                this.dom.phaseChallenge.classList.remove('hidden');
+                this.dom.timerPill.classList.remove('hidden');
+
+                this.startTimer();
+                this.loadScenario(0);
+            }
+
+            startTimer() {
+                this.timeLeft = 120;
+                this.updateTimerDisplay();
+                clearInterval(this.timerInterval);
+                this.timerInterval = setInterval(() => {
+                    this.timeLeft--;
+                    this.updateTimerDisplay();
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.timerInterval);
+                        this.finishAndAudit();
+                    }
+                }, 1000);
+            }
+
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timeLeft / 60);
+                const seconds = this.timeLeft % 60;
+                this.dom.timerDisplay.textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                if (this.timeLeft <= 20) {
+                    this.dom.timerDisplay.style.color = 'var(--hazard-red)';
+                } else {
+                    this.dom.timerDisplay.style.color = 'var(--bolivar-yellow)';
+                }
+            }
+
+            loadScenario(index) {
+                if (index >= MACHINERY_SCENARIOS.length) {
+                    this.finishAndAudit();
+                    return;
+                }
+
+                const scen = MACHINERY_SCENARIOS[index];
+                this.dom.challengeStageBadge.textContent = `${index + 1} / ${MACHINERY_SCENARIOS.length}`;
+                this.dom.challengeFlowStatus.textContent = 'Bomba en Espera';
+                this.dom.challengeFlowStatus.style.color = 'var(--bolivar-yellow)';
+
+                this.resetSwitches();
+
+                const tele = scen.telemetry;
+                this.dom.machineSituationCard.innerHTML = `
+                    <div class="machine-header">
+                        <div class="machine-svg-wrap">
+                            ${scen.svgIcon}
+                        </div>
+                        <div class="machine-titles" style="flex: 1;">
+                            <div class="flex items-center justify-between">
+                                <h3>${scen.name}</h3>
+                                <span class="machine-fuel-badge">${scen.fuelType}</span>
+                            </div>
+                            <div class="location">
+                                <i class="fa-solid fa-location-dot" style="color: var(--bolivar-yellow); margin-right: 4px;"></i>
+                                ${scen.location}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SENSORES DE TELEMETRÍA EN VIVO -->
+                    <div class="telemetry-grid">
+                        <div class="telemetry-item ${tele.weather.isAlert ? 'alert-danger' : ''}">
+                            <i class="fa-solid ${tele.weather.icon}"></i>
+                            <span>${tele.weather.label}</span>
+                        </div>
+                        <div class="telemetry-item ${tele.slope.isAlert ? 'alert-warning' : ''}">
+                            <i class="fa-solid ${tele.slope.icon}"></i>
+                            <span>${tele.slope.label}</span>
+                        </div>
+                        <div class="telemetry-item ${tele.rf.isAlert ? 'alert-danger' : ''}">
+                            <i class="fa-solid ${tele.rf.icon}"></i>
+                            <span>${tele.rf.label}</span>
+                        </div>
+                        <div class="telemetry-item ${tele.environment.isAlert ? 'alert-warning' : ''}">
+                            <i class="fa-solid ${tele.environment.icon}"></i>
+                            <span>${tele.environment.label}</span>
+                        </div>
+                        <div class="telemetry-item full-col ${tele.load.isAlert ? 'alert-warning' : ''}">
+                            <i class="fa-solid ${tele.load.icon}"></i>
+                            <span>${tele.load.label}</span>
+                        </div>
+                    </div>
+
+                    <!-- REPORTE SST EN VIVO -->
+                    <div class="alert-callout">
+                        <strong style="color: var(--bolivar-yellow);">Alerta SST en Frente:</strong> ${scen.warningText}
+                    </div>
+                `;
+
+                if (window.gsap) {
+                    gsap.fromTo(this.dom.machineSituationCard, { scale: 0.96, opacity: 0.8 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.5)' });
+                }
+                this.updateConsoleMasterStatus();
+            }
+
+            triggerAbortOperation() {
+                if (this.phase !== 'challenge') return;
+                sound.leverClack();
+
+                const currentScen = MACHINERY_SCENARIOS[this.currentScenarioIndex];
+                this.stats.totalAttempts++;
+
+                if (currentScen.requires.abortRequired) {
+                    this.stats.success++;
+                    this.stats.criticalAborts++;
+                    sound.fanfare();
+
+                    const rect = this.dom.btnAbortHazard.getBoundingClientRect();
+                    this.fx.confetti(rect.left + rect.width / 2, rect.top + rect.height / 2, 45);
+
+                    this.auditResults.push({
+                        machine: currentScen.name,
+                        status: 'heroic_abort',
+                        desc: 'DECISIÓN DORADA SST: Suspensión inmediata por tormenta eléctrica / riesgo meteorológico inminente.',
+                        legalRef: 'NFPA 780 / RETIE Art. 19 / Dec. 1079 de 2015'
+                    });
+
+                    this.showOutcomeModal({
+                        type: 'heroic_abort',
+                        title: '¡DECISIÓN DORADA SST: TRASIEGO SUSPENDIDO A TIEMPO!',
+                        badge: 'LIDERAZGO PREVENTIVO NFPA 780 & RETIE',
+                        badgeColor: 'rgba(16, 185, 129, 0.2)',
+                        badgeTextColor: '#6ee7b7',
+                        desc: 'Identificaste con precisión que el riesgo de descarga atmosférica directa de un rayo no se puede mitigar con cables ni extintores. Salvaste la vida de la cuadrilla y los equipos de obra.',
+                        legal: 'El Artículo 19 del RETIE y la NFPA 780 obligan a suspender de inmediato todo manejo de combustibles con tormenta eléctrica activa en un radio de 5 km.',
+                        icon: '🏆⚡',
+                        borderColor: 'var(--bolivar-green-glow)'
+                    });
+                } else {
+                    this.stats.falseAborts++;
+                    sound.spillWarning();
+
+                    this.auditResults.push({
+                        machine: currentScen.name,
+                        status: 'false_abort',
+                        desc: 'FALSA ALERTA: Suspensión innecesaria. La operación era segura activando los controles tácticos de mitigación.',
+                        legalRef: 'Procedimiento Operativo KMA • Eficiencia SST'
+                    });
+
+                    this.showOutcomeModal({
+                        type: 'false_abort',
+                        title: '⚠️ RETRASO INJUSTIFICADO: EL TRASIEGO ERA VIABLE',
+                        badge: 'FALSA ALERTA OPERACIONAL',
+                        badgeColor: 'rgba(245, 158, 11, 0.2)',
+                        badgeTextColor: '#fde047',
+                        desc: 'No había tormenta ni riesgo incontrolable. Esta situación se podía ejecutar 100% segura configurando los interruptores de mitigación (ej. cuñas, aislamiento de celular o corte de motor).',
+                        legal: 'La gestión de seguridad busca permitir la continuidad operativa de la obra mitigando riesgos identificados, no deteniendo frentes innecesariamente.',
+                        icon: '⚠️⏱️',
+                        borderColor: 'var(--hazard-amber)'
+                    });
+                }
+            }
+
+            triggerMasterLever() {
+                if (this.phase !== 'challenge') return;
+                sound.leverClack();
+
+                const currentScen = MACHINERY_SCENARIOS[this.currentScenarioIndex];
+                const { motor, ground, tray, extinguisher, chocks, noCell } = this.switchesState;
+
+                this.stats.totalAttempts++;
+
+                // CASO 1: FALLA FATAL POR RAYO SI INTENTA DESPACHAR EN TORMENTA
+                if (currentScen.requires.abortRequired) {
+                    this.stats.fires++;
+                    sound.explosionAlarm();
+                    this.triggerScreenShake(true);
+
+                    this.auditResults.push({
+                        machine: currentScen.name,
+                        status: 'fatal_lightning',
+                        desc: 'CATASTRÓFICO: Autorización de despacho bajo tormenta eléctrica activa. Impacto de rayo.',
+                        legalRef: 'NFPA 780 / RETIE Art. 19 / Dec. 1079 de 2015'
+                    });
+
+                    this.showOutcomeModal({
+                        type: 'lightning',
+                        title: '¡IMPACTO DIRECTO DE RAYO: EXPLOSIÓN CATASTRÓFICA!',
+                        badge: 'INFRACCIÓN CRÍTICA NFPA 780 & RETIE',
+                        badgeColor: 'rgba(168, 85, 247, 0.25)',
+                        badgeTextColor: '#d8b4fe',
+                        desc: 'Despachaste con tormenta eléctrica activa en pista. Un rayo atmosférico de más de 300,000 voltios impactó la manguera y detonó los vapores de combustible instantáneamente.',
+                        legal: 'Ningún polo a tierra de obra disipa un rayo directo. La NFPA 780 y el RETIE ordenan la SUSPENSIÓN INMEDIATA de trasiegos ante alertas de tormenta.',
+                        icon: '⚡💥',
+                        borderColor: 'var(--hazard-purple)'
+                    });
+                    return;
+                }
+
+                // CASO 2: FALLA FATAL POR IGNICIÓN DE MOTOR O GENERADOR BAJO CARGA
+                if (!motor) {
+                    this.stats.fires++;
+                    sound.explosionAlarm();
+                    this.triggerScreenShake(true);
+
+                    const isGen = currentScen.id === 'scen_generator';
+                    const cause = isGen 
+                        ? 'Generador en funcionamiento con carga activa (arco en alternador/bornes)'
+                        : 'Motor encendido durante el suministro de combustible';
+
+                    this.auditResults.push({
+                        machine: currentScen.name,
+                        status: 'fatal_fire',
+                        desc: `INCENDIO: ${cause}.`,
+                        legalRef: 'Dec. 1079 de 2015 / RETIE / Res. 2400 de 1979'
+                    });
+
+                    this.showOutcomeModal({
+                        type: 'fire',
+                        title: '¡INCENDIO Y DEFLAGRACIÓN EN FRENTE DE OBRA!',
+                        badge: 'INCUMPLIMIENTO GRAVE DEC. 1079/2015',
+                        badgeColor: 'rgba(239, 68, 68, 0.25)',
+                        badgeTextColor: '#fca5a5',
+                        desc: `Al despachar con ${cause}, las chispas y calor del escape encendieron los vapores inflamables.`,
+                        legal: 'El Decreto 1079 de 2015 y la Resolución 2400 de 1979 prohíben el trasiego con motores encendidos o equipos bajo carga eléctrica activa.',
+                        icon: '💥🔥',
+                        borderColor: 'var(--hazard-red)'
+                    });
+                    return;
+                }
+
+                // CASO 3: FALLA FATAL POR CHISPA ESTÁTICA (FALTA POLO A TIERRA)
+                if (!ground) {
+                    this.stats.fires++;
+                    sound.explosionAlarm();
+                    this.triggerScreenShake(true);
+
+                    this.auditResults.push({
+                        machine: currentScen.name,
+                        status: 'fatal_fire',
+                        desc: 'INCENDIO: Ausencia de pinza equipotencial de polo a tierra (chispa estática).',
+                        legalRef: 'Dec. 1079 de 2015 / Res. 2400 de 1979'
+                    });
+
+                    this.showOutcomeModal({
+                        type: 'fire',
+                        title: '¡CHISPA ELECTROSTÁTICA Y DEFLAGRACIÓN!',
+                        badge: 'INCUMPLIMIENTO DEC. 1079/2015',
+                        badgeColor: 'rgba(239, 68, 68, 0.25)',
+                        badgeTextColor: '#fca5a5',
+                        desc: 'La fricción del combustible al fluir por la manguera generó una descarga estática entre la boquilla y la boca del tanque, encendiendo la mezcla de vapores.',
+                        legal: 'La pinza equipotencial es obligatoria antes de retirar la tapa para equilibrar cargas entre la cisterna y el equipo receptor.',
+                        icon: '⚡🔥',
+                        borderColor: 'var(--hazard-red)'
+                    });
+                    return;
+                }
+
+                // CASO 4: FALLA POR CELULAR O FUENTE RF ACTIVA
+                if (currentScen.requires.noCell && !noCell) {
+                    this.stats.fires++;
+                    sound.explosionAlarm();
+                    this.triggerScreenShake(true);
+
+                    this.auditResults.push({
+                        machine: currentScen.name,
+                        status: 'fatal_rf',
+                        desc: 'INCENDIO: Teléfono celular o fuente de radiofrecuencia activa en zona de vapores.',
+                        legalRef: 'Res. 2400 de 1979 / Dec. 1079 de 2015'
+                    });
+
+                    this.showOutcomeModal({
+                        type: 'fire',
+                        title: '¡IGNICIÓN POR FUENTE MÓVIL EN ZONA DE GASES!',
+                        badge: 'PROHIBICIÓN ESTRICTA DE CELULARES',
+                        badgeColor: 'rgba(239, 68, 68, 0.25)',
+                        badgeTextColor: '#fca5a5',
+                        desc: 'El teléfono celular del operador en la boca del tanque provocó una ignición por batería/arco RF mientras se dispersaban vapores de hidrocarburo.',
+                        legal: 'Se prohíben dispositivos móviles o radios no intrínsecamente seguros a menos de 15 metros del punto de trasiego.',
+                        icon: '📱💥',
+                        borderColor: 'var(--hazard-red)'
+                    });
+                    return;
+                }
+
+                // CASO 5: FALLA MECÁNICA POR FALTA DE CUÑAS EN PENDIENTE
+                if (currentScen.requires.chocks && !chocks) {
+                    this.stats.spills++;
+                    sound.explosionAlarm();
+                    this.triggerScreenShake(true);
+
+                    this.auditResults.push({
+                        machine: currentScen.name,
+                        status: 'fatal_chocks',
+                        desc: 'APLASTAMIENTO Y DERRAME: Maquinaria rodó en pendiente por falta de cuñas de bloqueo.',
+                        legalRef: 'OSHA 1910.178 / Ley 55 de 1993'
+                    });
+
+                    this.showOutcomeModal({
+                        type: 'chock_crush',
+                        title: '¡RODAMIENTO MECÁNICO Y RUPTURA DE MANGUERA!',
+                        badge: 'FALLA DE BLOQUEO EN PENDIENTE',
+                        badgeColor: 'rgba(245, 158, 11, 0.25)',
+                        badgeTextColor: '#fde047',
+                        desc: 'Al enfriarse los frenos de aire en la pendiente, la máquina se deslizó 4 metros hacia atrás, arrancó la manguera a presión y derramó 80 galones de ACPM.',
+                        legal: 'Todo vehículo en pendiente debe calzarse con cuñas mecánicas de alta resistencia en las llantas antes de cualquier maniobra.',
+                        icon: '🚜💥',
+                        borderColor: 'var(--hazard-amber)'
+                    });
+                    return;
+                }
+
+                // CASO 6: DERRAME POR FALTA DE BANDEJA
+                if (!tray) {
+                    this.stats.spills++;
+                    sound.spillWarning();
+                    this.triggerScreenShake(false);
+
+                    const isRiver = currentScen.id === 'scen_mixer';
+                    const title = isRiver ? '¡DELITO AMBIENTAL: CONTAMINACIÓN DE RÍO!' : '¡CONTAMINACIÓN POR DERRAME DE HIDROCARBUROS!';
+                    const desc = isRiver 
+                        ? 'El combustible goteó y se filtró rápidamente por la arena alcanzando el lecho del río Claro. Delito ambiental grave.'
+                        : 'El combustible goteó directamente sobre el terreno de obra filtrándose al suelo y amenazando fuentes de agua subterráneas.';
+
+                    this.auditResults.push({
+                        machine: currentScen.name,
+                        status: 'fatal_spill',
+                        desc: `DERRAME: ${desc}`,
+                        legalRef: 'Dec. 4741 de 2005 / Ley 1333 de 2009'
+                    });
+
+                    this.showOutcomeModal({
+                        type: 'spill',
+                        title,
+                        badge: 'INFRACCIÓN AMBIENTAL DEC. 4741/2005',
+                        badgeColor: 'rgba(6, 182, 212, 0.25)',
+                        badgeTextColor: '#67e8f9',
+                        desc,
+                        legal: 'El Decreto 4741 de 2005 y la Ley 1333 de 2009 tipifican el combustible vertido como residuo peligroso (RESPEL) con sanciones penales y económicas.',
+                        icon: '🛢️🌊',
+                        borderColor: 'var(--hazard-cyan)'
+                    });
+                    return;
+                }
+
+                // CASO 7: FALTA EXTINTOR
+                if (!extinguisher) {
+                    this.stats.fires++;
+                    sound.spillWarning();
+
+                    this.auditResults.push({
+                        machine: currentScen.name,
+                        status: 'warning_extinguisher',
+                        desc: 'INFRACCIÓN SST: Despacho ejecutado sin extintor satélite PQS en posición de barlovento.',
+                        legalRef: 'Res. 2400 de 1979 / Dec. 1079 de 2015'
+                    });
+
+                    this.showOutcomeModal({
+                        type: 'fire',
+                        title: '¡OPERACIÓN SIN PROTECCIÓN CONTRA INCENDIOS!',
+                        badge: 'INFRACCIÓN NORMATIVA RES. 2400',
+                        badgeColor: 'rgba(239, 68, 68, 0.25)',
+                        badgeTextColor: '#fca5a5',
+                        desc: 'Aunque no hubo chispa, suministrar combustible sin el extintor listo en mano deja a la cuadrilla indefensa ante cualquier conato súbito.',
+                        legal: 'Es obligatorio tener un extintor de polvo químico seco (PQS) de 20 lbs listo a barlovento durante todo trasiego.',
+                        icon: '🧯⚠️',
+                        borderColor: 'var(--hazard-red)'
+                    });
+                    return;
+                }
+
+                // CASO 8: ¡DESPACHO EXITOSO Y CERTIFICADO!
+                this.stats.success++;
+                sound.flowPumping();
+                sound.fanfare();
+
+                const rect = this.dom.btnMasterLever.getBoundingClientRect();
+                this.fx.confetti(rect.left + rect.width / 2, rect.top + rect.height / 2, 50);
+
+                this.auditResults.push({
+                    machine: currentScen.name,
+                    status: 'success',
+                    desc: 'DESPACHO CERTIFICADO: 100% controles mitigados, polo a tierra firme y bandeja de contención en sitio.',
+                    legalRef: 'Dec. 1079 de 2015 • Estándar KMA'
+                });
+
+                this.showOutcomeModal({
+                    type: 'success',
+                    title: '¡DESPACHO SEGURO Y CERTIFICADO!',
+                    badge: 'CUMPLIMIENTO TOTAL DEC. 1079 & DEC. 4741',
+                    badgeColor: 'rgba(16, 185, 129, 0.2)',
+                    badgeTextColor: '#6ee7b7',
+                    desc: 'Aseguraste el polo a tierra disipando la estática, ubicaste la bandeja contra goteo, mantuviste el extintor PQS a mano y aislaste fuentes de ignición. ¡Operación de alto estándar!',
+                    legal: 'Cumplimiento verificado bajo el Decreto 1079 de 2015 y la Resolución 773 de 2021 de Seguros Bolívar y KMA.',
+                    icon: '✅⛽',
+                    borderColor: 'var(--bolivar-green-glow)'
+                });
+            }
+
+            showOutcomeModal(cfg) {
+                this.dom.outcomeCard.style.borderColor = cfg.borderColor || 'var(--border-strong)';
+                this.dom.outcomeCard.innerHTML = `
+                    <div class="outcome-icon">${cfg.icon}</div>
+                    <div>
+                        <span class="outcome-badge" style="background: ${cfg.badgeColor}; color: ${cfg.badgeTextColor};">
+                            ${cfg.badge}
+                        </span>
+                    </div>
+                    <h3 class="outcome-title" style="color: ${cfg.borderColor === 'var(--bolivar-green-glow)' ? '#fff' : (cfg.borderColor === 'var(--hazard-red)' ? '#f87171' : '#fef08a')}">
+                        ${cfg.title}
+                    </h3>
+                    <div class="outcome-desc">
+                        <strong style="display: block; margin-bottom: 4px; color: var(--bolivar-yellow);">¿Qué ocurrió en obra?:</strong>
+                        ${cfg.desc}
+                    </div>
+                    <div class="outcome-legal">
+                        <strong style="display: block; margin-bottom: 4px; color: var(--text-muted);">
+                            <i class="fa-solid fa-scale-balanced"></i> Fundamento Legal SST:
+                        </strong>
+                        ${cfg.legal}
+                    </div>
+                    <button id="btn-next-machine" class="btn ${cfg.type === 'success' || cfg.type === 'heroic_abort' ? 'btn-primary' : 'btn-danger'}" style="width: 100%;">
+                        <span>Continuar al Siguiente Frente</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                `;
+
+                this.dom.modalBranchingOutcome.classList.remove('hidden');
+
+                const btnNext = document.getElementById('btn-next-machine');
+                if (btnNext) {
+                    btnNext.addEventListener('click', () => {
+                        this.dom.modalBranchingOutcome.classList.add('hidden');
+                        this.currentScenarioIndex++;
+                        this.loadScenario(this.currentScenarioIndex);
+                    });
+                }
+            }
+
+            triggerScreenShake(isRedFlash = false) {
+                this.dom.appViewport.classList.add('shake-camera');
+                if (isRedFlash) {
+                    this.dom.appViewport.style.boxShadow = '0 0 60px rgba(239, 68, 68, 0.9)';
+                }
+                setTimeout(() => {
+                    this.dom.appViewport.classList.remove('shake-camera');
+                    this.dom.appViewport.style.boxShadow = '';
+                }, 500);
+            }
+
+            finishAndAudit() {
+                clearInterval(this.timerInterval);
+                this.phase = 'audit';
+                this.dom.phaseChallenge.classList.add('hidden');
+                this.dom.timerPill.classList.add('hidden');
+                this.dom.phaseAudit.classList.remove('hidden');
+
+                const total = MACHINERY_SCENARIOS.length;
+                const scorePercent = Math.round((this.stats.success / total) * 100);
+
+                this.dom.auditScoreNum.textContent = `${scorePercent}%`;
+                this.dom.auditStatSuccess.textContent = this.stats.success;
+                this.dom.auditStatFires.textContent = this.stats.fires;
+                this.dom.auditStatSpills.textContent = this.stats.spills;
+
+                if (scorePercent >= 80) {
+                    sound.fanfare();
+                    this.dom.auditTitle.textContent = 'Mando de Trasiego Certificado: Élite SST';
+                    this.dom.auditSubtitle.textContent = 'Excelente liderazgo técnico en prevención de incendios y derrames bajo el Dec. 1079/2015.';
+                    this.dom.auditScoreRing.style.borderColor = 'var(--bolivar-green-glow)';
+                    this.dom.auditScoreRing.style.background = 'rgba(16, 185, 129, 0.25)';
+                } else if (scorePercent >= 50) {
+                    this.dom.auditTitle.textContent = 'Mando Aprobado con Observaciones Críticas';
+                    this.dom.auditSubtitle.textContent = 'Se presentaron fallas en la mitigación de fuentes de ignición o retención de derrames.';
+                    this.dom.auditScoreRing.style.borderColor = 'var(--hazard-amber)';
+                    this.dom.auditScoreRing.style.background = 'rgba(245, 158, 11, 0.25)';
+                } else {
+                    this.dom.auditTitle.textContent = 'Mando No Aprobado: Riesgo Catastrófico';
+                    this.dom.auditSubtitle.textContent = 'Múltiples conatos de incendio o incidentes ambientales en frentes de obra.';
+                    this.dom.auditScoreRing.style.borderColor = 'var(--hazard-red)';
+                    this.dom.auditScoreRing.style.background = 'rgba(239, 68, 68, 0.25)';
+                }
+
+                this.dom.auditFindingsList.innerHTML = this.auditResults.map(r => `
+                    <div class="finding-item ${r.status === 'success' || r.status === 'heroic_abort' ? 'success' : (r.status.startsWith('fatal') ? 'danger' : 'warning')}">
+                        <div style="font-size: 1.4rem; margin-top: 2px;">
+                            ${r.status === 'success' || r.status === 'heroic_abort' ? '✅' : (r.status.startsWith('fatal') ? '💥' : '⚠️')}
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 900; font-size: var(--font-sm); color: #fff;">${r.machine}</div>
+                            <div style="font-size: var(--font-xs); color: #cbd5e1; margin-top: 2px;">${r.desc}</div>
+                            <div style="font-size: var(--font-xs); font-family: var(--font-mono); color: var(--bolivar-yellow); margin-top: 4px;">
+                                📜 ${r.legalRef}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            restartGame() {
+                sound.tap();
+                this.dom.phaseAudit.classList.add('hidden');
+                this.startChallengePhase();
+            }
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            window.gameController = new TrasiegoGameController();
+        });
+    </script>
+</body>
+</html>

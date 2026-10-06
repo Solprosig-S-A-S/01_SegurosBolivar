@@ -1,101 +1,42 @@
-Registro de Hallazgos y Decisiones Técnicas
+# Hallazgos y Decisiones Tecnicas
 
-Bitácora de Decisiones Arquitectónicas
+## Decisiones de Arquitectura - Juego 1 (juego1_sga.html)
+- **Mecanica Tactil Drag and Drop Nivel Arcade**:
+  - Implementado mediante la API nativa de Pointer Events ('pointerdown', 'pointermove', 'pointerup', 'pointercancel'), compatible universalmente con pantallas tactiles (movil) y raton (escritorio).
+  - Umbral de deteccion de 6px que distingue de forma limpia entre un toque simple (Tap-to-Select) y un arrastre intencional.
+  - Efecto de fisica dinamica: la tarjeta se inclina sutilmente segun la direccion del arrastre ('rotate' dinamico) y resalta las casillas de destino ('drop-target-active' y 'drop-target-hover').
+  - Si el usuario suelta la tarjeta sobre el pictograma correcto, se produce la clasificacion inmediata. Si la suelta en un area vacia, regresa con una animacion de retorno elastico ('cubic-bezier').
+  - 'pointer-events: none' temporal en la tarjeta en movimiento para permitir que 'document.elementFromPoint' detecte directamente el pictograma subyacente.
+- **Doble Modo Operativo (Drag & Drop + Tap Fallback)**:
+  - Quienes prefieran arrastrar tienen el feedback visual completo de arrastre y soltado.
+  - Quienes prefieran tocar pueden simplemente tocar la tarjeta y luego tocar la casilla de destino, garantizando accesibilidad y cero friccion.
 
-[Fase Inicial] - Configuración de Gobernanza de Agentes
+## Decisiones de Arquitectura - Juego 2 (juego2_bodega.html)
+- **Perspectiva Isométrica 2.5D en CSS Puro (Preserve-3D + Billboarding)**:
+  - Tablero montado sobre `.iso-viewport` (`perspective: 1100px; perspective-origin: 50% 32%`) y `.iso-board` con `transform: rotateX(60deg) rotateZ(-45deg); transform-style: preserve-3d`.
+  - Sprites verticales contrarrotados (`transform: rotateZ(45deg) rotateX(-60deg) translateZ(12px)`): orientan las ilustraciones vectoriales SVG perpendicularmente a la cámara sin distorsión tipográfica ni pixelación, proyectando sombra direccional sobre el piso.
+- **Red de Conexiones Dinámicas en Vivo (12 Vínculos Ortogonales)**:
+  - Detección inmediata de vecinos ortogonales en la matriz 3x3 (`|r1 - r2| + |c1 - c2| === 1`).
+  - Líneas de haz luminoso dinámico: verde esmeralda (`#10B981`) para compatibilidad y rojo peligro (`#EF4444`) con pulso estroboscópico y `Screen Shake` para reactividades prohibidas.
+- **Segregación de Infracción Crítica (Art. 20 Res. 773/2021)**:
+  - La botella de gaseosa con químico bloquea su colocación en el almacén regular emitiendo advertencia de infracción grave de SST.
+  - Se implementó una **Zona de Rechazo & RESPEL** dedicada que convalida el descarte de residuos no conformes conforme al Decreto 4741 de 2005.
+- **Motor de Audio Web API y Efectos Particulares**:
+  - Retroalimentación auditiva sintetizada (tonos sinusoidales, triangulares y diente de sierra) y partículas canvas para retroalimentación visual en tiempo real.
+- **Ergonomía Visual y Escalado Tipográfico Universal**:
+  - Eliminación total de micro-fuentes (`text-[7px]` a `text-[10px]`).
+  - Adopción de tokens estándar Tailwind (`text-xs sm:text-sm` a `text-base sm:text-lg`) con `leading-relaxed` y `break-words`.
+  - Ampliación del ancho de cabina táctica (`max-w-xl md:max-w-2xl lg:max-w-3xl`) y del modal de matriz química (`max-w-2xl`) para máxima legibilidad sin distorsión en la perspectiva isométrica 2.5D.
 
-Decisión: Implementar protocolo estricto "Human-in-the-Loop" en Git y terminal.
-
-Razón Técnica: Prevenir mutaciones destructivas en el repositorio local y evitar que el agente aplique comandos que alteren el historial sin revisión humana.
-
-Resultado: Ningún commit, push o comando de borrado puede ser disparado de forma autónoma.
-
-[Fase Inicial] - Inicialización del Marco Docs-as-Code
-
-Decisión: Establecer estructura de documentación viva en `docs/` (`01_Requerimientos.md`, `02_Arquitectura.md`, `/docs/adr/`).
-
-Razón Técnica: Cumplir con la trazabilidad mandatoria del protocolo operativo y documentar contratos y decisiones antes de la codificación de lógica de negocio.
-
-Resultado: Base documental lista para iteración continua en cada interacción.
-
-[Fase 1] - Suite de Videojuegos Desacoplada Multi-Página
-
-Decisión: Desarrollar 1 archivo HTML autónomo para cada uno de los 5 minijuegos pedagógicos, integrados a través de un Hub Central (`index.html`) con contrato compartido de persistencia en `localStorage` (`sb_solprosig_arcade_state`).
-
-Razón Técnica: Maximizar mantenibilidad, modularidad y rendimiento en dispositivos móviles sin sobrecargar un único bundle monolítico, permitiendo testing y despliegue independiente de cada dinámica arcade.
-
-Resultado: Arquitectura desacoplada, 100% responsive, sin dependencias de compilación ni assets locales.
-
-[Fases 2 a 6] - Construcción e Integración de los 5 Videojuegos Arcade
-
-Decisión: Entrega completa y desacoplada de los 5 videojuegos individuales (`game1_sga_hazard.html` a `game5_slime_invasor.html`) vinculados con el Hub central (`index.html`).
-
-Razón Técnica: Cumplimiento integral del marco normativo colombiano (Res. 773/2021, Dec. 1496/2018, Dec. 4741/2005, Ley 55/1993, Dec. 1079/2015, Dec. 1072/2015) mediante mecánicas diferenciadas (arrastre, apilamiento, checklist interactivo, tiro parabólico y contención en 5 pasos).
-
-Resultado: Suite educativa 100% operativa, mobile-first, sin assets externos locales y con persistencia sincronizada en `localStorage`.
-
-[Fase 7] - Validación Integral de Persistencia, Navegación y Viewport Móvil
-
-Decisión: Verificación exhaustiva de balance sintáctico, enlaces relativos y aislamiento de eventos táctiles (`e.preventDefault()`).
-
-Razón Técnica: Asegurar que el contrato de datos `sb_solprosig_arcade_state` funcione tanto en flujo guiado desde el Hub como en ejecución aislada de cada archivo HTML.
-
-Resultado: 0 errores de sintaxis, navegación cruzada fluida y compatibilidad con webviews móviles.
-
-[Fase 8] - Motor Gráfico y Mecánicas en Primera Persona (POV Hands Engine)
-
-Decisión: Transición completa a perspectiva en primera persona (POV) en los 5 videojuegos, renderizando proceduralmente extremidades con EPP normativo (guantes de nitrilo, mangas reflectivas y trajes Tyvek) y vinculando físicamente el movimiento táctil a la manipulación de herramientas y químicos.
-
-Razón Técnica: Maximizar la retención pedagógica háptica y la inmersión del trabajador en el uso riguroso del EPP según la normatividad colombiana (Res. 773/2021, Dec. 4741/2005 y Dec. 1072/2015), sin introducir bibliotecas 3D pesadas ni texturas externas (cero impacto en carga).
-
-Resultado: 5 minijuegos con interacción táctil cinemática en primera persona, 60 FPS estables, compatibilidad multiplataforma y cero dependencias binarias externas.
-
-[Fase 9] - Modelado Vectorial 2D Animado de Siggy (Mascota Institucional)
-
-Decisión: Construcción de un rig 2D en SVG puro y hojas de estilo CSS para "Siggy", la ardilla corporativa de Seguros Bolívar y Solprosig, respetando meticulosamente el diseño 3D provisto (polo celeste con 3 botones y logotipo circular "S", pantalón gris pizarra, cinturón marrón, zapatillas azul marino con puntera y suela blanca, cola frondosa curvada, mejillas crema y dientes paletos frontales).
-
-Razón Técnica: Dotar a la suite de una identidad visual homogénea y oficial, sustituyendo marcadores genéricos por la mascota institucional animada con 6 ciclos cinemáticos (respiración, meneo de cola, contracción de orejas, parpadeo, saludo con pata derecha y fonemas de habla), con cero peticiones de red adicionales y soporte responsive.
-
-Resultado: Modelo completo y animado disponible en `siggy_mascot.html` e integrado en `index.html` como tutor principal y avatar seleccionable.
-
-[Fase 10] - Identidad Visual y Vectorización Geométrica del Logotipo Isométrico "S" (Solprosig)
-
-Decisión: Ingeniería inversa matemática de la imagen oficial del logotipo (786 x 983 px) para modelar con precisión del 99.15% la "S" isométrica en SVG puro (5 facetas poligonales a 30° en gris `#878786` y teal `#0080A8`), integrándolo en el distintivo bordado del pecho de Siggy y a través de toda la interfaz web (navbars del Hub `index.html` y los 5 videojuegos, así como modales pedagógicos).
-
-Razón Técnica: Cumplir con los lineamientos de marca oficiales de Solprosig y Seguros Bolívar con consistencia radical, garantizando escalabilidad fluida, ausencia de desbordes en móviles (`viewBox="0 0 786 983"`) y cero peticiones de red adicionales.
-
-Resultado: Suite completa y avatar de Siggy homogeneizados con el emblema oficial vectorial en los 7 archivos HTML, validado y auditado al 100%.
-
-[Fase 11] - Estructuración del Sistema Integral de Documentación Viva y Bitácora de Avances
-
-Decisión: Crear `README.md`, `docs/00_Descripcion_General.md` y una serie de 10 documentos independientes y explicados de forma natural en `docs/avances/` que relatan el reto, la solución y el resultado de cada hito técnico de la suite.
-
-Razón Técnica: Facilitar la comprensión ejecutiva, pedagógica y técnica del proyecto para cualquier stakeholder o nuevo desarrollador sin necesidad de descifrar código fuente, cumpliendo con el paradigma Docs-as-Code.
-
-Resultado: 11 nuevos documentos creados (`docs/00_Descripcion_General.md`, `README.md` y 10 archivos en `docs/avances/`) organizados y vinculados entre sí.
-
-[Fase 12] - Activos Gráficos Legales y Normativos Idénticos a la Realidad (SGA, NFPA y RESPEL)
-
-Decisión: Reemplazar todo ícono provisional o genérico en los 5 videojuegos arcade por representaciones vectoriales 100% idénticas a las normativas de seguridad reales (Resolución 773/2021, Decreto 1496/2018, Decreto 1079/2015, Decreto 4741/2005 y NFPA 704).
-
-Razón Técnica: Maximizar la transferencia de aprendizaje en campo garantizando que los trabajadores reconozcan exactamente los rótulos y señalizaciones reales en obra (los 9 rombos UNECE GHS a 45° con marco `#DA291C`, placa naranja UN 1202/30, diamante NFPA 704 cuatripartito, canecas y bolsas RESPEL con generador Solprosig, y botellas trampa de gaseosa con advertencia explícita de prohibición de reenvase). Todo en SVG y Canvas 2D sin archivos raster externos.
-
-Resultado: Los 5 minijuegos auditados y validados con `verify_suite.py`, 0 dependencias externas, 60 FPS estables y coherencia normativa absoluta. Documentado en ADR 0007 y Avance 10.
-
-[Fase 13] - Rectificación de Identidad Corporativa: Atribución de Marca a Solprosig
-
-Decisión: Rectificar todas las atribuciones de marca, textos de interfaz, etiquetas de maquinaria, tambores y bolsas de residuos a Solprosig (dueño legítimo del isotipo isométrico "S"), manteniendo la alianza con Seguros Bolívar (ARL). Migrar el contrato de persistencia a `'sb_solprosig_arcade_state'` garantizando fallback de retrocompatibilidad con `'sb_kma_arcade_state'`.
-
-Razón Técnica: Alinear el código y toda la suite de documentación con la identidad real de Solprosig requerida por el usuario, sin pérdida de datos en partidas previas de trabajadores.
-
-Resultado: 7 archivos HTML actualizados (`index.html`, `siggy_mascot.html`, `game1` a `game5`), 10 documentos en `docs/avances/`, 7 ADRs, especificaciones y suite de tests `verify_suite.py` 100% auditada en verde.
-
-[Fase 14] - Coexistencia KMA / Solprosig y Módulo de Pruebas Interactivas con Puntuación Final
-
-Decisión: Clarificar formalmente los roles de negocio: la suite capacita a los trabajadores de **KMA Construcciones** en sus obras civiles, maquinaria e infraestructura vial, mientras que el **logotipo oficial** (isotipo isométrico "S" en SVG de alta precisión) pertenece a **Solprosig S.A.S.** (consultora y asesora en SST aliada con ARL Seguros Bolívar). Incorporar en cada uno de los 5 minijuegos una **Prueba Interactiva** de 3 preguntas de evaluación de competencias con retroalimentación inmediata, y consolidar una pantalla de **Puntuación Final** integrada (Puntos de Juego + Puntos de Prueba = Puntuación Final Total) con cálculo dinámico de estrellas y sincronización dual de persistencia (`sb_kma_arcade_state` y `sb_solprosig_arcade_state`).
-
-Razón Técnica: Cerrar la brecha pedagógica entre la simulación de destreza motriz y la evaluación formativa cognitiva requerida por la normativa de SST (Res. 773/2021, Dec. 4741/2005, Dec. 1079/2015), garantizando que el trabajador de KMA valide los conceptos teóricos antes de certificar el nivel.
-
-Resultado: Arquitectura pedagógica reforzada con evaluación interactiva táctil, desglose transparente de puntuación final, y preservación de la identidad visual de Solprosig en el contexto de obra de KMA Construcciones.
-
+## Decisiones de Arquitectura - Suite Completa (CSS Nativo & Eliminación de Tailwind)
+- **Desacople 100% de Tailwind CSS**:
+  - Se eliminó el CDN externo `cdn.tailwindcss.com` de los tres juegos (`juego1_sga.html`, `juego2_bodega.html`, `juego3_trasiego.html`).
+  - Beneficios inmediatos: cero dependencias en tiempo de carga, inmunidad a caídas de CDN, código HTML y JS limpio y legible sin cadenas de 15 clases utilitarias concatenadas.
+- **Tokens de Diseño Centralizados (:root)**:
+  - Paleta institucional unificada: Verde Bolívar (`#006738`, `#008244`), Amarillo Bolívar (`#FFC72C`), Rojo Peligro (`#EF4444`).
+  - Escala tipográfica ergonómica: `--font-xs: 0.8125rem` (13px), `--font-sm: 0.9375rem` (15px), `--font-base: 1.0625rem` (17px), `--font-lg: 1.25rem` (20px), `--font-xl: 1.5rem` (24px), `--font-2xl: 1.875rem` (30px). Resuelve la queja de fuentes diminutas en pantallas táctiles y móviles.
+- **Componentes Semánticos Autocontenidos**:
+  - `juego1_sga.html`: `.chem-card`, `.pictogram-tile`, `.exam-card`, `.btn-inspect-fds`, `.modal-dialog`, `.fds-section-card`, `.comic-bubble`.
+  - `juego2_bodega.html`: `.iso-viewport`, `.iso-board`, `.iso-cell`, `.tray-card`, `.cell-hazard-badge`, `.finding-card`, `.matrix-table`.
+  - `juego3_trasiego.html`: `.telemetry-grid`, `.stat-card`, `.switch-card`, `.consequence-banner`, `.audit-card`.
 

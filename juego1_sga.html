@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Desafío SGA: Clasificación de Peligros y Lectura de FDS | Seguros Bolívar & KMA</title>
+    <!-- Google Fonts: Outfit & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ==============================================================
+           SISTEMA DE DISEÑO NATIVO CSS (SIN TAILWIND)
+           Tokens de diseño centralizados (Single Source of Truth)
+           ============================================================== */
+        :root {
+            /* Paleta Corporativa Seguros Bolívar / KMA */
+            --bg-body: #070B14;
+            --bg-viewport: #0F172A;
+            --bg-panel: #111C30;
+            --bg-card: #1E293B;
+            --bg-card-hover: #26354D;
+            --bg-card-active: #0B1120;
+            --border-subtle: #334155;
+            --border-strong: #475569;
+
+            --bolivar-green: #006738;
+            --bolivar-green-light: #008244;
+            --bolivar-green-glow: #10B981;
+            --bolivar-yellow: #FFC72C;
+            --bolivar-yellow-dark: #D99B00;
+
+            --hazard-red: #EF4444;
+            --hazard-red-dark: #991B1B;
+            --hazard-amber: #F59E0B;
+            --hazard-blue: #3B82F6;
+            --hazard-teal: #14B8A6;
+
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-subtle: #64748B;
+
+            /* Tipografía Escalable y Ergonómica */
+            --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --font-xs: 0.8125rem;   /* 13px */
+            --font-sm: 0.9375rem;   /* 15px */
+            --font-base: 1.0625rem; /* 17px */
+            --font-lg: 1.25rem;     /* 20px */
+            --font-xl: 1.5rem;      /* 24px */
+            --font-2xl: 1.875rem;   /* 30px */
+
+            /* Radios y Sombras */
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 22px;
+            --radius-full: 9999px;
+
+            --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+            --shadow-glow-green: 0 0 20px rgba(16, 185, 129, 0.45);
+            --shadow-glow-yellow: 0 0 20px rgba(255, 199, 44, 0.45);
+            --shadow-glow-red: 0 0 20px rgba(239, 68, 68, 0.55);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+            padding: 8px;
+        }
+
+        /* Primitivas de Layout */
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .justify-around { justify-content: space-around; }
+        .flex-1 { flex: 1 1 0%; }
+        .shrink-0 { flex-shrink: 0; }
+        .w-full { width: 100%; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .hidden { display: none !important; }
+        .overflow-hidden { overflow: hidden; }
+        .overflow-y-auto { overflow-y: auto; }
+        .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .select-none { user-select: none; -webkit-user-select: none; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .gap-1 { gap: 6px; }
+        .gap-1-5 { gap: 8px; }
+        .gap-2 { gap: 10px; }
+        .gap-2-5 { gap: 12px; }
+        .gap-3 { gap: 14px; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .text-bolivar-yellow { color: var(--bolivar-yellow); }
+        .text-emerald-400 { color: var(--bolivar-green-glow); }
+        .text-danger { color: var(--hazard-red); }
+        .text-success { color: var(--bolivar-green-glow); }
+
+        /* Contenedor Principal (Cockpit Táctico) */
+        .app-viewport {
+            width: 100%;
+            max-width: 620px;
+            height: 98vh;
+            max-height: 940px;
+            background-color: var(--bg-viewport);
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 103, 56, 0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 25%, rgba(0, 103, 56, 0.14) 0%, transparent 65%),
+                linear-gradient(rgba(36, 53, 82, 0.35) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(36, 53, 82, 0.35) 1px, transparent 1px);
+            background-size: 100% 100%, 32px 32px, 32px 32px;
+        }
+
+        /* Header Industrial */
+        .header-bar {
+            background: rgba(11, 17, 32, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--border-subtle);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 30;
+            flex-shrink: 0;
+        }
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--bolivar-green), var(--bolivar-green-glow));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 14px rgba(0, 103, 56, 0.45);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            flex-shrink: 0;
+        }
+        .brand-info h1 {
+            font-size: var(--font-xs);
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .brand-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 1px;
+        }
+        .brand-title {
+            font-size: var(--font-base);
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -0.01em;
+        }
+        .norma-badge {
+            font-size: var(--font-xs);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+
+        /* Controls */
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .timer-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            background: rgba(7, 11, 20, 0.85);
+            border: 1px solid var(--border-subtle);
+            font-size: var(--font-sm);
+            font-family: var(--font-mono);
+            font-weight: 800;
+            color: var(--bolivar-yellow);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .timer-urgent {
+            color: var(--hazard-red) !important;
+            animation: pulseGlow 0.8s infinite alternate !important;
+        }
+        .btn-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-full);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-icon:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-strong);
+        }
+
+        /* Botones Base */
+        .btn {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 800;
+            border-radius: var(--radius-md);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            user-select: none;
+        }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--bolivar-green), var(--bolivar-green-glow));
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #fff;
+            padding: 12px 20px;
+            font-size: var(--font-base);
+            box-shadow: 0 4px 16px rgba(0, 103, 56, 0.45);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--bolivar-green-light), #34d399);
+            box-shadow: var(--shadow-glow-green);
+        }
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            padding: 8px 14px;
+            font-size: var(--font-sm);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-strong);
+        }
+
+        /* Bot Bubble Card */
+        .bot-bubble-card {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            border: 1px solid var(--border-strong);
+            box-shadow: var(--shadow-card);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .bot-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            background: rgba(0, 103, 56, 0.25);
+            border: 2px solid rgba(16, 185, 129, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 103, 56, 0.3);
+        }
+        .bot-content {
+            flex: 1;
+        }
+        .bot-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .bot-name {
+            font-size: var(--font-sm);
+            font-weight: 900;
+            color: var(--bolivar-yellow);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .bot-tag {
+            font-size: var(--font-xs);
+            color: #6ee7b7;
+            font-family: var(--font-mono);
+            background: rgba(6, 78, 59, 0.8);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-weight: 800;
+        }
+        .bot-dialog-text {
+            font-size: var(--font-base);
+            color: #f1f5f9;
+            line-height: 1.5;
+        }
+        .bot-step-bar {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+        }
+
+        /* Chemical Cards (Tutorial & Exam) */
+        .chem-card {
+            background: rgba(30, 41, 59, 0.95);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            border: 2px solid var(--border-strong);
+            box-shadow: var(--shadow-card);
+            transition: all 0.25s ease;
+            position: relative;
+            user-select: none;
+        }
+        .chem-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+        }
+        .chem-info-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .chem-icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-sm);
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-base);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            flex-shrink: 0;
+        }
+        .chem-title {
+            font-size: var(--font-base);
+            font-weight: 900;
+            color: #fff;
+        }
+        .chem-alias {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+        .chem-desc {
+            font-size: var(--font-sm);
+            color: #cbd5e1;
+            margin-bottom: 14px;
+            background: rgba(11, 17, 32, 0.65);
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            line-height: 1.45;
+        }
+        .btn-inspect-fds {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            background: #334155;
+            color: #6ee7b7;
+            font-weight: 800;
+            font-size: var(--font-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-inspect-fds:hover {
+            background: #475569;
+            color: #a7f3d0;
+        }
+
+        /* SGA Pictogram Tiles */
+        .pictogram-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .pictogram-tile {
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 10px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            user-select: none;
+        }
+        .pictogram-tile:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--bolivar-green-glow);
+            transform: translateY(-2px);
+        }
+        .pictogram-tile:active {
+            transform: scale(0.96);
+        }
+        .pictogram-tile-icon {
+            width: 50px;
+            height: 50px;
+            pointer-events: none;
+            transition: transform 0.2s ease;
+        }
+        .pictogram-tile:hover .pictogram-tile-icon {
+            transform: scale(1.08);
+        }
+        .pictogram-tile-name {
+            font-size: var(--font-xs);
+            font-weight: 900;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            pointer-events: none;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Exam Status Bar */
+        .exam-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: var(--font-sm);
+            font-weight: 700;
+            color: var(--text-muted);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+            margin-bottom: 8px;
+        }
+        .lucho-widget {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 5px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+            max-width: 240px;
+        }
+        .lucho-avatar {
+            font-size: 1.25rem;
+            line-height: 1;
+        }
+        .lucho-quote {
+            font-size: var(--font-xs);
+            font-weight: 800;
+            color: #e2e8f0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Exam Cards Tray */
+        .exam-cards-tray {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: auto 0;
+            padding: 6px 0;
+        }
+        .exam-card {
+            position: relative;
+            background: linear-gradient(180deg, #1e293b, #152033);
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            border: 2px solid rgba(16, 185, 129, 0.45);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 8px;
+            transition: all 0.25s ease;
+        }
+        .card-selected {
+            border-color: var(--bolivar-yellow) !important;
+            box-shadow: var(--shadow-glow-yellow) !important;
+        }
+        .card-resolved-correct {
+            border-color: var(--bolivar-green-glow) !important;
+            opacity: 0.65;
+        }
+        .card-resolved-error {
+            border-color: var(--hazard-red) !important;
+            opacity: 0.65;
+        }
+        .exam-card-status {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: var(--radius-full);
+            font-size: var(--font-xs);
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            color: #fff;
+            z-index: 10;
+        }
+        .status-correct {
+            background: #10b981;
+        }
+        .status-error {
+            background: #ef4444;
+        }
+        .btn-card-fds {
+            width: 100%;
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            background: rgba(51, 65, 85, 0.85);
+            color: #a7f3d0;
+            font-weight: 800;
+            font-size: var(--font-xs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-card-fds:hover {
+            background: #475569;
+        }
+
+        /* Results Screen */
+        .results-gauge-card {
+            text-align: center;
+            padding: 16px;
+            background: rgba(30, 41, 59, 0.85);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-card);
+            margin-bottom: 14px;
+        }
+        .results-score-ring {
+            width: 88px;
+            height: 88px;
+            border-radius: var(--radius-full);
+            border: 4px solid var(--bolivar-yellow);
+            background: #0f172a;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6), var(--shadow-glow-yellow);
+            margin-bottom: 10px;
+        }
+        .results-score-percent {
+            font-size: var(--font-xl);
+            font-weight: 900;
+            color: #fff;
+        }
+        .results-title {
+            font-size: var(--font-lg);
+            font-weight: 900;
+            color: #fff;
+        }
+        .results-subtitle {
+            font-size: var(--font-sm);
+            color: var(--text-muted);
+            max-width: 380px;
+            margin: 6px auto 0 auto;
+            line-height: 1.45;
+        }
+        .results-breakdown {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+        .results-row {
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: var(--font-sm);
+            margin-bottom: 8px;
+        }
+        .results-row-correct {
+            background: rgba(6, 78, 59, 0.35);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #d1fae5;
+        }
+        .results-row-error {
+            background: rgba(127, 29, 29, 0.35);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #fee2e2;
+        }
+
+        /* Modal Backdrop & Dialog */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+        .modal-dialog {
+            background: #0f172a;
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 540px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+            overflow: hidden;
+        }
+        .modal-header {
+            background: #1e293b;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .modal-body {
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .modal-footer {
+            padding: 12px 16px;
+            background: #1e293b;
+            border-top: 1px solid var(--border-subtle);
+            flex-shrink: 0;
+        }
+
+        /* FDS Section Cards */
+        .fds-section-card {
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            background: rgba(30, 41, 59, 0.4);
+            font-size: var(--font-sm);
+        }
+        .fds-section-critical {
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.4), rgba(30, 41, 59, 0.9));
+            border: 2px solid rgba(239, 68, 68, 0.6);
+            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.25);
+        }
+        .fds-section-epp {
+            background: linear-gradient(135deg, rgba(6, 78, 59, 0.4), rgba(30, 41, 59, 0.9));
+            border: 2px solid rgba(16, 185, 129, 0.6);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.25);
+        }
+
+        /* Comic Speech Balloons */
+        .comic-bubble {
+            border: 3px solid #0f172a;
+            border-radius: var(--radius-lg);
+            padding: 8px 16px;
+            font-weight: 900;
+            font-size: var(--font-base);
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.7);
+            white-space: nowrap;
+        }
+        .comic-bubble-good {
+            background: var(--bolivar-yellow);
+            color: #0b1120;
+        }
+        .comic-bubble-bad {
+            background: var(--hazard-red);
+            color: #fff;
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px) rotate(-1deg); }
+            40% { transform: translateX(8px) rotate(1deg); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+        .shake-screen {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes pulseBorder {
+            0%, 100% { border-color: #FFC72C; box-shadow: 0 0 15px rgba(255, 199, 44, 0.4); }
+            50% { border-color: #fde047; box-shadow: 0 0 25px rgba(255, 199, 44, 0.8); }
+        }
+        .pulse-selected {
+            animation: pulseBorder 1.5s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.9; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #008244;
+            border-radius: 4px;
+        }
+
+        .draggable-card {
+            cursor: grab;
+            touch-action: none;
+            will-change: transform;
+        }
+        .draggable-card:active {
+            cursor: grabbing;
+        }
+        .is-dragging {
+            opacity: 0.92;
+            z-index: 50 !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 199, 44, 0.6) !important;
+            border-color: #FFC72C !important;
+            pointer-events: none !important;
+        }
+        .drop-target-hover {
+            border-color: #FFC72C !important;
+            background-color: rgba(255, 199, 44, 0.22) !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 0 25px rgba(255, 199, 44, 0.6) !important;
+        }
+        .drop-target-active {
+            border-style: dashed !important;
+            border-color: rgba(16, 185, 129, 0.7) !important;
+        }
+
+        @keyframes popComic {
+            0% { transform: scale(0.2) rotate(-15deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(8deg); opacity: 1; }
+            75% { transform: scale(0.92) rotate(-3deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .pop-comic {
+            animation: popComic 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes happyJiggle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            20% { transform: scale(1.18) rotate(-8deg); }
+            40% { transform: scale(1.15) rotate(8deg); }
+            60% { transform: scale(1.1) rotate(-4deg); }
+            80% { transform: scale(1.05) rotate(3deg); }
+        }
+        .happy-jiggle {
+            animation: happyJiggle 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        @keyframes dazedWobble {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-10deg) translateX(-5px); }
+            40% { transform: rotate(10deg) translateX(5px); }
+            60% { transform: rotate(-6deg) translateX(-3px); }
+            80% { transform: rotate(4deg) translateX(2px); }
+        }
+        .dazed-wobble {
+            animation: dazedWobble 0.5s ease-in-out;
+        }
+
+        @keyframes floatGentle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .float-idle {
+            animation: floatGentle 2.8s ease-in-out infinite;
+        }
+
+        @keyframes flashRedAlert {
+            0%, 100% { background-color: transparent; }
+            50% { background-color: rgba(239, 68, 68, 0.25); }
+        }
+        .flash-alert {
+            animation: flashRedAlert 0.35s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MAIN APP CONTAINER (Cockpit Táctico Ergonómico) -->
+    <main id="app-viewport" class="app-viewport">
+        
+        <!-- TOP HEADER: BRANDING & STATUS BAR -->
+        <header class="header-bar">
+            <div class="brand-badge">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-flask-vial"></i>
+                </div>
+                <div class="brand-info">
+                    <h1>Seguros Bolívar • KMA</h1>
+                    <div class="brand-title-wrap">
+                        <span class="brand-title">Desafío SGA</span>
+                        <span class="norma-badge">Res. 773/2021</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Controls: Sound & Timer/Badge -->
+            <div class="header-controls">
+                <div id="ui-timer-pill" class="timer-pill hidden">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="exam-timer-display">02:00</span>
+                </div>
+                <button id="btn-sound-toggle" class="btn-icon" title="Activar/Silenciar Sonido">
+                    <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTENT STACK: PHASES -->
+        <div class="flex-1 relative overflow-hidden flex flex-col">
+            
+            <!-- ============================================================== -->
+            <!-- FASE 1: ONBOARDING & TUTORIAL GUIADO -->
+            <!-- ============================================================== -->
+            <section id="phase-tutorial" class="flex-1 flex flex-col justify-between overflow-y-auto custom-scroll" style="padding: 16px;">
+                <!-- Bot Intro Bubble -->
+                <div class="bot-bubble-card">
+                    <div class="bot-avatar">🤖</div>
+                    <div class="bot-content">
+                        <div class="bot-meta">
+                            <span class="bot-name">Bolívar Safety Bot</span>
+                            <span class="bot-tag">Asistente SST</span>
+                        </div>
+                        <p id="bot-dialog-text" class="bot-dialog-text">
+                            ¡Bienvenido a obra! Conforme a la <strong>Res. 773 de 2021</strong> y el <strong>Decreto 1496 de 2018</strong>, todo producto químico debe clasificarse mediante el Sistema Globalmente Armonizado (SGA).
+                        </p>
+                        <div class="bot-step-bar">
+                            <span id="tutorial-step-indicator" class="text-emerald-400" style="font-weight: 800;">Paso 1 de 3: Inspección Técnica</span>
+                            <span style="font-size: var(--font-xs);"><i class="fa-solid fa-hand-pointer text-bolivar-yellow" style="margin-right: 4px;"></i>Guía paso a paso</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Tutorial Card -->
+                <div class="my-auto flex-1 flex flex-col justify-center" style="margin: 10px 0;">
+                    <div id="tutorial-card-wrapper" class="relative">
+                        <!-- Chemical Card -->
+                        <div id="tutorial-chem-card" class="chem-card draggable-card">
+                            <!-- Drag Cue Header -->
+                            <div class="chem-card-header">
+                                <span class="flex items-center gap-1 text-bolivar-yellow" style="font-weight: 800;">
+                                    <i class="fa-solid fa-hand"></i>
+                                    <span>Arrastra hacia el pictograma</span>
+                                </span>
+                                <span style="font-family: var(--font-mono); background: rgba(11, 17, 32, 0.8); padding: 2px 8px; border-radius: var(--radius-full); border: 1px solid var(--border-subtle); font-size: var(--font-xs);">
+                                    <i class="fa-solid fa-arrows-up-down-left-right text-bolivar-yellow" style="margin-right: 4px;"></i>Arrastrar / Tocar
+                                </span>
+                            </div>
+
+                            <div class="chem-info-wrap">
+                                <div class="flex items-center gap-2">
+                                    <span class="chem-icon-box">
+                                        <i class="fa-solid fa-vial-virus"></i>
+                                    </span>
+                                    <div>
+                                        <h3 class="chem-title">Desengrasante Industrial</h3>
+                                        <p class="chem-alias">Limpia-Motores Base Solvente</p>
+                                    </div>
+                                </div>
+                                <span class="norma-badge" style="background: rgba(51, 65, 85, 0.6); color: #e2e8f0; border-color: var(--border-subtle);">DEMO</span>
+                            </div>
+
+                            <p class="chem-desc">
+                                <i class="fa-solid fa-circle-info text-bolivar-yellow" style="margin-right: 6px;"></i>
+                                Utilizado en taller para lavado de transmisiones y piñones de maquinaria pesada.
+                            </p>
+
+                            <!-- Button Inspect FDS -->
+                            <button id="btn-tutorial-inspect-fds" class="btn-inspect-fds">
+                                <i class="fa-solid fa-file-shield text-bolivar-yellow"></i>
+                                <span>Inspeccionar FDS (16 Secciones)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Target SGA Selector for Tutorial -->
+                    <div style="margin-top: 14px;">
+                        <label style="font-size: var(--font-xs); font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px; text-align: center;">
+                            Zona de Destino: Arrastra aquí o toca la casilla:
+                        </label>
+                        <div class="grid-3" id="tutorial-pictogram-grid">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Action: Start Exam -->
+                <div style="padding-top: 8px;">
+                    <button id="btn-start-exam" disabled class="btn w-full" style="background: #1e293b; color: var(--text-subtle); padding: 14px 20px; font-size: var(--font-base); border: 1px solid var(--border-subtle); cursor: not-allowed;">
+                        <span>Completa el Tutorial para Iniciar</span>
+                        <i class="fa-solid fa-lock" style="font-size: var(--font-xs);"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ============================================================== -->
+            <!-- FASE 2: EXAMEN TÉCNICO (120 SEGUNDOS) -->
+            <!-- ============================================================== -->
+            <section id="phase-exam" class="hidden flex-1 flex flex-col justify-between overflow-hidden" style="padding: 14px 16px;">
+                <!-- Status Top Bar: Progress, Lucho Mascot & Counter -->
+                <div class="exam-status-bar">
+                    <div class="flex items-center gap-1 shrink-0">
+                        <span style="width: 10px; height: 10px; border-radius: 9999px; background: var(--bolivar-green-glow); display: inline-block;" class="animate-pulse"></span>
+                        <span id="exam-item-counter" style="font-size: var(--font-xs); font-family: var(--font-mono);">1 de 6</span>
+                    </div>
+
+                    <!-- Lucho Animated Reaction Bubble -->
+                    <div id="lucho-widget" class="lucho-widget">
+                        <span id="lucho-avatar" class="lucho-avatar">👨‍🔧</span>
+                        <span id="lucho-quote" class="lucho-quote">¡Lucho en guardia!</span>
+                    </div>
+
+                    <div class="flex items-center gap-1 shrink-0">
+                        <span style="font-size: var(--font-xs);">Puntos: <strong id="exam-score-display" class="text-bolivar-yellow" style="font-size: var(--font-sm); font-weight: 900;">0</strong>/6</span>
+                    </div>
+                </div>
+
+                <!-- Bandeja de tarjetas de químicos (arrastrar o tocar) -->
+                <div class="flex-1 flex flex-col justify-center" style="padding: 4px 0;">
+                    <p style="text-align: center; font-size: var(--font-xs); color: var(--bolivar-yellow); font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <i class="fa-solid fa-hand-holding-hand animate-pulse"></i>
+                        Arrastra cada tarjeta a su pictograma (o tócala y luego toca el pictograma)
+                    </p>
+                    <div id="exam-cards-tray" class="exam-cards-tray"></div>
+                </div>
+
+                <!-- SGA Pictograms Grid (6 Official GHS Symbols) -->
+                <div class="pictogram-grid" id="exam-pictogram-grid" style="padding-top: 4px;">
+                    <!-- Injected dynamically via JS -->
+                </div>
+            </section>
+
+            <!-- ============================================================== -->
+            <!-- FASE 3: EVALUACIÓN FINAL & CORRECCIÓN TÉCNICA -->
+            <!-- ============================================================== -->
+            <section id="phase-results" class="hidden flex-1 flex flex-col justify-between overflow-y-auto custom-scroll" style="padding: 16px;">
+                <div>
+                    <!-- Header Score Gauge -->
+                    <div class="results-gauge-card">
+                        <div class="results-score-ring">
+                            <span id="results-score-percent" class="results-score-percent">100%</span>
+                        </div>
+                        <h2 id="results-title" class="results-title">¡Aprobado con Distinción SST!</h2>
+                        <p id="results-subtitle" class="results-subtitle">
+                            Demostraste alto dominio en identificación de riesgos químicos bajo Resolución 773 de 2021.
+                        </p>
+                    </div>
+
+                    <!-- Breakdown Table -->
+                    <div class="results-breakdown">
+                        <h3 style="font-size: var(--font-xs); font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                            <span>Desglose Técnico de Clasificación</span>
+                            <span id="results-badge-count" class="text-emerald-400" style="font-family: var(--font-mono); font-weight: 800;">6/6 Correctos</span>
+                        </h3>
+                        
+                        <div id="results-items-list" class="flex flex-col gap-1">
+                            <!-- Items injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Action Buttons -->
+                <div style="padding-top: 8px;">
+                    <button id="btn-retry-exam" class="btn btn-primary w-full" style="padding: 14px 20px; font-size: var(--font-base);">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Reintentar Examen Técnico</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- MODAL 1: VISOR TÉCNICO FDS DE 16 SECCIONES (Res. 773/2021) -->
+        <!-- ============================================================== -->
+        <div id="modal-fds" class="modal-backdrop hidden">
+            <div class="modal-dialog">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <div class="flex items-center gap-2">
+                        <div style="width: 36px; height: 36px; border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.2); color: #34d399; display: flex; align-items: center; justify-content: center; font-size: var(--font-base); border: 1px solid rgba(16, 185, 129, 0.35);">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <h3 style="font-size: var(--font-base); font-weight: 900; color: #fff; display: flex; align-items: center; gap: 8px;">
+                                <span id="modal-fds-chem-title">FDS: Ácido Muriático</span>
+                                <span style="font-size: var(--font-xs); background: #334155; color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono);">NTC 4435</span>
+                            </h3>
+                            <p style="font-size: var(--font-xs); color: var(--text-muted);">Ficha de Datos de Seguridad Oficial (16 Secciones)</p>
+                        </div>
+                    </div>
+                    <button id="btn-close-fds" class="btn-icon" style="width: 32px; height: 32px;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Body (16 Sections with 2 & 8 Highlighted) -->
+                <div class="modal-body custom-scroll" id="modal-fds-content">
+                    <!-- Section 1 -->
+                    <div class="fds-section-card">
+                        <span style="font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 4px;">SECCIÓN 1: Identificación del Producto y Proveedor</span>
+                        <p id="fds-sec1" style="color: #cbd5e1;">Uso: Limpieza de superficies y acidificación en obra. Proveedor Autorizado KMA / Bolívar.</p>
+                    </div>
+
+                    <!-- Section 2 (CRITICAL HIGHLIGHT) -->
+                    <div class="fds-section-card fds-section-critical">
+                        <div class="flex items-center justify-between" style="margin-bottom: 4px;">
+                            <span style="font-weight: 900; color: #f87171; text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                SECCIÓN 2: Identificación de Peligros (SGA)
+                            </span>
+                            <span style="font-size: var(--font-xs); background: rgba(239, 68, 68, 0.25); color: #fca5a5; font-weight: 900; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.4);">CRÍTICO</span>
+                        </div>
+                        <p id="fds-sec2-text" style="color: #fee2e2; font-weight: 500; line-height: 1.45; margin-top: 6px;">
+                            <!-- Filled dynamically -->
+                        </p>
+                        <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(239, 68, 68, 0.3); font-size: var(--font-xs); color: var(--text-muted); display: flex; align-items: center; justify-content: space-between;">
+                            <span>Palabra de advertencia: <strong id="fds-sec2-warning" style="color: var(--hazard-red); font-weight: 900;">PELIGRO</strong></span>
+                            <span id="fds-sec2-code" style="font-family: var(--font-mono); color: var(--bolivar-yellow); font-weight: 800;">H314 / H290</span>
+                        </div>
+                    </div>
+
+                    <!-- Section 3 to 7 Summary -->
+                    <div class="fds-section-card">
+                        <span style="font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 4px;">SECCIONES 3 A 7: Composición, Primeros Auxilios y Almacén</span>
+                        <p style="color: #cbd5e1; line-height: 1.45;">Mantener en recipientes cerrados originales, lejos de sustancias incompatibles. Ducha de emergencia a 15 metros.</p>
+                    </div>
+
+                    <!-- Section 8 (CRITICAL HIGHLIGHT) -->
+                    <div class="fds-section-card fds-section-epp">
+                        <div class="flex items-center justify-between" style="margin-bottom: 4px;">
+                            <span style="font-weight: 900; color: #34d399; text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-vest"></i>
+                                SECCIÓN 8: Controles de Exposición y EPP
+                            </span>
+                            <span style="font-size: var(--font-xs); background: rgba(16, 185, 129, 0.25); color: #a7f3d0; font-weight: 900; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.4);">OBLIGATORIO</span>
+                        </div>
+                        <p id="fds-sec8-text" style="color: #d1fae5; font-weight: 500; line-height: 1.45; margin-top: 6px;">
+                            <!-- Filled dynamically -->
+                        </p>
+                    </div>
+
+                    <!-- Sections 9 to 16 Summary -->
+                    <div class="fds-section-card">
+                        <span style="font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 4px;">SECCIONES 9 A 16: Estabilidad, Toxicología y Disposición Final (RESPEL)</span>
+                        <p style="color: #cbd5e1; line-height: 1.45;">Disponer remanentes y envases vacíos como residuo peligroso según Dec. 4741/2005.</p>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button id="btn-understood-fds" class="btn btn-primary w-full" style="padding: 10px 16px; font-size: var(--font-sm);">
+                        Entendido, Volver a Clasificar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- MODAL 2: FEEDBACK NORMATIVO DE ERROR (Res. 773 / Dec. 1496) -->
+        <!-- ============================================================== -->
+        <div id="modal-error-feedback" class="modal-backdrop hidden">
+            <div class="modal-dialog" style="max-width: 440px; padding: 20px; text-align: center; border: 2px solid var(--hazard-red);">
+                <div style="width: 56px; height: 56px; border-radius: var(--radius-md); background: rgba(239, 68, 68, 0.2); border: 2px solid rgba(239, 68, 68, 0.4); color: var(--hazard-red); font-size: 1.75rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 style="font-size: var(--font-lg); font-weight: 900; color: #fff; margin-bottom: 4px;">¡Infracción Técnica SGA!</h3>
+                <p style="font-size: var(--font-sm); color: var(--hazard-red); font-weight: 700; margin-bottom: 12px;">Clasificación Incorrecta según FDS</p>
+                
+                <div id="error-feedback-content" style="background: #1e293b; padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: left; margin-bottom: 16px; line-height: 1.45;">
+                    <!-- Injected on error -->
+                </div>
+
+                <button id="btn-dismiss-error" class="btn w-full" style="background: var(--hazard-red); color: #fff; padding: 12px 18px; font-size: var(--font-sm); box-shadow: var(--shadow-glow-red);">
+                    Revisar y Continuar
+                </button>
+            </div>
+        </div>
+
+        <!-- Floating Comic Reaction Speech Balloon Layer -->
+        <div id="comic-reaction-layer" class="pointer-events-none absolute inset-0 z-50 flex items-center justify-center overflow-hidden" style="padding: 16px;"></div>
+
+        <!-- Confetti & Sparkles Canvas FX Layer -->
+        <canvas id="fx-canvas" class="pointer-events-none absolute inset-0 z-50 w-full h-full"></canvas>
+
+    </main>
+
+    <!-- ============================================================== -->
+    <!-- LOGICA DEL JUEGO (ES6 PURA Y WEB AUDIO API) -->
+    <!-- ============================================================== -->
+    <script>
+        /**
+         * 1. CATÁLOGO OFICIAL DE PICTOGRAMAS SGA (Vectores SVG Nativos)
+         */
+        const SGA_PICTOGRAMS = {
+            inflamable: {
+                id: 'inflamable',
+                name: 'Inflamable',
+                desc: 'Líquidos y vapores que arden fácilmente',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <polygon points="50,4 96,50 50,96 4,50" fill="#ffffff" stroke="#EF4444" stroke-width="7"/>
+                    <!-- Flame Shape -->
+                    <path d="M50 20 C52 28 58 35 62 42 C67 50 67 62 60 70 C56 75 49 78 43 75 C37 72 34 65 35 59 C35 52 39 46 42 41 C42 48 45 52 48 54 C46 48 45 42 46 36 C47 30 49 24 50 20 Z" fill="#0F172A"/>
+                    <path d="M50 48 C54 52 56 58 53 63 C51 66 47 68 44 66 C42 64 42 60 44 57 C45 54 48 51 50 48 Z" fill="#EF4444"/>
+                </svg>`
+            },
+            corrosivo: {
+                id: 'corrosivo',
+                name: 'Corrosivo',
+                desc: 'Destruye metales y tejido vivo (piel/ojos)',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <polygon points="50,4 96,50 50,96 4,50" fill="#ffffff" stroke="#EF4444" stroke-width="7"/>
+                    <!-- Tubes & Surface -->
+                    <rect x="25" y="65" width="22" height="8" rx="2" fill="#0F172A"/>
+                    <path d="M56 68 C58 64 63 64 68 64 L75 64 C77 64 78 66 76 68 L70 73 C68 74 62 74 58 71 Z" fill="#0F172A"/>
+                    <!-- Test tubes spilling -->
+                    <path d="M30 35 L42 47" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+                    <circle cx="39" cy="56" r="3" fill="#0F172A"/>
+                    <circle cx="36" cy="62" r="2.5" fill="#0F172A"/>
+                    <path d="M70 35 L58 47" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+                    <circle cx="61" cy="56" r="3" fill="#0F172A"/>
+                    <circle cx="64" cy="62" r="2.5" fill="#0F172A"/>
+                </svg>`
+            },
+            salud: {
+                id: 'salud',
+                name: 'Peligro Salud',
+                desc: 'Toxicidad sistémica, respiratoria o cáncer',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <polygon points="50,4 96,50 50,96 4,50" fill="#ffffff" stroke="#EF4444" stroke-width="7"/>
+                    <!-- Human Silhouette with Burst -->
+                    <circle cx="50" cy="33" r="8" fill="#0F172A"/>
+                    <path d="M35 68 C35 52 42 46 50 46 C58 46 65 52 65 68 Z" fill="#0F172A"/>
+                    <!-- Star Burst on Chest -->
+                    <path d="M50 46 L53 53 L60 55 L54 59 L56 66 L50 62 L44 66 L46 59 L40 55 L47 53 Z" fill="#ffffff"/>
+                </svg>`
+            },
+            gas: {
+                id: 'gas',
+                name: 'Gas a Presión',
+                desc: 'Contiene gas comprimido; riesgo térmico',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <polygon points="50,4 96,50 50,96 4,50" fill="#ffffff" stroke="#EF4444" stroke-width="7"/>
+                    <!-- Gas Cylinder -->
+                    <rect x="42" y="27" width="16" height="42" rx="7" fill="#0F172A"/>
+                    <rect x="47" y="22" width="6" height="5" fill="#0F172A"/>
+                    <line x1="40" y1="72" x2="60" y2="72" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
+                </svg>`
+            },
+            toxicidad: {
+                id: 'toxicidad',
+                name: 'Toxicidad Aguda',
+                desc: 'Mortal o muy tóxico al contacto o ingesta',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <polygon points="50,4 96,50 50,96 4,50" fill="#ffffff" stroke="#EF4444" stroke-width="7"/>
+                    <!-- Skull & Bones -->
+                    <ellipse cx="50" cy="42" rx="14" ry="13" fill="#0F172A"/>
+                    <circle cx="44" cy="43" r="3.5" fill="#ffffff"/>
+                    <circle cx="56" cy="43" r="3.5" fill="#ffffff"/>
+                    <rect x="44" y="52" width="12" height="7" rx="1" fill="#0F172A"/>
+                    <!-- Crossbones -->
+                    <line x1="30" y1="68" x2="70" y2="68" stroke="#0F172A" stroke-width="4" stroke-linecap="round"/>
+                </svg>`
+            },
+            irritante: {
+                id: 'irritante',
+                name: 'Irritante / Atención',
+                desc: 'Irritación cutánea, ocular o narcótico',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <polygon points="50,4 96,50 50,96 4,50" fill="#ffffff" stroke="#EF4444" stroke-width="7"/>
+                    <!-- Exclamation Mark -->
+                    <rect x="46" y="28" width="8" height="28" rx="3" fill="#0F172A"/>
+                    <circle cx="50" cy="65" r="4.5" fill="#0F172A"/>
+                </svg>`
+            }
+        };
+
+        /**
+         * 2. BASE DE DATOS DE PRODUCTOS QUÍMICOS DE CONSTRUCCIÓN
+         */
+        const TUTORIAL_CHEMICAL = {
+            id: 'tut_0',
+            name: 'Desengrasante Industrial',
+            alias: 'Limpia-Motores Hidrocarburo Fuerte',
+            desc: 'Utilizado para lavado de transmisiones, gatos hidráulicos y grasa pesada.',
+            correctSga: 'corrosivo',
+            fds: {
+                sec1: 'Desengrasante Biodegradable Alcalino. KMA Logística.',
+                sec2: 'H314: Provoca quemaduras graves en la piel y lesiones oculares graves. H290: Puede ser corrosivo para metales.',
+                warning: 'PELIGRO',
+                code: 'H314 (Cat. 1A)',
+                sec8: 'Guantes de nitrilo o caucho butílico de caña alta, gafas herméticas contra salpicaduras y delantal de PVC.'
+            },
+            normaExplain: 'Res. 773/2021 Art. 6: Los desengrasantes fuertemente alcalinos (pH > 11.5) destruyen el tejido cutáneo y exigen pictograma de Corrosión.'
+        };
+
+        const EXAM_CHEMICALS = [
+            {
+                id: 'chem_1',
+                name: 'Ácido Muriático',
+                alias: 'Ácido Clorhídrico en Solución al 28%',
+                icon: 'fa-skull-crossbones',
+                desc: 'Utilizado en obra para desmanchado de fachadas de ladrillo a la vista y lavado de pisos.',
+                correctSga: 'corrosivo',
+                fds: {
+                    sec1: 'Ácido Clorhídrico 28% Grado Técnico. Distribución Obras KMA.',
+                    sec2: 'H314: Provoca quemaduras graves en la piel y lesiones oculares graves. H335: Puede irritar las vías respiratorias. H290: Corrosivo para metales.',
+                    warning: 'PELIGRO',
+                    code: 'H314 / H290 (Cat. 1B)',
+                    sec8: 'Respirador con cartucho para gases ácidos (amarillo), guantes de neopreno/nitrilo, monogafas químicas estancas y careta facial.'
+                },
+                normaExplain: 'Res. 773/2021 Art. 6 & Dec. 1496/2018: Clasificado en Corrosión Cutánea Categoría 1 y Corrosivo para Metales Categoría 1.'
+            },
+            {
+                id: 'chem_2',
+                name: 'Thinner / Solvente Corriente',
+                alias: 'Mezcla de Hidrocarburos Aromáticos',
+                icon: 'fa-spray-can',
+                desc: 'Disolvente para pinturas de esmalte, limpieza de pistolas de aspersión y desengrase rápido.',
+                correctSga: 'salud',
+                fds: {
+                    sec1: 'Thinner Estándar Mezcla de Tolueno, Xileno y Éteres.',
+                    sec2: 'H304: Puede ser mortal en caso de ingestión y penetración en las vías respiratorias. H373: Puede provocar daños en el sistema nervioso central tras exposiciones repetidas.',
+                    warning: 'PELIGRO',
+                    code: 'H304 / H373 (Cat. 1)',
+                    sec8: 'Protección respiratoria con filtros para vapores orgánicos (V.O.), guantes de alcohol polivinílico (PVA) o nitrilo grueso, protección ocular.'
+                },
+                normaExplain: 'Dec. 1496/2018: Peligro Crónico para la Salud humana por aspiración pulmonar y neurotoxicidad específica (STOT RE).'
+            },
+            {
+                id: 'chem_3',
+                name: 'ACPM / Combustible Diésel',
+                alias: 'Aceite Combustible Para Motores',
+                icon: 'fa-gas-pump',
+                desc: 'Suministro para tanques de generadores eléctricos, volquetas y maquinaria pesada.',
+                correctSga: 'inflamable',
+                fds: {
+                    sec1: 'Combustible Diésel Automotriz Grado 2. Almacenamiento en patio.',
+                    sec2: 'H226: Líquidos y vapores inflamables. H351: Susceptible de provocar cáncer. H315: Provoca irritación cutánea.',
+                    warning: 'ATENCIÓN',
+                    code: 'H226 (Líq. Inflamable Cat. 3)',
+                    sec8: 'Guantes de nitrilo resistentes a hidrocarburos, calzado con suela antideslizante dieléctrica y antiestática, gafas de seguridad.'
+                },
+                normaExplain: 'Res. 773/2021 Art. 12: Todo trasiego de combustibles requiere pictograma de llama y conexión equipotencial a tierra.'
+            },
+            {
+                id: 'chem_4',
+                name: 'Cilindro de Acetileno',
+                alias: 'Gas Disuelto C2H2 a Alta Presión',
+                icon: 'fa-fire-burner',
+                desc: 'Combustible gaseoso empleado en el equipo de oxicorte para corte de perfiles y varillas de acero.',
+                correctSga: 'gas',
+                fds: {
+                    sec1: 'Acetileno Disuelto en Acetona. Uso en Taller Metalmecánico.',
+                    sec2: 'H280: Contiene gas a presión; peligro de explosión en caso de calentamiento. H220: Gas extremadamente inflamable.',
+                    warning: 'PELIGRO',
+                    code: 'H280 (Gas Comprimido)',
+                    sec8: 'Guantes de carnaza/cuero para manejo de botellas, gafas con filtro sombra 5 para corte, calzado con puntera de seguridad de acero.'
+                },
+                normaExplain: 'Dec. 1079/2015 & Res. 773/2021: El almacenamiento de gases a presión exige pictograma de bombona y sujeción rígida con cadenas.'
+            },
+            {
+                id: 'chem_5',
+                name: 'Soda Cáustica (Escamas)',
+                alias: 'Hidróxido de Sodio al 98%',
+                icon: 'fa-mortar-pestle',
+                desc: 'Utilizado para destape de drenajes industriales y neutralización química en obras.',
+                correctSga: 'corrosivo',
+                fds: {
+                    sec1: 'Soda Cáustica Sólida en Escamas. Reactivo de limpieza profunda.',
+                    sec2: 'H314: Provoca quemaduras graves en la piel y lesiones oculares graves. H318: Provoca lesiones oculares graves irreversibles.',
+                    warning: 'PELIGRO',
+                    code: 'H314 (Cat. 1A Corrosivo)',
+                    sec8: 'Protección facial completa, respirador para polvos alcalinos N95, guantes de caucho butílico y peto impermeable de PVC.'
+                },
+                normaExplain: 'Res. 773/2021 Art. 7: Prohibición tajante de mezclar álcalis con ácidos; su corrosión cutánea es instantánea y exotérmica.'
+            },
+            {
+                id: 'chem_6',
+                name: 'Pintura Epóxica Alto Tráfico',
+                alias: 'Resina Bicomponente para Pavimentos',
+                icon: 'fa-paint-roller',
+                desc: 'Pintura de demarcación vial y revestimiento de pisos de bodegas y talleres.',
+                correctSga: 'salud',
+                fds: {
+                    sec1: 'Esmalte Epóxico Poliamida Parte A. Señalización horizontal.',
+                    sec2: 'H317: Puede provocar una reacción alérgica en la piel. H319: Provoca irritación ocular grave. H341: Susceptible de causar defectos genéticos.',
+                    warning: 'ATENCIÓN',
+                    code: 'H317 / H341 (Sensibilizante)',
+                    sec8: 'Guantes de nitrilo desechables de cambio frecuente, respirador con cartucho combinado contra vapores orgánicos y partículas, gafas de montura integral.'
+                },
+                normaExplain: 'Dec. 1496/2018: Clasificación de productos con aminas y epóxidos como agentes sensibilizantes y riesgo carcinógeno/mutágeno.'
+            }
+        ];
+
+        /**
+         * 3. SINTETIZADOR DE AUDIO PROCEDURAL (Web Audio API)
+         */
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playTone(freq, type, duration, vol = 0.2) {
+                if (!this.enabled) return;
+                this.init();
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) {}
+            }
+
+            tap() { this.playTone(600, 'sine', 0.05, 0.15); }
+
+            success() {
+                this.playTone(523.25, 'triangle', 0.12, 0.2); // C5
+                setTimeout(() => this.playTone(659.25, 'triangle', 0.2, 0.2), 90); // E5
+            }
+
+            error() {
+                this.playTone(180, 'sawtooth', 0.15, 0.3);
+                setTimeout(() => this.playTone(130, 'sawtooth', 0.25, 0.3), 110);
+            }
+
+            victory() {
+                const notes = [440, 554, 659, 880];
+                notes.forEach((f, idx) => {
+                    setTimeout(() => this.playTone(f, 'sine', 0.25, 0.25), idx * 100);
+                });
+            }
+        }
+
+        const sound = new SoundEngine();
+
+        /**
+         * 3.b MOTOR DE EFECTOS (Canvas 2D): confeti de victoria, humo de hollín y chispas.
+         * Solo corre el bucle de animación mientras existan partículas vivas.
+         */
+        class FxEngine {
+            /**
+             * @param {HTMLCanvasElement} canvas Lienzo superpuesto.
+             * @param {HTMLElement} host Contenedor cuyo tamaño define el lienzo.
+             */
+            constructor(canvas, host) {
+                this.canvas = canvas;
+                this.host = host;
+                this.ctx = canvas.getContext('2d');
+                this.particles = [];
+                this.running = false;
+                this.lastTime = 0;
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+
+            resize() {
+                this.canvas.width = this.host.clientWidth;
+                this.canvas.height = this.host.clientHeight;
+            }
+
+            /** Explosión de confeti con la paleta Bolívar. */
+            confetti(x, y, count = 40) {
+                const palette = ['#FFC72C', '#10B981', '#008244', '#ffffff', '#EF4444', '#38bdf8'];
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 120 + Math.random() * 280;
+                    this.particles.push({
+                        type: 'rect', x, y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed - 160,
+                        gravity: 520,
+                        size: 5 + Math.random() * 6,
+                        color: palette[Math.floor(Math.random() * palette.length)],
+                        rot: Math.random() * Math.PI,
+                        vr: (Math.random() - 0.5) * 14,
+                        life: 1.1 + Math.random() * 0.7,
+                        maxLife: 1.8
+                    });
+                }
+                this.start();
+            }
+
+            /** Lluvia de confeti desde la parte superior (pantalla final). */
+            rain(count = 80) {
+                const palette = ['#FFC72C', '#10B981', '#008244', '#ffffff', '#EF4444'];
+                for (let i = 0; i < count; i++) {
+                    this.particles.push({
+                        type: 'rect',
+                        x: Math.random() * this.canvas.width,
+                        y: -20 - Math.random() * 160,
+                        vx: (Math.random() - 0.5) * 80,
+                        vy: 80 + Math.random() * 160,
+                        gravity: 90,
+                        size: 5 + Math.random() * 6,
+                        color: palette[Math.floor(Math.random() * palette.length)],
+                        rot: Math.random() * Math.PI,
+                        vr: (Math.random() - 0.5) * 10,
+                        life: 3 + Math.random() * 1.5,
+                        maxLife: 4.5
+                    });
+                }
+                this.start();
+            }
+
+            /** Nube de humo oscuro (cara tiznada tras una explosión). */
+            smoke(x, y, count = 14) {
+                for (let i = 0; i < count; i++) {
+                    this.particles.push({
+                        type: 'smoke', x: x + (Math.random() - 0.5) * 30, y,
+                        vx: (Math.random() - 0.5) * 70,
+                        vy: -40 - Math.random() * 80,
+                        gravity: -20,
+                        size: 10 + Math.random() * 14,
+                        grow: 22,
+                        color: Math.random() > 0.5 ? '#1e293b' : '#475569',
+                        rot: 0, vr: 0,
+                        life: 0.9 + Math.random() * 0.6,
+                        maxLife: 1.5
+                    });
+                }
+                this.start();
+            }
+
+            /** Chispas naranjas de la reacción química fallida. */
+            sparks(x, y, count = 18) {
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 150 + Math.random() * 260;
+                    this.particles.push({
+                        type: 'circle', x, y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        gravity: 400,
+                        size: 2 + Math.random() * 3,
+                        color: Math.random() > 0.5 ? '#FFC72C' : '#f97316',
+                        rot: 0, vr: 0,
+                        life: 0.5 + Math.random() * 0.4,
+                        maxLife: 0.9
+                    });
+                }
+                this.start();
+            }
+
+            start() {
+                if (this.running) return;
+                this.running = true;
+                this.lastTime = performance.now();
+                requestAnimationFrame((t) => this.loop(t));
+            }
+
+            loop(time) {
+                const dt = Math.min(0.05, (time - this.lastTime) / 1000);
+                this.lastTime = time;
+                const ctx = this.ctx;
+                ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                this.particles = this.particles.filter(p => p.life > 0 && p.y < this.canvas.height + 40);
+                for (const p of this.particles) {
+                    p.vy += p.gravity * dt;
+                    p.x += p.vx * dt;
+                    p.y += p.vy * dt;
+                    p.rot += p.vr * dt;
+                    p.life -= dt;
+                    if (p.grow) p.size += p.grow * dt;
+
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, Math.min(1, (p.life / p.maxLife) * 2)) * (p.type === 'smoke' ? 0.55 : 1);
+                    ctx.fillStyle = p.color;
+                    if (p.type === 'rect') {
+                        ctx.translate(p.x, p.y);
+                        ctx.rotate(p.rot);
+                        ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+
+                if (this.particles.length > 0) {
+                    requestAnimationFrame((t) => this.loop(t));
+                } else {
+                    this.running = false;
+                    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                }
+            }
+        }
+
+        /**
+         * 4. CONTROLADOR PRINCIPAL DEL JUEGO
+         */
+        class SgaGameController {
+            constructor() {
+                this.phase = 'tutorial'; // 'tutorial' | 'exam' | 'results'
+                this.currentChemicalIndex = 0;
+                this.score = 0;
+                this.timeLeft = 120;
+                this.timerInterval = null;
+                this.answersLog = []; // { chem, selectedSga, isCorrect }
+                this.selectedChemCard = false; // Tap-to-select toggle
+
+                // Tutorial State
+                this.tutorialStep = 1; // 1: inspect, 2: pick, 3: ready
+
+                this.dom = {
+                    viewport: document.getElementById('app-viewport'),
+                    phaseTutorial: document.getElementById('phase-tutorial'),
+                    phaseExam: document.getElementById('phase-exam'),
+                    phaseResults: document.getElementById('phase-results'),
+                    timerPill: document.getElementById('ui-timer-pill'),
+                    timerDisplay: document.getElementById('exam-timer-display'),
+                    btnSoundToggle: document.getElementById('btn-sound-toggle'),
+                    soundIcon: document.getElementById('sound-icon'),
+                    
+                    // Modals
+                    modalFds: document.getElementById('modal-fds'),
+                    modalError: document.getElementById('modal-error-feedback'),
+                    btnCloseFds: document.getElementById('btn-close-fds'),
+                    btnUnderstoodFds: document.getElementById('btn-understood-fds'),
+                    btnDismissError: document.getElementById('btn-dismiss-error'),
+                    
+                    // Tutorial Elements
+                    botDialog: document.getElementById('bot-dialog-text'),
+                    tutStepIndicator: document.getElementById('tutorial-step-indicator'),
+                    tutChemCard: document.getElementById('tutorial-chem-card'),
+                    btnTutInspectFds: document.getElementById('btn-tutorial-inspect-fds'),
+                    tutGrid: document.getElementById('tutorial-pictogram-grid'),
+                    btnStartExam: document.getElementById('btn-start-exam'),
+
+                    // Exam Elements
+                    examItemCounter: document.getElementById('exam-item-counter'),
+                    examScoreDisplay: document.getElementById('exam-score-display'),
+                    examCardsTray: document.getElementById('exam-cards-tray'),
+                    examGrid: document.getElementById('exam-pictogram-grid'),
+
+                    // Results Elements
+                    resultsPercent: document.getElementById('results-score-percent'),
+                    resultsTitle: document.getElementById('results-title'),
+                    resultsSubtitle: document.getElementById('results-subtitle'),
+                    resultsBadgeCount: document.getElementById('results-badge-count'),
+                    resultsList: document.getElementById('results-items-list'),
+                    btnRetryExam: document.getElementById('btn-retry-exam'),
+
+                    // FDS Modal Content
+                    fdsTitle: document.getElementById('modal-fds-chem-title'),
+                    fdsSec1: document.getElementById('fds-sec1'),
+                    fdsSec2Text: document.getElementById('fds-sec2-text'),
+                    fdsSec2Warning: document.getElementById('fds-sec2-warning'),
+                    fdsSec2Code: document.getElementById('fds-sec2-code'),
+                    fdsSec8Text: document.getElementById('fds-sec8-text'),
+                    errorFeedbackContent: document.getElementById('error-feedback-content'),
+
+                    // FX / Mascota
+                    luchoAvatar: document.getElementById('lucho-avatar'),
+                    luchoQuote: document.getElementById('lucho-quote'),
+                    comicLayer: document.getElementById('comic-reaction-layer'),
+                    fxCanvas: document.getElementById('fx-canvas')
+                };
+
+                this.fx = new FxEngine(this.dom.fxCanvas, this.dom.viewport);
+                this.luchoResetTimer = null;
+
+                this.bindEvents();
+                this.initTutorial();
+            }
+
+            bindEvents() {
+                // Sound toggle
+                this.dom.btnSoundToggle.addEventListener('click', () => {
+                    sound.enabled = !sound.enabled;
+                    this.dom.soundIcon.className = sound.enabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-danger';
+                    sound.tap();
+                });
+
+                // Tutorial Buttons
+                this.dom.btnTutInspectFds.addEventListener('click', () => {
+                    sound.tap();
+                    this.openFds(TUTORIAL_CHEMICAL);
+                    if (this.tutorialStep === 1) {
+                        this.tutorialStep = 2;
+                        this.dom.tutStepIndicator.textContent = 'Paso 2 de 3: Identifica y Presiona el Pictograma SGA';
+                        this.dom.botDialog.innerHTML = '¡Excelente! En la <strong>Sección 2</strong> de la FDS viste el peligro <em>H314: Provoca quemaduras</em>. Ahora selecciona la casilla del pictograma <strong>Corrosivo</strong>.';
+                    }
+                });
+
+                this.dom.btnStartExam.addEventListener('click', () => {
+                    sound.tap();
+                    this.startExamPhase();
+                });
+
+                this.wasDragged = false;
+                this.selectedCardId = null;
+
+                // Drag and Drop del tutorial (las tarjetas del examen se registran en renderExamCards)
+                this.setupDragAndDrop(this.dom.tutChemCard, '.tut-pictogram-tile', (key) => {
+                    this.handleTutorialSelection(key);
+                }, () => this.phase === 'tutorial');
+
+                // Modal close buttons
+                this.dom.btnCloseFds.addEventListener('click', () => {
+                    sound.tap();
+                    this.closeFds();
+                });
+                this.dom.btnUnderstoodFds.addEventListener('click', () => {
+                    sound.tap();
+                    this.closeFds();
+                });
+
+                this.dom.btnDismissError.addEventListener('click', () => {
+                    sound.tap();
+                    this.dom.modalError.classList.add('hidden');
+                    this.advanceExam();
+                });
+
+                // Retry Button
+                this.dom.btnRetryExam.addEventListener('click', () => {
+                    sound.tap();
+                    this.startExamPhase();
+                });
+            }
+
+            /**
+             * INICIALIZAR FASE 1: TUTORIAL
+             */
+            initTutorial() {
+                this.phase = 'tutorial';
+                this.tutorialStep = 1;
+                this.dom.phaseTutorial.classList.remove('hidden');
+                this.dom.phaseExam.classList.add('hidden');
+                this.dom.phaseResults.classList.add('hidden');
+                this.dom.timerPill.classList.add('hidden');
+
+                // Render 3 sample pictograms for tutorial (including the correct one)
+                const tutorialKeys = ['inflamable', 'corrosivo', 'gas'];
+                this.dom.tutGrid.innerHTML = '';
+                
+                tutorialKeys.forEach(key => {
+                    const pict = SGA_PICTOGRAMS[key];
+                    const btn = document.createElement('button');
+                    btn.className = 'pictogram-tile';
+                    btn.dataset.sgaId = key;
+                    btn.innerHTML = `
+                        <div class="pictogram-tile-icon">
+                            ${pict.svg}
+                        </div>
+                        <span class="pictogram-tile-name">${pict.name}</span>
+                    `;
+
+                    btn.addEventListener('click', () => {
+                        this.handleTutorialSelection(key);
+                    });
+                    this.dom.tutGrid.appendChild(btn);
+                });
+            }
+
+            handleTutorialSelection(selectedKey) {
+                if (this.tutorialStep === 1) {
+                    sound.error();
+                    alert('¡Atención! Antes de clasificar a ciegas, la Resolución 773 exige presionar primero el botón "Inspeccionar FDS".');
+                    return;
+                }
+
+                const tileEl = this.dom.tutGrid.querySelector(`[data-sga-id="${selectedKey}"]`);
+
+                if (selectedKey === TUTORIAL_CHEMICAL.correctSga) {
+                    sound.success();
+                    this.celebrateTutorial(tileEl, true);
+                    this.tutorialStep = 3;
+                    this.dom.tutStepIndicator.textContent = 'Paso 3 de 3: ¡Listo para la Evaluación!';
+                    this.dom.botDialog.innerHTML = '<strong>¡Correcto!</strong> El pictograma de Corrosión advierte quemaduras a la piel y metales. Ya aprendiste la dinámica técnica.';
+                    this.dom.btnStartExam.disabled = false;
+                    this.dom.btnStartExam.className = 'btn btn-primary w-full pulse-selected';
+                    this.dom.btnStartExam.style.cursor = 'pointer';
+                    this.dom.btnStartExam.innerHTML = `
+                        <span>¡Iniciar Examen Técnico (120 Segundos)!</span>
+                        <i class="fa-solid fa-play"></i>
+                    `;
+                } else {
+                    sound.error();
+                    this.triggerScreenShake();
+                    this.celebrateTutorial(tileEl, false);
+                    this.dom.botDialog.innerHTML = '<span class="text-danger" style="font-weight: 800;">¡Incorrecto!</span> Ese pictograma no coincide con la Sección 2 de la FDS. Vuelve a inspeccionar.';
+                }
+            }
+
+            /**
+             * Efectos cómicos del tutorial (confeti o humo según el resultado).
+             */
+            celebrateTutorial(tileEl, isCorrect) {
+                if (!tileEl) return;
+                const pos = this.getCenterInViewport(tileEl);
+                if (isCorrect) {
+                    this.fx.confetti(pos.x, pos.y, 50);
+                    this.showComicBubble('¡POW!', 'good', { x: pos.x, y: pos.y - 70 });
+                    this.playAnimation(tileEl, 'happy-jiggle', 700);
+                } else {
+                    this.fx.smoke(pos.x, pos.y, 14);
+                    this.fx.sparks(pos.x, pos.y, 16);
+                    this.showComicBubble('¡SANTAS REACCIONES!', 'bad', { x: pos.x, y: pos.y - 70 });
+                    this.playAnimation(tileEl, 'dazed-wobble', 500);
+                }
+            }
+
+            /**
+             * INICIALIZAR FASE 2: EXAMEN TÉCNICO
+             */
+            startExamPhase() {
+                this.phase = 'exam';
+                this.score = 0;
+                this.timeLeft = 120;
+                this.answersLog = [];
+                this.selectedCardId = null;
+
+                // UI Switches
+                this.dom.phaseTutorial.classList.add('hidden');
+                this.dom.phaseExam.classList.remove('hidden');
+                this.dom.phaseResults.classList.add('hidden');
+                this.dom.timerPill.classList.remove('hidden');
+                this.dom.timerPill.classList.add('flex');
+
+                this.dom.examScoreDisplay.textContent = '0';
+                this.dom.examItemCounter.textContent = `0 de ${EXAM_CHEMICALS.length}`;
+                this.renderExamPictograms();
+                this.renderExamCards();
+                this.luchoReact('idle');
+                this.startTimer();
+            }
+
+            startTimer() {
+                if (this.timerInterval) clearInterval(this.timerInterval);
+                this.updateTimerDisplay();
+
+                this.timerInterval = setInterval(() => {
+                    this.timeLeft--;
+                    this.updateTimerDisplay();
+
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.timerInterval);
+                        this.endExam(true); // Expired by time
+                    }
+                }, 1000);
+            }
+
+            updateTimerDisplay() {
+                const mins = Math.floor(this.timeLeft / 60);
+                const secs = this.timeLeft % 60;
+                this.dom.timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                if (this.timeLeft <= 20) {
+                    this.dom.timerDisplay.classList.add('text-red-500', 'animate-pulse');
+                } else {
+                    this.dom.timerDisplay.classList.remove('text-red-500', 'animate-pulse');
+                }
+
+                if (this.phase === 'exam' && (this.timeLeft === 30 || this.timeLeft === 10)) {
+                    this.luchoReact('scared');
+                }
+            }
+
+            renderExamPictograms() {
+                this.dom.examGrid.innerHTML = '';
+                const keys = Object.keys(SGA_PICTOGRAMS);
+
+                keys.forEach(key => {
+                    const pict = SGA_PICTOGRAMS[key];
+                    const btn = document.createElement('button');
+                    btn.className = 'pictogram-tile sga-pictogram-tile';
+                    btn.dataset.sgaId = key;
+                    btn.innerHTML = `
+                        <div class="pictogram-tile-icon">
+                            ${pict.svg}
+                        </div>
+                        <span class="pictogram-tile-name">${pict.name}</span>
+                    `;
+
+                    btn.addEventListener('click', () => {
+                        if (!this.selectedCardId) {
+                            sound.error();
+                            this.showComicBubble('¡ELIGE UNA TARJETA!', 'bad', this.getCenterInViewport(this.dom.examCardsTray));
+                            return;
+                        }
+                        this.handleExamSelection(key, this.selectedCardId);
+                    });
+                    this.dom.examGrid.appendChild(btn);
+                });
+            }
+
+            /**
+             * CONTROLADOR DE ARRASTRE Y SOLTADO (DRAG & DROP TÁCTIL Y RATÓN)
+             */
+            setupDragAndDrop(cardEl, dropZoneSelector, onDropCallback, canDragCondition) {
+                let isDragging = false;
+                let startX = 0;
+                let startY = 0;
+                let currentHoverZone = null;
+                let hasMoved = false;
+
+                const onPointerDown = (e) => {
+                    // Si se presiona un botón dentro de la tarjeta (ej. Inspeccionar FDS), no arrastrar
+                    if (e.target.closest('button')) return;
+
+                    if (canDragCondition && !canDragCondition()) return;
+
+                    this.wasDragged = false;
+                    isDragging = true;
+                    hasMoved = false;
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    currentHoverZone = null;
+
+                    cardEl.style.transition = 'none';
+
+                    // Resaltar sutilmente todas las zonas destino de soltado
+                    document.querySelectorAll(dropZoneSelector).forEach(el => {
+                        el.classList.add('drop-target-active');
+                    });
+                };
+
+                const onPointerMove = (e) => {
+                    if (!isDragging) return;
+
+                    const dx = e.clientX - startX;
+                    const dy = e.clientY - startY;
+
+                    // Umbral de 6px para diferenciar toque simple de arrastre intencional
+                    if (!hasMoved && Math.hypot(dx, dy) > 6) {
+                        hasMoved = true;
+                        this.wasDragged = true;
+                        cardEl.classList.add('is-dragging');
+                        try {
+                            cardEl.setPointerCapture(e.pointerId);
+                        } catch(err) {}
+                    }
+
+                    if (hasMoved) {
+                        // Inclinación dinámica según la velocidad y dirección del arrastre
+                        const rot = Math.max(-10, Math.min(10, dx * 0.04));
+                        cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(0.96) rotate(${rot}deg)`;
+
+                        // Detección precisa de colisión con la zona de pictograma bajo el puntero
+                        const elemUnder = document.elementFromPoint(e.clientX, e.clientY);
+                        const dropZone = elemUnder ? elemUnder.closest(dropZoneSelector) : null;
+
+                        if (dropZone !== currentHoverZone) {
+                            if (currentHoverZone) {
+                                currentHoverZone.classList.remove('drop-target-hover');
+                            }
+                            currentHoverZone = dropZone;
+                            if (currentHoverZone) {
+                                currentHoverZone.classList.add('drop-target-hover');
+                                sound.tap();
+                            }
+                        }
+                    }
+                };
+
+                const onPointerUp = (e) => {
+                    if (!isDragging) return;
+                    isDragging = false;
+
+                    try {
+                        cardEl.releasePointerCapture(e.pointerId);
+                    } catch(err) {}
+
+                    // Limpiar clases de las zonas destino
+                    document.querySelectorAll(dropZoneSelector).forEach(el => {
+                        el.classList.remove('drop-target-active', 'drop-target-hover');
+                    });
+
+                    if (hasMoved) {
+                        cardEl.classList.remove('is-dragging');
+                        const targetZone = currentHoverZone;
+                        currentHoverZone = null;
+
+                        if (targetZone) {
+                            // Soltado exitoso sobre un pictograma válido
+                            cardEl.style.transition = 'transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                            cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+                            
+                            const sgaId = targetZone.dataset.sgaId;
+                            onDropCallback(sgaId);
+                        } else {
+                            // Soltado fuera: Retorno elástico suave al centro
+                            cardEl.style.transition = 'transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                            cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+                        }
+                    } else {
+                        // Fue un clic o toque simple
+                        cardEl.style.transform = 'translate3d(0, 0, 0)';
+                    }
+                };
+
+                cardEl.addEventListener('pointerdown', onPointerDown);
+                cardEl.addEventListener('pointermove', onPointerMove);
+                cardEl.addEventListener('pointerup', onPointerUp);
+                cardEl.addEventListener('pointercancel', onPointerUp);
+            }
+
+            /**
+             * Construye las 6 tarjetas de químicos. Cada una se puede arrastrar a un pictograma
+             * o seleccionar con un toque y luego tocar el pictograma destino.
+             */
+            renderExamCards() {
+                this.dom.examCardsTray.innerHTML = '';
+                this.selectedCardId = null;
+
+                EXAM_CHEMICALS.forEach(chem => {
+                    const card = document.createElement('div');
+                    card.className = 'exam-card draggable-card pop-comic';
+                    card.dataset.chemId = chem.id;
+                    card.innerHTML = `
+                        <div class="flex items-center gap-2 pointer-events-none">
+                            <div style="width: 38px; height: 38px; border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); display: flex; align-items: center; justify-content: center; font-size: var(--font-base); color: var(--bolivar-green-glow); flex-shrink: 0;">
+                                <i class="fa-solid ${chem.icon}"></i>
+                            </div>
+                            <div style="min-width: 0; flex: 1;">
+                                <h3 style="font-weight: 900; font-size: var(--font-xs); color: #fff; line-height: 1.25;">${chem.name}</h3>
+                                <span style="display: block; font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${chem.alias}</span>
+                            </div>
+                        </div>
+                        <button class="btn-card-fds">
+                            <i class="fa-solid fa-file-shield text-bolivar-yellow"></i>
+                            <span>Inspeccionar FDS</span>
+                        </button>
+                        <div class="card-status hidden exam-card-status"></div>
+                    `;
+                    setTimeout(() => card.classList.remove('pop-comic'), 600);
+
+                    card.querySelector('.btn-card-fds').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        sound.tap();
+                        this.openFds(chem);
+                    });
+
+                    card.addEventListener('click', () => {
+                        if (this.wasDragged) {
+                            this.wasDragged = false;
+                            return;
+                        }
+                        if (card.dataset.state === 'done') return;
+                        sound.tap();
+                        this.selectCard(this.selectedCardId === chem.id ? null : chem.id);
+                    });
+
+                    this.setupDragAndDrop(card, '.sga-pictogram-tile',
+                        (sgaId) => this.handleExamSelection(sgaId, chem.id),
+                        () => this.phase === 'exam' && card.dataset.state !== 'done');
+
+                    this.dom.examCardsTray.appendChild(card);
+                });
+            }
+
+            /**
+             * Resalta en amarillo Bolívar la tarjeta seleccionada (o ninguna si id es null).
+             */
+            selectCard(id) {
+                this.selectedCardId = id;
+                this.dom.examCardsTray.querySelectorAll('.exam-card').forEach(card => {
+                    const isSelected = card.dataset.chemId === id;
+                    card.classList.toggle('pulse-selected', isSelected);
+                    card.classList.toggle('card-selected', isSelected);
+                });
+            }
+
+            /**
+             * Bloquea una tarjeta ya clasificada y la marca con ✓ (acierto) o ✗ (error).
+             */
+            markCardResolved(cardEl, isCorrect) {
+                cardEl.dataset.state = 'done';
+                cardEl.classList.remove('draggable-card', 'pulse-selected', 'card-selected');
+                cardEl.classList.add(isCorrect ? 'card-resolved-correct' : 'card-resolved-error');
+                cardEl.style.cursor = 'default';
+                const badge = cardEl.querySelector('.card-status');
+                badge.classList.remove('hidden');
+                badge.className = 'exam-card-status ' + (isCorrect ? 'status-correct' : 'status-error');
+                badge.innerHTML = `<i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>`;
+                cardEl.querySelector('.btn-card-fds').disabled = true;
+            }
+
+            /**
+             * Evalúa la clasificación de una tarjeta contra el pictograma elegido.
+             * @param {string} chosenSgaKey Clave del pictograma SGA destino.
+             * @param {string} chemId Id del químico clasificado.
+             */
+            handleExamSelection(chosenSgaKey, chemId) {
+                if (this.phase !== 'exam') return;
+                const currentChem = EXAM_CHEMICALS.find(c => c.id === chemId);
+                const cardEl = this.dom.examCardsTray.querySelector(`[data-chem-id="${chemId}"]`);
+                if (!currentChem || !cardEl || cardEl.dataset.state === 'done') return;
+
+                const isCorrect = (chosenSgaKey === currentChem.correctSga);
+
+                this.answersLog.push({
+                    chem: currentChem,
+                    chosenSga: chosenSgaKey,
+                    correctSga: currentChem.correctSga,
+                    isCorrect: isCorrect
+                });
+
+                const tileEl = this.dom.examGrid.querySelector(`[data-sga-id="${chosenSgaKey}"]`);
+                this.markCardResolved(cardEl, isCorrect);
+                this.selectedCardId = null;
+
+                if (isCorrect) {
+                    sound.success();
+                    this.score++;
+                    this.dom.examScoreDisplay.textContent = this.score;
+                    this.playAnimation(this.dom.examScoreDisplay, 'happy-jiggle', 650);
+                    this.playAnimation(cardEl, 'happy-jiggle', 700);
+                    this.celebrateCorrect(tileEl);
+                    this.advanceExam();
+                } else {
+                    sound.error();
+                    this.triggerScreenShake();
+                    this.playAnimation(cardEl, 'dazed-wobble', 500);
+                    this.punishWrong(tileEl);
+                    this.showErrorFeedback(currentChem, chosenSgaKey);
+                }
+            }
+
+            showErrorFeedback(chem, chosenSgaKey) {
+                const chosen = SGA_PICTOGRAMS[chosenSgaKey];
+                const correct = SGA_PICTOGRAMS[chem.correctSga];
+
+                this.dom.errorFeedbackContent.innerHTML = `
+                    <div style="margin-bottom: 8px; font-size: var(--font-sm);">
+                        <span style="color: var(--text-subtle);">Seleccionaste:</span> 
+                        <strong style="color: var(--hazard-red); text-transform: uppercase;">${chosen.name}</strong>
+                    </div>
+                    <div style="margin-bottom: 8px; font-size: var(--font-sm);">
+                        <span style="color: var(--text-subtle);">Pictograma Legal Exigido:</span> 
+                        <strong style="color: var(--bolivar-green-glow); text-transform: uppercase;">${correct.name}</strong>
+                    </div>
+                    <div style="padding: 10px; background: rgba(11, 17, 32, 0.85); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); margin: 8px 0;">
+                        <div style="font-size: var(--font-xs); font-family: var(--font-mono); color: var(--bolivar-yellow); font-weight: 900; margin-bottom: 4px;">EVIDENCIA FDS (SECCIÓN 2):</div>
+                        <p style="font-size: var(--font-sm); color: #e2e8f0; line-height: 1.45;">${chem.fds.sec2}</p>
+                    </div>
+                    <p style="font-size: var(--font-xs); color: var(--text-muted); margin-top: 6px; font-style: italic;">${chem.normaExplain}</p>
+                `;
+                this.dom.modalError.classList.remove('hidden');
+            }
+
+            /**
+             * Actualiza el contador de tarjetas clasificadas y cierra el examen cuando todas fueron resueltas.
+             */
+            advanceExam() {
+                const answered = this.answersLog.length;
+                this.dom.examItemCounter.textContent = `${answered} de ${EXAM_CHEMICALS.length}`;
+                if (answered >= EXAM_CHEMICALS.length) {
+                    setTimeout(() => this.endExam(false), 800);
+                }
+            }
+
+            endExam(timeExpired = false) {
+                if (this.phase === 'results') return;
+                if (this.timerInterval) clearInterval(this.timerInterval);
+                this.phase = 'results';
+                this.dom.modalError.classList.add('hidden');
+
+                // Tarjetas sin clasificar al agotarse el tiempo cuentan como fallo
+                EXAM_CHEMICALS.forEach(chem => {
+                    if (!this.answersLog.some(a => a.chem.id === chem.id)) {
+                        this.answersLog.push({ chem, chosenSga: null, correctSga: chem.correctSga, isCorrect: false });
+                    }
+                });
+                
+                this.dom.phaseExam.classList.add('hidden');
+                this.dom.phaseResults.classList.remove('hidden');
+                this.dom.timerPill.classList.add('hidden');
+
+                const total = EXAM_CHEMICALS.length;
+                const percent = Math.round((this.score / total) * 100);
+
+                this.dom.resultsPercent.textContent = `${percent}%`;
+                this.dom.resultsBadgeCount.textContent = `${this.score}/${total} Aciertos`;
+
+                if (percent >= 80) {
+                    sound.victory();
+                    this.dom.resultsTitle.textContent = '¡Aprobación Sobresaliente SST!';
+                    this.dom.resultsSubtitle.textContent = 'Cumples cabalmente con la Resolución 773/2021 para el manejo seguro de químicos en obras KMA.';
+                    this.fx.rain(110);
+                } else if (percent >= 50) {
+                    sound.success();
+                    this.dom.resultsTitle.textContent = 'Aprobado con Observaciones';
+                    this.dom.resultsSubtitle.textContent = 'Revisa las FDS de los productos errados para afianzar el criterio de prevención de riesgos.';
+                    this.fx.rain(40);
+                } else {
+                    sound.error();
+                    this.dom.resultsTitle.textContent = 'No Aprobado - Refuerzo Obligatorio';
+                    this.dom.resultsSubtitle.textContent = timeExpired ? 'Se agotó el tiempo límite de 120 segundos. Debes reforzar la lectura ágil de FDS.' : 'Porcentaje insuficiente. Revisa detalladamente la Sección 2 de cada químico.';
+                }
+                this.playAnimation(this.dom.resultsPercent.parentElement, percent >= 50 ? 'pop-comic' : 'dazed-wobble', 600);
+
+                // Render Review List
+                this.dom.resultsList.innerHTML = '';
+                this.answersLog.forEach((item, index) => {
+                    const row = document.createElement('div');
+                    row.className = `results-row ${item.isCorrect ? 'results-row-correct' : 'results-row-error'}`;
+                    
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid ${item.isCorrect ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'}" style="font-size: 1.25rem;"></i>
+                            <div>
+                                <h4 style="font-weight: 800; font-size: var(--font-sm); color: #fff;">${item.chem.name}</h4>
+                                <span style="font-size: var(--font-xs); color: var(--text-muted); display: block; margin-top: 2px;">${item.isCorrect ? 'Clasificado como ' + SGA_PICTOGRAMS[item.chosenSga].name : (item.chosenSga ? 'Elegiste: ' + SGA_PICTOGRAMS[item.chosenSga].name : 'Sin clasificar (tiempo agotado)') + ' | Correcto: ' + SGA_PICTOGRAMS[item.correctSga].name}</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-review-fds">
+                            <i class="fa-solid fa-file-shield text-bolivar-yellow"></i>
+                            <span>Ver FDS</span>
+                        </button>
+                    `;
+
+                    row.querySelector('.btn-review-fds').addEventListener('click', () => {
+                        sound.tap();
+                        this.openFds(item.chem);
+                    });
+
+                    this.dom.resultsList.appendChild(row);
+                });
+            }
+
+            /**
+             * MODAL VISOR TÉCNICO FDS
+             */
+            openFds(chem) {
+                this.dom.fdsTitle.textContent = `FDS: ${chem.name}`;
+                this.dom.fdsSec1.textContent = chem.fds.sec1;
+                this.dom.fdsSec2Text.textContent = chem.fds.sec2;
+                this.dom.fdsSec2Warning.textContent = chem.fds.warning;
+                this.dom.fdsSec2Code.textContent = chem.fds.code;
+                this.dom.fdsSec8Text.textContent = chem.fds.sec8;
+                this.dom.modalFds.classList.remove('hidden');
+            }
+
+            closeFds() {
+                this.dom.modalFds.classList.add('hidden');
+            }
+
+            triggerScreenShake() {
+                this.dom.viewport.classList.add('shake-screen');
+                setTimeout(() => {
+                    this.dom.viewport.classList.remove('shake-screen');
+                }, 400);
+            }
+
+            /**
+             * Reinicia y dispara una clase de animación CSS sobre un elemento.
+             * Se retira al terminar para no interferir con el transform inline del arrastre.
+             */
+            playAnimation(el, className, durationMs = 700) {
+                if (!el) return;
+                el.classList.remove(className);
+                void el.offsetWidth;
+                el.classList.add(className);
+                setTimeout(() => el.classList.remove(className), durationMs);
+            }
+
+            /**
+             * Centro de un elemento en coordenadas relativas al contenedor principal (para FX).
+             */
+            getCenterInViewport(el) {
+                const host = this.dom.viewport.getBoundingClientRect();
+                const r = el.getBoundingClientRect();
+                return { x: r.left - host.left + r.width / 2, y: r.top - host.top + r.height / 2 };
+            }
+
+            /**
+             * Globo de historieta ("¡POW!", "¡SANTAS REACCIONES!") que aparece con rebote y se desvanece.
+             * @param {string} text Texto del globo.
+             * @param {'good'|'bad'} mood Define colores (amarillo Bolívar / rojo alerta).
+             * @param {{x:number,y:number}} pos Coordenadas relativas al contenedor principal.
+             */
+            showComicBubble(text, mood, pos) {
+                const tilt = (Math.random() * 14 - 7).toFixed(1);
+                const wrapper = document.createElement('div');
+                wrapper.style.position = 'absolute';
+                wrapper.style.left = `${Math.max(70, Math.min(this.dom.viewport.clientWidth - 70, pos.x))}px`;
+                wrapper.style.top = `${pos.y}px`;
+                wrapper.style.transform = `translate(-50%, -50%) rotate(${tilt}deg)`;
+
+                const bubble = document.createElement('div');
+                bubble.className = `comic-bubble pop-comic ${mood === 'good' ? 'comic-bubble-good' : 'comic-bubble-bad'}`;
+                bubble.textContent = text;
+                wrapper.appendChild(bubble);
+                this.dom.comicLayer.appendChild(wrapper);
+
+                setTimeout(() => {
+                    wrapper.style.transition = 'opacity 0.35s ease, top 0.35s ease';
+                    wrapper.style.opacity = '0';
+                    wrapper.style.top = `${pos.y - 30}px`;
+                }, 1000);
+                setTimeout(() => wrapper.remove(), 1400);
+            }
+
+            /**
+             * Cambia el avatar y la frase de Lucho según su estado de ánimo.
+             * @param {'idle'|'happy'|'hurt'|'scared'} mood
+             */
+            luchoReact(mood) {
+                const moods = {
+                    idle:   { face: '👨‍🔧', quotes: ['¡Lucho en guardia!', 'A clasificar, jefe', 'Ojo con la FDS'] },
+                    happy:  { face: '🤩', quotes: ['¡Eso es, jefe!', '¡Cero accidentes!', '¡Soy un crack SST!'] },
+                    hurt:   { face: '😵‍💫', quotes: ['¡Casi me achicharro!', '¡Mis cejas!', '¡Santas reacciones!'] },
+                    scared: { face: '😰', quotes: ['¡Se acaba el tiempo!', '¡Apúrate, jefe!'] }
+                };
+                const m = moods[mood] || moods.idle;
+                this.dom.luchoAvatar.textContent = m.face;
+                this.dom.luchoQuote.textContent = m.quotes[Math.floor(Math.random() * m.quotes.length)];
+                this.playAnimation(this.dom.luchoAvatar, mood === 'hurt' ? 'dazed-wobble' : 'happy-jiggle', 700);
+                if (mood === 'happy' || mood === 'hurt') {
+                    clearTimeout(this.luchoResetTimer);
+                    this.luchoResetTimer = setTimeout(() => this.luchoReact('idle'), 2200);
+                }
+            }
+
+            /**
+             * Efecto de acierto: confeti dorado/verde, globo "¡POW!" y salto feliz del pictograma.
+             */
+            celebrateCorrect(tileEl) {
+                const pos = tileEl ? this.getCenterInViewport(tileEl) : { x: this.dom.viewport.clientWidth / 2, y: 260 };
+                this.fx.confetti(pos.x, pos.y, 45);
+                const words = ['¡POW!', '¡PLOP!', '¡BIEN LUCHO!', '¡SEGURIDAD!', '¡CLASE A!'];
+                this.showComicBubble(words[Math.floor(Math.random() * words.length)], 'good', { x: pos.x, y: pos.y - 70 });
+                this.playAnimation(tileEl, 'happy-jiggle', 700);
+                this.luchoReact('happy');
+            }
+
+            /**
+             * Efecto de error: humo, chispas, globo cómico, destello rojo y Lucho tiznado.
+             */
+            punishWrong(tileEl) {
+                const pos = tileEl ? this.getCenterInViewport(tileEl) : { x: this.dom.viewport.clientWidth / 2, y: 260 };
+                this.fx.smoke(pos.x, pos.y, 16);
+                this.fx.sparks(pos.x, pos.y, 18);
+                const words = ['¡SANTAS REACCIONES!', '¡CASI ME ACHICHARRO!', '¡BOOM!', '¡AY, MIS OJOS!'];
+                this.showComicBubble(words[Math.floor(Math.random() * words.length)], 'bad', { x: pos.x, y: pos.y - 70 });
+                this.playAnimation(tileEl, 'dazed-wobble', 500);
+                this.playAnimation(this.dom.phaseExam, 'flash-alert', 400);
+                const modalIcon = this.dom.modalError.querySelector('.w-14');
+                this.playAnimation(modalIcon, 'dazed-wobble', 500);
+                this.luchoReact('hurt');
+            }
+        }
+
+        // Initialize when DOM is ready
+        window.addEventListener('DOMContentLoaded', () => {
+            new SgaGameController();
+        });
+    </script>
+</body>
+</html>
