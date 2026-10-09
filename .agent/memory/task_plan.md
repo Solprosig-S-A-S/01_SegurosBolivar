@@ -18,13 +18,12 @@
   - [x] Modal interactivo con Matriz de Compatibilidad Química SGA (Res. 773/2021).
   - [x] Fase 3: Auditoría técnica y reporte de cumplimiento normativo (Res. 773/2021 y Dec. 4741/2005).
   - [x] Escalado tipográfico y accesibilidad visual (text-xs a text-base en todas las fases y catálogo de consecuencias).
-- [x] Juego 3: 'Mando de Control: Trasiego Seguro y Combustibles' (juego3_trasiego.html).
-  - [x] Migración completa a CSS semántico nativo sin dependencia de Tailwind CDN.
-  - [x] Sistema de variables de diseño CSS (:root) con tipografía ergonómica y paleta industrial.
-  - [x] Fase 1: Tutorial interactivo con Bolívar Safety Bot (3 pasos con controles y simulación).
-  - [x] Fase 2: Desafío de control táctico (6 escenarios con telemetría en vivo, 6 interruptores y doble mando).
-  - [x] Sistema ramificado de decisiones y fallas reales (incendio por estática, ignición de motor, rayo atmosférico, derrame en río, rodamiento en pendiente).
-  - [x] Fase 3: Auditoría y certificación de trasiego bajo Dec. 1079 de 2015, Dec. 4741 de 2005 y RETIE/NFPA 780.
+- [x] Juego 3: 'Inspector de Trasiego: Inspección de Campo y Corrección de Riesgos' (juego3_trasiego.html).
+  - [x] Escenario Vectorial de Inspección en SVG puro (Cisterna ACPM + Maquinaria pesada).
+  - [x] 4 Puntos de Inspección / Hotspots parpadeantes en rojo: Cabina/Motor, Chasis/Masa, Acople/Manguera y Perímetro/Extintor.
+  - [x] Mazo de 4 Tarjetas de Acción de Seguridad con soporte dual Drag & Drop (Pointer Events) y Tap-to-Place.
+  - [x] Feedback técnico normativo automático (Dec. 1079/2015, Ley 55/1993, Dec. 4741/2005, Res. 773/2021).
+  - [x] Flujo de 3 Fases: Tutorial Bolívar Safety Bot, Desafío de 4 escenas en 120s y Auditoría final certificada.
 - [x] Migración de CSS nativo (sin Tailwind) para Juego 2 (juego2_bodega.html).
   - [x] Desacople total de Tailwind CDN y configuración script.
   - [x] Tokens semánticos de diseño (:root) con tipografía ergonómica y paleta institucional Bolívar.
@@ -35,5 +34,100 @@
   - [x] Tokens semánticos de diseño (:root) con tipografía ergonómica y paleta institucional Bolívar.
   - [x] Componentes semánticos CSS para cabina, tutorial, examen, visor FDS de 16 secciones y globos cómic.
   - [x] Refactorización de cadenas de plantilla JS y dinamismo sin clases utilitarias.
-- [ ] Juego 4: 'Meca-Dress & RESPEL Basketball' (Taller mecánico y residuos peligrosos).
-- [ ] Juego 5: 'Slime Invasor: Control de Derrames' (Contención y kit de emergencias).
+- [x] Juego 4: 'Taller Seguro: Desafío Isométrico de Equipamiento y Mantenimiento' (juego4_taller.html).
+  - [x] Perspectiva Isométrica 2.5D en CSS Puro (rotateX(60deg) rotateZ(-45deg)) con billboarding de sprites.
+  - [x] Dos escenarios completos autónomos e independientes: Vestidor (Zona 1) y Patio de Taller (Zona 2).
+  - [x] Barra superior minimalista: Eliminación del exceso de controles de cámara, dejando únicamente el botón limpio `[ 🔄 Rotar 90° ]`.
+  - [x] Organización integral de pantalla con propósito útil para cada elemento:
+    - [x] Pestañas de fase en HUD (`phase-pill`) como botones interactivos para conmutar escenarios.
+    - [x] Bandeja inferior contextualizada por zona: En Zona 1 muestra objetivos de vestidor (Casillero, Checkpoint, Bioseguridad); en Zona 2 muestra operaciones de taller (Desengrase, Filtro/Aceite, RESPEL).
+    - [x] Interactividad y feedback normativo en todos los props secundarios (Pediluvio, Perchero de dotación, Kit Antiderrame y Carro de Herramientas).
+  - [x] Guía interactiva paso a paso para el Escenario 2 (Patio de Mantenimiento):
+    - [x] Barra superior de ruta (`workshop-roadmap-guide`) con indicadores secuenciales (1. Mesa Desengrase ➔ 2. Motor V8 ➔ 3. Punto RESPEL).
+    - [x] Balizas 3D flotantes con animación bobbing y pulso dorado sobre la mesa, motor y canecas.
+    - [x] Bloqueo y desbloqueo progresivo de pasos para evitar confusión y forzar el flujo normativo.
+    - [x] Guía contextual en tiempo real emitida por el Bolívar Safety Bot.
+  - [x] Rediseño espacial ampliado: mundo a 500x500 px, viewport a 640px de altura y grilla de 100px por baldosa.
+  - [x] Solución definitiva de oclusión visual: zócalo perimetral bajo (`width: 32px`) con franja de advertencia industrial.
+  - [x] Billboarding dinámico en props y avatares con variables CSS `--counter-rot-z` y `--counter-rot-x`.
+  - [x] Centrado de masa visual matemático calibrado (`--pan-x: 0px; --pan-y: 35px;`).
+  - [x] Soporte de arrastre táctil / ratón (drag-to-pan) sobre el viewport.
+  - [x] Control Tap-to-Move con GSAP v3 y cálculo euclidiano entre casillas de vestidor y patio.
+  - [x] Zona 1 (El Vestidor): Casilleros interactivos con panel EPP (Res. 773/2021) y selección de 4 EPP técnicos requeridos + 4 distractores trampa.
+  - [x] Puerta Checkpoint de Seguridad: Escaneo biométrico/láser en tiempo real con bloqueo y mensajes correctivos del Bolívar Safety Bot.
+    - [x] Corrección de solapamiento y artefactos de cuadrícula en el piso: reemplazo de bordes individuales con gradiente continuo y corrección del plano de billboarding (transform-origin 50% 100%) eliminando el corte horizontal en Z=0.
+    - [x] Despeje visual y eliminación de clutter: retiro de elementos decorativos no operativos (banco central, pediluvio, perchero, carro de herramientas y kit de derrames superfluos) para máxima claridad visual y enfoque en tareas normativas.
+    - [x] Redimensionamiento a escala compacta ergonómica: reducción de dimensiones en props sobredimensionados (estación RESPEL de 280px a 145px, motor y mesa de 145px a 78px, casilleros a 100px y puerta a 78px) y compactación de balizas 3D flotantes para evitar colisiones y vistas invasivas.
+    - [x] Detalle sutil de acabado industrial: demarcaciones perimetrales de seguridad SST en el suelo (.floor-safety-zone) bajo cada estación e interactividad pedagógica en equipos de pared (lavaojos ANSI Z358.1 y extintor NFPA 10).
+    - [x] Corrección de anclaje geométrico del avatar (margin-left -28px, margin-top -96px): erradicación del desfase de 88px en pantalla al rotar y alineación precisa de pies sobre la baldosa pulsada, con filtrado anti-arrastre de cámara e interrupción reactiva de caminos.
+    - [x] Corrección de baliza lumínica de destino (tap-destination-beacon): reubicación dentro del contenedor isométrico 3D (.iso-world), centrado perimetral por márgenes (margin-left/top -17px) y fijación en Z=2px, logrando que el pulso aparezca exactamente sobre la baldosa pulsada.
+    - [x] Eliminación de artefacto verde en suelo: supresión total de .iso-tile:hover e .iso-tile.tile-active, eliminando cuadros verdes espurios en pantallas táctiles o ratón.
+    - [x] Eliminación de puntos muertos entre baldosas: solapamiento geométrico de 4px entre hitboxes de baldosas (.iso-tile margin -2px/padding 2px), contenedor de 500x500px sin bordes obstructivos y manejador de clic unificado con cálculo de celda en costuras.
+    - [x] Reestructuración integral de jerarquía visual: reubicación fija del toast de validación (bottom: 24px) para erradicar oclusión del Bolívar Bot, unificación de barra de fases con botón rotar en una sola fila compacta, y adelgazamiento de pastillas de roadmap sin desbordamientos.
+    - [x] Estabilización geométrica y nitidez tipográfica en modal RESPEL: migración de flexbox elástico a CSS Grid 3x1 rígido (.respel-grid-3cols), badge de confinamiento estático (.respel-confined-badge con visibility) para eliminar desbordes y saltos dimensionales en la tarjeta de aceite usado, y erradicación total de borrosidad visual (anti-aliasing optimizado, eliminación de opacidad reducida y sustitución de scale elástico por translateY en modal-dialog).
+    - [x] Corrección definitiva de borrosidad y desborde en estaciones del Patio (Mesa, Motor y Punto RESPEL): eliminación de `transform-style: preserve-3d` en billboards para activar DirectWrite 2D subpixel antialiasing, escalado tipográfico a 0.58rem-0.68rem (10px-11.5px), extracción del pallet de `#bin-oil` para convertirlo en base colectora continua sin desbordes (.respel-station-pallet con `overflow: hidden`), e igualación estricta de dimensiones en las 3 tarjetas de residuos (Filtros, Trapos y Aceite a 48px).
+    - [x] Navegación táctil móvil con dos dedos (Two-Finger Pan & Pinch Zoom): desacople de gestos en teléfonos (1 dedo exclusivo para Tap-to-Move e interacción sin bloqueos accidentales de cámara; 2 dedos dedicados para desplazar libremente el escenario y ajustar zoom), con persistencia de arrastre de ratón en escritorio.
+  - [x] Cronómetro de desafío extendido a 240 segundos (04:00 minutos) para exploración pausada y aprendizaje sin estrés.
+  - [x] Fase 3: Auditoría final SST, desglose técnico de puntaje (0%-100%) y certificado de Taller Seguro.
+- [x] Juego 5: 'Brigada de Emergencia: Simulador 1ª Persona de Control de Derrames' (juego5_emergencias.html).
+  - [x] Perspectiva 100% en Primera Persona (FPS / First-Person POV) sin avatar de 3ª persona ni proyección isométrica.
+  - [x] Visera de Casco de Seguridad y HUD Digital: Detector multigas PID en ppm, cronómetro de 120s, medidor de O2/Vitalidad y avance de derrame a drenaje.
+  - [x] Capa de Manos en 1ª Persona (First-Person Hands): Manos interactivas animadas con balanceo y equipamiento de guantes de nitrilo.
+  - [x] Navegación Panorámica 360° con Brújula y Arrastre Táctil / Ratón entre 6 sectores de planta.
+  - [x] 5 Tareas de Crisis Operativa: Equipamiento EPP (guantes + máscara full-face), corte de válvula principal, lavado ocular continuo de 15 minutos (ANSI Z358.1), contención con cordón + paños y acopio en bolsa roja sobre estiba RESPEL (Dec. 4741/2005).
+  - [x] 4 Hallazgos Ocultos de Auditoría de Campo (NFPA 10, Res. 773/2021, Ley 55/1993, Dec. 4741/2005).
+  - [x] Motor de Audio Web API procedimental (sirena, fuga de vapor, manivela mecánica, flujo de agua y respirador).
+  - [x] Modal de certificación de brigadista y desglose técnico de puntaje (0%-100%).
+  - [x] Entorno 3D Cúbico y Navegación Cinemática en 1ª Persona (Cubo 1400x1400px con 6 caras industriales, D-Pad móvil y WASD).
+  - [x] Corrección de Inversión W/S y Alineación Vectorial de Avance con la Mirada.
+  - [x] Fijación Estricta de Verticalidad de la Cámara (Pitch = 0°, horizonte estable sin mareos).
+  - [x] Giro de Mirada Normal con Ratón (Pointer Lock API con clic en pantalla y arrastre suave).
+  - [x] Asignación explícita de tecla [E] para interactuar en computadores (prompt dinámico en retícula central y badge en botón HUD).
+  - [x] Calibración geométrica de Caseta EPP (Z=+350px, radio 360px) y activación de listeners de clic directo en estaciones 3D.
+  - [x] Reposicionamiento del spawn frente al charco (Z=360px, distancia 290px segura con rumbo Norte).
+  - [x] Activación de rotación vertical Euler (mirar arriba y abajo acotado entre -45° y +40°).
+  - [x] Resolución de conflicto de foco y captura del charco químico en 1ª persona: filtrado direccional por cono de visión (FOV / producto punto vectorial), ampliación de radio de interacción del charco a 420px, calibración de radio del lavaojos a 230px, prompts contextuales dinámicos e interacción con clic izquierdo en Pointer Lock.
+- [x] Documentación Exclusiva Técnica y Normativa por Juego (docs/juegos/):
+  - [x] Juego 1: Desafío SGA (docs/juegos/01_juego1_sga.md) - FDS 16 secciones, pictogramas SVG, síntesis Web Audio y re-inspección.
+  - [x] Juego 2: Bodega Segura (docs/juegos/02_juego2_bodega.md) - Matriz 3x3, proyección 2.5D, 12 enlaces ortogonales y consecuencias químicas violentas.
+  - [x] Juego 3: Inspector de Trasiego (docs/juegos/03_juego3_trasiego.md) - 4 vehículos secuenciales, 4 hotspots SVG, distractores trampa y base legal Dec. 1079/2015.
+  - [x] Juego 4: Taller Seguro (docs/juegos/04_juego4_taller.md) - 2 escenarios, rotación 90° con billboarding, navegación táctil con 2 dedos y modal RESPEL en CSS Grid.
+  - [x] Juego 5: Brigada de Emergencia (docs/juegos/05_juego5_emergencias.md) - 100% FPS, habitación cúbica 3D en CSS, cinemática ocular Euler, cono de visión FOV y protocolo de 5 pasos.
+  - [x] Actualización de índices generales (README.md, docs/01_Requerimientos.md, docs/02_Arquitectura.md).
+- [x] Optimización y corrección de bloqueos en Juegos 1, 2 y 5:
+  - [x] Juego 1 (Desafío SGA): Corrección de zona de soltado drag & drop (.tut-pictogram-tile), apertura reactiva no bloqueante de FDS en tutorial, remoción de estilos inline en botón de inicio, botón directo de salto de tutorial e inicialización DOM inmediata.
+  - [x] Juego 2 (Bodega Segura): Botón de cierre visible [×] y botón de descarte en el banner de advertencia química (#hazard-toast), auto-ocultado tras 5s y restricción de altura para no ocluir el tablero isométrico.
+  - [x] Juego 5 (Brigada de Emergencia): Erradicación de captura agresiva de cursor (Pointer Lock eliminado a favor de arrastre suave con ratón visible), velocidad de marcha calibrada a 8.5px/13px para evitar mareos, optimización de sombras pesadas de GPU y memoización de consultas DOM en el bucle de targeting.
+- [x] Elevación de Complejidad Táctica y Procedimental para el Jugador:
+  - [x] Juego 2 (Bodega Segura):
+    - [x] Restricciones ambientales reales de bodega en A3 (Tablero Eléctrico 440V - prohibido inflamable o gas) y C1 (Radiación Solar Térmica - prohibido gas presurizado).
+    - [x] Reacción Exotérmica Activa con cuenta regresiva de 6 segundos en HUD; deflagración con -150 pts si no se separan a tiempo.
+    - [x] Calibración de tiempo a 90 segundos y penalización en auditoría por infracciones ambientales o derrames.
+  - [x] Juego 3 (Inspector de Trasiego):
+    - [x] Secuencia Operacional ATS Obligatoria (Dec. 1079/2015): Paso 1 cuñas en llantas, Paso 2 corte de ignición / polo a tierra, Paso 3 contención y extintor. Saltarse la secuencia penaliza -4s y -30 pts.
+    - [x] Penalización directa en fallos (-3s / -30 pts) y trampas (-10s / -100 pts), erradicando pistas gratuitas.
+    - [x] Cronómetro arcade calibrado a 70 segundos base con +8s de bonificación por frente completado.
+  - [x] Juego 1 (Desafío SGA):
+    - [x] Tolerancia cero e intento único táctico: eliminación de intentos gratuitos, penalización directa de -10 segundos al cronómetro en cualquier error de clasificación, pérdida inmediata de tarjeta y rotura de racha.
+    - [x] Flujo de Reacción Arcade Pura (Tolerancia Cero sin Bloqueos): Erradicación total de modales de preguntas y respuestas intermedias en mitad de partida (eliminado mini-reto FDS que pausaba el juego). Clasificación reactiva inmediata: toque/arrastre ➔ celebración o penalización (-10s / screen shake / quema de tarjeta) ➔ avance instantáneo sin interrupción de modales.
+    - [x] Cronómetro calibrado a 75 segundos para examen técnico de alta intensidad.
+  - [x] Juego 4 (Taller Seguro):
+    - [x] Casillero punitivo: equipar prendas trampa resta inmediatamente -15 segundos y -100 puntos, rompe racha y emite alarma.
+    - [x] Checkpoint biométrico de tolerancia cero: rechazo inmediato sin intentos formativos gratis (-15s / -100 pts), ruptura de racha y expulsión física del avatar.
+    - [x] Riesgo operacional y ambiental en motor: drenar o manipular motor sin bandeja colectora dispara ¡DELITO AMBIENTAL! (Ley 1333/2009 / Dec. 4741/2005) con -20s, -150 pts y animación de derrame de hidrocarburos.
+    - [x] Cronómetro reducido de 240s a 90 segundos.
+    - [x] Barajado dinámico e intercalado de tarjetas de casillero (Fisher-Yates), opciones de retos operacionales y contenedores RESPEL para exigir máxima atención del jugador.
+    - [x] Neutralidad cromática estricta (Anti-Delación Visual): Erradicación de pistas cromáticas evidentes en casillero (diseño homogéneo sin iconos rojos o advertencias obvias), eliminación de tintado verde prematuro en opciones de retos (`openWorkshopChallenge`), y neutralización de iconos de residuos RESPEL a tono acero `#94a3b8` (evitando emparejamiento directo rojo/amarillo con las canecas).
+  - [x] Desbloqueo Integral de Puntero e Interacción en Juego 1 (Desafío SGA):
+    - [x] Inmunidad de capas flotantes (`#fx-canvas` y `#comic-reaction-layer`): inclusión de `.pointer-events-none` en el CSS y asignación inline para evitar que el canvas intercepte clics y arrastres.
+    - [x] Robustecimiento de Pointer Events (`setupDragAndDrop`) con delegación de listeners a `window` para arrastre y soltado continuo sin pérdidas de captura.
+    - [x] Incorporación de utilidades CSS faltantes (`.inset-0`, `.z-50`, `.h-full`, `.my-auto`, `.text-amber-400`, `.text-red-500`, `.animate-pulse`).
+  - [x] Estandarización Visual Integral de Interfaz - Juego 1 (Desafío SGA):
+    - [x] Tokens semánticos en `:root` calibrados (tipografía 12px a 26px, pesos 700/400, sombras refinadas sin resplandores neón de 30px).
+    - [x] Cabina y barra HUD superior sobrias (botón de 34px, fuentes 11-15px, background calmado).
+    - [x] Tarjetas químicas de examen con borde pizarra neutro (eliminado borde verde delator previo a clasificar), icono de 32px y badge de intentos sutil.
+    - [x] Modales técnicos (`#modal-error-feedback` y `#modal-word-challenge`) estandarizados con acento lateral de 4px y tipografía legible.
+  - [ ] Estandarización Visual Integral de Interfaz - Juego 2 (Bodega Segura):
+    - [ ] Desaturación de HUD, visor de compatibilidad y panel de consecuencias.
+    - [ ] Calibración de tipografía y tarjetas de piezas isométricas sin sobrecarga.
+  - [x] Actualización de documentación técnica individual en docs/juegos/ (01, 02, 03 y 04) y bitácoras técnicas findings.md y task_plan.md.

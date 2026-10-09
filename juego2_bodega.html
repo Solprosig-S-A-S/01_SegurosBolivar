@@ -750,6 +750,85 @@
             border: 1px solid rgba(239, 68, 68, 0.6);
         }
 
+        /* Marcadores de Peligro Ambiental en Casillas de Bodega */
+        .cell-hazard-marker {
+            position: absolute;
+            bottom: 4px;
+            right: 6px;
+            font-size: 0.65rem;
+            font-weight: 900;
+            font-family: var(--font-mono);
+            padding: 1px 5px;
+            border-radius: var(--radius-sm);
+            pointer-events: none;
+            z-index: 10;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .marker-electric {
+            background: rgba(239, 68, 68, 0.35);
+            border: 1px solid #ef4444;
+            color: #fecaca;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+            animation: pulseGlow 1.2s infinite alternate;
+        }
+        .marker-solar {
+            background: rgba(245, 158, 11, 0.35);
+            border: 1px solid #f59e0b;
+            color: #fef08a;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Banner Táctico de Crisis Exotérmica Activa */
+        .exothermic-crisis-strip {
+            background: linear-gradient(90deg, #7f1d1d, #991b1b, #7f1d1d);
+            border: 2px solid #ef4444;
+            border-radius: var(--radius-md);
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.7);
+            animation: pulseExothermicGlow 0.6s infinite alternate;
+            margin-top: 4px;
+            flex-shrink: 0;
+            z-index: 35;
+        }
+        @keyframes pulseExothermicGlow {
+            0% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.5); border-color: #ef4444; }
+            100% { box-shadow: 0 0 28px rgba(239, 68, 68, 0.95); border-color: #fde047; }
+        }
+        .exothermic-flame-icon {
+            font-size: 1.4rem;
+        }
+        .exothermic-title {
+            color: #fef08a;
+            font-size: var(--font-sm);
+            font-weight: 900;
+            text-transform: uppercase;
+            display: block;
+            letter-spacing: 0.04em;
+        }
+        .exothermic-sub {
+            color: #fecaca;
+            font-size: var(--font-xs);
+            display: block;
+        }
+        .exothermic-timer-box {
+            background: #0f172a;
+            border: 2px solid #fde047;
+            color: #fde047;
+            font-family: var(--font-mono);
+            font-size: 1.25rem;
+            font-weight: 900;
+            padding: 2px 10px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 0 10px rgba(253, 224, 71, 0.5);
+            white-space: nowrap;
+        }
+
         /* Hazard Toast Card */
         .hazard-toast-card {
             background: rgba(15, 23, 42, 0.98);
@@ -1627,6 +1706,20 @@
                     <span id="active-item-badge" class="hidden"></span>
                 </div>
 
+                <!-- Banner Táctico de Cuenta Regresiva Exotérmica (Peligro Activo) -->
+                <div id="exothermic-alert-strip" class="hidden exothermic-crisis-strip">
+                    <div class="flex items-center gap-2">
+                        <span class="exothermic-flame-icon">🔥</span>
+                        <div>
+                            <strong class="exothermic-title">¡REACCIÓN EXOTÉRMICA ACTIVA!</strong>
+                            <span class="exothermic-sub">Separa las sustancias incompatibles antes de la deflagración</span>
+                        </div>
+                    </div>
+                    <div class="exothermic-timer-box">
+                        <span id="exothermic-seconds-num">06</span>s
+                    </div>
+                </div>
+
                 <!-- 3D ISOMETRIC WAREHOUSE SCENE -->
                 <div class="iso-viewport relative flex-1 flex items-center justify-center overflow-visible select-none" style="padding: 8px 0;">
                     
@@ -1665,6 +1758,7 @@
                             </div>
                             <div class="iso-cell relative" style="border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: rgba(15, 23, 42, 0.9); display: flex; align-items: center; justify-content: center; cursor: pointer;" data-row="0" data-col="2" id="cell-0-2">
                                 <span style="position: absolute; top: 6px; left: 6px; font-size: var(--font-xs); font-family: var(--font-mono); color: var(--text-muted); font-weight: 800;">A3</span>
+                                <div class="cell-hazard-marker marker-electric" title="Tablero Eléctrico de Potencia 440V. Prohibido inflamables o gases."><i class="fa-solid fa-bolt-lightning"></i> 440V</div>
                             </div>
 
                             <div class="iso-cell relative" style="border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: rgba(15, 23, 42, 0.9); display: flex; align-items: center; justify-content: center; cursor: pointer;" data-row="1" data-col="0" id="cell-1-0">
@@ -1679,6 +1773,7 @@
 
                             <div class="iso-cell relative" style="border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: rgba(15, 23, 42, 0.9); display: flex; align-items: center; justify-content: center; cursor: pointer;" data-row="2" data-col="0" id="cell-2-0">
                                 <span style="position: absolute; top: 6px; left: 6px; font-size: var(--font-xs); font-family: var(--font-mono); color: var(--text-muted); font-weight: 800;">C1</span>
+                                <div class="cell-hazard-marker marker-solar" title="Zona con Radiación Solar y Calor UV directo. Prohibido cilindros de gas o solventes volátiles."><i class="fa-solid fa-sun"></i> CALOR</div>
                             </div>
                             <div class="iso-cell relative" style="border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: rgba(15, 23, 42, 0.9); display: flex; align-items: center; justify-content: center; cursor: pointer;" data-row="2" data-col="1" id="cell-2-1">
                                 <span style="position: absolute; top: 6px; left: 6px; font-size: var(--font-xs); font-family: var(--font-mono); color: var(--text-muted); font-weight: 800;">C2</span>
@@ -1691,7 +1786,7 @@
                     </div>
 
                     <!-- Floor Hazard Warning Banner & Consequence Card -->
-                    <div id="hazard-toast" class="hidden hazard-toast-card absolute" style="top: 4px; left: 8px; right: 8px; max-width: 460px; margin: 0 auto;">
+                    <div id="hazard-toast" class="hidden hazard-toast-card absolute" style="top: 4px; left: 8px; right: 8px; max-width: 460px; margin: 0 auto; max-height: 240px; overflow-y: auto;">
                         <div class="hazard-toast-header">
                             <div class="flex items-center gap-2">
                                 <span style="width: 26px; height: 26px; border-radius: var(--radius-sm); background: rgba(239, 68, 68, 0.4); border: 1px solid #f87171; display: flex; align-items: center; justify-content: center; color: #fca5a5; font-size: 0.9rem;" class="animate-pulse">
@@ -1703,6 +1798,9 @@
                                 <span id="hazard-toast-counter" class="hidden" style="font-size: var(--font-xs); font-family: var(--font-mono); padding: 2px 8px; border-radius: var(--radius-full); background: #450a0a; border: 1px solid rgba(239, 68, 68, 0.6); color: #fee2e2; font-weight: 800;">1 / 1</span>
                                 <button id="btn-toggle-hazard-detail" class="btn btn-icon" style="width: 26px; height: 26px;" title="Minimizar / Expandir">
                                     <i class="fa-solid fa-chevron-up text-xs" id="hazard-detail-icon"></i>
+                                </button>
+                                <button id="btn-close-hazard-toast" class="btn btn-icon" style="width: 26px; height: 26px; border-radius: var(--radius-full); background: rgba(239, 68, 68, 0.35); border: 1px solid #f87171; color: #fee2e2;" title="Cerrar advertencia">
+                                    <i class="fa-solid fa-xmark text-xs"></i>
                                 </button>
                             </div>
                         </div>
@@ -1734,6 +1832,11 @@
                             <div class="flex items-center justify-between" style="font-size: var(--font-xs); color: #cbd5e1; font-family: var(--font-mono); padding-top: 2px;">
                                 <span id="hazard-toast-norma"><i class="fa-solid fa-scale-balanced" style="color: var(--bolivar-yellow); margin-right: 6px;"></i>Res. 773/2021 (Art. 12)</span>
                                 <span style="color: var(--bolivar-yellow); font-weight: 900;">¡Reubica una sustancia!</span>
+                            </div>
+                            <div style="padding-top: 4px; display: flex; justify-content: flex-end;">
+                                <button id="btn-dismiss-hazard-action" class="btn btn-secondary" style="padding: 4px 12px; font-size: var(--font-xs); background: rgba(239, 68, 68, 0.25); border: 1px solid rgba(239, 68, 68, 0.6); color: #fff;">
+                                    <i class="fa-solid fa-check" style="margin-right: 4px;"></i> Entendido, cerrar aviso
+                                </button>
                             </div>
                         </div>
 
@@ -2513,6 +2616,12 @@
                 this.activeHazardIndex = 0;
                 this.hazardToastCollapsed = false;
 
+                // Estado de Reacción Exotérmica Activa y Contingencia
+                this.exothermicInterval = null;
+                this.exothermicSecondsLeft = 6;
+                this.hasExothermicDetonated = false;
+                this.exothermicIncidentsCount = 0;
+
                 this.cacheDom();
                 this.bindEvents();
                 this.renderInventoryTray();
@@ -2747,6 +2856,24 @@
                         this.nextHazardPair();
                     });
                 }
+
+                const btnCloseToast = document.getElementById('btn-close-hazard-toast');
+                if (btnCloseToast) {
+                    btnCloseToast.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        sound.tap();
+                        this.hideHazardToast();
+                    });
+                }
+
+                const btnDismissAction = document.getElementById('btn-dismiss-hazard-action');
+                if (btnDismissAction) {
+                    btnDismissAction.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        sound.tap();
+                        this.hideHazardToast();
+                    });
+                }
             }
 
             toggleMatrix(open) {
@@ -2977,7 +3104,7 @@
             }
 
             startTimer() {
-                this.timeLeft = 120;
+                this.timeLeft = 90; // Calibrado a 90 segundos para desafío dinámico
                 this.updateTimerDisplay();
                 clearInterval(this.timerInterval);
                 this.timerInterval = setInterval(() => {
@@ -2985,6 +3112,7 @@
                     this.updateTimerDisplay();
                     if (this.timeLeft <= 0) {
                         clearInterval(this.timerInterval);
+                        this.clearExothermicCountdown();
                         this.finishAndAudit();
                     }
                 }, 1000);
@@ -3338,18 +3466,27 @@
                         this.updateDynamicConnections();
                         this.highlightBoardTargets();
 
-                        const updatedCell = document.getElementById(`cell-${toRow}-${toCol}`);
-                        if (updatedCell) {
-                            const sprite = updatedCell.querySelector('.iso-sprite');
-                            this.playAnimation(sprite, 'happy-jiggle-3d', 650);
-                        }
-                        return;
                     } else {
-                        // Celda ocupada: rebote elástico
-                        sound.tap();
-                        this.playAnimation(spriteEl, 'dazed-wobble-3d', 400);
-                        spriteEl.style.transition = 'transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                        spriteEl.style.transform = '';
+                        // SWAP DINÁMICO: Intercambiar las dos piezas entre celdas del tablero
+                        const targetItemId = this.grid[toRow][toCol];
+                        this.grid[toRow][toCol] = itemId;
+                        this.grid[fromRow][fromCol] = targetItemId;
+                        sound.place();
+                        const rect = cellEl.getBoundingClientRect();
+                        this.fx.sparks(rect.left + rect.width / 2, rect.top + rect.height / 2, 20);
+
+                        this.selectedItemId = null;
+                        this.selectedFromCell = null;
+                        this.updateActiveItemDisplay(null);
+                        this.renderGrid();
+                        this.renderInventoryTray();
+                        this.updateDynamicConnections();
+                        this.highlightBoardTargets();
+
+                        const cell1 = document.getElementById(`cell-${toRow}-${toCol}`);
+                        const cell2 = document.getElementById(`cell-${fromRow}-${fromCol}`);
+                        if (cell1) this.playAnimation(cell1.querySelector('.iso-sprite'), 'happy-jiggle-3d', 500);
+                        if (cell2) this.playAnimation(cell2.querySelector('.iso-sprite'), 'happy-jiggle-3d', 500);
                         return;
                     }
                 }
@@ -3553,8 +3690,31 @@
                         this.renderInventoryTray();
                         this.highlightBoardTargets();
                         this.updateDynamicConnections();
+                    } else if (this.selectedFromCell) {
+                        // SWAP DINÁMICO POR TAP: Intercambiar con la celda seleccionada previamente
+                        const prevRow = this.selectedFromCell.row;
+                        const prevCol = this.selectedFromCell.col;
+                        const prevItem = this.grid[prevRow][prevCol];
+
+                        this.grid[prevRow][prevCol] = currentItemInCell;
+                        this.grid[row][col] = prevItem;
+                        sound.place();
+
+                        const cellEl = document.getElementById(`cell-${row}-${col}`);
+                        if (cellEl) {
+                            const rect = cellEl.getBoundingClientRect();
+                            this.fx.sparks(rect.left + rect.width / 2, rect.top + rect.height / 2, 20);
+                        }
+
+                        this.selectedItemId = null;
+                        this.selectedFromCell = null;
+                        this.updateActiveItemDisplay(null);
+                        this.renderGrid();
+                        this.renderInventoryTray();
+                        this.highlightBoardTargets();
+                        this.updateDynamicConnections();
                     } else {
-                        // Seleccionar este item existente para reubicarlo
+                        // Seleccionar este item existente para reubicarlo o hacer swap
                         this.selectedItemId = currentItemInCell;
                         this.selectedFromCell = { row, col };
                         sound.select();
@@ -3623,12 +3783,20 @@
                         const cellEl = document.getElementById(`cell-${r}-${c}`);
                         const itemId = this.grid[r][c];
 
+                        let markerHtml = '';
+                        if (r === 0 && c === 2) {
+                            markerHtml = '<div class="cell-hazard-marker marker-electric" title="Tablero Eléctrico de Potencia 440V: Prohibido inflamables o gases."><i class="fa-solid fa-bolt-lightning"></i> 440V</div>';
+                        } else if (r === 2 && c === 0) {
+                            markerHtml = '<div class="cell-hazard-marker marker-solar" title="Zona con Radiación Solar y Calor UV directo: Prohibido cilindros de gas o solventes volátiles."><i class="fa-solid fa-sun"></i> CALOR</div>';
+                        }
+
                         if (itemId) {
                             const itemData = CHEMICAL_ITEMS.find(it => it.id === itemId);
                             const isSelectedHere = this.selectedFromCell && this.selectedFromCell.row === r && this.selectedFromCell.col === c;
                             cellEl.classList.add('occupied');
                             cellEl.innerHTML = `
                                 <span class="iso-coord-label">${String.fromCharCode(65 + r)}${c + 1}</span>
+                                ${markerHtml}
                                 <div class="iso-sprite placed-drop-anim w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center relative draggable-card cursor-grab ${isSelectedHere ? 'sprite-selected' : ''}" data-from-row="${r}" data-from-col="${c}" title="${itemData.name}">
                                     ${itemData.svgIcon}
                                 </div>
@@ -3645,6 +3813,7 @@
                             cellEl.classList.remove('occupied');
                             cellEl.innerHTML = `
                                 <span class="iso-coord-label">${String.fromCharCode(65 + r)}${c + 1}</span>
+                                ${markerHtml}
                             `;
                         }
                     }
@@ -3879,6 +4048,35 @@
                     evaluatePair(p1[0], p1[1], p2[0], p2[1], true);
                 });
 
+                // 3.1 Restricciones Ambientales del Almacén (Infraestructura de Bodega)
+                // A3 (0, 2): Tablero Eléctrico de Potencia 440V
+                const a3Item = this.grid[0][2];
+                if (a3Item === 'item_fuel' || a3Item === 'item_gas') {
+                    hasIncompatibility = true;
+                    incompatibleCells.add('0-2');
+                    const itemData = CHEMICAL_ITEMS.find(it => it.id === a3Item);
+                    detectedHazards.push({
+                        title: `⚡ Riesgo Eléctrico: ${itemData.name} en Tablero 440V`,
+                        falla: 'Almacenamiento de combustible o gas presurizado contiguo a cuadro eléctrico de fuerza 440V.',
+                        consecuencia: 'Cualquier arco eléctrico o chispa estática enciende vapores inflamables, provocando explosión de sala eléctrica.',
+                        norma: 'NFPA 70 / Res. 2400 de 1979 / Res. 773 de 2021'
+                    });
+                }
+
+                // C1 (2, 0): Muro con Radiación Solar Directa / Claraboya
+                const c1Item = this.grid[2][0];
+                if (c1Item === 'item_gas' || c1Item === 'item_fuel') {
+                    hasIncompatibility = true;
+                    incompatibleCells.add('2-0');
+                    const itemData = CHEMICAL_ITEMS.find(it => it.id === c1Item);
+                    detectedHazards.push({
+                        title: `☀️ Riesgo Térmico: ${itemData.name} bajo Radiación Solar`,
+                        falla: 'Exposición térmica directa a radiación UV y sobrecalentamiento por claraboya en cilindro o tambor.',
+                        consecuencia: 'Sobrepresión interna peligrosa por dilatación térmica que activa el disco de ruptura o causa explosión BLEVE.',
+                        norma: 'NFPA 55 / OSHA 1910.101 / Res. 773 de 2021'
+                    });
+                }
+
                 // Renderizar los haces de luz láser 3D en el SVG
                 if (connectionsSvg) {
                     connectionsSvg.innerHTML = svgLinesHtml;
@@ -3906,20 +4104,104 @@
                     }
                 }
 
-                // 5. Alerta sonora, sacudida y despliegue del panel de consecuencias reales
+                // 5. Alerta sonora, sacudida y gestión de Reacción Exotérmica Activa
                 if (hasIncompatibility) {
                     sound.hazardAlarm();
                     this.triggerScreenShake();
                     this.showDetailedHazardAlert(detectedHazards);
                     this.dom.liveSafetyBadge.className = 'safety-badge safety-badge-risk';
                     this.dom.liveSafetyBadge.textContent = 'RIESGO QUÍMICO';
+
+                    if (!this.exothermicInterval && !this.hasExothermicDetonated) {
+                        this.startExothermicCountdown();
+                    }
                 } else {
                     this.hideHazardToast();
+                    this.clearExothermicCountdown();
                     this.dom.liveSafetyBadge.className = 'safety-badge safety-badge-optimal';
                     this.dom.liveSafetyBadge.textContent = '100% ÓPTIMA';
                 }
 
                 this.updateCounters();
+            }
+
+            startExothermicCountdown() {
+                if (this.exothermicInterval) return;
+                this.exothermicSecondsLeft = 6;
+                const strip = document.getElementById('exothermic-alert-strip');
+                const secNum = document.getElementById('exothermic-seconds-num');
+                if (strip) {
+                    strip.classList.remove('hidden');
+                    strip.classList.add('flex');
+                    strip.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="exothermic-flame-icon">🔥</span>
+                            <div>
+                                <strong class="exothermic-title">¡REACCIÓN EXOTÉRMICA ACTIVA!</strong>
+                                <span class="exothermic-sub">Separa las sustancias incompatibles antes de la deflagración</span>
+                            </div>
+                        </div>
+                        <div class="exothermic-timer-box">
+                            <span id="exothermic-seconds-num">06</span>s
+                        </div>
+                    `;
+                }
+
+                this.exothermicInterval = setInterval(() => {
+                    this.exothermicSecondsLeft--;
+                    const currSec = document.getElementById('exothermic-seconds-num');
+                    if (currSec) currSec.textContent = String(this.exothermicSecondsLeft).padStart(2, '0');
+                    sound.hazardAlarm();
+
+                    if (this.exothermicSecondsLeft <= 0) {
+                        clearInterval(this.exothermicInterval);
+                        this.exothermicInterval = null;
+                        this.triggerExothermicDetonation();
+                    }
+                }, 1000);
+            }
+
+            clearExothermicCountdown() {
+                if (this.exothermicInterval) {
+                    clearInterval(this.exothermicInterval);
+                    this.exothermicInterval = null;
+                }
+                const strip = document.getElementById('exothermic-alert-strip');
+                if (strip) {
+                    strip.classList.add('hidden');
+                    strip.classList.remove('flex');
+                }
+                if (this.hasExothermicDetonated) {
+                    this.hasExothermicDetonated = false;
+                }
+            }
+
+            triggerExothermicDetonation() {
+                this.hasExothermicDetonated = true;
+                this.exothermicIncidentsCount = (this.exothermicIncidentsCount || 0) + 1;
+                sound.illegalViolation();
+                this.triggerScreenShake();
+
+                const board = document.getElementById('warehouse-board');
+                if (board) {
+                    const rect = board.getBoundingClientRect();
+                    this.fx.sparks(rect.left + rect.width / 2, rect.top + rect.height / 2, 50);
+                }
+
+                const strip = document.getElementById('exothermic-alert-strip');
+                if (strip) {
+                    strip.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span style="font-size: 1.4rem;">💥</span>
+                            <div>
+                                <strong style="color: #f87171; font-weight: 900; text-transform: uppercase;">¡INCIDENTE QUÍMICO CONSUMADO!</strong>
+                                <span style="color: #fca5a5; font-size: var(--font-xs); display: block;">Deflagración por falta de segregación (-150 pts de auditoría)</span>
+                            </div>
+                        </div>
+                        <span style="font-family: var(--font-mono); color: #f87171; font-weight: 900; font-size: 1.1rem;">-150 PTS</span>
+                    `;
+                }
+                this.showHazardToast('¡DEFLAGRACIÓN EN BODEGA! El tiempo de contención se agotó y la reacción química dañó el lote (-150 pts).');
             }
 
             updateCounters() {
@@ -3946,6 +4228,7 @@
              */
             showDetailedHazardAlert(hazards) {
                 if (!this.dom.hazardToast || !hazards || hazards.length === 0) return;
+                clearTimeout(this.hazardToastTimeout);
                 this.activeHazards = hazards;
                 if (this.activeHazardIndex >= hazards.length) {
                     this.activeHazardIndex = 0;
@@ -4030,6 +4313,7 @@
 
             showHazardToast(msg) {
                 if (!this.dom.hazardToast) return;
+                clearTimeout(this.hazardToastTimeout);
                 this.activeHazards = [{
                     title: 'Aviso de Seguridad SST',
                     falla: msg,
@@ -4040,10 +4324,15 @@
                 this.renderActiveHazardToast();
                 this.dom.hazardToast.classList.remove('hidden');
                 this.dom.hazardToast.classList.add('flex');
+                // Desaparecer automáticamente en 5 segundos para no bloquear la pantalla
+                this.hazardToastTimeout = setTimeout(() => {
+                    this.hideHazardToast();
+                }, 5000);
             }
 
             hideHazardToast() {
                 if (!this.dom.hazardToast) return;
+                clearTimeout(this.hazardToastTimeout);
                 this.dom.hazardToast.classList.add('hidden');
                 this.dom.hazardToast.classList.remove('flex');
                 this.activeHazards = [];
@@ -4261,6 +4550,39 @@
                         title: 'Mitigación de Incendios o Gas Incompleta',
                         desc: 'El cilindro de gas o el extintor PQS de protección no se posicionaron adecuadamente para brindar protección pasiva.',
                         type: 'warning'
+                    });
+                }
+
+                // REGLA AMBIENTAL: Cumplimiento de Zonas Físicas de Infraestructura
+                const a3Item = this.grid[0][2];
+                const c1Item = this.grid[2][0];
+                const a3Violation = a3Item === 'item_fuel' || a3Item === 'item_gas';
+                const c1Violation = c1Item === 'item_gas' || c1Item === 'item_fuel';
+                if (a3Violation) {
+                    score = Math.max(0, score - 20);
+                    findings.push({
+                        title: 'Violación Eléctrica en Celda A3 (Tablero 440V)',
+                        desc: 'Se ubicó sustancia combustible o gas presurizado junto al tablero eléctrico de potencia (NFPA 70).',
+                        type: 'danger'
+                    });
+                }
+                if (c1Violation) {
+                    score = Math.max(0, score - 20);
+                    findings.push({
+                        title: 'Violación Térmica en Celda C1 (Radiación Solar)',
+                        desc: 'Se expuso cilindro presurizado o combustible a calor directo de claraboya (NFPA 55).',
+                        type: 'danger'
+                    });
+                }
+
+                // Penalización por Deflagraciones / Incidentes Exotérmicos Activos
+                if (this.exothermicIncidentsCount > 0) {
+                    const penalty = this.exothermicIncidentsCount * 150;
+                    score = Math.max(0, score - penalty);
+                    findings.unshift({
+                        title: `💥 ${this.exothermicIncidentsCount} Incidente(s) Exotérmico(s) con Deflagración (-${penalty} pts)`,
+                        desc: 'Se agotó la ventana de contención activa de 6s y ocurrió una reacción violenta/deflagración sin mitigar.',
+                        type: 'danger'
                     });
                 }
 

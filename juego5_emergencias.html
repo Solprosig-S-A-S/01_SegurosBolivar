@@ -1,0 +1,2198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Brigada de Emergencia: Simulador 3D en 1ª Persona | Seguros Bolívar</title>
+
+    <!-- GSAP v3 CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- FontAwesome v6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. TOKENS Y ESTILOS BASE (CSS3 NATIVO - ENTORNO 3D CUADRADO EN 1ª PERSONA)
+           ========================================================================== */
+        :root {
+            --verde-bolivar: #006738;
+            --verde-bolivar-light: #008244;
+            --verde-bolivar-glow: #10B981;
+            --amarillo-bolivar: #FFC72C;
+            --amarillo-bolivar-dark: #D99B00;
+            --bg-dark: #070B14;
+            --bg-darker: #03060A;
+            --alerta-rojo: #EF4444;
+            --alerta-rojo-glow: rgba(239, 68, 68, 0.6);
+            --exito-verde: #10B981;
+            --exito-verde-glow: rgba(16, 185, 129, 0.5);
+            --peligro-quimico: #00FF88;
+            --peligro-quimico-glow: rgba(0, 255, 136, 0.5);
+            --text-main: #FFFFFF;
+            --text-muted: #94A3B8;
+            --border-subtle: rgba(148, 163, 184, 0.25);
+            --shadow-hud: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 255, 136, 0.15);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --radius-full: 9999px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-darker);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        /* Contenedor Maestro de Simulación */
+        .fps-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-width: 1280px;
+            max-height: 860px;
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 0 60px rgba(0, 103, 56, 0.4);
+        }
+
+        @media (max-width: 1280px), (max-height: 860px) {
+            .fps-container {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+            }
+        }
+
+        /* ==========================================================================
+           2. VIEWPORT 3D Y CUADRADO TRIDIMENSIONAL (HABITACIÓN INDUSTRIAL CSS 3D)
+           ========================================================================== */
+        .fps-3d-viewport {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            perspective: 750px;
+            perspective-origin: 50% 50%;
+            background: #020408;
+            cursor: grab;
+        }
+
+        /* Rig de Cámara en Primera Persona */
+        .fps-camera-rig {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 0;
+            height: 0;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        /* Habitación Tridimensional (Cuadrado de 1400x1400px con 6 Caras) */
+        .fps-room-cube {
+            position: absolute;
+            width: 0;
+            height: 0;
+            transform-style: preserve-3d;
+        }
+
+        .wall-3d {
+            position: absolute;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            box-sizing: border-box;
+        }
+
+        /* 1. SUELO TRIDIMENSIONAL (Piso Epóxico con cuadrícula industrial a Y = +350px) */
+        .cube-floor {
+            width: 1400px;
+            height: 1400px;
+            left: -700px;
+            top: -700px;
+            transform: rotateX(90deg) translateZ(-350px);
+            background-color: #0b1326;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 103, 56, 0.2) 0%, transparent 70%),
+                linear-gradient(rgba(51, 65, 85, 0.4) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(51, 65, 85, 0.4) 2px, transparent 2px);
+            background-size: 100% 100%, 140px 140px, 140px 140px;
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Franjas Perimetrales de Seguridad Amarilla/Negra en el Suelo */
+        .floor-safety-border {
+            position: absolute;
+            inset: 15px;
+            border: 14px solid transparent;
+            border-image: repeating-linear-gradient(45deg, #FFC72C, #FFC72C 20px, #000 20px, #000 40px) 14;
+            pointer-events: none;
+        }
+
+        /* 2. TECHO TRIDIMENSIONAL (Vigas metálicas y luminarias a Y = -350px) */
+        .cube-ceiling {
+            width: 1400px;
+            height: 1400px;
+            left: -700px;
+            top: -700px;
+            transform: rotateX(-90deg) translateZ(-350px);
+            background-color: #060911;
+            background-image: 
+                repeating-linear-gradient(45deg, rgba(30, 41, 59, 0.35) 0, rgba(30, 41, 59, 0.35) 25px, transparent 25px, transparent 70px),
+                repeating-linear-gradient(-45deg, rgba(15, 23, 42, 0.45) 0, rgba(15, 23, 42, 0.45) 25px, transparent 25px, transparent 70px);
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Lámpara de Emergencia Estroboscópica Central en el Techo */
+        .ceiling-strobe-beacon {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: #ef4444;
+            border-radius: 50%;
+            box-shadow: 0 0 25px #ef4444;
+            animation: strobePulse 1.2s infinite alternate;
+        }
+
+        @keyframes strobePulse {
+            from { opacity: 0.4; }
+            to { opacity: 1; }
+        }
+
+        /* 3. PARED NORTE (Z = -700px): VÁLVULA PRINCIPAL Y TUBERÍAS */
+        .cube-wall-north {
+            width: 1400px;
+            height: 700px;
+            left: -700px;
+            top: -350px;
+            transform: translateZ(-700px);
+            background: linear-gradient(180deg, #090d16 0%, #172033 60%, #1e293b 90%, #000 100%);
+            border-bottom: 8px solid #FFC72C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 4. PARED SUR (Z = +700px): LAVAOJOS DE EMERGENCIA Y SALIDA */
+        .cube-wall-south {
+            width: 1400px;
+            height: 700px;
+            left: -700px;
+            top: -350px;
+            transform: rotateY(180deg) translateZ(-700px);
+            background: linear-gradient(180deg, #090d16 0%, #172033 60%, #1e293b 90%, #000 100%);
+            border-bottom: 8px solid #FFC72C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 5. PARED ESTE (X = +700px): ESTANTE KIT ANTIDERRAME */
+        .cube-wall-east {
+            width: 1400px;
+            height: 700px;
+            left: -700px;
+            top: -350px;
+            transform: rotateY(-90deg) translateZ(-700px);
+            background: linear-gradient(180deg, #090d16 0%, #172033 60%, #1e293b 90%, #000 100%);
+            border-bottom: 8px solid #FFC72C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 6. PARED OESTE (X = -700px): CASETA EPP Y ACOPIO RESPEL */
+        .cube-wall-west {
+            width: 1400px;
+            height: 700px;
+            left: -700px;
+            top: -350px;
+            transform: rotateY(90deg) translateZ(-700px);
+            background: linear-gradient(180deg, #090d16 0%, #172033 60%, #1e293b 90%, #000 100%);
+            border-bottom: 8px solid #FFC72C;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        /* ==========================================================================
+           3. ESTACIONES INTERACTIVAS DENTRO DEL CUADRADO 3D
+           ========================================================================== */
+        .station-3d-node {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.25s ease, filter 0.25s ease;
+        }
+
+        .station-3d-node:hover, .station-3d-node.in-range {
+            transform: scale(1.08);
+            filter: drop-shadow(0 0 25px var(--amarillo-bolivar));
+        }
+
+        .station-badge-3d {
+            background: rgba(15, 23, 42, 0.95);
+            border: 2px solid var(--amarillo-bolivar);
+            color: var(--amarillo-bolivar);
+            padding: 4px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.88rem;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 199, 44, 0.5);
+            white-space: nowrap;
+        }
+
+        .station-badge-3d.completed {
+            border-color: var(--exito-verde);
+            color: #a7f3d0;
+            background: rgba(6, 78, 59, 0.95);
+            box-shadow: 0 0 15px var(--exito-verde-glow);
+        }
+
+        /* 1. Válvula de Corte (Pared Norte) */
+        .pipe-manifold-3d {
+            width: 48px;
+            height: 280px;
+            background: linear-gradient(90deg, #475569, #cbd5e1, #334155);
+            border: 3px solid #1e293b;
+            border-radius: 6px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9);
+        }
+
+        .valve-wheel-3d {
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 125px;
+            height: 125px;
+            border-radius: 50%;
+            border: 16px solid #dc2626;
+            background: rgba(220, 38, 38, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.95), inset 0 0 20px rgba(220, 38, 38, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .valve-wheel-3d::before { content: ""; position: absolute; width: 100%; height: 10px; background: #dc2626; }
+        .valve-wheel-3d::after { content: ""; position: absolute; width: 10px; height: 100%; background: #dc2626; }
+
+        .valve-steam-fx {
+            position: absolute;
+            top: 60px;
+            right: -35px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.8) 0%, transparent 70%);
+            filter: blur(10px);
+            animation: steamPuff 0.7s infinite ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes steamPuff {
+            0% { opacity: 0.3; transform: scale(0.6) translate(0, 0); }
+            50% { opacity: 0.9; transform: scale(1.3) translate(15px, -20px); }
+            100% { opacity: 0.2; transform: scale(1.7) translate(25px, -35px); }
+        }
+
+        /* 2. Caseta EPP (Pared Oeste) */
+        .epp-locker-3d {
+            width: 160px;
+            height: 290px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 3px solid #38bdf8;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), 0 0 20px rgba(56, 189, 248, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 14px;
+        }
+
+        /* 3. Acopio RESPEL (Pared Oeste) */
+        .respel-holding-3d {
+            width: 160px;
+            height: 250px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 3px dashed #ef4444;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 10px;
+        }
+
+        /* 4. Estante Kit Antiderrame (Pared Este) */
+        .kit-drum-3d {
+            width: 150px;
+            height: 250px;
+            background: linear-gradient(90deg, #ca8a04 0%, #facc15 50%, #a16207 100%);
+            border: 4px solid #000;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 8px;
+        }
+
+        /* 5. Lavaojos de Emergencia (Pared Sur) */
+        .eyewash-station-3d {
+            width: 170px;
+            height: 310px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 3px solid var(--verde-bolivar);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px;
+            position: relative;
+        }
+
+        .eyewash-lever-3d {
+            width: 75px;
+            height: 34px;
+            background: #eab308;
+            border: 2px solid #000;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 900;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.8);
+            transition: all 0.2s ease;
+        }
+
+        .eyewash-lever-3d.pulled {
+            transform: rotate(25deg) translateY(4px);
+            background: #22c55e;
+            color: #fff;
+        }
+
+        /* 6. Charco Químico y Drenaje en el Suelo 3D */
+        .floor-spill-zone {
+            position: absolute;
+            left: 50%;
+            top: 55%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            height: 220px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .floor-spill-zone.in-range .chemical-puddle-3d {
+            box-shadow: 0 0 70px var(--amarillo-bolivar), inset 0 0 35px rgba(0,0,0,0.8);
+            border-color: var(--amarillo-bolivar);
+        }
+
+        .chemical-puddle-3d {
+            width: 100%;
+            height: 100%;
+            border-radius: 50% 60% 40% 50% / 40% 50% 60% 50%;
+            background: radial-gradient(circle at 45% 45%, #4ade80 0%, #16a34a 50%, #14532d 90%);
+            border: 4px solid #86efac;
+            box-shadow: 0 0 50px var(--peligro-quimico-glow), inset 0 0 25px rgba(0,0,0,0.8);
+            position: relative;
+            transition: all 0.5s ease;
+            animation: puddleSlosh 3s infinite ease-in-out;
+        }
+
+        @keyframes puddleSlosh {
+            0%, 100% { border-radius: 50% 60% 40% 50% / 40% 50% 60% 50%; }
+            50% { border-radius: 55% 45% 55% 45% / 45% 55% 45% 55%; transform: scale(1.03); }
+        }
+
+        .spill-boom-3d {
+            position: absolute;
+            inset: -18px;
+            border: 18px solid #facc15;
+            border-style: double;
+            border-radius: 55% 65% 45% 55% / 45% 55% 65% 45%;
+            box-shadow: 0 0 25px rgba(250, 204, 21, 0.9), inset 0 0 12px #713f12;
+            opacity: 0;
+            transform: scale(0.85);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .spill-boom-3d.deployed {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .pads-layer-3d {
+            position: absolute;
+            inset: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+
+        .pads-layer-3d.deployed {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .pad-unit {
+            background: #ffffff;
+            border: 2px dashed #ca8a04;
+            border-radius: 6px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: #713f12;
+        }
+
+        /* Drenaje Pluvial en el Suelo */
+        .floor-storm-drain {
+            position: absolute;
+            bottom: -50px;
+            right: -40px;
+            width: 110px;
+            height: 70px;
+            background: #0f172a;
+            border: 4px solid #64748b;
+            border-radius: 8px;
+            box-shadow: inset 0 12px 25px #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 6px;
+        }
+
+        .drain-bar {
+            height: 5px;
+            background: #334155;
+            border-radius: 3px;
+        }
+
+        /* 4 Hallazgos Ocultos de Auditoría SST */
+        .audit-marker-3d {
+            position: absolute;
+            cursor: pointer;
+            z-index: 20;
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .audit-marker-3d:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 20px #facc15);
+        }
+
+        .audit-pin {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            width: 24px;
+            height: 24px;
+            background: var(--amarillo-bolivar);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 900;
+            box-shadow: 0 0 12px #facc15;
+            animation: pinPulse 1.2s infinite ease-out;
+        }
+
+        @keyframes pinPulse {
+            0%, 100% { transform: scale(0.9); }
+            50% { transform: scale(1.2); box-shadow: 0 0 20px #facc15; }
+        }
+
+        /* ==========================================================================
+           4. VISERA DEL CASCO Y HUD DIGITAL (HEAD-UP DISPLAY)
+           ========================================================================== */
+        .fps-visor-hud {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            border: 20px solid rgba(15, 23, 42, 0.88);
+            border-top-width: 28px;
+            border-bottom-width: 35px;
+            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95), inset 0 0 130px rgba(0, 103, 56, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s ease;
+        }
+
+        .fps-visor-hud.fullface-active {
+            border-color: rgba(6, 78, 59, 0.95);
+            box-shadow: inset 0 0 80px rgba(16, 185, 129, 0.35), inset 0 0 160px rgba(0, 0, 0, 0.95);
+        }
+
+        .fps-visor-hud.asphyxia-warning {
+            border-color: rgba(220, 38, 38, 0.95) !important;
+            box-shadow: inset 0 0 100px rgba(239, 68, 68, 0.8), inset 0 0 200px rgba(0, 0, 0, 0.95) !important;
+            animation: asphyxiaFlash 0.5s infinite alternate;
+        }
+
+        @keyframes asphyxiaFlash {
+            0% { filter: contrast(100%) brightness(1); }
+            100% { filter: contrast(150%) brightness(0.7) drop-shadow(0 0 35px #ef4444); }
+        }
+
+        /* Barra Superior del HUD */
+        .hud-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            pointer-events: all;
+        }
+
+        .hud-detector-card {
+            background: rgba(15, 23, 42, 0.92);
+            border: 2px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-hud);
+        }
+
+        .gas-reading {
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #4ade80;
+            font-family: monospace;
+            letter-spacing: 0.05em;
+        }
+
+        .gas-reading.danger {
+            color: #ef4444;
+            animation: gasPulse 0.5s infinite alternate;
+        }
+
+        @keyframes gasPulse {
+            from { opacity: 0.5; }
+            to { opacity: 1; text-shadow: 0 0 14px #ef4444; }
+        }
+
+        /* Minimapa / Radar 2D de la Habitación 3D Cuadrada */
+        .hud-minimap-radar {
+            position: relative;
+            width: 105px;
+            height: 105px;
+            background: rgba(15, 23, 42, 0.92);
+            border: 2px solid var(--amarillo-bolivar);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+        }
+
+        .radar-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 199, 44, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 199, 44, 0.2) 1px, transparent 1px);
+            background-size: 25% 25%;
+        }
+
+        .radar-player-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #22c55e;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px #22c55e;
+            transition: all 0.05s linear;
+        }
+
+        .radar-vision-cone {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 26px solid rgba(34, 197, 94, 0.35);
+            transform-origin: 50% 0%;
+            transform: translate(-50%, 0) rotate(0deg);
+        }
+
+        .radar-station-blip {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Cronómetro de Crisis */
+        .hud-timer-card {
+            background: rgba(15, 23, 42, 0.92);
+            border: 2px solid var(--alerta-rojo);
+            border-radius: var(--radius-sm);
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 18px var(--alerta-rojo-glow);
+        }
+
+        .timer-digits {
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #ef4444;
+            font-family: monospace;
+        }
+
+        /* Medidores Laterales y Protocolo de Tareas */
+        .hud-left-stats {
+            position: absolute;
+            left: 20px;
+            top: 105px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: all;
+        }
+
+        .stat-card-hud {
+            background: rgba(15, 23, 42, 0.92);
+            border: 1.5px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 6px 12px;
+            width: 175px;
+            box-shadow: var(--shadow-hud);
+        }
+
+        .stat-title {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .stat-bar-track {
+            width: 100%;
+            height: 8px;
+            background: #1e293b;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .stat-fill-o2 {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+            transition: width 0.3s ease;
+        }
+
+        .stat-fill-drain {
+            height: 100%;
+            width: 15%;
+            background: linear-gradient(90deg, #22c55e, #ef4444);
+            transition: width 0.3s ease;
+        }
+
+        /* Diálogo del Bolívar Safety Bot */
+        .hud-bot-dialog {
+            position: absolute;
+            bottom: 115px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 620px;
+            background: rgba(15, 23, 42, 0.96);
+            border: 2px solid var(--amarillo-bolivar);
+            border-radius: var(--radius-md);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.85), 0 0 20px rgba(255, 199, 44, 0.35);
+            pointer-events: all;
+            z-index: 60;
+        }
+
+        .bot-avatar-face {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--verde-bolivar);
+            border: 2px solid var(--amarillo-bolivar);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 0 12px var(--amarillo-bolivar);
+        }
+
+        .bot-message-text {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #f8fafc;
+            line-height: 1.35;
+        }
+
+        /* Indicador de Control de Ratón (Pointer Lock) */
+        .mouse-look-hint {
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.88);
+            border: 1px solid rgba(255, 199, 44, 0.5);
+            color: #f1f5f9;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: var(--radius-full);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            transition: all 0.3s ease;
+            z-index: 55;
+        }
+
+        .mouse-look-hint i {
+            color: var(--amarillo-bolivar);
+        }
+
+        .mouse-look-hint.active {
+            border-color: var(--exito-verde);
+            background: rgba(6, 78, 59, 0.92);
+            color: #ecfdf5;
+        }
+
+        .mouse-look-hint.active i {
+            color: #34d399;
+        }
+
+        /* ==========================================================================
+           5. CONTROLES DE MOVIMIENTO 3D (TECLADO / D-PAD TÁCTIL MÓVIL)
+           ========================================================================== */
+        .hud-touch-dpad {
+            position: absolute;
+            bottom: 25px;
+            left: 25px;
+            display: grid;
+            grid-template-columns: repeat(3, 46px);
+            grid-template-rows: repeat(3, 46px);
+            gap: 6px;
+            pointer-events: all;
+            z-index: 65;
+        }
+
+        .dpad-btn {
+            background: rgba(30, 41, 59, 0.85);
+            border: 2px solid var(--amarillo-bolivar);
+            color: #fff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+            transition: all 0.1s ease;
+        }
+
+        .dpad-btn:active {
+            background: var(--amarillo-bolivar);
+            color: #000;
+            transform: scale(0.92);
+        }
+
+        .dpad-up { grid-column: 2; grid-row: 1; }
+        .dpad-left { grid-column: 1; grid-row: 2; }
+        .dpad-right { grid-column: 3; grid-row: 2; }
+        .dpad-down { grid-column: 2; grid-row: 3; }
+
+        /* Botón de Acción / Interacción Proximidad */
+        .hud-action-btn-box {
+            position: absolute;
+            bottom: 35px;
+            right: 25px;
+            pointer-events: all;
+            z-index: 65;
+        }
+
+        .action-touch-btn {
+            background: linear-gradient(135deg, var(--amarillo-bolivar), var(--amarillo-bolivar-dark));
+            border: 2px solid #fff;
+            color: #000;
+            padding: 14px 22px;
+            border-radius: var(--radius-full);
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 199, 44, 0.6);
+            transition: all 0.2s ease;
+        }
+
+        .action-touch-btn.disabled {
+            opacity: 0.5;
+            filter: grayscale(0.8);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .action-touch-btn:not(.disabled):active {
+            transform: scale(0.95);
+        }
+
+        /* Retícula Central de Apuntado en Primera Persona */
+        .fps-center-crosshair {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 14px;
+            height: 14px;
+            transform: translate(-50%, -50%);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 55;
+            transition: all 0.2s ease;
+        }
+
+        .fps-center-crosshair.active-target {
+            border-color: #22c55e;
+            transform: translate(-50%, -50%) scale(1.6);
+            background: rgba(34, 197, 94, 0.3);
+        }
+
+        /* Mensaje flotante de interacción [E] en la mira */
+        .fps-crosshair-prompt {
+            position: absolute;
+            left: 50%;
+            top: calc(50% + 28px);
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.94);
+            border: 1.5px solid var(--amarillo-bolivar);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.76rem;
+            font-weight: 800;
+            display: none;
+            align-items: center;
+            gap: 7px;
+            pointer-events: none;
+            z-index: 56;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.85), 0 0 12px rgba(255, 199, 44, 0.4);
+            white-space: nowrap;
+        }
+
+        .fps-crosshair-prompt.visible {
+            display: flex;
+            animation: pulsePrompt 1.2s infinite alternate ease-in-out;
+        }
+
+        .fps-crosshair-prompt .key-badge-e {
+            background: var(--amarillo-bolivar);
+            color: #000;
+            font-weight: 900;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes pulsePrompt {
+            from { transform: translateX(-50%) scale(0.97); }
+            to { transform: translateX(-50%) scale(1.05); }
+        }
+
+        /* ==========================================================================
+           6. MANOS EN 1ª PERSONA (FIRST-PERSON HANDS LAYER)
+           ========================================================================== */
+        .fps-hands-layer {
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 100%;
+            height: 280px;
+            pointer-events: none;
+            z-index: 45;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 10%;
+            will-change: transform;
+        }
+
+        .fps-hand {
+            position: relative;
+            width: 150px;
+            height: 230px;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hand-sleeve {
+            position: absolute;
+            bottom: 0;
+            width: 90px;
+            height: 160px;
+            background: linear-gradient(180deg, #166534 0%, #14532d 100%);
+            border: 3px solid #052e16;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .hand-left .hand-sleeve { left: 10px; transform: rotate(12deg); }
+        .hand-right .hand-sleeve { right: 10px; transform: rotate(-12deg); }
+
+        .hand-glove {
+            position: absolute;
+            top: 20px;
+            width: 80px;
+            height: 110px;
+            background: #d97706; /* Piel / Dotación inicial */
+            border: 3px solid #78350f;
+            border-radius: 25px 25px 15px 15px;
+            box-shadow: inset 0 -10px 20px rgba(0, 0, 0, 0.4);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .fps-hands-layer.gloves-equipped .hand-glove {
+            background: #0284c7; /* Nitrilo Químico Azul de Alta Densidad */
+            border-color: #0369a1;
+            box-shadow: inset 0 -10px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+
+        .hand-left .hand-glove { left: 22px; transform: rotate(10deg); }
+        .hand-right .hand-glove { right: 22px; transform: rotate(-10deg); }
+
+        .fps-hands-layer.action-active .hand-left {
+            transform: translateY(-40px) translateX(30px) rotate(15deg);
+        }
+
+        .fps-hands-layer.action-active .hand-right {
+            transform: translateY(-40px) translateX(-30px) rotate(-15deg);
+        }
+
+        /* Modal de Certificación Final */
+        .fps-modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(3, 6, 10, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .fps-modal-overlay.open { display: flex; }
+
+        .fps-modal-dialog {
+            background: #0f172a;
+            border: 2px solid var(--amarillo-bolivar);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 600px;
+            padding: 24px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .modal-action-btn {
+            background: linear-gradient(135deg, var(--verde-bolivar), var(--verde-bolivar-light));
+            border: none;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            align-self: flex-end;
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fps-container" id="fps-container">
+
+        <!-- ==============================================================
+             1. VIEWPORT TRIDIMENSIONAL (CÁMARA Y CUADRADO 3D 1400x1400 px)
+             ============================================================== -->
+        <div class="fps-3d-viewport" id="fps-3d-viewport">
+            
+            <div class="fps-camera-rig" id="fps-camera-rig">
+                <div class="fps-room-cube" id="fps-room-cube">
+                    
+                    <!-- 1. SUELO TRIDIMENSIONAL (Y = +350px) -->
+                    <div class="wall-3d cube-floor">
+                        <div class="floor-safety-border"></div>
+                        
+                        <!-- Charco Químico y Drenaje en el Suelo -->
+                        <div class="floor-spill-zone" id="floor-spill-zone" title="Zona de Derrame Químico">
+                            <div class="station-badge-3d" id="badge-spill" style="position: absolute; top: -38px; left: 50%; transform: translateX(-50%); z-index: 10;">
+                                <i class="fa-solid fa-droplet-slash"></i> CHARCO QUÍMICO
+                            </div>
+                            <div class="chemical-puddle-3d" id="chemical-puddle">
+                                <div class="spill-boom-3d" id="spill-boom"></div>
+                                <div class="pads-layer-3d" id="pads-layer">
+                                    <div class="pad-unit">PAÑO 1</div>
+                                    <div class="pad-unit">PAÑO 2</div>
+                                    <div class="pad-unit">PAÑO 3</div>
+                                    <div class="pad-unit">PAÑO 4</div>
+                                </div>
+                            </div>
+                            <div class="floor-storm-drain">
+                                <div style="font-size: 0.55rem; color: #ef4444; font-weight: 900; text-align: center;">DRENAJE</div>
+                                <div class="drain-bar"></div>
+                                <div class="drain-bar"></div>
+                                <div class="drain-bar"></div>
+                            </div>
+                        </div>
+
+                        <!-- Hallazgo 4: Tambor de Aceite sin Estiba (Esquina Sureste) -->
+                        <div class="audit-marker-3d" id="hazard-oilcan" style="bottom: 120px; right: 140px;" title="Auditoría: Tambor químico en suelo sin estiba">
+                            <i class="fa-solid fa-oil-can" style="font-size: 2.2rem; color: #eab308;"></i>
+                            <div class="audit-pin">!</div>
+                        </div>
+                    </div>
+
+                    <!-- 2. TECHO TRIDIMENSIONAL (Y = -350px) -->
+                    <div class="wall-3d cube-ceiling">
+                        <div class="ceiling-strobe-beacon"></div>
+                    </div>
+
+                    <!-- 3. PARED NORTE (Z = -700px): VÁLVULA PRINCIPAL -->
+                    <div class="wall-3d cube-wall-north">
+                        <div class="station-3d-node" id="node-valve" title="Válvula Principal de Corte">
+                            <div class="station-badge-3d" id="badge-valve">
+                                <i class="fa-solid fa-wrench"></i> 1. VÁLVULA DE CORTE
+                            </div>
+                            <div class="pipe-manifold-3d">
+                                <div class="valve-wheel-3d" id="valve-wheel"></div>
+                                <div class="valve-steam-fx" id="valve-steam"></div>
+                            </div>
+                        </div>
+
+                        <!-- Hallazgo 1: Extintor Vencido (Esquina Noreste) -->
+                        <div class="audit-marker-3d" id="hazard-extinguisher" style="right: 80px; top: 120px;" title="Auditoría: Extintor despresurizado (NFPA 10)">
+                            <i class="fa-solid fa-fire-extinguisher" style="font-size: 2.5rem; color: #ef4444;"></i>
+                            <div class="audit-pin">!</div>
+                        </div>
+                    </div>
+
+                    <!-- 4. PARED SUR (Z = +700px): LAVAOJOS DE EMERGENCIA -->
+                    <div class="wall-3d cube-wall-south">
+                        <div class="station-3d-node" id="node-eyewash" title="Lavaojos de Emergencia ANSI Z358.1">
+                            <div class="station-badge-3d" id="badge-eyewash">
+                                <i class="fa-solid fa-eye"></i> LAVAOJOS 15 MIN
+                            </div>
+                            <div class="eyewash-station-3d">
+                                <div style="font-size: 3rem; color: #f8fafc;"><i class="fa-solid fa-user-injured"></i></div>
+                                <div class="eyewash-lever-3d" id="eyewash-lever">
+                                    <i class="fa-solid fa-hand"></i> EMPUJAR
+                                </div>
+                                <div style="font-size: 0.72rem; color: #a7f3d0; font-weight: 800;">ANSI Z358.1</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. PARED ESTE (X = +700px): ESTANTE KIT ANTIDERRAME -->
+                    <div class="wall-3d cube-wall-east">
+                        <div class="station-3d-node" id="node-kit" title="Estante Kit Antiderrame">
+                            <div class="station-badge-3d" id="badge-kit">
+                                <i class="fa-solid fa-box-archive"></i> KIT ANTIDERRAME
+                            </div>
+                            <div class="kit-drum-3d">
+                                <div style="width: 100%; height: 8px; background: #713f12;"></div>
+                                <i class="fa-solid fa-biohazard" style="font-size: 2rem; color: #000;"></i>
+                                <div style="width: 100%; height: 8px; background: #713f12;"></div>
+                                <div style="font-size: 0.75rem; font-weight: 900; color: #000;">SPILL KIT 30 GAL</div>
+                            </div>
+                        </div>
+
+                        <!-- Hallazgo 3: FDS Faltante -->
+                        <div class="audit-marker-3d" id="hazard-sds" style="left: 90px; top: 120px;" title="Auditoría: Portahojas FDS desocupado (Ley 55/1993)">
+                            <i class="fa-solid fa-file-circle-xmark" style="font-size: 2.3rem; color: #ef4444;"></i>
+                            <div class="audit-pin">!</div>
+                        </div>
+                    </div>
+
+                    <!-- 6. PARED OESTE (X = -700px): CASETA EPP Y ACOPIO RESPEL -->
+                    <div class="wall-3d cube-wall-west">
+                        <!-- Caseta EPP -->
+                        <div class="station-3d-node" id="node-epp" title="Caseta EPP: Guantes y Máscara">
+                            <div class="station-badge-3d" id="badge-epp">
+                                <i class="fa-solid fa-shield-halved"></i> EPP: GUANTES + MÁSCARA
+                            </div>
+                            <div class="epp-locker-3d">
+                                <i class="fa-solid fa-mask-ventilator" style="font-size: 2.5rem; color: #38bdf8;"></i>
+                                <i class="fa-solid fa-mitten" style="font-size: 2.5rem; color: #38bdf8;"></i>
+                                <div style="font-size: 0.75rem; font-weight: 800; color: #fff;">FULL-FACE + NITRILO</div>
+                            </div>
+                        </div>
+
+                        <!-- Acopio RESPEL -->
+                        <div class="station-3d-node" id="node-respel" title="Punto de Acopio RESPEL">
+                            <div class="station-badge-3d" id="badge-respel">
+                                <i class="fa-solid fa-recycle"></i> ACOPIO RESPEL
+                            </div>
+                            <div class="respel-holding-3d">
+                                <i class="fa-solid fa-biohazard" style="font-size: 2.5rem; color: #ef4444;"></i>
+                                <div style="font-size: 0.72rem; color: #fca5a5; font-weight: 900;">DEC. 4741/2005</div>
+                            </div>
+                        </div>
+
+                        <!-- Hallazgo 2: Botella Reenvasada Ilegal -->
+                        <div class="audit-marker-3d" id="hazard-bottle" style="top: 140px; left: 50%;" title="Auditoría: Envase de jugo con químico sin etiqueta (Res. 773/2021)">
+                            <i class="fa-solid fa-bottle-water" style="font-size: 2.2rem; color: #f59e0b;"></i>
+                            <div class="audit-pin">!</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Retícula Central de Mira FPS y Prompt de Interacción [E] -->
+            <div class="fps-center-crosshair" id="fps-crosshair"></div>
+            <div class="fps-crosshair-prompt" id="fps-crosshair-prompt">
+                <span class="key-badge-e">E</span> <span id="crosshair-prompt-text">INTERACTUAR</span>
+            </div>
+
+            <!-- Manos en 1ª Persona -->
+            <div class="fps-hands-layer" id="fps-hands-layer">
+                <div class="fps-hand hand-left">
+                    <div class="hand-sleeve"></div>
+                    <div class="hand-glove"></div>
+                </div>
+                <div class="fps-hand hand-right">
+                    <div class="hand-sleeve"></div>
+                    <div class="hand-glove"></div>
+                </div>
+            </div>
+
+            <!-- ==============================================================
+                 2. VISERA Y HUD DIGITAL EN 1ª PERSONA
+                 ============================================================== -->
+            <div class="fps-visor-hud" id="fps-visor-hud">
+                
+                <!-- Barra Superior -->
+                <div class="hud-header">
+                    <div class="hud-detector-card">
+                        <i class="fa-solid fa-radiation" style="color: #4ade80;"></i>
+                        <div>
+                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 800;">DETECTOR PID</div>
+                            <div class="gas-reading" id="gas-reading">25 PPM</div>
+                        </div>
+                    </div>
+
+                    <!-- Minimapa Radar de la Habitación Cuadrada -->
+                    <div class="hud-minimap-radar">
+                        <div class="radar-grid"></div>
+                        <!-- Blips de Estaciones en Radar -->
+                        <div class="radar-station-blip" style="top: 10%; left: 50%; background: #ef4444;" title="Norte: Válvula"></div>
+                        <div class="radar-station-blip" style="top: 90%; left: 50%; background: #38bdf8;" title="Sur: Lavaojos"></div>
+                        <div class="radar-station-blip" style="top: 75%; left: 10%; background: #0284c7;" title="Oeste (Sur): Caseta EPP"></div>
+                        <div class="radar-station-blip" style="top: 25%; left: 10%; background: #dc2626;" title="Oeste (Norte): Acopio RESPEL"></div>
+                        <div class="radar-station-blip" style="top: 50%; left: 90%; background: #eab308;" title="Este: Kit"></div>
+                        <div class="radar-station-blip" style="top: 55%; left: 50%; background: #22c55e;" title="Centro: Charco"></div>
+                        <!-- Jugador en Radar -->
+                        <div class="radar-player-dot" id="radar-player-dot"></div>
+                        <div class="radar-vision-cone" id="radar-vision-cone"></div>
+                    </div>
+
+                    <div class="hud-timer-card">
+                        <i class="fa-solid fa-stopwatch" style="color: #ef4444;"></i>
+                        <div>
+                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 800;">CRONÓMETRO</div>
+                            <div class="timer-digits" id="timer-digits">02:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicador de Mirada con Ratón -->
+                <div class="mouse-look-hint" id="mouse-look-hint">
+                    <i class="fa-solid fa-arrows-up-down-left-right"></i> Arrastra el ratón para mirar | [WASD] Moverse | [E] o Clic para interactuar
+                </div>
+
+                <!-- Estadísticas Laterales -->
+                <div class="hud-left-stats">
+                    <div class="stat-card-hud">
+                        <div class="stat-title">
+                            <span>VITALIDAD / O2</span>
+                            <span id="o2-stat-text">100%</span>
+                        </div>
+                        <div class="stat-bar-track">
+                            <div class="stat-fill-o2" id="stat-fill-o2"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card-hud">
+                        <div class="stat-title">
+                            <span>AVANCE A DRENAJE</span>
+                            <span id="drain-stat-text">15%</span>
+                        </div>
+                        <div class="stat-bar-track">
+                            <div class="stat-fill-drain" id="stat-fill-drain"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diálogo Central Bolívar Safety Bot -->
+                <div class="hud-bot-dialog">
+                    <div class="bot-avatar-face"><i class="fa-solid fa-robot"></i></div>
+                    <div class="bot-message-text" id="bot-message-text">
+                        ¡Alerta en la planta! Camina con WASD (o D-Pad táctil) y presiona la tecla [E] para interactuar al acercarte. Ve primero a la Caseta EPP (Oeste).
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ==============================================================
+                 3. CONTROLES DE MOVIMIENTO TÁCTIL (MÓVIL) Y BOTÓN DE ACCIÓN
+                 ============================================================== -->
+            <div class="hud-touch-dpad">
+                <button class="dpad-btn dpad-up" id="btn-move-forward" title="Avanzar"><i class="fa-solid fa-chevron-up"></i></button>
+                <button class="dpad-btn dpad-left" id="btn-strafe-left" title="Paso Izquierda"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="dpad-btn dpad-right" id="btn-strafe-right" title="Paso Derecha"><i class="fa-solid fa-chevron-right"></i></button>
+                <button class="dpad-btn dpad-down" id="btn-move-backward" title="Retroceder"><i class="fa-solid fa-chevron-down"></i></button>
+            </div>
+
+            <div class="hud-action-btn-box">
+                <button class="action-touch-btn disabled" id="btn-action-interact">
+                    <span class="key-badge-e" style="margin-right: 4px;">E</span>
+                    <i class="fa-solid fa-hand"></i> <span id="action-btn-label">INTERACTUAR</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ==============================================================
+             4. MODAL DE CERTIFICACIÓN FINAL
+             ============================================================== -->
+        <div class="fps-modal-overlay" id="modal-audit-overlay">
+            <div class="fps-modal-dialog">
+                <div style="font-size: 1.35rem; font-weight: 900; color: var(--amarillo-bolivar); display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-award"></i>
+                    <span>CERTIFICADO DE RESPUESTA A EMERGENCIAS</span>
+                </div>
+                <div style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.45;">
+                    Misión completada. Has navegado el área tridimensional, contenido la fuga en origen, auxiliado a tu compañero y protegido el alcantarillado conforme a la Res. 773/2021 y Dec. 4741/2005.
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+                    <div style="background: #1e293b; padding: 10px; border-radius: 6px;">
+                        <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 700;">PUNTAJE FINAL</div>
+                        <div style="font-size: 1.35rem; color: #4ade80; font-weight: 900;" id="stat-final-score">100%</div>
+                    </div>
+                    <div style="background: #1e293b; padding: 10px; border-radius: 6px;">
+                        <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 700;">TIEMPO DE RESPUESTA</div>
+                        <div style="font-size: 1.35rem; color: #fff; font-weight: 900;" id="stat-final-time">01:05 min</div>
+                    </div>
+                </div>
+
+                <!-- Desglose de Calificación SST -->
+                <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin: 8px 0; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; color: #cbd5e1;">
+                        <span><i class="fa-solid fa-shield-halved" style="color: #4ade80; margin-right: 6px;"></i>Control Operativo de Crisis:</span>
+                        <strong style="color: #4ade80;" id="stat-breakdown-crisis">70 / 70 pts</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; color: #cbd5e1;">
+                        <span><i class="fa-solid fa-heart-pulse" style="color: #38bdf8; margin-right: 6px;"></i>Salud O2 y Rapidez Récord:</span>
+                        <strong style="color: #38bdf8;" id="stat-breakdown-bonus">+20 pts</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; color: #cbd5e1;">
+                        <span><i class="fa-solid fa-magnifying-glass" style="color: #facc15; margin-right: 6px;"></i>Auditoría SST (Pines en Obra):</span>
+                        <strong style="color: #facc15;" id="stat-breakdown-hazards">0 / 4 (+0 pts)</strong>
+                    </div>
+                </div>
+
+                <button class="modal-action-btn" onclick="window.location.reload();">
+                    <i class="fa-solid fa-rotate-right"></i> REINICIAR SIMULACRO 3D
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==============================================================
+         5. MOTOR DE AUDIO PROCEDIMENTAL Y LÓGICA DE JUEGO (ES6)
+         ============================================================== -->
+    <script>
+        class ProceduralAudioEngine {
+            constructor() {
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                }
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+            }
+
+            playTone(freq = 440, type = 'sine', duration = 0.15, gainVal = 0.1) {
+                this.init();
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch (e) {}
+            }
+
+            playFootstep() {
+                this.playTone(75, 'triangle', 0.08, 0.09);
+            }
+
+            playValveClank() {
+                this.playTone(180, 'square', 0.25, 0.2);
+                setTimeout(() => this.playTone(320, 'triangle', 0.15, 0.15), 80);
+            }
+
+            playWaterRush() {
+                this.init();
+                try {
+                    const bufferSize = this.ctx.sampleRate * 0.5;
+                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const output = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+                    const whiteNoise = this.ctx.createBufferSource();
+                    whiteNoise.buffer = buffer;
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 900;
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
+                    whiteNoise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    whiteNoise.start();
+                } catch(e) {}
+            }
+
+            playBreath() {
+                this.playTone(280, 'sine', 0.35, 0.08);
+                setTimeout(() => this.playTone(200, 'sine', 0.35, 0.05), 350);
+            }
+
+            playAlarm() {
+                this.init();
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(850, this.ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.25);
+                } catch(e) {}
+            }
+        }
+
+        class FirstPerson3DRoomSimulator {
+            constructor() {
+                this.audio = new ProceduralAudioEngine();
+
+                // Coordenadas Tridimensionales del Jugador (Espacio del Cuadrado 1400x1400px)
+                // Spawn frente al charco (Z = 70), a distancia prudente y segura (distancia 290px):
+                this.posX = 0;
+                this.posY = 0; // Altura de ojos (0px)
+                this.posZ = 360; // 290px al sur del charco (fuera de zona de inhalación tóxica)
+                this.yaw = 0; // Mirando al Norte (hacia el charco en Z = 70 y la válvula al fondo en Z = -700)
+                this.pitch = -12; // Inclinación sutil hacia abajo para ver el charco en el suelo de inmediato
+
+                this.stepCounter = 0;
+                this.keysPressed = {};
+
+                // Estado de Tareas
+                this.gameState = {
+                    hasGloves: false,
+                    hasMask: false,
+                    valveClosed: false,
+                    eyewashActive: false,
+                    kitOpened: false,
+                    boomPlaced: false,
+                    padsPlaced: false,
+                    respelStored: false,
+                    discoveredHazards: new Set(),
+                    healthO2: 100,
+                    spillProgress: 15,
+                    timeLeft: 120,
+                    isGameOver: false,
+                    activeStation: null // Estación en rango actual
+                };
+
+                // Coordenadas 3D de las Estaciones en la Habitación (Calibradas con la geometría real de las paredes)
+                this.stations = [
+                    { id: 'valve', name: 'Válvula de Corte', x: 0, z: -620, range: 260 },
+                    { id: 'epp', name: 'Caseta EPP', x: -550, z: 350, range: 360 },
+                    { id: 'respel', name: 'Acopio RESPEL', x: -550, z: -350, range: 360 },
+                    { id: 'kit', name: 'Kit Antiderrame', x: 620, z: 0, range: 280 },
+                    { id: 'eyewash', name: 'Lavaojos de Emergencia', x: 0, z: 620, range: 230 },
+                    { id: 'spill', name: 'Zona de Derrame', x: 0, z: 70, range: 420 }
+                ];
+
+                this.dom = {
+                    viewport: document.getElementById('fps-3d-viewport'),
+                    cameraRig: document.getElementById('fps-camera-rig'),
+                    handsLayer: document.getElementById('fps-hands-layer'),
+                    visor: document.getElementById('fps-visor-hud'),
+                    crosshair: document.getElementById('fps-crosshair'),
+                    radarDot: document.getElementById('radar-player-dot'),
+                    radarCone: document.getElementById('radar-vision-cone'),
+                    gasReading: document.getElementById('gas-reading'),
+                    timerDigits: document.getElementById('timer-digits'),
+                    meterO2: document.getElementById('stat-fill-o2'),
+                    textO2: document.getElementById('o2-stat-text'),
+                    meterDrain: document.getElementById('stat-fill-drain'),
+                    textDrain: document.getElementById('drain-stat-text'),
+                    botText: document.getElementById('bot-message-text'),
+                    actionBtn: document.getElementById('btn-action-interact'),
+                    actionBtnLabel: document.getElementById('action-btn-label'),
+                    valveWheel: document.getElementById('valve-wheel'),
+                    valveSteam: document.getElementById('valve-steam'),
+                    spillBoom: document.getElementById('spill-boom'),
+                    padsLayer: document.getElementById('pads-layer'),
+                    chemicalPuddle: document.getElementById('chemical-puddle'),
+                    eyewashLever: document.getElementById('eyewash-lever'),
+                    modalOverlay: document.getElementById('modal-audit-overlay')
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.bindKeyboardControls();
+                this.bindMouseLook();
+                this.bindTouchControls();
+                this.bindStationDirectClicks();
+                this.bindAuditHazards();
+                this.startPhysicsLoop();
+                this.startCrisisLoop();
+                this.updateCamera();
+            }
+
+            /**
+             * Movimiento con Teclado (WASD o Flechas en Escritorio) e Interacción con Tecla [E]
+             */
+            bindKeyboardControls() {
+                window.addEventListener('keydown', (e) => {
+                    this.keysPressed[e.code] = true;
+                    // Tecla 'E' (o 'e') para interactuar en computadores (o barra espaciadora como alternativa)
+                    if (e.code === 'KeyE' || (e.key && e.key.toLowerCase() === 'e') || e.code === 'Space') {
+                        this.triggerActiveInteraction();
+                    }
+                });
+
+                window.addEventListener('keyup', (e) => {
+                    this.keysPressed[e.code] = false;
+                });
+            }
+
+            /**
+             * Giro de Mirada con Ratón (Arrastre intuitivo y fluido sin bloquear ni ocultar el cursor del usuario)
+             */
+            bindMouseLook() {
+                let lastMouseX = null;
+                let lastMouseY = null;
+                let isMouseDown = false;
+                let hasDragged = false;
+
+                // Clic simple en el viewport interactúa con el objetivo enfocado
+                this.dom.viewport.addEventListener('click', (e) => {
+                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node, .floor-spill-zone')) return;
+                    if (!hasDragged) {
+                        this.triggerActiveInteraction();
+                    }
+                });
+
+                this.dom.viewport.addEventListener('mousedown', (e) => {
+                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node')) return;
+                    isMouseDown = true;
+                    hasDragged = false;
+                    lastMouseX = e.clientX;
+                    lastMouseY = e.clientY;
+                    this.dom.viewport.style.cursor = 'grabbing';
+                });
+
+                window.addEventListener('mouseup', () => {
+                    isMouseDown = false;
+                    lastMouseX = null;
+                    lastMouseY = null;
+                    if (this.dom.viewport) {
+                        this.dom.viewport.style.cursor = 'grab';
+                    }
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (isMouseDown && lastMouseX !== null && lastMouseY !== null) {
+                        const dx = e.clientX - lastMouseX;
+                        const dy = e.clientY - lastMouseY;
+                        lastMouseX = e.clientX;
+                        lastMouseY = e.clientY;
+                        if (Math.hypot(dx, dy) > 2) {
+                            hasDragged = true;
+                        }
+                        if (dx !== 0 || dy !== 0) {
+                            this.yaw = (this.yaw + dx * 0.28) % 360;
+                            if (this.yaw < 0) this.yaw += 360;
+                            this.pitch = Math.max(-45, Math.min(40, this.pitch - dy * 0.22));
+                            this.updateCamera();
+                        }
+                    }
+                });
+            }
+
+            /**
+              * Controles Táctiles en Teléfonos Móviles
+              */
+            bindTouchControls() {
+                // Mirar alrededor con toque táctil (rotación horizontal Yaw y vertical Pitch)
+                let touchStartX = 0;
+                let touchStartY = 0;
+                this.dom.viewport.addEventListener('touchstart', (e) => {
+                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node')) return;
+                    if (e.touches.length === 1) {
+                        touchStartX = e.touches[0].clientX;
+                        touchStartY = e.touches[0].clientY;
+                    }
+                }, { passive: true });
+
+                this.dom.viewport.addEventListener('touchmove', (e) => {
+                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node')) return;
+                    if (e.touches.length === 1) {
+                        const dx = e.touches[0].clientX - touchStartX;
+                        const dy = e.touches[0].clientY - touchStartY;
+                        touchStartX = e.touches[0].clientX;
+                        touchStartY = e.touches[0].clientY;
+
+                        this.yaw = (this.yaw + dx * 0.45) % 360;
+                        if (this.yaw < 0) this.yaw += 360;
+                        this.pitch = Math.max(-45, Math.min(40, this.pitch - dy * 0.35));
+                        this.updateCamera();
+                    }
+                }, { passive: true });
+
+                // D-Pad Táctil en Pantalla
+                const bindDpad = (id, key) => {
+                    const btn = document.getElementById(id);
+                    if (!btn) return;
+                    btn.addEventListener('touchstart', (e) => { e.preventDefault(); this.keysPressed[key] = true; });
+                    btn.addEventListener('touchend', () => { this.keysPressed[key] = false; });
+                    btn.addEventListener('mousedown', () => { this.keysPressed[key] = true; });
+                    btn.addEventListener('mouseup', () => { this.keysPressed[key] = false; });
+                };
+
+                bindDpad('btn-move-forward', 'KeyW');
+                bindDpad('btn-move-backward', 'KeyS');
+                bindDpad('btn-strafe-left', 'KeyA');
+                bindDpad('btn-strafe-right', 'KeyD');
+
+                // Botón de Acción Táctil
+                this.dom.actionBtn.addEventListener('click', () => {
+                    this.triggerActiveInteraction();
+                });
+            }
+
+            /**
+             * Permite interactuar haciendo clic directamente sobre las estaciones 3D en pantalla
+             */
+            bindStationDirectClicks() {
+                const stationTargets = [
+                    { id: 'node-epp', stId: 'epp' },
+                    { id: 'node-valve', stId: 'valve' },
+                    { id: 'node-eyewash', stId: 'eyewash' },
+                    { id: 'node-kit', stId: 'kit' },
+                    { id: 'node-respel', stId: 'respel' },
+                    { id: 'floor-spill-zone', stId: 'spill' },
+                    { id: 'chemical-puddle', stId: 'spill' }
+                ];
+
+                stationTargets.forEach(target => {
+                    const el = document.getElementById(target.id);
+                    if (!el) return;
+                    el.style.cursor = 'pointer';
+                    el.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const st = this.stations.find(s => s.id === target.stId);
+                        if (!st) return;
+                        const dist = Math.hypot(this.posX - st.x, this.posZ - st.z);
+                        if (dist <= st.range + 80) {
+                            this.gameState.activeStation = st;
+                            this.triggerActiveInteraction();
+                        } else {
+                            this.setBotMessage(`Acércate un poco más a ${st.name} para interactuar (o presiona [E]).`, '🚶');
+                        }
+                    });
+                });
+            }
+
+            /**
+             * Bucle de Física: Calcula la marcha del personaje en el cuadrado 3D
+             */
+            startPhysicsLoop() {
+                const update = () => {
+                    if (this.gameState.isGameOver) return;
+
+                    const isRunning = this.keysPressed['ShiftLeft'] || this.keysPressed['ShiftRight'];
+                    const moveSpeed = isRunning ? 13 : 8.5;
+
+                    let moveX = 0, moveZ = 0;
+                    const rad = this.yaw * Math.PI / 180;
+
+                    // Avanzar (W / Flecha Arriba): hacia donde apunta la mirada
+                    if (this.keysPressed['KeyW'] || this.keysPressed['ArrowUp']) {
+                        moveX += Math.sin(rad) * moveSpeed;
+                        moveZ -= Math.cos(rad) * moveSpeed;
+                    }
+                    // Retroceder (S / Flecha Abajo): opuesto a la mirada
+                    if (this.keysPressed['KeyS'] || this.keysPressed['ArrowDown']) {
+                        moveX -= Math.sin(rad) * moveSpeed;
+                        moveZ += Math.cos(rad) * moveSpeed;
+                    }
+
+                    // Paso Lateral (Strafe A / D)
+                    if (this.keysPressed['KeyA'] || this.keysPressed['ArrowLeft']) {
+                        moveX -= Math.cos(rad) * moveSpeed;
+                        moveZ -= Math.sin(rad) * moveSpeed;
+                    }
+                    if (this.keysPressed['KeyD'] || this.keysPressed['ArrowRight']) {
+                        moveX += Math.cos(rad) * moveSpeed;
+                        moveZ += Math.sin(rad) * moveSpeed;
+                    }
+
+                    if (moveX !== 0 || moveZ !== 0) {
+                        // Colisiones con las paredes del cuadrado 3D (Límites en +/- 520px)
+                        this.posX = Math.max(-520, Math.min(520, this.posX + moveX));
+                        this.posZ = Math.max(-520, Math.min(520, this.posZ + moveZ));
+
+                        this.stepCounter++;
+                        if (this.stepCounter % 15 === 0) {
+                            this.audio.playFootstep();
+                        }
+                        this.updateCamera();
+                    }
+
+                    requestAnimationFrame(update);
+                };
+                requestAnimationFrame(update);
+            }
+
+            /**
+             * Actualiza la Transformación 3D de la Cámara y Elementos HUD
+             */
+            updateCamera() {
+                // 1. Cámara en el espacio 3D (Rotación Euler ocular: Pitch vertical y Yaw horizontal)
+                this.dom.cameraRig.style.transform = `
+                    translateZ(750px)
+                    rotateX(${this.pitch}deg)
+                    rotateY(${this.yaw}deg)
+                    translate3d(${-this.posX}px, 0px, ${-this.posZ}px)
+                `;
+
+                // 2. Balanceo sutil de manos (Head Bobbing en la capa de guantes)
+                const bobX = Math.sin(this.stepCounter * 0.25) * 5;
+                const bobY = Math.abs(Math.sin(this.stepCounter * 0.25)) * 6;
+                this.dom.handsLayer.style.transform = `translate3d(${bobX}px, ${bobY}px, 0)`;
+
+                // 3. Actualizar Minimapa Radar
+                // Mapear [-700, 700] a [0, 100]%
+                const radarX = ((this.posX + 700) / 1400) * 100;
+                const radarY = ((this.posZ + 700) / 1400) * 100;
+                this.dom.radarDot.style.left = `${radarX}%`;
+                this.dom.radarDot.style.top = `${radarY}%`;
+                this.dom.radarCone.style.transform = `translate(-50%, 0) rotate(${this.yaw}deg)`;
+
+                // 4. Verificación de Proximidad a Estaciones
+                this.checkProximity();
+            }
+
+            /**
+             * Comprueba si el jugador está cerca de alguna estación y calcula el objetivo en la mira (FOV / Vector de Visión)
+             */
+            checkProximity() {
+                const rad = this.yaw * Math.PI / 180;
+                // Vector horizontal de visión de la cámara (FPS look direction)
+                const fwdX = Math.sin(rad);
+                const fwdZ = -Math.cos(rad);
+
+                let bestStation = null;
+                let highestScore = -Infinity;
+
+                this.stations.forEach(st => {
+                    const dx = st.x - this.posX;
+                    const dz = st.z - this.posZ;
+                    const dist = Math.hypot(dx, dz);
+
+                    if (dist <= st.range) {
+                        // Vector unitario hacia la estación
+                        const dirX = dist > 0.001 ? dx / dist : 0;
+                        const dirZ = dist > 0.001 ? dz / dist : 0;
+                        // Producto punto: coseno del ángulo entre la mira y la estación (-1 a +1)
+                        const dot = fwdX * dirX + fwdZ * dirZ;
+
+                        // La estación es candidata si está en el campo de visión frontal (dot >= 0.25, ~75°)
+                        // O si está sumamente cerca (dist < 120px)
+                        if (dot >= 0.25 || dist < 120) {
+                            const alignmentWeight = Math.max(0.15, dot);
+                            const score = (alignmentWeight * 1000) / (dist + 40);
+                            if (score > highestScore) {
+                                highestScore = score;
+                                bestStation = st;
+                            }
+                        }
+                    }
+                });
+
+                this.gameState.activeStation = bestStation;
+
+                const promptEl = this.dom.crosshairPrompt || (this.dom.crosshairPrompt = document.getElementById('fps-crosshair-prompt'));
+                const promptText = this.dom.crosshairPromptText || (this.dom.crosshairPromptText = document.getElementById('crosshair-prompt-text'));
+
+                if (bestStation) {
+                    this.dom.crosshair.classList.add('active-target');
+                    this.dom.actionBtn.classList.remove('disabled');
+
+                    let actionName = bestStation.name.toUpperCase();
+                    if (bestStation.id === 'spill') {
+                        if (!this.gameState.hasMask) {
+                            actionName = "PELIGRO: VAPORES (IR A EPP)";
+                        } else if (!this.gameState.kitOpened) {
+                            actionName = "TOMAR KIT ANTIDERRAME (PARED ESTE)";
+                        } else if (!this.gameState.boomPlaced) {
+                            actionName = "COLOCAR CORDÓN ABSORBENTE";
+                        } else if (!this.gameState.padsPlaced) {
+                            actionName = "APLICAR PAÑOS ABSORBENTES";
+                        } else {
+                            actionName = "CHARCO ABSORBIDO (IR A RESPEL)";
+                        }
+                    } else if (bestStation.id === 'epp') {
+                        actionName = (this.gameState.hasGloves && this.gameState.hasMask) ? "EPP YA EQUIPADO" : "EQUIPAR GUANTES Y MÁSCARA";
+                    } else if (bestStation.id === 'valve') {
+                        actionName = this.gameState.valveClosed ? "VÁLVULA CERRADA" : "CERRAR VÁLVULA";
+                    } else if (bestStation.id === 'eyewash') {
+                        actionName = this.gameState.eyewashActive ? "LAVAOJOS ACTIVO (ANSI Z358.1)" : "ACCIONAR LAVAOJOS";
+                    } else if (bestStation.id === 'kit') {
+                        actionName = this.gameState.kitOpened ? "KIT EN MANO" : "ABRIR KIT ANTIDERRAME";
+                    } else if (bestStation.id === 'respel') {
+                        actionName = this.gameState.respelStored ? "RESIDUO CONFINADO" : "CONFINAR RESIDUO EN BOLSA ROJA";
+                    }
+
+                    this.dom.actionBtnLabel.textContent = actionName;
+                    if (promptEl && promptText) {
+                        promptText.textContent = actionName;
+                        promptEl.classList.add('visible');
+                    }
+                    
+                    // Resaltar nodo visualmente solo si cambia el objetivo (optimización de rendimiento)
+                    if (this.lastHighlightedNodeId !== bestStation.id) {
+                        this.lastHighlightedNodeId = bestStation.id;
+                        if (!this.cachedStationNodes) {
+                            this.cachedStationNodes = document.querySelectorAll('.station-3d-node, .floor-spill-zone');
+                        }
+                        this.cachedStationNodes.forEach(n => n.classList.remove('in-range'));
+                        const nodeEl = document.getElementById(`node-${bestStation.id}`) || document.getElementById('floor-spill-zone');
+                        if (nodeEl) nodeEl.classList.add('in-range');
+                    }
+                } else {
+                    this.dom.crosshair.classList.remove('active-target');
+                    this.dom.actionBtn.classList.add('disabled');
+                    this.dom.actionBtnLabel.textContent = "INTERACTUAR";
+                    if (promptEl) promptEl.classList.remove('visible');
+                    if (this.lastHighlightedNodeId !== null) {
+                        this.lastHighlightedNodeId = null;
+                        if (!this.cachedStationNodes) {
+                            this.cachedStationNodes = document.querySelectorAll('.station-3d-node, .floor-spill-zone');
+                        }
+                        this.cachedStationNodes.forEach(n => n.classList.remove('in-range'));
+                    }
+                }
+
+                // Detector de Gases PID (Distancia real al charco en 0, 70)
+                const distToPuddle = Math.hypot(this.posX - 0, this.posZ - 70);
+                let ppm = Math.max(15, Math.round(220 - distToPuddle * 0.35));
+                if (this.gameState.valveClosed) ppm = Math.floor(ppm * 0.4);
+                this.dom.gasReading.textContent = `${ppm} PPM`;
+
+                if (ppm > 90) {
+                    this.dom.gasReading.classList.add('danger');
+                } else {
+                    this.dom.gasReading.classList.remove('danger');
+                }
+
+                // Inhalación sin máscara
+                if (distToPuddle < 260 && !this.gameState.hasMask) {
+                    this.damageHealth(2, "¡Inhalando vapores tóxicos en el charco! Ve a la Caseta EPP a equipar la máscara.");
+                }
+            }
+
+            /**
+             * Ejecuta la Acción de la Estación Activa en Proximidad
+             */
+            triggerActiveInteraction() {
+                const st = this.gameState.activeStation;
+                if (!st) return;
+
+                this.animateHandsAction();
+
+                switch(st.id) {
+                    case 'epp':
+                        if (this.gameState.hasGloves && this.gameState.hasMask) {
+                            this.setBotMessage("Tu EPP está completo. Camina hacia la Válvula Norte para cerrar el flujo.", '✅');
+                            return;
+                        }
+                        this.gameState.hasGloves = true;
+                        this.gameState.hasMask = true;
+                        this.dom.handsLayer.classList.add('gloves-equipped');
+                        this.dom.visor.classList.add('fullface-active');
+                        this.dom.visor.classList.remove('asphyxia-warning');
+                        document.getElementById('badge-epp').classList.add('completed');
+                        document.getElementById('badge-epp').innerHTML = '<i class="fa-solid fa-check"></i> EPP EQUIPADO';
+                        this.audio.playBreath();
+                        this.setBotMessage("¡EPP Químico equipado! Ahora camina hacia la Válvula Norte y gira la manivela.", '🛡️');
+                        this.checkProximity();
+                        break;
+
+                    case 'valve':
+                        if (this.gameState.valveClosed) {
+                            this.setBotMessage("La válvula ya está cerrada herméticamente. Camina al Lavaojos (Pared Sur).", 'ℹ️');
+                            return;
+                        }
+                        if (!this.gameState.hasGloves) {
+                            this.audio.playAlarm();
+                            this.damageHealth(15, "¡Cuidado! Intentaste manipular la tubería corrosiva sin guantes de nitrilo.");
+                            return;
+                        }
+                        this.gameState.valveClosed = true;
+                        gsap.to(this.dom.valveWheel, { rotation: 360, duration: 0.8 });
+                        this.dom.valveSteam.style.display = 'none';
+                        this.audio.playValveClank();
+                        document.getElementById('badge-valve').classList.add('completed');
+                        document.getElementById('badge-valve').innerHTML = '<i class="fa-solid fa-check"></i> VÁLVULA CERRADA';
+                        this.setBotMessage("¡Flujo cortado con éxito! Camina al Lavaojos (Pared Sur) para auxiliar al compañero.", '💧');
+                        this.checkProximity();
+                        break;
+
+                    case 'eyewash':
+                        if (this.gameState.eyewashActive) {
+                            this.setBotMessage("El lavaojos ya está en funcionamiento continuo (ANSI Z358.1). Ve al Estante Kit Antiderrame (Pared Este).", 'ℹ️');
+                            return;
+                        }
+                        this.gameState.eyewashActive = true;
+                        this.dom.eyewashLever.classList.add('pulled');
+                        this.audio.playWaterRush();
+                        document.getElementById('badge-eyewash').classList.add('completed');
+                        document.getElementById('badge-eyewash').innerHTML = '<i class="fa-solid fa-check"></i> LAVADO ACTIVO';
+                        this.setBotMessage("¡Lavaojos activado! Operario fuera de peligro. Ahora ve al Estante Kit (Pared Este) a tomar los cordones y paños.", '💧');
+                        this.checkProximity();
+                        break;
+
+                    case 'kit':
+                        if (!this.gameState.hasGloves) {
+                            this.audio.playAlarm();
+                            this.damageHealth(10, "Equípate los guantes en la caseta EPP antes de abrir el kit antiderrame.");
+                            return;
+                        }
+                        if (this.gameState.kitOpened) {
+                            this.setBotMessage("Ya tienes los insumos en mano. Camina hacia el charco químico en el centro para delimitarlo.", '🟡');
+                            return;
+                        }
+                        this.gameState.kitOpened = true;
+                        document.getElementById('badge-kit').classList.add('completed');
+                        document.getElementById('badge-kit').innerHTML = '<i class="fa-solid fa-check"></i> KIT EN MANO';
+                        this.audio.playTone(550, 'sine', 0.2);
+                        this.setBotMessage("¡Insumos en mano! Camina hacia el centro sobre el charco para delimitarlo con el cordón absorbente.", '🟡');
+                        this.checkProximity();
+                        break;
+
+                    case 'spill':
+                        if (!this.gameState.hasMask) {
+                            this.audio.playAlarm();
+                            this.damageHealth(25, "¡ALERTA DE INTOXICACIÓN! Respiraste vapores orgánicos densos. Equípate la máscara en la Caseta EPP.");
+                            return;
+                        }
+                        if (!this.gameState.kitOpened) {
+                            this.audio.playAlarm();
+                            this.setBotMessage("Primero debes tomar los cordones y paños del Kit Antiderrame (Pared Este).", '⚠️');
+                            return;
+                        }
+                        if (!this.gameState.boomPlaced) {
+                            this.gameState.boomPlaced = true;
+                            this.dom.spillBoom.classList.add('deployed');
+                            const bSpill = document.getElementById('badge-spill');
+                            if (bSpill) bSpill.innerHTML = '<i class="fa-solid fa-ring"></i> CORDÓN INSTALADO';
+                            this.audio.playTone(480, 'sine', 0.2);
+                            this.setBotMessage("¡Cordón delimitador colocado! El químico quedó cercado y ya no llegará al drenaje. Vuelve a interactuar para absorberlo con los paños.", '🧻');
+                            this.checkProximity();
+                            return;
+                        }
+                        if (!this.gameState.padsPlaced) {
+                            this.gameState.padsPlaced = true;
+                            this.dom.padsLayer.classList.add('deployed');
+                            gsap.to(this.dom.chemicalPuddle, { scale: 0.85, opacity: 0.65, duration: 0.8 });
+                            const bSpill = document.getElementById('badge-spill');
+                            if (bSpill) {
+                                bSpill.classList.add('completed');
+                                bSpill.innerHTML = '<i class="fa-solid fa-check"></i> DERRAME ABSORBIDO';
+                            }
+                            this.audio.playTone(520, 'sine', 0.2);
+                            this.setBotMessage("¡Químico absorbido por los paños! Ahora camina al Acopio RESPEL (Pared Oeste) para confinar el residuo en la bolsa roja.", '🔴');
+                            this.checkProximity();
+                            return;
+                        }
+                        if (this.gameState.padsPlaced) {
+                            this.setBotMessage("El derrame ya está neutralizado. Ve al Acopio RESPEL (Pared Oeste) para confinar los paños en la bolsa roja.", '🔴');
+                        }
+                        break;
+
+                    case 'respel':
+                        if (!this.gameState.padsPlaced) {
+                            this.audio.playAlarm();
+                            this.setBotMessage("Primero debes absorber el derrame en el centro antes de acopiar el residuo en la bolsa roja.", '⚠️');
+                            return;
+                        }
+                        if (this.gameState.respelStored) {
+                            this.setBotMessage("El residuo ya fue acopiado y rotulado conforme al Dec. 4741/2005.", '✅');
+                            return;
+                        }
+                        this.gameState.respelStored = true;
+                        document.getElementById('badge-respel').classList.add('completed');
+                        document.getElementById('badge-respel').innerHTML = '<i class="fa-solid fa-check"></i> RESIDUO CONFINADO';
+                        this.audio.playTone(660, 'sine', 0.3);
+                        this.setBotMessage("¡Residuo confinado y rotulado con éxito! Has completado el simulacro de emergencia.", '🏆');
+                        this.checkVictory();
+                        break;
+                }
+            }
+
+            /**
+             * 4 Hallazgos Ocultos de Auditoría SST
+             */
+            bindAuditHazards() {
+                const hazards = [
+                    { id: 'hazard-extinguisher', name: "Extintor despresurizado (NFPA 10)" },
+                    { id: 'hazard-bottle', name: "Botella de jugo con solvente sin etiqueta SGA (Res. 773/2021)" },
+                    { id: 'hazard-sds', name: "Portahojas FDS desocupado en área de mezclas (Ley 55/1993)" },
+                    { id: 'hazard-oilcan', name: "Tambor en piso sin estiba colectora (Dec. 4741/2005)" }
+                ];
+
+                hazards.forEach(h => {
+                    const el = document.getElementById(h.id);
+                    if (!el) return;
+                    el.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (this.gameState.discoveredHazards.has(h.id)) return;
+                        this.gameState.discoveredHazards.add(h.id);
+                        el.style.opacity = '0.35';
+                        el.querySelector('.audit-pin').textContent = '✓';
+                        el.querySelector('.audit-pin').style.background = '#22c55e';
+                        this.audio.playTone(720, 'sine', 0.15);
+                        this.setBotMessage(`¡Hallazgo Detectado! ${h.name}. +25% en tu auditoría.`, '🔍');
+                    });
+                });
+            }
+
+            animateHandsAction() {
+                this.dom.handsLayer.classList.add('action-active');
+                this.audio.playTone(380, 'sine', 0.12);
+                setTimeout(() => this.dom.handsLayer.classList.remove('action-active'), 400);
+            }
+
+            damageHealth(amount, msg) {
+                this.gameState.healthO2 = Math.max(0, this.gameState.healthO2 - amount);
+                this.dom.meterO2.style.width = `${this.gameState.healthO2}%`;
+                this.dom.textO2.textContent = `${this.gameState.healthO2}%`;
+                this.dom.visor.classList.add('asphyxia-warning');
+
+                setTimeout(() => {
+                    if (this.gameState.hasMask) this.dom.visor.classList.remove('asphyxia-warning');
+                }, 1000);
+
+                this.setBotMessage(msg, '🚨');
+                if (this.gameState.healthO2 <= 0) {
+                    this.triggerGameOver(false, "Asfixia / Intoxicación Aguda: Exposición excesiva a vapores.");
+                }
+            }
+
+            startCrisisLoop() {
+                const timer = setInterval(() => {
+                    if (this.gameState.isGameOver) {
+                        clearInterval(timer);
+                        return;
+                    }
+
+                    this.gameState.timeLeft--;
+                    const mins = String(Math.floor(this.gameState.timeLeft / 60)).padStart(2, '0');
+                    const secs = String(this.gameState.timeLeft % 60).padStart(2, '0');
+                    this.dom.timerDigits.textContent = `${mins}:${secs}`;
+
+                    // Expansión hacia drenaje si no hay cordón
+                    if (!this.gameState.boomPlaced) {
+                        this.gameState.spillProgress = Math.min(100, this.gameState.spillProgress + 1.2);
+                        this.dom.meterDrain.style.width = `${this.gameState.spillProgress}%`;
+                        this.dom.textDrain.textContent = `${Math.round(this.gameState.spillProgress)}%`;
+
+                        if (this.gameState.spillProgress >= 100) {
+                            this.triggerGameOver(false, "Desastre Ambiental: El químico alcanzó el drenaje pluvial.");
+                            clearInterval(timer);
+                        }
+                    }
+
+                    if (this.gameState.timeLeft <= 0) {
+                        this.triggerGameOver(false, "Tiempo Límite Agotado: No se controló la emergencia a tiempo.");
+                        clearInterval(timer);
+                    }
+                }, 1000);
+            }
+
+            setBotMessage(text, icon = '🤖') {
+                this.dom.botText.innerHTML = text;
+                gsap.fromTo(this.dom.botText, { opacity: 0.3, y: 4 }, { opacity: 1, y: 0, duration: 0.3 });
+            }
+
+            checkVictory() {
+                const allDone = this.gameState.hasGloves &&
+                                this.gameState.hasMask &&
+                                this.gameState.valveClosed &&
+                                this.gameState.eyewashActive &&
+                                this.gameState.boomPlaced &&
+                                this.gameState.padsPlaced &&
+                                this.gameState.respelStored;
+
+                if (allDone) this.triggerGameOver(true);
+            }
+
+            triggerGameOver(isSuccess, failureReason = "") {
+                this.gameState.isGameOver = true;
+
+                if (isSuccess) {
+                    this.audio.playTone(523, 'sine', 0.2);
+                    setTimeout(() => this.audio.playTone(659, 'sine', 0.25), 150);
+                    setTimeout(() => this.audio.playTone(784, 'sine', 0.4), 300);
+
+                    const elapsed = 120 - this.gameState.timeLeft;
+                    const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+                    const secs = String(elapsed % 60).padStart(2, '0');
+
+                    // Cálculo transparente y justo de puntaje
+                    const crisisBase = 70; // 70 puntos base por superar las 5 etapas operativas
+                    const healthBonus = Math.round((this.gameState.healthO2 / 100) * 10); // hasta +10 pts
+                    const timeBonus = elapsed <= 60 ? 10 : (elapsed <= 90 ? 5 : 0); // hasta +10 pts
+                    const hazardsCount = this.gameState.discoveredHazards.size;
+                    const hazardsBonus = hazardsCount * 5; // hasta +20 pts (4 hallazgos de campo)
+
+                    const totalCalc = crisisBase + healthBonus + timeBonus + hazardsBonus;
+                    const finalScore = Math.min(100, Math.max(50, totalCalc));
+
+                    document.getElementById('stat-final-score').textContent = `${finalScore}%`;
+                    document.getElementById('stat-final-time').textContent = `${mins}:${secs} min`;
+
+                    const elCrisis = document.getElementById('stat-breakdown-crisis');
+                    if (elCrisis) elCrisis.textContent = `${crisisBase} / 70 pts`;
+
+                    const elBonus = document.getElementById('stat-breakdown-bonus');
+                    if (elBonus) elBonus.textContent = `+${healthBonus + timeBonus} pts (O2: ${this.gameState.healthO2}%)`;
+
+                    const elHazards = document.getElementById('stat-breakdown-hazards');
+                    if (elHazards) elHazards.textContent = `${hazardsCount}/4 pines (+${hazardsBonus} pts)`;
+
+                    this.dom.modalOverlay.classList.add('open');
+                } else {
+                    this.audio.playAlarm();
+                    alert(`🚨 EMERGENCIA NO SUPERADA: ${failureReason}\n\nReinicia el simulador y aplica el protocolo paso a paso.`);
+                    window.location.reload();
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            window.fpsGame = new FirstPerson3DRoomSimulator();
+        });
+    </script>
+</body>
+</html>

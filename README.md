@@ -7,6 +7,7 @@ Plataforma interactiva de micro-juegos de entrenamiento técnico y prevención d
 ## 🎮 Catálogo de Juegos
 
 ### 1. Desafío SGA: Clasificación de Peligros y FDS (`juego1_sga.html`)
+- **Documentación Exclusiva**: [📖 `docs/juegos/01_juego1_sga.md`](docs/juegos/01_juego1_sga.md)
 - **Objetivo**: Identificar los pictogramas SGA correctos para sustancias químicas de obra utilizando su Ficha de Datos de Seguridad (FDS).
 - **Mecánicas**:
   - Tutorial guiado paso a paso con el avatar *Bolívar Safety Bot*.
@@ -16,6 +17,7 @@ Plataforma interactiva de micro-juegos de entrenamiento técnico y prevención d
   - Informe pedagógico final y opción de re-inspección de errores.
 
 ### 2. Bodega Segura: Puzzle Isométrico 2.5D (`juego2_bodega.html`)
+- **Documentación Exclusiva**: [📖 `docs/juegos/02_juego2_bodega.md`](docs/juegos/02_juego2_bodega.md)
 - **Objetivo**: Organizar una matriz de almacenamiento 3x3 garantizando la compatibilidad química y evitando reacciones peligrosas.
 - **Mecánicas**:
   - Perspectiva 2.5D isométrica renderizada con CSS 3D Transforms puro.
@@ -23,13 +25,34 @@ Plataforma interactiva de micro-juegos de entrenamiento técnico y prevención d
   - Zona de Rechazo y RESPEL para detección y descarte de reenvases prohibidos en botellas de gaseosa (Art. 20 Res. 773/2021).
   - Matriz interactiva de compatibilidad química y reporte de auditoría técnica con consecuencias de mezclas peligrosas.
 
-### 3. Mando de Trasiego: Combustibles y Estática (`juego3_trasiego.html`)
-- **Objetivo**: Gestionar el suministro seguro de ACPM y gasolina en frentes de obra evaluando condiciones críticas de campo.
+### 3. Inspector de Trasiego: Inspección de Campo y Corrección de Riesgos (`juego3_trasiego.html`)
+- **Documentación Exclusiva**: [📖 `docs/juegos/03_juego3_trasiego.md`](docs/juegos/03_juego3_trasiego.md)
+- **Objetivo**: Detectar e intervenir riesgos de ignición, electrostática, derrames e incendios en el punto de trasiego de combustibles de obra mediante Drag & Drop y Tap-to-Place.
 - **Mecánicas**:
-  - Telemetría en tiempo real: clima, pendiente del terreno, riesgo hídrico y proximidad de fuentes de ignición.
-  - 6 interruptores tácticos de mitigación (polo a tierra equipotencial, motor apagado, cuñas, extintor, valla perimetral, kit antiderrames).
-  - Doble mando operativo: "Suspender Operación" vs "Autorizar Despacho".
-  - Simulación de consecuencias reales: ignición por estática, explosión por alternador, rodamiento de carrotanque y delito ambiental.
+  - Zona A (Escena Vectorial SVG): Camión cisterna ACPM UN 1202 y 4 equipos en secuencia con 4 hotspots parpadeantes en rojo (Cabina/Motor, Chasis/Masa, Acople/Manguera y Perímetro).
+  - Zona B (Mazo de Tarjetas): 4 tarjetas de seguridad de corrección inmediata (Motor/Celulares, Polo a Tierra, Bandeja Antiderrame y Extintor ABC a 5m).
+  - Feedback normativo en tiempo real: Confirmación técnica de la medida preventiva con respaldo legal (Dec. 1079/2015, Dec. 4741/2005, Ley 55/1993 y Res. 773/2021).
+  - Desafío cronometrado de 120 segundos para 4 equipos y auditoría técnica con certificado de inspector seguro.
+
+### 4. Taller Seguro: Desafío Isométrico de Equipamiento y Mantenimiento (`juego4_taller.html`)
+- **Documentación Exclusiva**: [📖 `docs/juegos/04_juego4_taller.md`](docs/juegos/04_juego4_taller.md)
+- **Objetivo**: Superar el filtro de equipamiento EPP para solventes y vapores (Res. 773/2021) y ejecutar 3 tareas de mantenimiento con segregación técnica de residuos peligrosos (Dec. 4741/2005).
+- **Mecánicas**:
+  - Zona 1 (El Vestidor): Casilleros interactivos con panel EPP y Checkpoint de seguridad con escaneo biométrico y bloqueo en tiempo real ante faltantes.
+  - Zona 2 (Patio de Taller): Control Tap-to-Move para desplazamiento del avatar por baldosas en perspectiva isométrica 2.5D.
+  - Barra HUD de Control y Cámara: Botón de cambio de escenario inmediato (`#btn-toggle-scene`), traslación direccional (`[⬅️]`, `[➡️]`, `[⬆️]`, `[⬇️]`), botón `[🎯 Centrar]`, alternancia de perspectiva `[📐 3D]`, zoom y arrastre táctil / mouse.
+  - 3 Tareas Operativas: Desengrase de piezas mecánicas, cambio de filtro y aceite lubricante, y segregación técnica de residuos (filtros, trapos con grasa y aceite usado en estiba).
+  - Auditoría final SST con calificación porcentual, racha y certificado descargable.
+
+### 5. Brigada de Emergencia: Simulador 1ª Persona de Control de Derrames (`juego5_emergencias.html`)
+- **Documentación Exclusiva**: [📖 `docs/juegos/05_juego5_emergencias.md`](docs/juegos/05_juego5_emergencias.md)
+- **Objetivo**: Controlar una fuga química activa y descontaminar el área mediante un simulador en Primera Persona (FPS / First-Person POV) con visera de casco, manos en pantalla y respuesta técnica a emergencias (Dec. 1072/2015, Res. 773/2021 y Dec. 4741/2005).
+- **Mecánicas**:
+  - Vista 100% en Primera Persona: Campo de visión directo desde los ojos del brigadista con marco perimetral de visera y HUD digital (detector PID de gases, cronómetro de crisis de 120s y monitor de vitalidad/O2).
+  - Manos en 1ª Persona (First-Person Hands Layer): Brazos interactivos que ejecutan giros de válvula, postura de guantes, despliegue de cordones y paños, accionamiento de lavaojos y embolse RESPEL.
+  - Navegación Panorámica 360°: Control libre de rumbo (Yaw) mediante arrastre táctil/ratón y brújula cardinal hacia los 6 sectores de la planta.
+  - 4 Hallazgos Ocultos de Auditoría SST: Inspección de extintor vencido (NFPA 10), reenvase no rotulado (Res. 773), FDS faltante (Ley 55) y aceite sin estiba (Dec. 4741).
+  - Auditoría final con certificado oficial de Brigadista de Emergencia.
 
 ---
 
@@ -48,5 +71,7 @@ Abra cualquiera de los archivos `.html` directamente en Google Chrome, Microsoft
 - `juego1_sga.html`
 - `juego2_bodega.html`
 - `juego3_trasiego.html`
+- `juego4_taller.html`
+- `juego5_emergencias.html`
 
 No requiere conexión a Internet (salvo fuentes web y librerías CDN para GSAP y FontAwesome).
