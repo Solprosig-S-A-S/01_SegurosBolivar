@@ -511,6 +511,182 @@
             color: #713f12;
         }
 
+        /* ==============================================================
+           NIVEL 2: CONATO DE INCENDIO QUÍMICO CLASE B (NFPA 10)
+           ============================================================== */
+        .fire-cluster-3d {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            height: 220px;
+            pointer-events: none;
+            z-index: 25;
+            transition: transform 0.2s ease, opacity 0.3s ease;
+        }
+
+        .flame-element {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
+            transform-origin: 50% 90%;
+            animation: flameFlicker 0.18s infinite alternate ease-in-out;
+        }
+
+        .flame-core {
+            width: 70px;
+            height: 120px;
+            margin-left: -35px;
+            background: linear-gradient(to top, #ffffff 0%, #fef08a 25%, #f59e0b 70%, transparent 100%);
+            box-shadow: 0 0 45px #f59e0b, 0 0 90px #ef4444;
+            animation-duration: 0.14s;
+            z-index: 3;
+        }
+
+        .flame-mid {
+            width: 130px;
+            height: 180px;
+            margin-left: -65px;
+            background: linear-gradient(to top, #ea580c 0%, #ef4444 60%, transparent 100%);
+            opacity: 0.9;
+            box-shadow: 0 0 60px #ea580c;
+            animation-duration: 0.22s;
+            z-index: 2;
+        }
+
+        .flame-glow {
+            width: 200px;
+            height: 230px;
+            margin-left: -100px;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.7) 0%, rgba(249, 115, 22, 0.3) 50%, transparent 75%);
+            animation-duration: 0.3s;
+            z-index: 1;
+        }
+
+        @keyframes flameFlicker {
+            0% { transform: scale(0.96, 0.94) rotate(-2deg); filter: brightness(0.95); }
+            100% { transform: scale(1.04, 1.08) rotate(2.5deg); filter: brightness(1.2); }
+        }
+
+        /* Estación de Extintores en Pared Este */
+        .extinguisher-mount-3d {
+            display: flex;
+            gap: 24px;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .extinguisher-prop {
+            width: 55px;
+            height: 125px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease, filter 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .extinguisher-prop:hover {
+            transform: scale(1.1) translateY(-6px);
+            filter: drop-shadow(0 0 15px var(--amarillo-bolivar));
+        }
+
+        .ext-handle {
+            width: 22px;
+            height: 18px;
+            background: #1e293b;
+            border: 2px solid #64748b;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .ext-body {
+            width: 48px;
+            height: 98px;
+            border-radius: 10px 10px 6px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255,255,255,0.25);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+            position: relative;
+        }
+
+        .ext-body-red { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); }
+        .ext-body-silver { background: linear-gradient(135deg, #cbd5e1 0%, #64748b 100%); }
+
+        .ext-label-tag {
+            font-size: 0.55rem;
+            font-weight: 900;
+            background: #000;
+            color: #fff;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            letter-spacing: -0.02em;
+        }
+
+        /* Chorro PQS en Pantalla */
+        .pqs-spray-stream {
+            position: absolute;
+            bottom: 50px;
+            right: 80px;
+            width: 260px;
+            height: 110px;
+            background: radial-gradient(ellipse at left, rgba(255, 255, 255, 0.95) 0%, rgba(254, 240, 138, 0.6) 45%, transparent 75%);
+            filter: blur(5px);
+            transform-origin: 0% 50%;
+            transform: rotate(-18deg) scaleX(1.4);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 60;
+            transition: opacity 0.1s ease;
+        }
+
+        .pqs-spray-stream.active {
+            opacity: 1;
+            animation: sprayJitter 0.08s infinite alternate;
+        }
+
+        @keyframes sprayJitter {
+            0% { transform: rotate(-19deg) scale(1.35, 0.95); opacity: 0.85; }
+            100% { transform: rotate(-17deg) scale(1.45, 1.1); opacity: 1; }
+        }
+
+        /* Selector de Misión en Barra Superior */
+        .mission-selector-bar {
+            display: flex;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 3px;
+        }
+
+        .mission-pill-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .mission-pill-btn.active {
+            background: var(--amarillo-bolivar);
+            color: #000;
+            box-shadow: 0 0 10px rgba(255, 199, 44, 0.4);
+        }
+
         /* Drenaje Pluvial en el Suelo */
         .floor-storm-drain {
             position: absolute;
@@ -1260,6 +1436,15 @@
                                     <div class="pad-unit">PAÑO 4</div>
                                 </div>
                             </div>
+                            <!-- Conato de Incendio 3D (Llamas animadas) -->
+                            <div class="fire-cluster-3d" id="fire-cluster-3d" style="display: none;">
+                                <div class="flame-element flame-core"></div>
+                                <div class="flame-element flame-mid"></div>
+                                <div class="flame-element flame-glow"></div>
+                                <div class="station-badge-3d" id="badge-fire" style="position: absolute; top: -55px; left: 50%; transform: translateX(-50%); background: #dc2626; border-color: #f87171;">
+                                    <i class="fa-solid fa-fire"></i> FUEGO CLASE B (100%)
+                                </div>
+                            </div>
                             <div class="floor-storm-drain">
                                 <div style="font-size: 0.55rem; color: #ef4444; font-weight: 900; text-align: center;">DRENAJE</div>
                                 <div class="drain-bar"></div>
@@ -1315,7 +1500,7 @@
                         </div>
                     </div>
 
-                    <!-- 5. PARED ESTE (X = +700px): ESTANTE KIT ANTIDERRAME -->
+                    <!-- 5. PARED ESTE (X = +700px): ESTANTE KIT ANTIDERRAME Y ESTACIÓN DE EXTINTORES -->
                     <div class="wall-3d cube-wall-east">
                         <div class="station-3d-node" id="node-kit" title="Estante Kit Antiderrame">
                             <div class="station-badge-3d" id="badge-kit">
@@ -1326,6 +1511,29 @@
                                 <i class="fa-solid fa-biohazard" style="font-size: 2rem; color: #000;"></i>
                                 <div style="width: 100%; height: 8px; background: #713f12;"></div>
                                 <div style="font-size: 0.75rem; font-weight: 900; color: #000;">SPILL KIT 30 GAL</div>
+                            </div>
+                        </div>
+
+                        <!-- Estación de Extintores Portátiles (Nivel 2) -->
+                        <div class="station-3d-node" id="node-extinguisher" style="left: 65%;" title="Estación de Extintores Portátiles (NFPA 10)">
+                            <div class="station-badge-3d" id="badge-extinguisher">
+                                <i class="fa-solid fa-fire-extinguisher"></i> EXTINTORES NFPA 10
+                            </div>
+                            <div class="extinguisher-mount-3d">
+                                <!-- Extintor PQS ABC (Correcto para Líquidos Inflamables Clase B) -->
+                                <div class="extinguisher-prop pqs-extinguisher" id="prop-pqs" title="Extintor PQS ABC (Polvo Químico Seco - Clase B)">
+                                    <div class="ext-handle"></div>
+                                    <div class="ext-body ext-body-red">
+                                        <span class="ext-label-tag">PQS ABC</span>
+                                    </div>
+                                </div>
+                                <!-- Extintor de Agua (Incorrecto para Clase B - Provoca Boilover) -->
+                                <div class="extinguisher-prop water-extinguisher" id="prop-water" title="Extintor de Agua H2O (¡Prohibido en Clase B!)">
+                                    <div class="ext-handle"></div>
+                                    <div class="ext-body ext-body-silver">
+                                        <span class="ext-label-tag">H2O AGUA</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -1377,7 +1585,7 @@
                 <span class="key-badge-e">E</span> <span id="crosshair-prompt-text">INTERACTUAR</span>
             </div>
 
-            <!-- Manos en 1ª Persona -->
+            <!-- Manos en 1ª Persona y Chorro PQS -->
             <div class="fps-hands-layer" id="fps-hands-layer">
                 <div class="fps-hand hand-left">
                     <div class="hand-sleeve"></div>
@@ -1387,6 +1595,7 @@
                     <div class="hand-sleeve"></div>
                     <div class="hand-glove"></div>
                 </div>
+                <div class="pqs-spray-stream" id="pqs-spray-stream"></div>
             </div>
 
             <!-- ==============================================================
@@ -1404,6 +1613,16 @@
                         </div>
                     </div>
 
+                    <!-- Selector Rápido de Misión (Nivel 1 Derrame vs Nivel 2 Incendio) -->
+                    <div class="mission-selector-bar">
+                        <button class="mission-pill-btn active" id="btn-mission-1" type="button" title="Misión 1: Control de Derrame">
+                            <i class="fa-solid fa-droplet-slash"></i> M1: Derrame
+                        </button>
+                        <button class="mission-pill-btn" id="btn-mission-2" type="button" title="Misión 2: Conato de Incendio Clase B">
+                            <i class="fa-solid fa-fire"></i> M2: Incendio
+                        </button>
+                    </div>
+
                     <!-- Minimapa Radar de la Habitación Cuadrada -->
                     <div class="hud-minimap-radar">
                         <div class="radar-grid"></div>
@@ -1412,8 +1631,8 @@
                         <div class="radar-station-blip" style="top: 90%; left: 50%; background: #38bdf8;" title="Sur: Lavaojos"></div>
                         <div class="radar-station-blip" style="top: 75%; left: 10%; background: #0284c7;" title="Oeste (Sur): Caseta EPP"></div>
                         <div class="radar-station-blip" style="top: 25%; left: 10%; background: #dc2626;" title="Oeste (Norte): Acopio RESPEL"></div>
-                        <div class="radar-station-blip" style="top: 50%; left: 90%; background: #eab308;" title="Este: Kit"></div>
-                        <div class="radar-station-blip" style="top: 55%; left: 50%; background: #22c55e;" title="Centro: Charco"></div>
+                        <div class="radar-station-blip" style="top: 50%; left: 90%; background: #eab308;" title="Este: Kit / Extintores"></div>
+                        <div class="radar-station-blip" style="top: 55%; left: 50%; background: #22c55e;" title="Centro: Charco / Fuego"></div>
                         <!-- Jugador en Radar -->
                         <div class="radar-player-dot" id="radar-player-dot"></div>
                         <div class="radar-vision-cone" id="radar-vision-cone"></div>
@@ -1453,9 +1672,9 @@
                         </div>
                     </div>
 
-                    <div class="stat-card-hud">
+                    <div class="stat-card-hud" id="hud-stat-crisis-card">
                         <div class="stat-title">
-                            <span>AVANCE A DRENAJE</span>
+                            <span id="crisis-stat-label">AVANCE A DRENAJE</span>
                             <span id="drain-stat-text">15%</span>
                         </div>
                         <div class="stat-bar-track">
@@ -1502,34 +1721,22 @@
                 <div class="briefing-header">
                     <h2 class="briefing-title">
                         <i class="fa-solid fa-triangle-exclamation"></i>
-                        MISIÓN: EMERGENCIA QUÍMICA
+                        MISIÓN: BRIGADA DE EMERGENCIAS
                     </h2>
                     <p class="briefing-subtitle">
-                        Fuga de ácido en planta. Tienes 120 segundos para controlarla en 5 pasos:
+                        Selecciona tu misión táctica para actuar en la planta de químicos:
                     </p>
                 </div>
 
-                <!-- Lista limpia de 5 pasos en un solo tamaño de texto -->
+                <!-- Lista limpia de 2 niveles -->
                 <div class="briefing-steps-clean">
                     <div class="step-row">
                         <span class="step-num">1</span>
-                        <span><strong>Caseta EPP:</strong> Equípate con guantes y máscara.</span>
+                        <span><strong>Misión 1 (Derrame Químico):</strong> EPP → Cerrar Válvula → Lavaojos → Cordón y Paños → Acopio RESPEL.</span>
                     </div>
                     <div class="step-row">
                         <span class="step-num">2</span>
-                        <span><strong>Válvula:</strong> Ciérrala para frenar la fuga.</span>
-                    </div>
-                    <div class="step-row">
-                        <span class="step-num">3</span>
-                        <span><strong>Lavaojos:</strong> Atiende al compañero afectado.</span>
-                    </div>
-                    <div class="step-row">
-                        <span class="step-num">4</span>
-                        <span><strong>Derrame:</strong> Contén el charco con cordón y paños.</span>
-                    </div>
-                    <div class="step-row">
-                        <span class="step-num">5</span>
-                        <span><strong>RESPEL:</strong> Desecha los paños en la caneca roja.</span>
+                        <span><strong>Misión 2 (Incendio Clase B):</strong> Identifica el extintor PQS reglamentario y sofoca las llamas en la base con técnica PASS.</span>
                     </div>
                 </div>
 
@@ -1542,10 +1749,15 @@
                     <span><strong>[E] / Clic:</strong> Interactuar</span>
                 </div>
 
-                <!-- Botón directo -->
-                <button id="btn-start-emergency" class="btn-start-emergency-mission">
-                    INICIAR MISIÓN (120s)
-                </button>
+                <!-- Botones directos de inicio -->
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button id="btn-start-emergency" class="btn-start-emergency-mission" style="flex: 1;">
+                        MISIÓN 1: DERRAME (120s)
+                    </button>
+                    <button id="btn-start-fire" class="btn-start-emergency-mission" style="flex: 1; background: linear-gradient(135deg, #ef4444 0%, #ea580c 100%); border-color: #fca5a5; color: #fff;">
+                        MISIÓN 2: INCENDIO (90s)
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1558,7 +1770,7 @@
                     <i class="fa-solid fa-award"></i>
                     <span>CERTIFICADO DE RESPUESTA A EMERGENCIAS</span>
                 </div>
-                <div style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.45;">
+                <div id="modal-audit-desc" style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.45;">
                     Misión completada. Has navegado el área tridimensional, contenido la fuga en origen, auxiliado a tu compañero y protegido el alcantarillado conforme a la Res. 773/2021 y Dec. 4741/2005.
                 </div>
                 
@@ -1576,11 +1788,11 @@
                 <!-- Desglose de Calificación SST -->
                 <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin: 8px 0; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; text-align: left;">
                     <div style="display: flex; justify-content: space-between; color: #cbd5e1;">
-                        <span><i class="fa-solid fa-shield-halved" style="color: #4ade80; margin-right: 6px;"></i>Control Operativo de Crisis:</span>
+                        <span><i class="fa-solid fa-shield-halved" style="color: #4ade80; margin-right: 6px;"></i>Control Operativo:</span>
                         <strong style="color: #4ade80;" id="stat-breakdown-crisis">70 / 70 pts</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; color: #cbd5e1;">
-                        <span><i class="fa-solid fa-heart-pulse" style="color: #38bdf8; margin-right: 6px;"></i>Salud O2 y Rapidez Récord:</span>
+                        <span><i class="fa-solid fa-heart-pulse" style="color: #38bdf8; margin-right: 6px;"></i>Vitalidad y Rapidez:</span>
                         <strong style="color: #38bdf8;" id="stat-breakdown-bonus">+20 pts</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; color: #cbd5e1;">
@@ -1589,9 +1801,14 @@
                     </div>
                 </div>
 
-                <button class="modal-action-btn" onclick="window.location.reload();">
-                    <i class="fa-solid fa-rotate-right"></i> REINICIAR SIMULACRO 3D
-                </button>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="modal-action-btn" id="btn-next-mission-fire" style="background: linear-gradient(135deg, #ef4444, #ea580c); flex: 1;">
+                        <i class="fa-solid fa-fire"></i> AVANZAR A MISIÓN 2 (INCENDIO)
+                    </button>
+                    <button class="modal-action-btn" onclick="window.location.reload();" style="background: #334155; flex: 1;">
+                        <i class="fa-solid fa-rotate-right"></i> REINICIAR
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1662,6 +1879,29 @@
                     const gain = this.ctx.createGain();
                     gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
+                    whiteNoise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    whiteNoise.start();
+                } catch(e) {}
+            }
+
+            playExtinguisherDischarge() {
+                if (this.isMuted) return;
+                this.init();
+                try {
+                    const bufferSize = this.ctx.sampleRate * 0.2;
+                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const output = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+                    const whiteNoise = this.ctx.createBufferSource();
+                    whiteNoise.buffer = buffer;
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.value = 1600;
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
                     whiteNoise.connect(filter);
                     filter.connect(gain);
                     gain.connect(this.ctx.destination);
@@ -1851,18 +2091,24 @@
             constructor() {
                 this.audio = new ProceduralAudioEngine();
 
-                // Coordenadas Tridimensionales del Jugador (Espacio del Cuadrado 1400x1400px)
-                // Spawn frente al charco (Z = 70), a distancia prudente y segura (distancia 290px):
+                // Coordenadas Tridimensionales del Jugador
                 this.posX = 0;
-                this.posY = 0; // Altura de ojos (0px)
-                this.posZ = 360; // 290px al sur del charco (fuera de zona de inhalación tóxica)
-                this.yaw = 0; // Mirando al Norte (hacia el charco en Z = 70 y la válvula al fondo en Z = -700)
-                this.pitch = -12; // Inclinación sutil hacia abajo para ver el charco en el suelo de inmediato
+                this.posY = 0;
+                this.posZ = 360;
+                this.yaw = 0;
+                this.pitch = -12;
 
                 this.stepCounter = 0;
                 this.keysPressed = {};
 
-                // Estado de Tareas
+                // Estado de Misión Dual (Nivel 1: Derrame, Nivel 2: Incendio)
+                this.currentMission = 1;
+                this.mission1Completed = false;
+                this.mission2Completed = false;
+                this.extinguisherEquipped = null; // 'pqs' | 'water'
+                this.fireIntensity = 100;
+
+                // Estado General
                 this.gameState = {
                     hasGloves: false,
                     hasMask: false,
@@ -1878,18 +2124,8 @@
                     timeLeft: 120,
                     isGameOver: false,
                     hasStarted: false,
-                    activeStation: null // Estación en rango actual
+                    activeStation: null
                 };
-
-                // Coordenadas 3D de las Estaciones en la Habitación (Calibradas con la geometría real de las paredes)
-                this.stations = [
-                    { id: 'valve', name: 'Válvula de Corte', x: 0, z: -620, range: 260 },
-                    { id: 'epp', name: 'Caseta EPP', x: -550, z: 350, range: 360 },
-                    { id: 'respel', name: 'Acopio RESPEL', x: -550, z: -350, range: 360 },
-                    { id: 'kit', name: 'Kit Antiderrame', x: 620, z: 0, range: 280 },
-                    { id: 'eyewash', name: 'Lavaojos de Emergencia', x: 0, z: 620, range: 230 },
-                    { id: 'spill', name: 'Zona de Derrame', x: 0, z: 70, range: 420 }
-                ];
 
                 this.dom = {
                     viewport: document.getElementById('fps-3d-viewport'),
@@ -1905,23 +2141,42 @@
                     textO2: document.getElementById('o2-stat-text'),
                     meterDrain: document.getElementById('stat-fill-drain'),
                     textDrain: document.getElementById('drain-stat-text'),
+                    crisisStatLabel: document.getElementById('crisis-stat-label'),
                     botText: document.getElementById('bot-message-text'),
                     actionBtn: document.getElementById('btn-action-interact'),
                     actionBtnLabel: document.getElementById('action-btn-label'),
+                    
+                    // 3D Props
                     valveWheel: document.getElementById('valve-wheel'),
                     valveSteam: document.getElementById('valve-steam'),
                     spillBoom: document.getElementById('spill-boom'),
                     padsLayer: document.getElementById('pads-layer'),
                     chemicalPuddle: document.getElementById('chemical-puddle'),
                     eyewashLever: document.getElementById('eyewash-lever'),
+                    
+                    // Fire 3D Elements
+                    fireCluster: document.getElementById('fire-cluster-3d'),
+                    badgeFire: document.getElementById('badge-fire'),
+                    pqsSprayStream: document.getElementById('pqs-spray-stream'),
+                    propPqs: document.getElementById('prop-pqs'),
+                    propWater: document.getElementById('prop-water'),
+
+                    // Mission Pills
+                    btnMission1: document.getElementById('btn-mission-1'),
+                    btnMission2: document.getElementById('btn-mission-2'),
+
+                    // Modals
                     modalOverlay: document.getElementById('modal-audit-overlay'),
                     briefingOverlay: document.getElementById('modal-briefing-overlay'),
                     btnStartEmergency: document.getElementById('btn-start-emergency'),
-                    btnSoundToggle: document.getElementById('btn-sound-toggle') || document.getElementById('btn-toggle-sound'),
+                    btnStartFire: document.getElementById('btn-start-fire'),
+                    btnNextMissionFire: document.getElementById('btn-next-mission-fire'),
+                    modalAuditDesc: document.getElementById('modal-audit-desc'),
+
+                    btnSoundToggle: document.getElementById('btn-sound-toggle'),
                     soundIcon: document.getElementById('sound-icon')
                 };
 
-                // Integración Moodle LMS & SCORM
                 this.lmsBridge = new BolivarLmsBridge('juego5_emergencias', 80);
                 setupMoodleFullscreen('btn-moodle-fullscreen');
 
@@ -1933,10 +2188,37 @@
                     this.dom.btnSoundToggle.addEventListener('click', () => {
                         const isMuted = this.audio.toggleMute();
                         if (this.dom.soundIcon) {
-                            this.dom.soundIcon.className = isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+                            this.dom.soundIcon.className = isMuted ? 'fa-solid fa-volume-xmark text-danger' : 'fa-solid fa-volume-high';
                         }
                     });
                 }
+
+                // Mission Pills
+                if (this.dom.btnMission1) {
+                    this.dom.btnMission1.addEventListener('click', () => {
+                        this.switchMission(1);
+                    });
+                }
+                if (this.dom.btnMission2) {
+                    this.dom.btnMission2.addEventListener('click', () => {
+                        this.switchMission(2);
+                    });
+                }
+
+                // Extinguisher Props Click
+                if (this.dom.propPqs) {
+                    this.dom.propPqs.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.equipExtinguisher('pqs');
+                    });
+                }
+                if (this.dom.propWater) {
+                    this.dom.propWater.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.equipExtinguisher('water');
+                    });
+                }
+
                 this.bindKeyboardControls();
                 this.bindMouseLook();
                 this.bindTouchControls();
@@ -1944,35 +2226,113 @@
                 this.bindAuditHazards();
                 this.bindBriefingModal();
                 this.startPhysicsLoop();
+                this.switchMission(1);
+            }
+
+            switchMission(missionNum) {
+                this.currentMission = missionNum;
+
+                // Update UI Pills
+                if (this.dom.btnMission1 && this.dom.btnMission2) {
+                    this.dom.btnMission1.classList.toggle('active', missionNum === 1);
+                    this.dom.btnMission2.classList.toggle('active', missionNum === 2);
+                }
+
+                this.posX = 0;
+                this.posZ = 360;
+                this.yaw = 0;
+                this.pitch = -12;
+                this.gameState.healthO2 = 100;
+                this.dom.meterO2.style.width = '100%';
+                this.dom.textO2.textContent = '100%';
+
+                if (missionNum === 1) {
+                    // Misión 1: Fuga y Derrame Químico
+                    this.gameState.timeLeft = 120;
+                    this.gameState.spillProgress = 15;
+                    this.dom.crisisStatLabel.textContent = "AVANCE A DRENAJE";
+                    this.dom.meterDrain.style.width = "15%";
+                    this.dom.meterDrain.style.background = "#ef4444";
+                    this.dom.textDrain.textContent = "15%";
+
+                    if (this.dom.fireCluster) this.dom.fireCluster.style.display = 'none';
+                    if (this.dom.chemicalPuddle) this.dom.chemicalPuddle.style.display = 'block';
+
+                    this.stations = [
+                        { id: 'valve', name: 'Válvula de Corte', x: 0, z: -620, range: 260 },
+                        { id: 'epp', name: 'Caseta EPP', x: -550, z: 350, range: 360 },
+                        { id: 'respel', name: 'Acopio RESPEL', x: -550, z: -350, range: 360 },
+                        { id: 'kit', name: 'Kit Antiderrame', x: 620, z: 0, range: 280 },
+                        { id: 'eyewash', name: 'Lavaojos de Emergencia', x: 0, z: 620, range: 230 },
+                        { id: 'spill', name: 'Zona de Derrame', x: 0, z: 70, range: 420 }
+                    ];
+
+                    this.setBotMessage('¡Misión 1: Fuga de químico! Camina a la Caseta EPP (Oeste) para equipar máscara y guantes.');
+                } else {
+                    // Misión 2: Conato de Incendio Clase B
+                    this.gameState.timeLeft = 90;
+                    this.fireIntensity = 100;
+                    this.extinguisherEquipped = null;
+                    this.dom.crisisStatLabel.textContent = "INTENSIDAD FUEGO";
+                    this.dom.meterDrain.style.width = "100%";
+                    this.dom.meterDrain.style.background = "linear-gradient(90deg, #f59e0b, #ef4444)";
+                    this.dom.textDrain.textContent = "100%";
+
+                    if (this.dom.fireCluster) {
+                        this.dom.fireCluster.style.display = 'block';
+                        this.dom.fireCluster.style.transform = 'translate(-50%, -50%) scale(1)';
+                    }
+                    if (this.dom.badgeFire) {
+                        this.dom.badgeFire.innerHTML = '<i class="fa-solid fa-fire"></i> FUEGO CLASE B (100%)';
+                    }
+
+                    this.stations = [
+                        { id: 'extinguisher', name: 'Estación de Extintores', x: 500, z: 0, range: 320 },
+                        { id: 'fire', name: 'Conato de Incendio', x: 0, z: 70, range: 380 }
+                    ];
+
+                    this.setBotMessage('¡Misión 2: Conato de Incendio Clase B! Ve a la Pared Este y toma el extintor reglamentario (NFPA 10).', '🔥');
+                }
+
                 this.updateCamera();
             }
 
-            /**
-             * Conexión del Cuadro de Contexto Previo (Briefing de Misión Táctica)
-             */
             bindBriefingModal() {
-                if (this.dom.btnStartEmergency && this.dom.briefingOverlay) {
+                if (this.dom.btnStartEmergency) {
                     this.dom.btnStartEmergency.addEventListener('click', () => {
                         this.audio.playAlarm();
                         this.dom.briefingOverlay.classList.remove('open');
                         this.dom.briefingOverlay.style.display = 'none';
+                        this.switchMission(1);
                         this.gameState.hasStarted = true;
                         this.startCrisisLoop();
-                        this.setBotMessage('¡Mando asumido! Corre a la Caseta EPP (Oeste) para equiparte antes de que suban los vapores.');
                     });
-                } else {
-                    this.gameState.hasStarted = true;
-                    this.startCrisisLoop();
+                }
+
+                if (this.dom.btnStartFire) {
+                    this.dom.btnStartFire.addEventListener('click', () => {
+                        this.audio.playAlarm();
+                        this.dom.briefingOverlay.classList.remove('open');
+                        this.dom.briefingOverlay.style.display = 'none';
+                        this.switchMission(2);
+                        this.gameState.hasStarted = true;
+                        this.startCrisisLoop();
+                    });
+                }
+
+                if (this.dom.btnNextMissionFire) {
+                    this.dom.btnNextMissionFire.addEventListener('click', () => {
+                        this.dom.modalOverlay.classList.remove('open');
+                        this.gameState.isGameOver = false;
+                        this.switchMission(2);
+                        this.startCrisisLoop();
+                    });
                 }
             }
 
-            /**
-             * Movimiento con Teclado (WASD o Flechas en Escritorio) e Interacción con Tecla [E]
-             */
             bindKeyboardControls() {
                 window.addEventListener('keydown', (e) => {
                     this.keysPressed[e.code] = true;
-                    // Tecla 'E' (o 'e') para interactuar en computadores (o barra espaciadora como alternativa)
                     if (e.code === 'KeyE' || (e.key && e.key.toLowerCase() === 'e') || e.code === 'Space') {
                         this.triggerActiveInteraction();
                     }
@@ -1983,25 +2343,21 @@
                 });
             }
 
-            /**
-             * Giro de Mirada con Ratón (Arrastre intuitivo y fluido sin bloquear ni ocultar el cursor del usuario)
-             */
             bindMouseLook() {
                 let lastMouseX = null;
                 let lastMouseY = null;
                 let isMouseDown = false;
                 let hasDragged = false;
 
-                // Clic simple en el viewport interactúa con el objetivo enfocado
                 this.dom.viewport.addEventListener('click', (e) => {
-                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node, .floor-spill-zone')) return;
+                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node, .floor-spill-zone, .extinguisher-prop')) return;
                     if (!hasDragged) {
                         this.triggerActiveInteraction();
                     }
                 });
 
                 this.dom.viewport.addEventListener('mousedown', (e) => {
-                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node')) return;
+                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node, .extinguisher-prop')) return;
                     isMouseDown = true;
                     hasDragged = false;
                     lastMouseX = e.clientX;
@@ -2013,9 +2369,7 @@
                     isMouseDown = false;
                     lastMouseX = null;
                     lastMouseY = null;
-                    if (this.dom.viewport) {
-                        this.dom.viewport.style.cursor = 'grab';
-                    }
+                    if (this.dom.viewport) this.dom.viewport.style.cursor = 'grab';
                 });
 
                 window.addEventListener('mousemove', (e) => {
@@ -2024,9 +2378,7 @@
                         const dy = e.clientY - lastMouseY;
                         lastMouseX = e.clientX;
                         lastMouseY = e.clientY;
-                        if (Math.hypot(dx, dy) > 2) {
-                            hasDragged = true;
-                        }
+                        if (Math.hypot(dx, dy) > 2) hasDragged = true;
                         if (dx !== 0 || dy !== 0) {
                             this.yaw = (this.yaw + dx * 0.28) % 360;
                             if (this.yaw < 0) this.yaw += 360;
@@ -2037,15 +2389,11 @@
                 });
             }
 
-            /**
-              * Controles Táctiles en Teléfonos Móviles
-              */
             bindTouchControls() {
-                // Mirar alrededor con toque táctil (rotación horizontal Yaw y vertical Pitch)
                 let touchStartX = 0;
                 let touchStartY = 0;
                 this.dom.viewport.addEventListener('touchstart', (e) => {
-                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node')) return;
+                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node, .extinguisher-prop')) return;
                     if (e.touches.length === 1) {
                         touchStartX = e.touches[0].clientX;
                         touchStartY = e.touches[0].clientY;
@@ -2053,7 +2401,7 @@
                 }, { passive: true });
 
                 this.dom.viewport.addEventListener('touchmove', (e) => {
-                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node')) return;
+                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node, .extinguisher-prop')) return;
                     if (e.touches.length === 1) {
                         const dx = e.touches[0].clientX - touchStartX;
                         const dy = e.touches[0].clientY - touchStartY;
@@ -2067,7 +2415,6 @@
                     }
                 }, { passive: true });
 
-                // D-Pad Táctil en Pantalla
                 const bindDpad = (id, key) => {
                     const btn = document.getElementById(id);
                     if (!btn) return;
@@ -2082,24 +2429,20 @@
                 bindDpad('btn-strafe-left', 'KeyA');
                 bindDpad('btn-strafe-right', 'KeyD');
 
-                // Botón de Acción Táctil
                 this.dom.actionBtn.addEventListener('click', () => {
                     this.triggerActiveInteraction();
                 });
             }
 
-            /**
-             * Permite interactuar haciendo clic directamente sobre las estaciones 3D en pantalla
-             */
             bindStationDirectClicks() {
                 const stationTargets = [
                     { id: 'node-epp', stId: 'epp' },
                     { id: 'node-valve', stId: 'valve' },
                     { id: 'node-eyewash', stId: 'eyewash' },
                     { id: 'node-kit', stId: 'kit' },
+                    { id: 'node-extinguisher', stId: 'extinguisher' },
                     { id: 'node-respel', stId: 'respel' },
-                    { id: 'floor-spill-zone', stId: 'spill' },
-                    { id: 'chemical-puddle', stId: 'spill' }
+                    { id: 'floor-spill-zone', stId: this.currentMission === 2 ? 'fire' : 'spill' }
                 ];
 
                 stationTargets.forEach(target => {
@@ -2115,15 +2458,12 @@
                             this.gameState.activeStation = st;
                             this.triggerActiveInteraction();
                         } else {
-                            this.setBotMessage(`Acércate un poco más a ${st.name} para interactuar (o presiona [E]).`, '🚶');
+                            this.setBotMessage(`Acércate a ${st.name} para interactuar.`, '🚶');
                         }
                     });
                 });
             }
 
-            /**
-             * Bucle de Física: Calcula la marcha del personaje en el cuadrado 3D
-             */
             startPhysicsLoop() {
                 const update = () => {
                     if (this.gameState.isGameOver || !this.gameState.hasStarted) {
@@ -2137,18 +2477,14 @@
                     let moveX = 0, moveZ = 0;
                     const rad = this.yaw * Math.PI / 180;
 
-                    // Avanzar (W / Flecha Arriba): hacia donde apunta la mirada
                     if (this.keysPressed['KeyW'] || this.keysPressed['ArrowUp']) {
                         moveX += Math.sin(rad) * moveSpeed;
                         moveZ -= Math.cos(rad) * moveSpeed;
                     }
-                    // Retroceder (S / Flecha Abajo): opuesto a la mirada
                     if (this.keysPressed['KeyS'] || this.keysPressed['ArrowDown']) {
                         moveX -= Math.sin(rad) * moveSpeed;
                         moveZ += Math.cos(rad) * moveSpeed;
                     }
-
-                    // Paso Lateral (Strafe A / D)
                     if (this.keysPressed['KeyA'] || this.keysPressed['ArrowLeft']) {
                         moveX -= Math.cos(rad) * moveSpeed;
                         moveZ -= Math.sin(rad) * moveSpeed;
@@ -2159,7 +2495,6 @@
                     }
 
                     if (moveX !== 0 || moveZ !== 0) {
-                        // Colisiones con las paredes del cuadrado 3D (Límites en +/- 520px)
                         this.posX = Math.max(-520, Math.min(520, this.posX + moveX));
                         this.posZ = Math.max(-520, Math.min(520, this.posZ + moveZ));
 
@@ -2175,11 +2510,7 @@
                 requestAnimationFrame(update);
             }
 
-            /**
-             * Actualiza la Transformación 3D de la Cámara y Elementos HUD
-             */
             updateCamera() {
-                // 1. Cámara en el espacio 3D (Rotación Euler ocular: Pitch vertical y Yaw horizontal)
                 this.dom.cameraRig.style.transform = `
                     translateZ(750px)
                     rotateX(${this.pitch}deg)
@@ -2187,29 +2518,21 @@
                     translate3d(${-this.posX}px, 0px, ${-this.posZ}px)
                 `;
 
-                // 2. Balanceo sutil de manos (Head Bobbing en la capa de guantes)
                 const bobX = Math.sin(this.stepCounter * 0.25) * 5;
                 const bobY = Math.abs(Math.sin(this.stepCounter * 0.25)) * 6;
                 this.dom.handsLayer.style.transform = `translate3d(${bobX}px, ${bobY}px, 0)`;
 
-                // 3. Actualizar Minimapa Radar
-                // Mapear [-700, 700] a [0, 100]%
                 const radarX = ((this.posX + 700) / 1400) * 100;
                 const radarY = ((this.posZ + 700) / 1400) * 100;
                 this.dom.radarDot.style.left = `${radarX}%`;
                 this.dom.radarDot.style.top = `${radarY}%`;
                 this.dom.radarCone.style.transform = `translate(-50%, 0) rotate(${this.yaw}deg)`;
 
-                // 4. Verificación de Proximidad a Estaciones
                 this.checkProximity();
             }
 
-            /**
-             * Comprueba si el jugador está cerca de alguna estación y calcula el objetivo en la mira (FOV / Vector de Visión)
-             */
             checkProximity() {
                 const rad = this.yaw * Math.PI / 180;
-                // Vector horizontal de visión de la cámara (FPS look direction)
                 const fwdX = Math.sin(rad);
                 const fwdZ = -Math.cos(rad);
 
@@ -2222,17 +2545,12 @@
                     const dist = Math.hypot(dx, dz);
 
                     if (dist <= st.range) {
-                        // Vector unitario hacia la estación
                         const dirX = dist > 0.001 ? dx / dist : 0;
                         const dirZ = dist > 0.001 ? dz / dist : 0;
-                        // Producto punto: coseno del ángulo entre la mira y la estación (-1 a +1)
                         const dot = fwdX * dirX + fwdZ * dirZ;
 
-                        // La estación es candidata si está en el campo de visión frontal (dot >= 0.25, ~75°)
-                        // O si está sumamente cerca (dist < 120px)
                         if (dot >= 0.25 || dist < 120) {
-                            const alignmentWeight = Math.max(0.15, dot);
-                            const score = (alignmentWeight * 1000) / (dist + 40);
+                            const score = (Math.max(0.15, dot) * 1000) / (dist + 40);
                             if (score > highestScore) {
                                 highestScore = score;
                                 bestStation = st;
@@ -2243,36 +2561,38 @@
 
                 this.gameState.activeStation = bestStation;
 
-                const promptEl = this.dom.crosshairPrompt || (this.dom.crosshairPrompt = document.getElementById('fps-crosshair-prompt'));
-                const promptText = this.dom.crosshairPromptText || (this.dom.crosshairPromptText = document.getElementById('crosshair-prompt-text'));
+                const promptEl = document.getElementById('fps-crosshair-prompt');
+                const promptText = document.getElementById('crosshair-prompt-text');
 
                 if (bestStation) {
                     this.dom.crosshair.classList.add('active-target');
                     this.dom.actionBtn.classList.remove('disabled');
 
                     let actionName = bestStation.name.toUpperCase();
-                    if (bestStation.id === 'spill') {
-                        if (!this.gameState.hasMask) {
-                            actionName = "PELIGRO: VAPORES (IR A EPP)";
-                        } else if (!this.gameState.kitOpened) {
-                            actionName = "TOMAR KIT ANTIDERRAME (PARED ESTE)";
-                        } else if (!this.gameState.boomPlaced) {
-                            actionName = "COLOCAR CORDÓN ABSORBENTE";
-                        } else if (!this.gameState.padsPlaced) {
-                            actionName = "APLICAR PAÑOS ABSORBENTES";
-                        } else {
-                            actionName = "CHARCO ABSORBIDO (IR A RESPEL)";
+                    if (this.currentMission === 2) {
+                        if (bestStation.id === 'extinguisher') {
+                            actionName = this.extinguisherEquipped === 'pqs' ? "EXTINTOR PQS LISTO" : "TOMAR EXTINTOR PQS ABC";
+                        } else if (bestStation.id === 'fire') {
+                            actionName = this.extinguisherEquipped === 'pqs' ? "DESCARGAR PQS A LA BASE [E]" : "¡BUSCA EL EXTINTOR PQS!";
                         }
-                    } else if (bestStation.id === 'epp') {
-                        actionName = (this.gameState.hasGloves && this.gameState.hasMask) ? "EPP YA EQUIPADO" : "EQUIPAR GUANTES Y MÁSCARA";
-                    } else if (bestStation.id === 'valve') {
-                        actionName = this.gameState.valveClosed ? "VÁLVULA CERRADA" : "CERRAR VÁLVULA";
-                    } else if (bestStation.id === 'eyewash') {
-                        actionName = this.gameState.eyewashActive ? "LAVAOJOS ACTIVO (ANSI Z358.1)" : "ACCIONAR LAVAOJOS";
-                    } else if (bestStation.id === 'kit') {
-                        actionName = this.gameState.kitOpened ? "KIT EN MANO" : "ABRIR KIT ANTIDERRAME";
-                    } else if (bestStation.id === 'respel') {
-                        actionName = this.gameState.respelStored ? "RESIDUO CONFINADO" : "CONFINAR RESIDUO EN BOLSA ROJA";
+                    } else {
+                        if (bestStation.id === 'spill') {
+                            if (!this.gameState.hasMask) actionName = "PELIGRO: VAPORES (IR A EPP)";
+                            else if (!this.gameState.kitOpened) actionName = "TOMAR KIT ANTIDERRAME";
+                            else if (!this.gameState.boomPlaced) actionName = "COLOCAR CORDÓN ABSORBENTE";
+                            else if (!this.gameState.padsPlaced) actionName = "APLICAR PAÑOS ABSORBENTES";
+                            else actionName = "CHARCO ABSORBIDO (IR A RESPEL)";
+                        } else if (bestStation.id === 'epp') {
+                            actionName = (this.gameState.hasGloves && this.gameState.hasMask) ? "EPP YA EQUIPADO" : "EQUIPAR GUANTES Y MÁSCARA";
+                        } else if (bestStation.id === 'valve') {
+                            actionName = this.gameState.valveClosed ? "VÁLVULA CERRADA" : "CERRAR VÁLVULA";
+                        } else if (bestStation.id === 'eyewash') {
+                            actionName = this.gameState.eyewashActive ? "LAVAOJOS ACTIVO" : "ACCIONAR LAVAOJOS";
+                        } else if (bestStation.id === 'kit') {
+                            actionName = this.gameState.kitOpened ? "KIT EN MANO" : "ABRIR KIT ANTIDERRAME";
+                        } else if (bestStation.id === 'respel') {
+                            actionName = this.gameState.respelStored ? "RESIDUO CONFINADO" : "CONFINAR RESIDUO EN BOLSA ROJA";
+                        }
                     }
 
                     this.dom.actionBtnLabel.textContent = actionName;
@@ -2280,62 +2600,104 @@
                         promptText.textContent = actionName;
                         promptEl.classList.add('visible');
                     }
-                    
-                    // Resaltar nodo visualmente solo si cambia el objetivo (optimización de rendimiento)
-                    if (this.lastHighlightedNodeId !== bestStation.id) {
-                        this.lastHighlightedNodeId = bestStation.id;
-                        if (!this.cachedStationNodes) {
-                            this.cachedStationNodes = document.querySelectorAll('.station-3d-node, .floor-spill-zone');
-                        }
-                        this.cachedStationNodes.forEach(n => n.classList.remove('in-range'));
-                        const nodeEl = document.getElementById(`node-${bestStation.id}`) || document.getElementById('floor-spill-zone');
-                        if (nodeEl) nodeEl.classList.add('in-range');
-                    }
                 } else {
                     this.dom.crosshair.classList.remove('active-target');
                     this.dom.actionBtn.classList.add('disabled');
                     this.dom.actionBtnLabel.textContent = "INTERACTUAR";
                     if (promptEl) promptEl.classList.remove('visible');
-                    if (this.lastHighlightedNodeId !== null) {
-                        this.lastHighlightedNodeId = null;
-                        if (!this.cachedStationNodes) {
-                            this.cachedStationNodes = document.querySelectorAll('.station-3d-node, .floor-spill-zone');
-                        }
-                        this.cachedStationNodes.forEach(n => n.classList.remove('in-range'));
+                }
+
+                // Detector PID / Radiación Térmica
+                const distToCenter = Math.hypot(this.posX - 0, this.posZ - 70);
+                if (this.currentMission === 2) {
+                    const temp = Math.max(30, Math.round(280 - distToCenter * 0.45));
+                    this.dom.gasReading.textContent = `${temp} °C`;
+                    if (distToCenter < 100) {
+                        this.damageHealth(2, "¡Radiación térmica extrema! Mantén distancia de seguridad (2 a 3 metros).");
                     }
-                }
-
-                // Detector de Gases PID (Distancia real al charco en 0, 70)
-                const distToPuddle = Math.hypot(this.posX - 0, this.posZ - 70);
-                let ppm = Math.max(15, Math.round(220 - distToPuddle * 0.35));
-                if (this.gameState.valveClosed) ppm = Math.floor(ppm * 0.4);
-                this.dom.gasReading.textContent = `${ppm} PPM`;
-
-                if (ppm > 90) {
-                    this.dom.gasReading.classList.add('danger');
                 } else {
-                    this.dom.gasReading.classList.remove('danger');
-                }
-
-                // Inhalación sin máscara
-                if (distToPuddle < 260 && !this.gameState.hasMask) {
-                    this.damageHealth(2, "¡Inhalando vapores tóxicos en el charco! Ve a la Caseta EPP a equipar la máscara.");
+                    let ppm = Math.max(15, Math.round(220 - distToCenter * 0.35));
+                    if (this.gameState.valveClosed) ppm = Math.floor(ppm * 0.4);
+                    this.dom.gasReading.textContent = `${ppm} PPM`;
+                    if (distToCenter < 260 && !this.gameState.hasMask) {
+                        this.damageHealth(2, "¡Inhalando vapores tóxicos en el charco! Ve a la Caseta EPP.");
+                    }
                 }
             }
 
-            /**
-             * Ejecuta la Acción de la Estación Activa en Proximidad
-             */
+            equipExtinguisher(type) {
+                if (type === 'water') {
+                    this.audio.playAlarm();
+                    this.damageHealth(15, "¡ALERTA BOILOVER! Prohibido usar agua en fuego Clase B (líquidos inflamables). Usa el extintor PQS ABC.");
+                    return;
+                }
+
+                this.extinguisherEquipped = 'pqs';
+                this.audio.playValveClank();
+                const bExt = document.getElementById('badge-extinguisher');
+                if (bExt) {
+                    bExt.classList.add('completed');
+                    bExt.innerHTML = '<i class="fa-solid fa-check"></i> PQS EQUIPADO';
+                }
+                this.setBotMessage('¡Extintor PQS ABC listo! Acércate a 2-3 metros del fuego, apunta a la base y presiona [E] para sofocarlo.', '🧯');
+                this.checkProximity();
+            }
+
             triggerActiveInteraction() {
                 const st = this.gameState.activeStation;
                 if (!st) return;
 
                 this.animateHandsAction();
 
+                // Nivel 2: Misión de Incendio
+                if (this.currentMission === 2) {
+                    if (st.id === 'extinguisher') {
+                        this.equipExtinguisher('pqs');
+                        return;
+                    }
+                    if (st.id === 'fire') {
+                        if (!this.extinguisherEquipped) {
+                            this.audio.playAlarm();
+                            this.setBotMessage("¡No puedes sofocar el fuego con las manos! Toma el extintor PQS ABC en la Pared Este.", '⚠️');
+                            return;
+                        }
+                        // Descargar PQS
+                        this.audio.playExtinguisherDischarge();
+                        if (this.dom.pqsSprayStream) {
+                            this.dom.pqsSprayStream.classList.add('active');
+                            setTimeout(() => this.dom.pqsSprayStream.classList.remove('active'), 250);
+                        }
+
+                        this.fireIntensity = Math.max(0, this.fireIntensity - 16);
+                        this.dom.meterDrain.style.width = `${this.fireIntensity}%`;
+                        this.dom.textDrain.textContent = `${Math.round(this.fireIntensity)}%`;
+
+                        if (this.dom.badgeFire) {
+                            this.dom.badgeFire.innerHTML = `<i class="fa-solid fa-fire"></i> FUEGO CLASE B (${Math.round(this.fireIntensity)}%)`;
+                        }
+
+                        if (this.dom.fireCluster) {
+                            const scale = Math.max(0.1, this.fireIntensity / 100);
+                            this.dom.fireCluster.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                        }
+
+                        if (this.fireIntensity <= 0) {
+                            if (this.dom.fireCluster) this.dom.fireCluster.style.display = 'none';
+                            this.mission2Completed = true;
+                            this.setBotMessage("¡FUEGO LIQUIDADO! Has controlado el conato con técnica PASS reglamentaria.", '🏆');
+                            this.triggerGameOver(true);
+                        } else {
+                            this.setBotMessage(`¡Buen barrido! Intensidad reducida al ${Math.round(this.fireIntensity)}%. Continúa descargando a la base.`, '🧯');
+                        }
+                        return;
+                    }
+                }
+
+                // Nivel 1: Misión de Derrame Químico
                 switch(st.id) {
                     case 'epp':
                         if (this.gameState.hasGloves && this.gameState.hasMask) {
-                            this.setBotMessage("Tu EPP está completo. Camina hacia la Válvula Norte para cerrar el flujo.", '✅');
+                            this.setBotMessage("Tu EPP está completo. Camina hacia la Válvula Norte.", '✅');
                             return;
                         }
                         this.gameState.hasGloves = true;
@@ -2352,31 +2714,28 @@
 
                     case 'valve':
                         if (this.gameState.valveClosed) {
-                            this.setBotMessage("La válvula ya está cerrada herméticamente. Camina al Lavaojos (Pared Sur).", 'ℹ️');
+                            this.setBotMessage("La válvula ya está cerrada. Camina al Lavaojos (Pared Sur).", 'ℹ️');
                             return;
                         }
                         if (!this.gameState.hasGloves) {
                             this.audio.playAlarm();
-                            this.damageHealth(15, "¡Cuidado! Intentaste manipular la tubería corrosiva sin guantes de nitrilo.");
+                            this.damageHealth(15, "¡Cuidado! Intentaste manipular la tubería corrosiva sin guantes.");
                             return;
                         }
                         this.gameState.valveClosed = true;
-                        if (window.gsap) {
-                            gsap.to(this.dom.valveWheel, { rotation: 360, duration: 0.8 });
-                        } else {
-                            this.dom.valveWheel.style.transform = 'rotate(360deg)';
-                        }
+                        if (window.gsap) gsap.to(this.dom.valveWheel, { rotation: 360, duration: 0.8 });
+                        else this.dom.valveWheel.style.transform = 'rotate(360deg)';
                         this.dom.valveSteam.style.display = 'none';
                         this.audio.playValveClank();
                         document.getElementById('badge-valve').classList.add('completed');
                         document.getElementById('badge-valve').innerHTML = '<i class="fa-solid fa-check"></i> VÁLVULA CERRADA';
-                        this.setBotMessage("¡Flujo cortado con éxito! Camina al Lavaojos (Pared Sur) para auxiliar al compañero.", '💧');
+                        this.setBotMessage("¡Flujo cortado! Camina al Lavaojos (Pared Sur) para auxiliar al compañero.", '💧');
                         this.checkProximity();
                         break;
 
                     case 'eyewash':
                         if (this.gameState.eyewashActive) {
-                            this.setBotMessage("El lavaojos ya está en funcionamiento continuo (ANSI Z358.1). Ve al Estante Kit Antiderrame (Pared Este).", 'ℹ️');
+                            this.setBotMessage("El lavaojos ya está en funcionamiento continuo. Ve al Estante Kit Antiderrame (Pared Este).", 'ℹ️');
                             return;
                         }
                         this.gameState.eyewashActive = true;
@@ -2384,32 +2743,32 @@
                         this.audio.playWaterRush();
                         document.getElementById('badge-eyewash').classList.add('completed');
                         document.getElementById('badge-eyewash').innerHTML = '<i class="fa-solid fa-check"></i> LAVADO ACTIVO';
-                        this.setBotMessage("¡Lavaojos activado! Operario fuera de peligro. Ahora ve al Estante Kit (Pared Este) a tomar los cordones y paños.", '💧');
+                        this.setBotMessage("¡Lavaojos activado! Operario fuera de peligro. Ve al Estante Kit (Pared Este) a tomar los cordones y paños.", '💧');
                         this.checkProximity();
                         break;
 
                     case 'kit':
                         if (!this.gameState.hasGloves) {
                             this.audio.playAlarm();
-                            this.damageHealth(10, "Equípate los guantes en la caseta EPP antes de abrir el kit antiderrame.");
+                            this.damageHealth(10, "Equípate los guantes antes de abrir el kit antiderrame.");
                             return;
                         }
                         if (this.gameState.kitOpened) {
-                            this.setBotMessage("Ya tienes los insumos en mano. Camina hacia el charco químico en el centro para delimitarlo.", '🟡');
+                            this.setBotMessage("Ya tienes los insumos en mano. Camina hacia el charco en el centro.", '🟡');
                             return;
                         }
                         this.gameState.kitOpened = true;
                         document.getElementById('badge-kit').classList.add('completed');
                         document.getElementById('badge-kit').innerHTML = '<i class="fa-solid fa-check"></i> KIT EN MANO';
                         this.audio.playTone(550, 'sine', 0.2);
-                        this.setBotMessage("¡Insumos en mano! Camina hacia el centro sobre el charco para delimitarlo con el cordón absorbente.", '🟡');
+                        this.setBotMessage("¡Insumos en mano! Camina hacia el centro para delimitar el charco con el cordón absorbente.", '🟡');
                         this.checkProximity();
                         break;
 
                     case 'spill':
                         if (!this.gameState.hasMask) {
                             this.audio.playAlarm();
-                            this.damageHealth(25, "¡ALERTA DE INTOXICACIÓN! Respiraste vapores orgánicos densos. Equípate la máscara en la Caseta EPP.");
+                            this.damageHealth(25, "¡ALERTA DE INTOXICACIÓN! Respiraste vapores densos. Equípate la máscara en la Caseta EPP.");
                             return;
                         }
                         if (!this.gameState.kitOpened) {
@@ -2423,30 +2782,24 @@
                             const bSpill = document.getElementById('badge-spill');
                             if (bSpill) bSpill.innerHTML = '<i class="fa-solid fa-ring"></i> CORDÓN INSTALADO';
                             this.audio.playTone(480, 'sine', 0.2);
-                            this.setBotMessage("¡Cordón delimitador colocado! El químico quedó cercado y ya no llegará al drenaje. Vuelve a interactuar para absorberlo con los paños.", '🧻');
+                            this.setBotMessage("¡Cordón delimitador colocado! El químico quedó cercado. Vuelve a interactuar para absorberlo con los paños.", '🧻');
                             this.checkProximity();
                             return;
                         }
                         if (!this.gameState.padsPlaced) {
                             this.gameState.padsPlaced = true;
                             this.dom.padsLayer.classList.add('deployed');
-                            if (window.gsap) {
-                                gsap.to(this.dom.chemicalPuddle, { scale: 0.85, opacity: 0.65, duration: 0.8 });
-                            } else {
-                                this.dom.chemicalPuddle.style.opacity = '0.65';
-                            }
+                            if (window.gsap) gsap.to(this.dom.chemicalPuddle, { scale: 0.85, opacity: 0.65, duration: 0.8 });
+                            else this.dom.chemicalPuddle.style.opacity = '0.65';
                             const bSpill = document.getElementById('badge-spill');
                             if (bSpill) {
                                 bSpill.classList.add('completed');
                                 bSpill.innerHTML = '<i class="fa-solid fa-check"></i> DERRAME ABSORBIDO';
                             }
                             this.audio.playTone(520, 'sine', 0.2);
-                            this.setBotMessage("¡Químico absorbido por los paños! Ahora camina al Acopio RESPEL (Pared Oeste) para confinar el residuo en la bolsa roja.", '🔴');
+                            this.setBotMessage("¡Químico absorbido! Ahora camina al Acopio RESPEL (Pared Oeste) para confinar el residuo en la bolsa roja.", '🔴');
                             this.checkProximity();
                             return;
-                        }
-                        if (this.gameState.padsPlaced) {
-                            this.setBotMessage("El derrame ya está neutralizado. Ve al Acopio RESPEL (Pared Oeste) para confinar los paños en la bolsa roja.", '🔴');
                         }
                         break;
 
@@ -2461,18 +2814,16 @@
                             return;
                         }
                         this.gameState.respelStored = true;
+                        this.mission1Completed = true;
                         document.getElementById('badge-respel').classList.add('completed');
                         document.getElementById('badge-respel').innerHTML = '<i class="fa-solid fa-check"></i> RESIDUO CONFINADO';
                         this.audio.playTone(660, 'sine', 0.3);
-                        this.setBotMessage("¡Residuo confinado y rotulado con éxito! Has completado el simulacro de emergencia.", '🏆');
-                        this.checkVictory();
+                        this.setBotMessage("¡Residuo confinado y rotulado con éxito! Has completado la Misión 1.", '🏆');
+                        this.triggerGameOver(true);
                         break;
                 }
             }
 
-            /**
-             * 4 Hallazgos Ocultos de Auditoría SST
-             */
             bindAuditHazards() {
                 const hazards = [
                     { id: 'hazard-extinguisher', name: "Extintor despresurizado (NFPA 10)" },
@@ -2510,12 +2861,14 @@
                 this.dom.visor.classList.add('asphyxia-warning');
 
                 setTimeout(() => {
-                    if (this.gameState.hasMask) this.dom.visor.classList.remove('asphyxia-warning');
+                    if (this.gameState.hasMask || this.currentMission === 2) {
+                        this.dom.visor.classList.remove('asphyxia-warning');
+                    }
                 }, 1000);
 
                 this.setBotMessage(msg, '🚨');
                 if (this.gameState.healthO2 <= 0) {
-                    this.triggerGameOver(false, "Asfixia / Intoxicación Aguda: Exposición excesiva a vapores.");
+                    this.triggerGameOver(false, this.currentMission === 2 ? "Quemaduras Térmicas Críticas: Exposición excesiva a radiación de fuego." : "Asfixia / Intoxicación Aguda: Exposición excesiva a vapores.");
                 }
             }
 
@@ -2531,8 +2884,7 @@
                     const secs = String(this.gameState.timeLeft % 60).padStart(2, '0');
                     this.dom.timerDigits.textContent = `${mins}:${secs}`;
 
-                    // Expansión hacia drenaje si no hay cordón
-                    if (!this.gameState.boomPlaced) {
+                    if (this.currentMission === 1 && !this.gameState.boomPlaced) {
                         this.gameState.spillProgress = Math.min(100, this.gameState.spillProgress + 1.2);
                         this.dom.meterDrain.style.width = `${this.gameState.spillProgress}%`;
                         this.dom.textDrain.textContent = `${Math.round(this.gameState.spillProgress)}%`;
@@ -2552,23 +2904,8 @@
 
             setBotMessage(text, icon = '🤖') {
                 this.dom.botText.innerHTML = text;
-                if (window.gsap) {
-                    gsap.fromTo(this.dom.botText, { opacity: 0.3, y: 4 }, { opacity: 1, y: 0, duration: 0.3 });
-                } else {
-                    this.dom.botText.style.opacity = '1';
-                }
-            }
-
-            checkVictory() {
-                const allDone = this.gameState.hasGloves &&
-                                this.gameState.hasMask &&
-                                this.gameState.valveClosed &&
-                                this.gameState.eyewashActive &&
-                                this.gameState.boomPlaced &&
-                                this.gameState.padsPlaced &&
-                                this.gameState.respelStored;
-
-                if (allDone) this.triggerGameOver(true);
+                if (window.gsap) gsap.fromTo(this.dom.botText, { opacity: 0.3, y: 4 }, { opacity: 1, y: 0, duration: 0.3 });
+                else this.dom.botText.style.opacity = '1';
             }
 
             triggerGameOver(isSuccess, failureReason = "") {
@@ -2579,19 +2916,18 @@
                     setTimeout(() => this.audio.playTone(659, 'sine', 0.25), 150);
                     setTimeout(() => this.audio.playTone(784, 'sine', 0.4), 300);
 
-                    const elapsed = 120 - this.gameState.timeLeft;
+                    const totalTime = this.currentMission === 2 ? 90 : 120;
+                    const elapsed = totalTime - this.gameState.timeLeft;
                     const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
                     const secs = String(elapsed % 60).padStart(2, '0');
 
-                    // Cálculo transparente y justo de puntaje
-                    const crisisBase = 70; // 70 puntos base por superar las 5 etapas operativas
-                    const healthBonus = Math.round((this.gameState.healthO2 / 100) * 10); // hasta +10 pts
-                    const timeBonus = elapsed <= 60 ? 10 : (elapsed <= 90 ? 5 : 0); // hasta +10 pts
+                    const crisisBase = 70;
+                    const healthBonus = Math.round((this.gameState.healthO2 / 100) * 10);
+                    const timeBonus = elapsed <= 60 ? 10 : (elapsed <= 80 ? 5 : 0);
                     const hazardsCount = this.gameState.discoveredHazards.size;
-                    const hazardsBonus = hazardsCount * 5; // hasta +20 pts (4 hallazgos de campo)
+                    const hazardsBonus = hazardsCount * 5;
 
-                    const totalCalc = crisisBase + healthBonus + timeBonus + hazardsBonus;
-                    const finalScore = Math.min(100, Math.max(50, totalCalc));
+                    const finalScore = Math.min(100, Math.max(50, crisisBase + healthBonus + timeBonus + hazardsBonus));
 
                     document.getElementById('stat-final-score').textContent = `${finalScore}%`;
                     document.getElementById('stat-final-time').textContent = `${mins}:${secs} min`;
@@ -2600,15 +2936,23 @@
                     if (elCrisis) elCrisis.textContent = `${crisisBase} / 70 pts`;
 
                     const elBonus = document.getElementById('stat-breakdown-bonus');
-                    if (elBonus) elBonus.textContent = `+${healthBonus + timeBonus} pts (O2: ${this.gameState.healthO2}%)`;
+                    if (elBonus) elBonus.textContent = `+${healthBonus + timeBonus} pts (Vitalidad: ${this.gameState.healthO2}%)`;
 
                     const elHazards = document.getElementById('stat-breakdown-hazards');
                     if (elHazards) elHazards.textContent = `${hazardsCount}/4 pines (+${hazardsBonus} pts)`;
 
-                    // Reporte Automático a Moodle LMS (SCORM 1.2 / 2004 y iFrame postMessage)
+                    if (this.currentMission === 1) {
+                        this.dom.modalAuditDesc.innerHTML = '<strong>¡Misión 1 Completada con Éxito!</strong> Has contenido la fuga de químico, protegido el drenaje y auxiliado a tu compañero conforme a Res. 773/2021. Ahora avanza a la Misión 2 para sofocar el conato de incendio con extintor.';
+                        if (this.dom.btnNextMissionFire) this.dom.btnNextMissionFire.style.display = 'block';
+                    } else {
+                        this.dom.modalAuditDesc.innerHTML = '<strong>¡Simulacro Total Superado con Distinción SST!</strong> Has extinguido el conato de incendio Clase B aplicando técnica de barrido PASS y agente PQS conforme a la norma NFPA 10.';
+                        if (this.dom.btnNextMissionFire) this.dom.btnNextMissionFire.style.display = 'none';
+                    }
+
                     if (this.lmsBridge) {
                         this.lmsBridge.reportCompletion(finalScore, {
-                            healthO2: this.gameState.healthO2,
+                            mission: this.currentMission,
+                            vitality: this.gameState.healthO2,
                             hazardsDiscovered: hazardsCount,
                             elapsedSeconds: elapsed
                         });

@@ -1133,6 +1133,248 @@
             transform: translateY(-2px);
             box-shadow: 0 0 28px rgba(255, 232, 31, 0.6);
         }
+
+        /* ==============================================================
+           ESTILOS: ESTRUCTURA MULTINIVEL PEDAGÓGICA (NIVELES 1, 2 Y 3)
+           ============================================================== */
+        /* Barra de Niveles (Level Stepper) */
+        .level-stepper-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(11, 19, 38, 0.95);
+            border-bottom: 1px solid var(--border-subtle);
+            width: 100%;
+            box-sizing: border-box;
+            overflow-x: auto;
+        }
+        .level-step-btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 6px 8px;
+            border-radius: var(--radius-sm);
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .level-step-btn:hover {
+            background: rgba(51, 65, 85, 0.8);
+            color: #fff;
+        }
+        .level-step-btn.active {
+            background: rgba(0, 103, 56, 0.4);
+            border-color: var(--bolivar-green-glow);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+        }
+        .level-step-btn.completed {
+            border-color: var(--bolivar-yellow);
+            color: var(--bolivar-yellow);
+        }
+        .level-step-num {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.68rem;
+            font-weight: 800;
+        }
+        .level-step-btn.active .level-step-num {
+            background: var(--bolivar-green-glow);
+            color: #070b14;
+        }
+        .level-step-btn.completed .level-step-num {
+            background: var(--bolivar-yellow);
+            color: #070b14;
+        }
+
+        /* NIVEL 1: Tablero de Correspondencia Normativa */
+        .match-pairs-board {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            margin: 8px 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .match-column {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .match-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 9px 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+            min-height: 68px;
+            position: relative;
+            user-select: none;
+        }
+        .match-card:hover:not(.matched) {
+            border-color: var(--bolivar-yellow);
+            background: rgba(45, 62, 80, 0.85);
+            transform: translateY(-2px);
+        }
+        .match-card.selected {
+            border-color: var(--bolivar-yellow);
+            box-shadow: 0 0 14px rgba(255, 199, 44, 0.4);
+            background: rgba(255, 199, 44, 0.12);
+            transform: scale(1.02);
+        }
+        .match-card.matched {
+            border-color: var(--bolivar-green-glow);
+            background: rgba(16, 185, 129, 0.15);
+            cursor: default;
+            opacity: 0.85;
+        }
+        .match-card.wrong {
+            border-color: var(--hazard-red);
+            background: rgba(239, 68, 68, 0.2);
+            animation: matchShake 0.4s ease;
+        }
+        @keyframes matchShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .match-card-law {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--bolivar-yellow);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .match-card-subtitle {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            line-height: 1.35;
+        }
+        .match-card-concept {
+            font-size: 0.74rem;
+            color: #f1f5f9;
+            line-height: 1.35;
+            font-weight: 500;
+        }
+
+        /* NIVEL 2: Clasificación en Familias SGA */
+        .hazard-buckets-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .hazard-bucket {
+            background: rgba(15, 23, 42, 0.85);
+            border: 2px dashed rgba(148, 163, 184, 0.25);
+            border-radius: var(--radius-md);
+            padding: 8px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+            min-height: 125px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .hazard-bucket:hover, .hazard-bucket.awaiting-target {
+            border-color: var(--bolivar-yellow);
+            background: rgba(30, 41, 59, 0.9);
+            box-shadow: 0 0 16px rgba(255, 199, 44, 0.25);
+            transform: translateY(-2px);
+        }
+        .hazard-bucket.bucket-fisico {
+            border-top: 3px solid #ef4444;
+        }
+        .hazard-bucket.bucket-salud {
+            border-top: 3px solid #3b82f6;
+        }
+        .hazard-bucket.bucket-ambiente {
+            border-top: 3px solid #10b981;
+        }
+        .bucket-title {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .bucket-count {
+            font-size: 0.68rem;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1px 6px;
+            border-radius: 999px;
+        }
+
+        /* NIVEL 3: Búsqueda Situacional FDS 16 Secciones */
+        .fds-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            max-height: 220px;
+            overflow-y: auto;
+            padding: 4px;
+            background: rgba(11, 19, 38, 0.7);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+        }
+        .fds-sec-card-btn {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: var(--radius-sm);
+            padding: 7px 9px;
+            color: #cbd5e1;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.3;
+        }
+        .fds-sec-card-btn:hover {
+            border-color: var(--bolivar-green-glow);
+            color: #fff;
+            background: rgba(51, 65, 85, 0.85);
+            transform: translateX(2px);
+        }
+        .fds-sec-badge {
+            background: rgba(255, 199, 44, 0.15);
+            color: var(--bolivar-yellow);
+            border: 1px solid rgba(255, 199, 44, 0.3);
+            border-radius: 3px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 1px 5px;
+            font-family: var(--font-mono);
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body>
@@ -1170,171 +1412,240 @@
             </div>
         </header>
 
+        <!-- LEVEL STEPPER (Barra de Progreso Pedagógico 3 Niveles) -->
+        <nav class="level-stepper-bar" id="level-stepper-bar">
+            <button class="level-step-btn active" id="step-btn-1" type="button" title="Nivel 1: Marco Legal Colombiano y Adopción SGA">
+                <span class="level-step-num">1</span>
+                <span>Marco Legal SGA</span>
+            </button>
+            <button class="level-step-btn" id="step-btn-2" type="button" title="Nivel 2: Clasificación de Peligros SGA">
+                <span class="level-step-num">2</span>
+                <span>Peligros SGA</span>
+            </button>
+            <button class="level-step-btn" id="step-btn-3" type="button" title="Nivel 3: Comunicación de Peligros y FDS (16 Secciones)">
+                <span class="level-step-num">3</span>
+                <span>FDS (16 Secc.)</span>
+            </button>
+        </nav>
+
         <!-- CONTENT STACK: PHASES -->
         <div class="flex-1 relative overflow-hidden flex flex-col">
             
             <!-- ============================================================== -->
-            <!-- FASE 1: ONBOARDING & TUTORIAL GUIADO -->
+            <!-- NIVEL 1: MARCO LEGAL COLOMBIANO Y ADOPCIÓN DEL SGA (1.1) -->
             <!-- ============================================================== -->
-            <section id="phase-tutorial" class="flex-1 flex flex-col justify-between overflow-hidden" style="padding: 16px;">
-                <!-- Bot Intro Bubble -->
-                <div class="bot-bubble-card">
-                    <div class="bot-avatar">🤖</div>
+            <section id="phase-level1" class="flex-1 flex flex-col justify-between overflow-hidden" style="padding: 12px 14px;">
+                <div class="bot-bubble-card" style="padding: 10px 12px;">
+                    <div class="bot-avatar">⚖️</div>
                     <div class="bot-content">
                         <div class="bot-meta">
-                            <span class="bot-name">Bolívar Safety Bot</span>
-                            <span class="bot-tag">Asistente SST</span>
+                            <span class="bot-name">Nivel 1 • Marco Legal Colombiano</span>
+                            <span class="bot-tag">Adopción SGA</span>
                         </div>
-                        <p id="bot-dialog-text" class="bot-dialog-text">
-                            ¡Bienvenido a obra! Conforme a la <strong>Res. 773 de 2021</strong> y el <strong>Decreto 1496 de 2018</strong>, todo producto químico debe clasificarse mediante el Sistema Globalmente Armonizado (SGA).
+                        <p id="level1-instruction" class="bot-dialog-text" style="font-size: var(--font-xs);">
+                            Relaciona cada <strong>norma jurídica</strong> colombiana de la izquierda con su <strong>objeto técnico</strong> en el SGA de la derecha. Toca una norma y luego su concepto correspondiente.
                         </p>
-                        <div class="bot-step-bar">
-                            <span id="tutorial-step-indicator" class="text-emerald-400" style="font-weight: 800;">Paso 1 de 3: Inspección Técnica</span>
-                            <span style="font-size: var(--font-xs);"><i class="fa-solid fa-hand-pointer text-bolivar-yellow" style="margin-right: 4px;"></i>Guía paso a paso</span>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Interactive Tutorial Card -->
-                <div class="my-auto flex-1 flex flex-col justify-center" style="margin: 10px 0;">
-                    <div id="tutorial-card-wrapper" class="relative">
-                        <!-- Chemical Card -->
-                        <div id="tutorial-chem-card" class="chem-card draggable-card">
-                            <!-- Drag Cue Header -->
-                            <div class="chem-card-header">
-                                <span class="flex items-center gap-1 text-bolivar-yellow" style="font-weight: 800;">
-                                    <i class="fa-solid fa-hand"></i>
-                                    <span>Arrastra hacia el pictograma</span>
-                                </span>
-                                <span style="font-family: var(--font-mono); background: rgba(11, 17, 32, 0.8); padding: 2px 8px; border-radius: var(--radius-full); border: 1px solid var(--border-subtle); font-size: var(--font-xs);">
-                                    <i class="fa-solid fa-arrows-up-down-left-right text-bolivar-yellow" style="margin-right: 4px;"></i>Arrastrar / Tocar
-                                </span>
-                            </div>
-
-                            <div class="chem-info-wrap">
-                                <div class="flex items-center gap-2">
-                                    <span class="chem-icon-box">
-                                        <i class="fa-solid fa-vial-virus"></i>
-                                    </span>
-                                    <div>
-                                        <h3 class="chem-title">Desengrasante Industrial</h3>
-                                        <p class="chem-alias">Limpia-Motores Base Solvente</p>
-                                    </div>
-                                </div>
-                                <span class="norma-badge" style="background: rgba(51, 65, 85, 0.6); color: #e2e8f0; border-color: var(--border-subtle);">DEMO</span>
-                            </div>
-
-                            <p class="chem-desc">
-                                <i class="fa-solid fa-circle-info text-bolivar-yellow" style="margin-right: 6px;"></i>
-                                Utilizado en taller para lavado de transmisiones y piñones de maquinaria pesada.
-                            </p>
-
-                            <!-- Button Inspect FDS -->
-                            <button id="btn-tutorial-inspect-fds" class="btn-inspect-fds">
-                                <i class="fa-solid fa-file-shield text-bolivar-yellow"></i>
-                                <span>Inspeccionar FDS (16 Secciones)</span>
-                            </button>
-                        </div>
+                <!-- Tablero de Correspondencia -->
+                <div class="match-pairs-board" id="level1-match-board">
+                    <div class="match-column" id="level1-col-laws">
+                        <!-- Generado dinámicamente -->
                     </div>
-
-                    <!-- Target SGA Selector for Tutorial -->
-                    <div style="margin-top: 14px;">
-                        <label style="font-size: var(--font-xs); font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px; text-align: center;">
-                            Zona de Destino: Arrastra aquí o toca la casilla:
-                        </label>
-                        <div class="grid-3" id="tutorial-pictogram-grid">
-                            <!-- Injected via JS -->
-                        </div>
+                    <div class="match-column" id="level1-col-concepts">
+                        <!-- Generado dinámicamente -->
                     </div>
                 </div>
 
-                <!-- Footer Action: Start Exam -->
-                <div style="padding-top: 8px; display: flex; flex-direction: column; gap: 8px;">
-                    <button id="btn-start-exam" disabled class="btn w-full" style="background: #1e293b; color: var(--text-subtle); padding: 14px 20px; font-size: var(--font-base); border: 1px solid var(--border-subtle); cursor: not-allowed;">
-                        <span>Completa el Tutorial para Iniciar</span>
+                <!-- Footer Nivel 1 -->
+                <div style="padding-top: 6px; display: flex; flex-direction: column; gap: 6px;">
+                    <div class="flex items-center justify-between" style="font-size: var(--font-xs); color: var(--text-muted);">
+                        <span>Progreso Nivel 1: <strong id="level1-progress-text" class="text-bolivar-yellow">0 de 4</strong> enlazados</span>
+                        <span>Puntos: <strong id="level1-score-text" class="text-emerald-400">0</strong>/100</span>
+                    </div>
+                    <button id="btn-advance-level2" disabled class="btn w-full" style="background: #1e293b; color: var(--text-subtle); padding: 12px 16px; font-size: var(--font-sm); border: 1px solid var(--border-subtle); cursor: not-allowed;">
+                        <span>Enlaza todas las normas para avanzar</span>
                         <i class="fa-solid fa-lock" style="font-size: var(--font-xs);"></i>
                     </button>
-                    <button id="btn-skip-tutorial" type="button" style="background: transparent; border: none; color: var(--bolivar-yellow); font-size: var(--font-xs); cursor: pointer; text-decoration: underline; text-align: center; font-weight: 700; padding: 4px;">
-                        Saltar Tutorial e Iniciar Evaluación Directa ➔
+                </div>
+            </section>
+
+            <!-- ============================================================== -->
+            <!-- NIVEL 2: CLASIFICACIÓN Y PELIGROS SEGÚN EL SGA (1.2) -->
+            <!-- ============================================================== -->
+            <section id="phase-level2" class="hidden flex-1 flex flex-col justify-between overflow-hidden" style="padding: 12px 14px;">
+                <div class="bot-bubble-card" style="padding: 10px 12px;">
+                    <div class="bot-avatar">☣️</div>
+                    <div class="bot-content">
+                        <div class="bot-meta">
+                            <span class="bot-name">Nivel 2 • Clasificación y Peligros</span>
+                            <span class="bot-tag">3 Familias SGA</span>
+                        </div>
+                        <p id="level2-instruction" class="bot-dialog-text" style="font-size: var(--font-xs);">
+                            Identifica si el producto y su situación de riesgo afecta la <strong>Salud</strong>, genera <strong>Peligros Físicos</strong> (fuego/presión) o afecta el <strong>Medio Ambiente</strong>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Activa a Clasificar -->
+                <div class="flex-1 flex flex-col justify-center" style="margin: 6px 0;">
+                    <div id="level2-card-container">
+                        <!-- Inyectado vía JS -->
+                    </div>
+
+                    <!-- 3 Familias Receptoras -->
+                    <div class="hazard-buckets-grid" id="hazard-buckets-grid">
+                        <div class="hazard-bucket bucket-fisico" data-family="fisico">
+                            <i class="fa-solid fa-fire-flame-curved" style="font-size: 1.4rem; color: #ef4444;"></i>
+                            <span class="bucket-title" style="color: #ef4444;">Peligros Físicos</span>
+                            <span style="font-size: 0.65rem; color: #94a3b8; line-height: 1.2;">Fuego, combustión, gases a presión</span>
+                            <span class="bucket-count" id="count-fisico">0 clasificados</span>
+                        </div>
+                        <div class="hazard-bucket bucket-salud" data-family="salud">
+                            <i class="fa-solid fa-skull-crossbones" style="font-size: 1.4rem; color: #3b82f6;"></i>
+                            <span class="bucket-title" style="color: #3b82f6;">Peligros para la Salud</span>
+                            <span style="font-size: 0.65rem; color: #94a3b8; line-height: 1.2;">Toxicidad, corrosión piel, carcinogenicidad</span>
+                            <span class="bucket-count" id="count-salud">0 clasificados</span>
+                        </div>
+                        <div class="hazard-bucket bucket-ambiente" data-family="ambiente">
+                            <i class="fa-solid fa-tree" style="font-size: 1.4rem; color: #10b981;"></i>
+                            <span class="bucket-title" style="color: #10b981;">Medio Ambiente</span>
+                            <span style="font-size: 0.65rem; color: #94a3b8; line-height: 1.2;">Toxicidad acuática, capa de ozono</span>
+                            <span class="bucket-count" id="count-ambiente">0 clasificados</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Nivel 2 -->
+                <div style="padding-top: 6px; display: flex; flex-direction: column; gap: 6px;">
+                    <div class="flex items-center justify-between" style="font-size: var(--font-xs); color: var(--text-muted);">
+                        <span>Progreso Nivel 2: <strong id="level2-progress-text" class="text-bolivar-yellow">0 de 6</strong></span>
+                        <span>Aciertos: <strong id="level2-score-text" class="text-emerald-400">0</strong>/6</span>
+                    </div>
+                    <button id="btn-advance-level3" disabled class="btn w-full" style="background: #1e293b; color: var(--text-subtle); padding: 12px 16px; font-size: var(--font-sm); border: 1px solid var(--border-subtle); cursor: not-allowed;">
+                        <span>Clasifica las sustancias para avanzar</span>
+                        <i class="fa-solid fa-lock" style="font-size: var(--font-xs);"></i>
                     </button>
                 </div>
             </section>
 
             <!-- ============================================================== -->
-            <!-- FASE 2: EXAMEN TÉCNICO (120 SEGUNDOS) -->
+            <!-- NIVEL 3: HERRAMIENTAS DE COMUNICACIÓN Y NAVEGACIÓN FDS (1.3) -->
             <!-- ============================================================== -->
-            <section id="phase-exam" class="hidden flex-1 flex flex-col justify-between overflow-hidden" style="padding: 12px 14px; width: 100%; box-sizing: border-box;">
-                <!-- Status Top Bar: Progress, Lucho Mascot & Counter -->
-                <div class="exam-status-bar">
-                    <div class="flex items-center gap-1 shrink-0">
-                        <span style="width: 10px; height: 10px; border-radius: 9999px; background: var(--bolivar-green-glow); display: inline-block;" class="animate-pulse"></span>
+            <section id="phase-level3" class="hidden flex-1 flex flex-col justify-between overflow-hidden" style="padding: 12px 14px;">
+                <!-- Sub-Tabs: 3A Etiqueta SGA / 3B FDS 16 Secciones -->
+                <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+                    <button id="tab-btn-label" class="btn flex-1" style="padding: 6px 8px; font-size: 0.72rem; font-weight: 800; background: rgba(0, 103, 56, 0.4); border: 1px solid var(--bolivar-green-glow); color: #fff;">
+                        <i class="fa-solid fa-tags"></i> 3A. Etiqueta SGA
+                    </button>
+                    <button id="tab-btn-fds" class="btn flex-1" style="padding: 6px 8px; font-size: 0.72rem; font-weight: 800; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border-subtle); color: var(--text-muted);">
+                        <i class="fa-solid fa-file-shield"></i> 3B. Dónde Buscar en FDS (16 Sec.)
+                    </button>
+                </div>
+
+                <!-- Sub-Fase 3A: Etiqueta y Pictogramas SGA -->
+                <div id="subphase-3a" class="flex-1 flex flex-col justify-between overflow-hidden">
+                    <div class="exam-status-bar" style="margin-bottom: 6px;">
                         <span id="exam-item-counter" style="font-size: var(--font-xs); font-family: var(--font-mono);">1 de 6</span>
-                    </div>
-
-                    <!-- Lucho Animated Reaction Bubble -->
-                    <div id="lucho-widget" class="lucho-widget">
-                        <span id="lucho-avatar" class="lucho-avatar">👨‍🔧</span>
-                        <span id="lucho-quote" class="lucho-quote">¡Lucho en guardia!</span>
-                    </div>
-
-                    <div class="flex items-center gap-2 shrink-0">
-                        <div id="exam-combo-badge" class="combo-badge hidden">
-                            <i class="fa-solid fa-bolt"></i>
-                            <span id="exam-combo-val">x1</span>
+                        <div id="lucho-widget" class="lucho-widget">
+                            <span id="lucho-avatar" class="lucho-avatar">👨‍🔧</span>
+                            <span id="lucho-quote" class="lucho-quote">¡Identifica pictograma y advertencia!</span>
                         </div>
-                        <span style="font-size: var(--font-xs);">Puntos: <strong id="exam-score-display" class="text-bolivar-yellow" style="font-size: var(--font-sm); font-weight: 900;">0</strong>/6</span>
+                        <span style="font-size: var(--font-xs);">Puntos: <strong id="exam-score-display" class="text-bolivar-yellow">0</strong>/6</span>
                     </div>
+
+                    <div class="flex-1 flex flex-col justify-center" style="padding: 2px 0;">
+                        <div id="exam-cards-tray" class="exam-cards-tray"></div>
+                    </div>
+
+                    <div class="pictogram-grid" id="exam-pictogram-grid" style="padding-top: 4px;"></div>
                 </div>
 
-                <!-- Bandeja de tarjetas de químicos (arrastrar o tocar) -->
-                <div class="flex-1 flex flex-col justify-center" style="padding: 4px 0; width: 100%; min-width: 0; box-sizing: border-box;">
-                    <p style="text-align: center; font-size: var(--font-xs); color: var(--bolivar-yellow); font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                        <i class="fa-solid fa-hand-holding-hand animate-pulse"></i>
-                        Arrastra cada tarjeta a su pictograma (o tócala y luego toca el pictograma)
+                <!-- Sub-Fase 3B: Búsqueda Situacional FDS 16 Secciones -->
+                <div id="subphase-3b" class="hidden flex-1 flex flex-col justify-between overflow-hidden">
+                    <div class="bot-bubble-card" style="padding: 8px 10px; margin-bottom: 6px;">
+                        <div class="bot-avatar">📖</div>
+                        <div class="bot-content">
+                            <div class="bot-meta">
+                                <span class="bot-name" id="fds-question-step">Caso FDS 1 de 6</span>
+                                <span class="bot-tag">Res. 773/2021</span>
+                            </div>
+                            <h4 id="fds-question-title" style="font-size: 0.8rem; font-weight: 800; color: var(--bolivar-yellow); margin: 2px 0;">Almacenamiento Seguro</h4>
+                            <p id="fds-question-prompt" style="font-size: 0.72rem; color: #e2e8f0; line-height: 1.3;">¿A qué sección dirigirse?</p>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.7rem; font-weight: 800; color: var(--bolivar-yellow); text-transform: uppercase; margin-bottom: 4px;">
+                        <i class="fa-solid fa-list-ol"></i> Selecciona la sección correcta de la FDS:
                     </p>
-                    <div id="exam-cards-tray" class="exam-cards-tray"></div>
-                </div>
+                    <div class="fds-nav-grid" id="fds-nav-grid">
+                        <!-- Las 16 secciones inyectadas por JS -->
+                    </div>
 
-                <!-- SGA Pictograms Grid (6 Official GHS Symbols) -->
-                <div class="pictogram-grid" id="exam-pictogram-grid" style="padding-top: 4px;">
-                    <!-- Injected dynamically via JS -->
+                    <div style="padding-top: 6px; display: flex; align-items: center; justify-content: space-between; font-size: var(--font-xs);">
+                        <span style="color: var(--text-muted);">Aciertos FDS: <strong id="fds-score-display" class="text-emerald-400">0</strong>/6</span>
+                        <button id="btn-finish-all-levels" disabled class="btn" style="background: #1e293b; color: var(--text-subtle); padding: 8px 14px; font-size: 0.75rem; border: 1px solid var(--border-subtle); cursor: not-allowed;">
+                            <span>Ver Certificación SST</span> <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
             </section>
 
             <!-- ============================================================== -->
-            <!-- FASE 3: EVALUACIÓN FINAL & CORRECCIÓN TÉCNICA -->
+            <!-- FASE FINAL: CERTIFICACIÓN SST Y REPORTE LMS SCORM -->
             <!-- ============================================================== -->
-            <section id="phase-results" class="hidden flex-1 flex flex-col justify-between overflow-y-auto custom-scroll" style="padding: 16px;">
+            <section id="phase-results" class="hidden flex-1 flex flex-col justify-between overflow-y-auto custom-scroll" style="padding: 14px;">
                 <div>
-                    <!-- Header Score Gauge -->
-                    <div class="results-gauge-card">
+                    <!-- Gauge Card -->
+                    <div class="results-gauge-card" style="padding: 16px;">
                         <div class="results-score-ring">
                             <span id="results-score-percent" class="results-score-percent">100%</span>
                         </div>
-                        <h2 id="results-title" class="results-title">¡Aprobado con Distinción SST!</h2>
-                        <p id="results-subtitle" class="results-subtitle">
-                            Demostraste alto dominio en identificación de riesgos químicos bajo Resolución 773 de 2021.
+                        <h2 id="results-title" class="results-title" style="font-size: 1.1rem;">¡Aprobado con Distinción SST!</h2>
+                        <p id="results-subtitle" class="results-subtitle" style="font-size: 0.75rem;">
+                            Completaste con éxito la ruta de aprendizaje SGA según Res. 773/2021 y Dec. 1496/2018.
                         </p>
                     </div>
 
-                    <!-- Breakdown Table -->
-                    <div class="results-breakdown">
-                        <h3 style="font-size: var(--font-xs); font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-                            <span>Desglose Técnico de Clasificación</span>
-                            <span id="results-badge-count" class="text-emerald-400" style="font-family: var(--font-mono); font-weight: 800;">6/6 Correctos</span>
+                    <!-- Desglose por los 3 Niveles -->
+                    <div class="results-breakdown" style="margin-top: 10px;">
+                        <h3 style="font-size: var(--font-xs); font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+                            Desglose de Competencias SST Evaluadas
                         </h3>
-                        
-                        <div id="results-items-list" class="flex flex-col gap-1">
-                            <!-- Items injected dynamically -->
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;">
+                                <div>
+                                    <div style="font-size: 0.78rem; font-weight: 800; color: #fff;">Nivel 1: Marco Legal Colombiano SGA</div>
+                                    <div style="font-size: 0.68rem; color: var(--text-muted);">Ley 55, Dec. 1072, Dec. 1496, Res. 773</div>
+                                </div>
+                                <span id="res-badge-level1" style="font-size: 0.78rem; font-weight: 800; color: var(--bolivar-green-glow); font-family: var(--font-mono);">4/4</span>
+                            </div>
+
+                            <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;">
+                                <div>
+                                    <div style="font-size: 0.78rem; font-weight: 800; color: #fff;">Nivel 2: Clasificación de Peligros SGA</div>
+                                    <div style="font-size: 0.68rem; color: var(--text-muted);">Peligros Físicos, para la Salud y Medio Ambiente</div>
+                                </div>
+                                <span id="res-badge-level2" style="font-size: 0.78rem; font-weight: 800; color: var(--bolivar-green-glow); font-family: var(--font-mono);">6/6</span>
+                            </div>
+
+                            <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;">
+                                <div>
+                                    <div style="font-size: 0.78rem; font-weight: 800; color: #fff;">Nivel 3: Comunicación y Búsqueda FDS</div>
+                                    <div style="font-size: 0.68rem; color: var(--text-muted);">Etiquetas, Pictogramas y 16 Secciones FDS</div>
+                                </div>
+                                <span id="res-badge-level3" style="font-size: 0.78rem; font-weight: 800; color: var(--bolivar-green-glow); font-family: var(--font-mono);">6/6</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Bottom Action Buttons -->
+                <!-- Botón Reintentar -->
                 <div style="padding-top: 8px;">
-                    <button id="btn-retry-exam" class="btn btn-primary w-full" style="padding: 14px 20px; font-size: var(--font-base);">
+                    <button id="btn-retry-all" class="btn btn-primary w-full" style="padding: 12px 18px; font-size: var(--font-sm);">
                         <i class="fa-solid fa-rotate-right"></i>
-                        <span>Reintentar Examen Técnico</span>
+                        <span>Reintentar Ruta de Aprendizaje</span>
                     </button>
                 </div>
             </section>
@@ -1489,39 +1800,39 @@
         <div id="modal-briefing-overlay" class="briefing-backdrop">
             <div class="briefing-dialog">
                 <div class="briefing-header">
-                    <span class="briefing-tag">// REPORTE DE SITUACIÓN EN OBRA //</span>
+                    <span class="briefing-tag">// RUTA DE APRENDIZAJE SGA //</span>
                     <h2 class="briefing-title">
                         <i class="fa-solid fa-boxes-stacked" style="color: var(--bolivar-yellow);"></i>
-                        MISIÓN: RECEPCIÓN Y CLASIFICACIÓN SGA
+                        DESAFÍO SGA: 3 NIVELES DE COMPETENCIA SST
                     </h2>
                     <p class="briefing-subtitle">
-                        Ha arribado al campamento de obra un cargamento de insumos químicos (solventes, desmoldantes, aditivos de concreto, combustibles y ácidos). Como inspector SST, debes revisar la FDS de cada sustancia y asignar su pictograma SGA oficial antes de autorizar su ingreso a bodega.
+                        Conforme a la <strong>Res. 773 de 2021</strong> y el <strong>Decreto 1496 de 2018</strong>, superarás 3 niveles tácticos: Marco Legal Colombiano, Clasificación en las 3 Familias de Peligro SGA, y Comunicación mediante Etiquetas y FDS de 16 Secciones.
                     </p>
                 </div>
 
                 <div class="briefing-steps">
                     <div class="briefing-step-row">
                         <span class="briefing-step-num">1</span>
-                        <span><strong>Inspección Técnica:</strong> Revisa la Sección 2 (Peligros) y Frases H en la FDS.</span>
+                        <span><strong>Nivel 1 (Marco Legal):</strong> Relaciona Ley 55, Dec. 1072, Dec. 1496 y Res. 773 con su alcance.</span>
                     </div>
                     <div class="briefing-step-row">
                         <span class="briefing-step-num">2</span>
-                        <span><strong>Asignación SGA:</strong> Empareja el pictograma oficial correspondiente.</span>
+                        <span><strong>Nivel 2 (Familias SGA):</strong> Clasifica sustancias en Peligros Físicos, para la Salud y Medio Ambiente.</span>
                     </div>
                     <div class="briefing-step-row">
                         <span class="briefing-step-num">3</span>
-                        <span><strong>Tolerancia Cero:</strong> Tienes 75 segundos; clasifica con precisión sin fallos.</span>
+                        <span><strong>Nivel 3 (Etiqueta & FDS):</strong> Identifica elementos de la etiqueta y navega en las 16 secciones FDS.</span>
                     </div>
                 </div>
 
                 <div class="briefing-controls">
-                    <span><i class="fa-solid fa-computer-mouse"></i> <strong>PC:</strong> Arrastre / Clic</span>
+                    <span><i class="fa-solid fa-computer-mouse"></i> <strong>PC:</strong> Clic / Selección</span>
                     <span>•</span>
-                    <span><i class="fa-solid fa-mobile-screen"></i> <strong>Celular:</strong> Toca para seleccionar y asignar</span>
+                    <span><i class="fa-solid fa-mobile-screen"></i> <strong>Celular:</strong> Toque táctil interactivo</span>
                 </div>
 
                 <button id="btn-start-briefing" class="btn-start-briefing">
-                    <i class="fa-solid fa-play"></i> INICIAR INSPECCIÓN SGA
+                    <i class="fa-solid fa-play"></i> INICIAR RUTA SGA (3 NIVELES)
                 </button>
             </div>
         </div>
@@ -2195,83 +2506,302 @@
         }
 
         /**
-         * 4. CONTROLADOR PRINCIPAL DEL JUEGO
+         * ==============================================================
+         * 3. BASES DE DATOS PEDAGÓGICAS MULTINIVEL (Res. 773/2021)
+         * ==============================================================
+         */
+        // Nivel 1: Marco Legal Colombiano y Adopción SGA
+        const LEGAL_FRAMEWORK_DATA = [
+            {
+                id: 'ley55',
+                norma: 'Ley 55 de 1993',
+                subtitle: 'Convenio OIT 170',
+                badge: 'OIT / Ley',
+                concept: 'Seguridad en la utilización de los productos químicos en el trabajo: deberes del empleador, clasificación y derechos de información de los trabajadores.',
+                key: 'oit'
+            },
+            {
+                id: 'dec1072',
+                norma: 'Decreto 1072 / Res. 0312',
+                subtitle: 'SG-SST & Estándares Mínimos',
+                badge: 'Decreto Único',
+                concept: 'Obligación del SG-SST de identificar, inventariar y evaluar los riesgos por sustancias químicas peligrosas y cancerígenas en el centro de trabajo.',
+                key: 'sgsst'
+            },
+            {
+                id: 'dec1496',
+                norma: 'Decreto 1496 de 2018',
+                subtitle: 'Adopción Formal SGA',
+                badge: 'Adopción Nacional',
+                concept: 'Adopción formal del Sistema Globalmente Armonizado (SGA) de clasificación y etiquetado de productos químicos para todos los sectores productivos en Colombia.',
+                key: 'adopcion'
+            },
+            {
+                id: 'res773',
+                norma: 'Resolución 773 de 2021',
+                subtitle: 'Reglamentación en Lugares de Trabajo',
+                badge: 'MinTrabajo',
+                concept: 'Reglamentación técnica obligatoria del SGA en los lugares de trabajo: etiquetado de recipientes, hojas FDS de 16 secciones en español y capacitación SST.',
+                key: 'reglamento'
+            }
+        ];
+
+        // Nivel 2: Las 3 Grandes Familias de Peligro del SGA
+        const HAZARD_FAMILIES = {
+            fisico: {
+                id: 'fisico',
+                name: 'Peligros Físicos',
+                icon: 'fa-fire-flame-curved',
+                color: '#ef4444',
+                desc: 'Incendio, explosión, proyección o gases reactivos a presión.'
+            },
+            salud: {
+                id: 'salud',
+                name: 'Peligros para la Salud',
+                icon: 'fa-skull-crossbones',
+                color: '#3b82f6',
+                desc: 'Toxicidad aguda, corrosión cutánea, carcinogenicidad o daño a órganos.'
+            },
+            ambiente: {
+                id: 'ambiente',
+                name: 'Peligros para el Medio Ambiente',
+                icon: 'fa-tree',
+                color: '#10b981',
+                desc: 'Bioacumulación acuática, mortandad de peces o degradación del ozono.'
+            }
+        };
+
+        const HAZARD_ITEMS = [
+            {
+                id: 'item_acpm',
+                name: 'ACPM / Combustible Diésel',
+                alias: 'Líquido Combustible (Llama)',
+                situation: 'Líquido combustible cuyos vapores se inflaman ante chispas mecánicas o superficies calientes a >55°C.',
+                correctFamily: 'fisico',
+                explanation: 'Es un líquido inflamable (Cat. 3, H226), clasificado en la familia de Peligros Físicos del SGA.'
+            },
+            {
+                id: 'item_acetileno',
+                name: 'Cilindro de Acetileno',
+                alias: 'Gas Disuelto a Alta Presión',
+                situation: 'Gas a alta presión que puede deflagrar o estallar si el cilindro sufre golpes, caídas o sobrecalentamiento.',
+                correctFamily: 'fisico',
+                explanation: 'Es un gas a presión comprimido/disuelto (H280), perteneciente a la familia de Peligros Físicos.'
+            },
+            {
+                id: 'item_acido',
+                name: 'Ácido Muriático',
+                alias: 'Ácido Clorhídrico al 28%',
+                situation: 'Salpicadura ácida que causa destrucción química inmediata de epidermis y necrosis ocular irreversible.',
+                correctFamily: 'salud',
+                explanation: 'Provoca quemaduras graves en la piel y lesiones oculares (H314), clasificado en Peligros para la Salud.'
+            },
+            {
+                id: 'item_thinner',
+                name: 'Thinner / Solvente Corriente',
+                alias: 'Mezcla de Hidrocarburos Aromáticos',
+                situation: 'Inhalación reiterada de vapores que causa daño al sistema nervioso central y peligro mortal por aspiración H304.',
+                correctFamily: 'salud',
+                explanation: 'Peligro crónico por aspiración pulmonar y neurotoxicidad (H304 / H373), perteneciente a Peligros para la Salud.'
+            },
+            {
+                id: 'item_pesticida',
+                name: 'Pesticida / Herbicida de Obra',
+                alias: 'Compuesto Organofosforado',
+                situation: 'Escorrentía accidental a cunetas y quebradas que causa mortandad masiva y persistente de peces y algas.',
+                correctFamily: 'ambiente',
+                explanation: 'Toxicidad acuática aguda y de efectos nocivos duraderos (H410), perteneciente a Peligros para el Medio Ambiente.'
+            },
+            {
+                id: 'item_cfc',
+                name: 'Desengrasante Solvente CFC',
+                alias: 'Clorofluorocarbonado',
+                situation: 'Emisión gaseosa a la atmósfera que destruye y agota la capa de ozono estratosférico del planeta.',
+                correctFamily: 'ambiente',
+                explanation: 'Peligroso para la capa de ozono (H420), perteneciente a Peligros para el Medio Ambiente.'
+            }
+        ];
+
+        // Nivel 3: Búsqueda y Navegación en FDS (16 Secciones)
+        const FDS_SECTIONS_LIST = [
+            { num: 1, name: 'Identificación del producto y proveedor' },
+            { num: 2, name: 'Identificación de peligros (SGA y Frases H/P)' },
+            { num: 3, name: 'Composición / información sobre componentes' },
+            { num: 4, name: 'Primeros auxilios' },
+            { num: 5, name: 'Medidas de lucha contra incendios' },
+            { num: 6, name: 'Medidas en caso de vertido accidental' },
+            { num: 7, name: 'Manipulación y almacenamiento' },
+            { num: 8, name: 'Controles de exposición y EPP' },
+            { num: 9, name: 'Propiedades físicas y químicas' },
+            { num: 10, name: 'Estabilidad y reactividad' },
+            { num: 11, name: 'Información toxicológica' },
+            { num: 12, name: 'Información ecotoxicológica' },
+            { num: 13, name: 'Consideraciones relativas a la eliminación' },
+            { num: 14, name: 'Información relativa al transporte' },
+            { num: 15, name: 'Información reglamentaria' },
+            { num: 16, name: 'Otras informaciones' }
+        ];
+
+        const FDS_SITUATIONAL_QUESTIONS = [
+            {
+                id: 'fds_q1',
+                title: 'Almacenamiento Seguro y Segregación',
+                prompt: 'El supervisor necesita saber las incompatibilidades químicas, temperaturas máximas y cómo estibar los bidones de solvente en la bodega.',
+                hint: '¿A qué sección de la FDS debe dirigirse para consultar el almacenaje seguro?',
+                correctSection: 7,
+                explanation: 'Sección 7: Manipulación y almacenamiento (especifica condiciones seguras de ventilación, separación y temperaturas).'
+            },
+            {
+                id: 'fds_q2',
+                title: 'Salpicadura Ocular de Químico Corrosivo',
+                prompt: 'Un operario sufrió salpicadura de ácido muriático en los ojos. La brigada debe saber los minutos exactos de lavado continuo y actuación urgente.',
+                hint: '¿A qué sección acudir para aplicar las medidas de socorro inmediato?',
+                correctSection: 4,
+                explanation: 'Sección 4: Primeros auxilios (indica actuación inmediata para ojos, piel, inhalación e ingestión).'
+            },
+            {
+                id: 'fds_q3',
+                title: 'Conato de Incendio en Almacén de Combustible',
+                prompt: 'Se generaron llamas sobre un derrame de ACPM. Se requiere verificar qué agentes extintores usar y cuáles están tajantemente prohibidos.',
+                hint: '¿A qué sección acudir para verificar el agente extintor adecuado?',
+                correctSection: 5,
+                explanation: 'Sección 5: Medidas de lucha contra incendios (especifica agentes extintores apropiados y peligros específicos de combustión).'
+            },
+            {
+                id: 'fds_q4',
+                title: 'Selección de EPP para Mezcla Epóxica',
+                prompt: 'El encargado SST debe dotar al pintor con el tipo exacto de guante (nitrilo vs PVA) y cartucho respiratorio reglamentario.',
+                hint: '¿A qué sección dirigirse para los valores límite TLV y EPP individual?',
+                correctSection: 8,
+                explanation: 'Sección 8: Controles de exposición / protección individual (EPP obligatorio y límites permisibles de exposición).'
+            },
+            {
+                id: 'fds_q5',
+                title: 'Fuga de Químico hacia el Drenaje Pluvial',
+                prompt: 'Un tambor de desengrasante se perforó en el patio y corre hacia el alcantarillado. Se debe contener con barreras absorbentes.',
+                hint: '¿A qué sección acudir para el protocolo de vertido accidental?',
+                correctSection: 6,
+                explanation: 'Sección 6: Medidas en caso de vertido accidental (procedimientos de contención, limpieza y precauciones ambientales).'
+            },
+            {
+                id: 'fds_q6',
+                title: 'Disposición de Trapos Impregnados (RESPEL)',
+                prompt: 'Tras recoger un derrame, quedan paños y arena contaminada. Se debe rotular y entregar al gestor ambiental autorizado.',
+                hint: '¿A qué sección dirigirse para clasificar y eliminar los residuos?',
+                correctSection: 13,
+                explanation: 'Sección 13: Consideraciones relativas a la eliminación (gestión de residuos peligrosos RESPEL y envases contaminados).'
+            }
+        ];
+
+        /**
+         * 4. CONTROLADOR PRINCIPAL DEL JUEGO MULTINIVEL (SGA RES. 773/2021)
          */
         class SgaGameController {
             constructor() {
-                this.phase = 'tutorial'; // 'tutorial' | 'exam' | 'results'
-                this.currentChemicalIndex = 0;
-                this.score = 0;
-                this.timeLeft = 120;
-                this.timerInterval = null;
-                this.answersLog = []; // { chem, selectedSga, isCorrect }
-                this.selectedChemCard = false; // Tap-to-select toggle
+                this.currentLevel = 1;
+                this.unlockedLevels = { 1: true, 2: false, 3: false };
 
-                // Tutorial State
-                this.tutorialStep = 1; // 1: inspect, 2: pick, 3: ready
+                // Nivel 1 State
+                this.level1Matches = {};
+                this.selectedLawId = null;
+                this.selectedConceptKey = null;
+                this.level1Score = 0;
+
+                // Nivel 2 State
+                this.level2Index = 0;
+                this.level2Score = 0;
+                this.level2BucketCounts = { fisico: 0, salud: 0, ambiente: 0 };
+
+                // Nivel 3 State (3A Etiqueta + 3B FDS)
+                this.level3Subphase = '3a'; // '3a' | '3b'
+                this.score3A = 0;
+                this.answersLog3A = [];
+                this.selectedCardId = null;
+                this.wasDragged = false;
+                this.streak = 0;
+
+                this.fdsIndex = 0;
+                this.fdsScore = 0;
+                this.fdsAnswersLog = [];
 
                 this.dom = {
                     viewport: document.getElementById('app-viewport'),
-                    phaseTutorial: document.getElementById('phase-tutorial'),
-                    phaseExam: document.getElementById('phase-exam'),
-                    phaseResults: document.getElementById('phase-results'),
-                    timerPill: document.getElementById('ui-timer-pill'),
-                    timerDisplay: document.getElementById('exam-timer-display'),
                     btnSoundToggle: document.getElementById('btn-sound-toggle'),
                     soundIcon: document.getElementById('sound-icon'),
                     
+                    // Stepper
+                    stepBtns: [
+                        document.getElementById('step-btn-1'),
+                        document.getElementById('step-btn-2'),
+                        document.getElementById('step-btn-3')
+                    ],
+
+                    // Phases
+                    phaseL1: document.getElementById('phase-level1'),
+                    phaseL2: document.getElementById('phase-level2'),
+                    phaseL3: document.getElementById('phase-level3'),
+                    phaseResults: document.getElementById('phase-results'),
+
+                    // Nivel 1 Elements
+                    l1ColLaws: document.getElementById('level1-col-laws'),
+                    l1ColConcepts: document.getElementById('level1-col-concepts'),
+                    l1ProgressText: document.getElementById('level1-progress-text'),
+                    l1ScoreText: document.getElementById('level1-score-text'),
+                    btnAdvanceL2: document.getElementById('btn-advance-level2'),
+
+                    // Nivel 2 Elements
+                    l2CardContainer: document.getElementById('level2-card-container'),
+                    hazardBucketsGrid: document.getElementById('hazard-buckets-grid'),
+                    countFisico: document.getElementById('count-fisico'),
+                    countSalud: document.getElementById('count-salud'),
+                    countAmbiente: document.getElementById('count-ambiente'),
+                    l2ProgressText: document.getElementById('level2-progress-text'),
+                    l2ScoreText: document.getElementById('level2-score-text'),
+                    btnAdvanceL3: document.getElementById('btn-advance-level3'),
+
+                    // Nivel 3 Elements
+                    tabBtnLabel: document.getElementById('tab-btn-label'),
+                    tabBtnFds: document.getElementById('tab-btn-fds'),
+                    subphase3A: document.getElementById('subphase-3a'),
+                    subphase3B: document.getElementById('subphase-3b'),
+                    examItemCounter: document.getElementById('exam-item-counter'),
+                    examScoreDisplay: document.getElementById('exam-score-display'),
+                    examCardsTray: document.getElementById('exam-cards-tray'),
+                    examGrid: document.getElementById('exam-pictogram-grid'),
+                    
+                    // Subfase 3B (FDS 16 Sec)
+                    fdsQuestionStep: document.getElementById('fds-question-step'),
+                    fdsQuestionTitle: document.getElementById('fds-question-title'),
+                    fdsQuestionPrompt: document.getElementById('fds-question-prompt'),
+                    fdsNavGrid: document.getElementById('fds-nav-grid'),
+                    fdsScoreDisplay: document.getElementById('fds-score-display'),
+                    btnFinishAllLevels: document.getElementById('btn-finish-all-levels'),
+
                     // Modals
                     modalFds: document.getElementById('modal-fds'),
                     modalError: document.getElementById('modal-error-feedback'),
                     btnCloseFds: document.getElementById('btn-close-fds'),
                     btnUnderstoodFds: document.getElementById('btn-understood-fds'),
                     btnDismissError: document.getElementById('btn-dismiss-error'),
-                    
-                    // Tutorial Elements
-                    botDialog: document.getElementById('bot-dialog-text'),
-                    tutStepIndicator: document.getElementById('tutorial-step-indicator'),
-                    tutChemCard: document.getElementById('tutorial-chem-card'),
-                    btnTutInspectFds: document.getElementById('btn-tutorial-inspect-fds'),
-                    tutGrid: document.getElementById('tutorial-pictogram-grid'),
-                    btnStartExam: document.getElementById('btn-start-exam'),
+                    errorFeedbackTitle: document.getElementById('error-feedback-title'),
+                    errorFeedbackSubtitle: document.getElementById('error-feedback-subtitle'),
+                    errorFeedbackContent: document.getElementById('error-feedback-content'),
 
-                    // Exam Elements
-                    examItemCounter: document.getElementById('exam-item-counter'),
-                    examScoreDisplay: document.getElementById('exam-score-display'),
-                    examComboBadge: document.getElementById('exam-combo-badge'),
-                    examComboVal: document.getElementById('exam-combo-val'),
-                    examCardsTray: document.getElementById('exam-cards-tray'),
-                    examGrid: document.getElementById('exam-pictogram-grid'),
-
-                    // Mini-Reto FDS Sec. 2 (Doble Criterio)
-                    modalWordChallenge: document.getElementById('modal-word-challenge'),
-                    wordChallengeStepBadge: document.getElementById('word-challenge-step-badge'),
-                    wordChallengeChemName: document.getElementById('word-challenge-chem-name'),
-                    wordChallengeInstruction: document.getElementById('word-challenge-instruction'),
-                    wordChallengeStep1: document.getElementById('word-challenge-step1'),
-                    wordChallengeStep2: document.getElementById('word-challenge-step2'),
-                    btnWordDanger: document.getElementById('btn-word-danger'),
-                    btnWordWarning: document.getElementById('btn-word-warning'),
-                    wordChallengeTimerBar: document.getElementById('word-challenge-timer-bar'),
-
-                    // Results Elements
-                    resultsPercent: document.getElementById('results-score-percent'),
-                    resultsTitle: document.getElementById('results-title'),
-                    resultsSubtitle: document.getElementById('results-subtitle'),
-                    resultsBadgeCount: document.getElementById('results-badge-count'),
-                    resultsList: document.getElementById('results-items-list'),
-                    btnRetryExam: document.getElementById('btn-retry-exam'),
-
-                    // FDS Modal Content
                     fdsTitle: document.getElementById('modal-fds-chem-title'),
                     fdsSec1: document.getElementById('fds-sec1'),
                     fdsSec2Text: document.getElementById('fds-sec2-text'),
                     fdsSec2Warning: document.getElementById('fds-sec2-warning'),
                     fdsSec2Code: document.getElementById('fds-sec2-code'),
                     fdsSec8Text: document.getElementById('fds-sec8-text'),
-                    errorFeedbackTitle: document.getElementById('error-feedback-title'),
-                    errorFeedbackSubtitle: document.getElementById('error-feedback-subtitle'),
-                    errorFeedbackContent: document.getElementById('error-feedback-content'),
+
+                    // Results
+                    resultsPercent: document.getElementById('results-score-percent'),
+                    resultsTitle: document.getElementById('results-title'),
+                    resultsSubtitle: document.getElementById('results-subtitle'),
+                    resBadgeL1: document.getElementById('res-badge-level1'),
+                    resBadgeL2: document.getElementById('res-badge-level2'),
+                    resBadgeL3: document.getElementById('res-badge-level3'),
+                    btnRetryAll: document.getElementById('btn-retry-all'),
 
                     // FX / Mascota
                     luchoAvatar: document.getElementById('lucho-avatar'),
@@ -2280,24 +2810,16 @@
                     fxCanvas: document.getElementById('fx-canvas')
                 };
 
-                this.streak = 0;
-                this.maxStreak = 0;
-                this.chemAttempts = {};
-                this.isErrorFeedbackTutorial = false;
-
                 this.fx = new FxEngine(this.dom.fxCanvas, this.dom.viewport);
-                this.luchoResetTimer = null;
-
-                // Integración Moodle LMS & SCORM
                 this.lmsBridge = new BolivarLmsBridge('juego1_sga', 80);
                 setupMoodleFullscreen('btn-moodle-fullscreen');
 
                 this.bindEvents();
-                this.initTutorial();
+                this.initLevel1();
             }
 
             bindEvents() {
-                // Briefing Modal de Contexto Inicial
+                // Briefing Modal
                 const briefingOverlay = document.getElementById('modal-briefing-overlay');
                 const btnStartBriefing = document.getElementById('btn-start-briefing');
                 const closeBriefing = () => {
@@ -2307,14 +2829,10 @@
                         briefingOverlay.style.display = 'none';
                     }
                 };
-                if (btnStartBriefing) {
-                    btnStartBriefing.addEventListener('click', closeBriefing);
-                }
+                if (btnStartBriefing) btnStartBriefing.addEventListener('click', closeBriefing);
                 if (briefingOverlay) {
                     briefingOverlay.addEventListener('click', (e) => {
-                        if (e.target === briefingOverlay) {
-                            closeBriefing();
-                        }
+                        if (e.target === briefingOverlay) closeBriefing();
                     });
                 }
 
@@ -2325,266 +2843,403 @@
                     sound.tap();
                 });
 
-                // Tutorial Buttons
-                this.dom.btnTutInspectFds.addEventListener('click', () => {
-                    sound.tap();
-                    this.openFds(TUTORIAL_CHEMICAL);
-                    if (this.tutorialStep === 1) {
-                        this.tutorialStep = 2;
-                        this.dom.tutStepIndicator.textContent = 'Paso 2 de 3: Identifica y Presiona el Pictograma SGA';
-                        this.dom.botDialog.innerHTML = '¡Excelente! En la <strong>Sección 2</strong> de la FDS viste el peligro <em>H314: Provoca quemaduras</em>. Ahora selecciona la casilla del pictograma <strong>Corrosivo</strong>.';
-                    }
+                // Stepper Buttons
+                this.dom.stepBtns.forEach((btn, idx) => {
+                    if (!btn) return;
+                    btn.addEventListener('click', () => {
+                        const targetLvl = idx + 1;
+                        if (this.unlockedLevels[targetLvl]) {
+                            sound.tap();
+                            this.switchLevel(targetLvl);
+                        }
+                    });
                 });
 
-                this.dom.btnStartExam.addEventListener('click', () => {
-                    sound.tap();
-                    this.startExamPhase();
-                });
-
-                const btnSkip = document.getElementById('btn-skip-tutorial');
-                if (btnSkip) {
-                    btnSkip.addEventListener('click', () => {
+                // Level Advancers
+                if (this.dom.btnAdvanceL2) {
+                    this.dom.btnAdvanceL2.addEventListener('click', () => {
                         sound.tap();
-                        this.startExamPhase();
+                        this.unlockedLevels[2] = true;
+                        this.switchLevel(2);
                     });
                 }
 
-                this.wasDragged = false;
+                if (this.dom.btnAdvanceL3) {
+                    this.dom.btnAdvanceL3.addEventListener('click', () => {
+                        sound.tap();
+                        this.unlockedLevels[3] = true;
+                        this.switchLevel(3);
+                    });
+                }
+
+                if (this.dom.btnFinishAllLevels) {
+                    this.dom.btnFinishAllLevels.addEventListener('click', () => {
+                        sound.tap();
+                        this.showFinalResults();
+                    });
+                }
+
+                // Nivel 3 Tabs
+                if (this.dom.tabBtnLabel) {
+                    this.dom.tabBtnLabel.addEventListener('click', () => {
+                        sound.tap();
+                        this.setSubphase('3a');
+                    });
+                }
+                if (this.dom.tabBtnFds) {
+                    this.dom.tabBtnFds.addEventListener('click', () => {
+                        sound.tap();
+                        this.setSubphase('3b');
+                    });
+                }
+
+                // Modals
+                this.dom.btnCloseFds.addEventListener('click', () => { sound.tap(); this.closeFds(); });
+                this.dom.btnUnderstoodFds.addEventListener('click', () => { sound.tap(); this.closeFds(); });
+                this.dom.btnDismissError.addEventListener('click', () => { sound.tap(); this.dismissErrorFeedback(); });
+                this.dom.modalFds.addEventListener('click', (e) => { if (e.target === this.dom.modalFds) this.closeFds(); });
+                this.dom.modalError.addEventListener('click', (e) => { if (e.target === this.dom.modalError) this.dismissErrorFeedback(); });
+
+                // Retry
+                if (this.dom.btnRetryAll) {
+                    this.dom.btnRetryAll.addEventListener('click', () => {
+                        sound.tap();
+                        this.resetAll();
+                    });
+                }
+            }
+
+            switchLevel(lvlNum) {
+                this.currentLevel = lvlNum;
+
+                // Update Stepper
+                this.dom.stepBtns.forEach((btn, idx) => {
+                    const stepNum = idx + 1;
+                    btn.classList.toggle('active', stepNum === lvlNum);
+                    btn.classList.toggle('completed', this.unlockedLevels[stepNum] && stepNum < lvlNum);
+                });
+
+                // Hide all phases
+                this.dom.phaseL1.classList.add('hidden');
+                this.dom.phaseL2.classList.add('hidden');
+                this.dom.phaseL3.classList.add('hidden');
+                this.dom.phaseResults.classList.add('hidden');
+
+                if (lvlNum === 1) {
+                    this.dom.phaseL1.classList.remove('hidden');
+                } else if (lvlNum === 2) {
+                    this.dom.phaseL2.classList.remove('hidden');
+                    if (this.level2Index === 0) this.initLevel2();
+                } else if (lvlNum === 3) {
+                    this.dom.phaseL3.classList.remove('hidden');
+                    if (this.score3A === 0 && this.answersLog3A.length === 0) {
+                        this.initLevel3A();
+                        this.initLevel3B();
+                    }
+                }
+            }
+
+            resetAll() {
+                this.currentLevel = 1;
+                this.unlockedLevels = { 1: true, 2: false, 3: false };
+                this.level1Matches = {};
+                this.selectedLawId = null;
+                this.selectedConceptKey = null;
+                this.level1Score = 0;
+
+                this.level2Index = 0;
+                this.level2Score = 0;
+                this.level2BucketCounts = { fisico: 0, salud: 0, ambiente: 0 };
+
+                this.score3A = 0;
+                this.answersLog3A = [];
                 this.selectedCardId = null;
 
-                // Drag and Drop del tutorial (las tarjetas del examen se registran en renderExamCards)
-                this.dom.tutChemCard.addEventListener('click', (e) => {
-                    if (e.target.closest('button') || this.wasDragged) return;
-                    sound.tap();
-                    this.dom.tutChemCard.classList.toggle('pulse-selected');
-                });
+                this.fdsIndex = 0;
+                this.fdsScore = 0;
+                this.fdsAnswersLog = [];
 
-                this.setupDragAndDrop(this.dom.tutChemCard, '.tut-pictogram-tile', (key) => {
-                    this.handleTutorialSelection(key);
-                }, () => this.phase === 'tutorial');
-
-                // Modal close buttons
-                this.dom.btnCloseFds.addEventListener('click', () => {
-                    sound.tap();
-                    this.closeFds();
-                });
-                this.dom.btnUnderstoodFds.addEventListener('click', () => {
-                    sound.tap();
-                    this.closeFds();
-                });
-
-                // Cierre de modales al tocar el fondo oscuro (backdrop)
-                this.dom.modalFds.addEventListener('click', (e) => {
-                    if (e.target === this.dom.modalFds) {
-                        sound.tap();
-                        this.closeFds();
-                    }
-                });
-                this.dom.modalError.addEventListener('click', (e) => {
-                    if (e.target === this.dom.modalError) {
-                        this.dismissErrorFeedback();
-                    }
-                });
-
-                // Cierre de modales con tecla Escape / Enter
-                window.addEventListener('keydown', (e) => {
-                    if (briefingOverlay && !briefingOverlay.classList.contains('hidden') && briefingOverlay.style.display !== 'none') {
-                        if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            closeBriefing();
-                            return;
-                        }
-                    }
-                    if (e.key === 'Escape' || e.key === 'Enter') {
-                        if (this.dom.modalError && !this.dom.modalError.classList.contains('hidden')) {
-                            e.preventDefault();
-                            this.dismissErrorFeedback();
-                            return;
-                        }
-                    }
-                    if (e.key === 'Escape') {
-                        if (!this.dom.modalFds.classList.contains('hidden')) {
-                            this.closeFds();
-                        }
-                    }
-                });
-
-                this.dom.btnDismissError.addEventListener('click', () => {
-                    this.dismissErrorFeedback();
-                });
-
-                // Retry Button
-                this.dom.btnRetryExam.addEventListener('click', () => {
-                    sound.tap();
-                    this.startExamPhase();
-                });
+                this.initLevel1();
+                this.switchLevel(1);
             }
 
-            /**
-             * INICIALIZAR FASE 1: TUTORIAL
-             */
-            initTutorial() {
-                this.phase = 'tutorial';
-                this.tutorialStep = 1;
-                this.dom.phaseTutorial.classList.remove('hidden');
-                this.dom.phaseExam.classList.add('hidden');
-                this.dom.phaseResults.classList.add('hidden');
-                this.dom.timerPill.classList.add('hidden');
+            // ==============================================================
+            // NIVEL 1: MARCO LEGAL COLOMBIANO
+            // ==============================================================
+            initLevel1() {
+                this.level1Matches = {};
+                this.selectedLawId = null;
+                this.selectedConceptKey = null;
+                this.level1Score = 0;
 
-                // Render 3 sample pictograms for tutorial (including the correct one)
-                const tutorialKeys = ['inflamable', 'corrosivo', 'gas'];
-                this.dom.tutGrid.innerHTML = '';
-                
-                tutorialKeys.forEach(key => {
-                    const pict = SGA_PICTOGRAMS[key];
-                    const btn = document.createElement('button');
-                    btn.className = 'pictogram-tile tut-pictogram-tile';
-                    btn.dataset.sgaId = key;
-                    btn.innerHTML = `
-                        <div class="pictogram-tile-icon">
-                            ${pict.svg}
-                        </div>
-                        <span class="pictogram-tile-name">${pict.name}</span>
+                this.dom.l1ProgressText.textContent = '0 de 4';
+                this.dom.l1ScoreText.textContent = '0';
+                this.dom.btnAdvanceL2.disabled = true;
+                this.dom.btnAdvanceL2.style.background = '#1e293b';
+                this.dom.btnAdvanceL2.style.cursor = 'not-allowed';
+                this.dom.btnAdvanceL2.innerHTML = `<span>Enlaza todas las normas para avanzar</span> <i class="fa-solid fa-lock" style="font-size: var(--font-xs);"></i>`;
+
+                // Render Laws Column
+                this.dom.l1ColLaws.innerHTML = '';
+                LEGAL_FRAMEWORK_DATA.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'match-card';
+                    card.dataset.lawId = item.id;
+                    card.dataset.key = item.key;
+                    card.innerHTML = `
+                        <div class="match-badge">${item.badge}</div>
+                        <div class="match-title">${item.norma}</div>
+                        <div class="match-subtitle">${item.subtitle}</div>
                     `;
+                    card.addEventListener('click', () => this.handleLevel1LawClick(card, item));
+                    this.dom.l1ColLaws.appendChild(card);
+                });
 
-                    btn.addEventListener('click', () => {
-                        this.handleTutorialSelection(key);
-                    });
-                    this.dom.tutGrid.appendChild(btn);
+                // Render Shuffled Concepts Column
+                this.dom.l1ColConcepts.innerHTML = '';
+                const shuffled = [...LEGAL_FRAMEWORK_DATA].sort(() => Math.random() - 0.5);
+                shuffled.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'match-card';
+                    card.dataset.conceptKey = item.key;
+                    card.innerHTML = `
+                        <div class="match-text">${item.concept}</div>
+                    `;
+                    card.addEventListener('click', () => this.handleLevel1ConceptClick(card, item));
+                    this.dom.l1ColConcepts.appendChild(card);
                 });
             }
 
-            handleTutorialSelection(selectedKey) {
-                const tileEl = this.dom.tutGrid.querySelector(`[data-sga-id="${selectedKey}"]`);
+            handleLevel1LawClick(cardEl, lawItem) {
+                if (this.level1Matches[lawItem.key]) return; // Ya enlazada
+                sound.tap();
 
-                if (selectedKey === TUTORIAL_CHEMICAL.correctSga) {
+                // Clear previous law selection
+                this.dom.l1ColLaws.querySelectorAll('.match-card').forEach(c => c.classList.remove('selected'));
+                this.selectedLawId = lawItem.id;
+                this.selectedLawKey = lawItem.key;
+                cardEl.classList.add('selected');
+
+                if (this.selectedConceptKey) {
+                    this.checkLevel1Pair();
+                }
+            }
+
+            handleLevel1ConceptClick(cardEl, conceptItem) {
+                if (Object.values(this.level1Matches).includes(conceptItem.key)) return; // Ya enlazado
+                sound.tap();
+
+                // Clear previous concept selection
+                this.dom.l1ColConcepts.querySelectorAll('.match-card').forEach(c => c.classList.remove('selected'));
+                this.selectedConceptKey = conceptItem.key;
+                cardEl.classList.add('selected');
+
+                if (this.selectedLawKey) {
+                    this.checkLevel1Pair();
+                }
+            }
+
+            checkLevel1Pair() {
+                const lawCard = this.dom.l1ColLaws.querySelector(`[data-key="${this.selectedLawKey}"]`);
+                const conceptCard = this.dom.l1ColConcepts.querySelector(`[data-concept-key="${this.selectedConceptKey}"]`);
+
+                if (this.selectedLawKey === this.selectedConceptKey) {
+                    // Correct Match
                     sound.success();
-                    this.celebrateTutorial(tileEl, true);
-                    this.tutorialStep = 3;
-                    this.dom.tutStepIndicator.textContent = '¡Tutorial Completado!';
-                    this.dom.botDialog.innerHTML = '<strong>¡Correcto!</strong> Pictograma Corrosivo asignado con éxito. ¡Iniciando examen!';
-                    
-                    // Transición directa e inmediata al examen técnico
+                    this.level1Matches[this.selectedLawKey] = true;
+                    this.level1Score += 25;
+
+                    lawCard.classList.remove('selected');
+                    conceptCard.classList.remove('selected');
+                    lawCard.classList.add('matched');
+                    conceptCard.classList.add('matched');
+
+                    const centerPos = this.getCenterInViewport(lawCard);
+                    this.fx.confetti(centerPos.x, centerPos.y, 25);
+                    this.showComicBubble('¡CORRECTO!', 'good', centerPos);
+
+                    const matchedCount = Object.keys(this.level1Matches).length;
+                    this.dom.l1ProgressText.textContent = `${matchedCount} de 4`;
+                    this.dom.l1ScoreText.textContent = `${this.level1Score}`;
+
+                    if (matchedCount === 4) {
+                        sound.victory();
+                        this.dom.btnAdvanceL2.disabled = false;
+                        this.dom.btnAdvanceL2.style.background = 'var(--bolivar-green)';
+                        this.dom.btnAdvanceL2.style.color = '#ffffff';
+                        this.dom.btnAdvanceL2.style.borderColor = 'var(--bolivar-green-glow)';
+                        this.dom.btnAdvanceL2.style.cursor = 'pointer';
+                        this.dom.btnAdvanceL2.innerHTML = `<span>¡Nivel 1 Superado! Avanzar al Nivel 2</span> <i class="fa-solid fa-arrow-right"></i>`;
+                        this.playAnimation(this.dom.btnAdvanceL2, 'happy-jiggle', 800);
+                    }
+                } else {
+                    // Wrong Match
+                    sound.error();
+                    this.triggerScreenShake();
+                    lawCard.classList.add('mismatched');
+                    conceptCard.classList.add('mismatched');
+                    this.showComicBubble('¡NORMA ERRADA!', 'bad', this.getCenterInViewport(lawCard));
+
                     setTimeout(() => {
-                        this.startExamPhase();
-                    }, 400);
+                        lawCard.classList.remove('selected', 'mismatched');
+                        conceptCard.classList.remove('selected', 'mismatched');
+                    }, 650);
+                }
+
+                this.selectedLawKey = null;
+                this.selectedConceptKey = null;
+            }
+
+            // ==============================================================
+            // NIVEL 2: CLASIFICACIÓN Y PELIGROS SEGÚN EL SGA (3 FAMILIAS)
+            // ==============================================================
+            initLevel2() {
+                this.level2Index = 0;
+                this.level2Score = 0;
+                this.level2BucketCounts = { fisico: 0, salud: 0, ambiente: 0 };
+                this.dom.countFisico.textContent = '0 clasificados';
+                this.dom.countSalud.textContent = '0 clasificados';
+                this.dom.countAmbiente.textContent = '0 clasificados';
+                this.dom.level2ProgressText.textContent = '0 de 6';
+                this.dom.level2ScoreText.textContent = '0';
+                this.dom.btnAdvanceL3.disabled = true;
+                this.dom.btnAdvanceL3.style.background = '#1e293b';
+                this.dom.btnAdvanceL3.style.cursor = 'not-allowed';
+                this.dom.btnAdvanceL3.innerHTML = `<span>Clasifica las sustancias para avanzar</span> <i class="fa-solid fa-lock" style="font-size: var(--font-xs);"></i>`;
+
+                // Setup Buckets Click Handlers
+                this.dom.hazardBucketsGrid.querySelectorAll('.hazard-bucket').forEach(bucket => {
+                    bucket.onclick = () => {
+                        const family = bucket.dataset.family;
+                        this.classifyLevel2Item(family);
+                    };
+                });
+
+                this.renderLevel2Card();
+            }
+
+            renderLevel2Card() {
+                if (this.level2Index >= HAZARD_ITEMS.length) {
+                    // Level 2 Finished
+                    sound.victory();
+                    this.dom.l2CardContainer.innerHTML = `
+                        <div style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid var(--bolivar-green-glow); border-radius: var(--radius-md); padding: 18px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 6px;">🎉</div>
+                            <h3 style="color: #34d399; font-size: 1rem; font-weight: 800; margin-bottom: 4px;">¡Nivel 2 Completado!</h3>
+                            <p style="font-size: 0.75rem; color: #cbd5e1; margin: 0;">Has clasificado correctamente las 3 familias de peligro SGA.</p>
+                        </div>
+                    `;
+                    this.dom.btnAdvanceL3.disabled = false;
+                    this.dom.btnAdvanceL3.style.background = 'var(--bolivar-green)';
+                    this.dom.btnAdvanceL3.style.color = '#ffffff';
+                    this.dom.btnAdvanceL3.style.borderColor = 'var(--bolivar-green-glow)';
+                    this.dom.btnAdvanceL3.style.cursor = 'pointer';
+                    this.dom.btnAdvanceL3.innerHTML = `<span>¡Nivel 2 Superado! Avanzar a Comunicación y FDS</span> <i class="fa-solid fa-arrow-right"></i>`;
+                    this.playAnimation(this.dom.btnAdvanceL3, 'happy-jiggle', 800);
+                    return;
+                }
+
+                const item = HAZARD_ITEMS[this.level2Index];
+                this.dom.level2ProgressText.textContent = `${this.level2Index + 1} de ${HAZARD_ITEMS.length}`;
+
+                this.dom.l2CardContainer.innerHTML = `
+                    <div class="exam-card pop-comic" style="padding: 14px 16px; border-left: 4px solid var(--bolivar-yellow);">
+                        <div class="flex items-center gap-2" style="margin-bottom: 8px;">
+                            <span style="font-size: 0.65rem; background: rgba(255,199,44,0.15); border: 1px solid rgba(255,199,44,0.3); color: var(--bolivar-yellow); padding: 2px 6px; border-radius: 4px; font-weight: 700;">CASO ${this.level2Index + 1}/6</span>
+                            <h3 style="font-size: 0.95rem; font-weight: 800; color: #fff; margin: 0;">${item.name}</h3>
+                        </div>
+                        <p style="font-size: 0.75rem; color: #e2e8f0; line-height: 1.35; margin-bottom: 6px;">${item.situation}</p>
+                        <div style="font-size: 0.68rem; color: var(--text-muted); font-style: italic;">
+                            <i class="fa-solid fa-hand-pointer text-bolivar-yellow"></i> Toca abajo el casillero correspondiente: Físico, Salud o Medio Ambiente.
+                        </div>
+                    </div>
+                `;
+            }
+
+            classifyLevel2Item(chosenFamily) {
+                if (this.level2Index >= HAZARD_ITEMS.length) return;
+                const item = HAZARD_ITEMS[this.level2Index];
+                const bucketEl = this.dom.hazardBucketsGrid.querySelector(`[data-family="${chosenFamily}"]`);
+
+                if (chosenFamily === item.correctFamily) {
+                    sound.success();
+                    this.level2Score++;
+                    this.level2BucketCounts[chosenFamily]++;
+                    
+                    const countEl = document.getElementById(`count-${chosenFamily}`);
+                    if (countEl) countEl.textContent = `${this.level2BucketCounts[chosenFamily]} clasificados`;
+
+                    this.dom.level2ScoreText.textContent = `${this.level2Score}`;
+                    const pos = this.getCenterInViewport(bucketEl);
+                    this.fx.confetti(pos.x, pos.y, 30);
+                    this.showComicBubble('¡CORRECTO!', 'good', pos);
+                    this.playAnimation(bucketEl, 'happy-jiggle', 600);
+
+                    this.level2Index++;
+                    setTimeout(() => this.renderLevel2Card(), 500);
                 } else {
                     sound.error();
                     this.triggerScreenShake();
-                    this.celebrateTutorial(tileEl, false);
-                    this.dom.botDialog.innerHTML = '<span class="text-danger" style="font-weight: 800;">¡Incorrecto!</span> Ese pictograma no coincide con el producto. Selecciona el pictograma <strong>Corrosivo</strong>.';
-                    setTimeout(() => {
-                        this.showErrorFeedback(TUTORIAL_CHEMICAL, selectedKey, true);
-                    }, 400);
+                    this.playAnimation(bucketEl, 'dazed-wobble', 500);
+                    this.showComicBubble('¡FAMILIA INCORRECTA!', 'bad', this.getCenterInViewport(bucketEl));
+
+                    this.showErrorFeedback({
+                        name: item.name,
+                        id: item.id,
+                        correctSga: item.correctFamily
+                    }, chosenFamily, false);
+
+                    // Avanzar tras error para permitir completar el nivel pedagógicamente
+                    this.level2Index++;
+                    setTimeout(() => this.renderLevel2Card(), 500);
                 }
             }
 
-            /**
-             * Efectos cómicos del tutorial (confeti o humo según el resultado).
-             */
-            celebrateTutorial(tileEl, isCorrect) {
-                if (!tileEl) return;
-                const pos = this.getCenterInViewport(tileEl);
-                if (isCorrect) {
-                    this.fx.confetti(pos.x, pos.y, 50);
-                    this.showComicBubble('¡POW!', 'good', { x: pos.x, y: pos.y - 70 });
-                    this.playAnimation(tileEl, 'happy-jiggle', 700);
+            // ==============================================================
+            // NIVEL 3: HERRAMIENTAS DE COMUNICACIÓN Y FDS (16 SECCIONES)
+            // ==============================================================
+            setSubphase(sub) {
+                this.level3Subphase = sub;
+                if (sub === '3a') {
+                    this.dom.subphase3A.classList.remove('hidden');
+                    this.dom.subphase3B.classList.add('hidden');
+                    this.dom.tabBtnLabel.style.background = 'rgba(0, 103, 56, 0.4)';
+                    this.dom.tabBtnLabel.style.borderColor = 'var(--bolivar-green-glow)';
+                    this.dom.tabBtnLabel.style.color = '#fff';
+                    this.dom.tabBtnFds.style.background = 'rgba(30, 41, 59, 0.6)';
+                    this.dom.tabBtnFds.style.borderColor = 'var(--border-subtle)';
+                    this.dom.tabBtnFds.style.color = 'var(--text-muted)';
                 } else {
-                    this.fx.smoke(pos.x, pos.y, 14);
-                    this.fx.sparks(pos.x, pos.y, 16);
-                    this.showComicBubble('¡SANTAS REACCIONES!', 'bad', { x: pos.x, y: pos.y - 70 });
-                    this.playAnimation(tileEl, 'dazed-wobble', 500);
+                    this.dom.subphase3A.classList.add('hidden');
+                    this.dom.subphase3B.classList.remove('hidden');
+                    this.dom.tabBtnFds.style.background = 'rgba(0, 103, 56, 0.4)';
+                    this.dom.tabBtnFds.style.borderColor = 'var(--bolivar-green-glow)';
+                    this.dom.tabBtnFds.style.color = '#fff';
+                    this.dom.tabBtnLabel.style.background = 'rgba(30, 41, 59, 0.6)';
+                    this.dom.tabBtnLabel.style.borderColor = 'var(--border-subtle)';
+                    this.dom.tabBtnLabel.style.color = 'var(--text-muted)';
                 }
             }
 
-            /**
-             * INICIALIZAR FASE 2: EXAMEN TÉCNICO RIGUROSO (75 SEGUNDOS)
-             */
-            startExamPhase() {
-                this.phase = 'exam';
-                this.score = 0;
-                this.timeLeft = 75; // 75 segundos: Alta exigencia táctica para clasificación SGA y FDS
-                this.answersLog = [];
+            initLevel3A() {
+                this.score3A = 0;
+                this.answersLog3A = [];
                 this.selectedCardId = null;
-                this.streak = 0;
-                this.maxStreak = 0;
-
-                // UI Switches
-                this.dom.phaseTutorial.classList.add('hidden');
-                this.dom.phaseExam.classList.remove('hidden');
-                this.dom.phaseResults.classList.add('hidden');
-                this.dom.timerPill.classList.remove('hidden');
-                this.dom.timerPill.classList.add('flex');
 
                 this.dom.examScoreDisplay.textContent = '0';
                 this.dom.examItemCounter.textContent = `0 de ${EXAM_CHEMICALS.length}`;
-                this.updateStreakDisplay();
-                this.renderExamPictograms();
-                this.renderExamCards();
-                this.luchoReact('idle');
-                this.startTimer();
-            }
 
-            startTimer() {
-                if (this.timerInterval) clearInterval(this.timerInterval);
-                this.updateTimerDisplay();
-
-                this.timerInterval = setInterval(() => {
-                    this.timeLeft--;
-                    this.updateTimerDisplay();
-
-                    if (this.timeLeft <= 0) {
-                        clearInterval(this.timerInterval);
-                        this.endExam(true); // Expired by time
-                    }
-                }, 1000);
-            }
-
-            pauseTimer() {
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                    this.timerInterval = null;
-                }
-            }
-
-            resumeTimer() {
-                if (this.phase === 'exam' && this.timeLeft > 0 && !this.timerInterval) {
-                    this.startTimer();
-                }
-            }
-
-            updateTimerDisplay() {
-                const mins = Math.floor(this.timeLeft / 60);
-                const secs = this.timeLeft % 60;
-                this.dom.timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                
-                if (this.timeLeft <= 20) {
-                    this.dom.timerDisplay.classList.add('text-red-500', 'animate-pulse');
-                } else {
-                    this.dom.timerDisplay.classList.remove('text-red-500', 'animate-pulse');
-                }
-
-                if (this.phase === 'exam' && (this.timeLeft === 30 || this.timeLeft === 10)) {
-                    this.luchoReact('scared');
-                }
-            }
-
-            renderExamPictograms() {
+                // Render Pictograms Grid
                 this.dom.examGrid.innerHTML = '';
-                const keys = Object.keys(SGA_PICTOGRAMS);
-
-                keys.forEach(key => {
+                Object.keys(SGA_PICTOGRAMS).forEach(key => {
                     const pict = SGA_PICTOGRAMS[key];
                     const btn = document.createElement('button');
                     btn.className = 'pictogram-tile sga-pictogram-tile';
                     btn.dataset.sgaId = key;
                     btn.innerHTML = `
-                        <div class="pictogram-tile-icon">
-                            ${pict.svg}
-                        </div>
+                        <div class="pictogram-tile-icon">${pict.svg}</div>
                         <span class="pictogram-tile-name">${pict.name}</span>
                     `;
-
                     btn.addEventListener('click', () => {
                         if (!this.selectedCardId) {
                             sound.error();
@@ -2595,150 +3250,11 @@
                     });
                     this.dom.examGrid.appendChild(btn);
                 });
+
+                // Render Exam Cards
+                this.renderExamCards();
             }
 
-            /**
-             * CONTROLADOR DE ARRASTRE Y SOLTADO (DRAG & DROP TÁCTIL Y RATÓN)
-             */
-            setupDragAndDrop(cardEl, dropZoneSelector, onDropCallback, canDragCondition) {
-                let isDragging = false;
-                let startX = 0;
-                let startY = 0;
-                let currentHoverZone = null;
-                let hasMoved = false;
-
-                // Anular completamente el arrastre nativo del navegador sobre imágenes o texto
-                cardEl.addEventListener('dragstart', (e) => e.preventDefault());
-
-                const onPointerMove = (e) => {
-                    if (!isDragging) return;
-
-                    const dx = e.clientX - startX;
-                    const dy = e.clientY - startY;
-
-                    // Umbral de 6px para diferenciar toque simple de arrastre intencional
-                    if (!hasMoved && Math.hypot(dx, dy) > 6) {
-                        hasMoved = true;
-                        this.wasDragged = true;
-                        cardEl.classList.add('is-dragging');
-                    }
-
-                    if (hasMoved) {
-                        // Impedir gestos de desplazamiento o selección nativa mientras se arrastra
-                        if (e.cancelable) e.preventDefault();
-
-                        // Inclinación dinámica según la velocidad y dirección del arrastre
-                        const rot = Math.max(-10, Math.min(10, dx * 0.04));
-                        cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(0.96) rotate(${rot}deg)`;
-
-                        // Detección precisa de colisión con la zona de pictograma bajo el puntero
-                        const elemUnder = document.elementFromPoint(e.clientX, e.clientY);
-                        const dropZone = elemUnder ? elemUnder.closest(dropZoneSelector) : null;
-
-                        if (dropZone !== currentHoverZone) {
-                            if (currentHoverZone) {
-                                currentHoverZone.classList.remove('drop-target-hover');
-                            }
-                            currentHoverZone = dropZone;
-                            if (currentHoverZone) {
-                                currentHoverZone.classList.add('drop-target-hover');
-                                sound.tap();
-                            }
-                        }
-                    }
-                };
-
-                const onPointerUp = (e) => {
-                    if (!isDragging) return;
-                    isDragging = false;
-
-                    try {
-                        if (typeof cardEl.releasePointerCapture === 'function' && e && e.pointerId !== undefined) {
-                            cardEl.releasePointerCapture(e.pointerId);
-                        }
-                    } catch (_) {}
-
-                    window.removeEventListener('pointermove', onPointerMove);
-                    window.removeEventListener('pointerup', onPointerUp);
-                    window.removeEventListener('pointercancel', onPointerUp);
-
-                    // Limpiar clases de las zonas destino
-                    document.querySelectorAll(dropZoneSelector).forEach(el => {
-                        el.classList.remove('drop-target-active', 'drop-target-hover');
-                    });
-
-                    if (hasMoved) {
-                        cardEl.classList.remove('is-dragging');
-                        const targetZone = currentHoverZone;
-                        currentHoverZone = null;
-
-                        if (targetZone) {
-                            // Soltado exitoso sobre un pictograma válido
-                            cardEl.style.transition = 'transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                            cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
-                            
-                            const sgaId = targetZone.dataset.sgaId;
-                            onDropCallback(sgaId);
-                        } else {
-                            // Soltado fuera: Retorno elástico suave al centro
-                            cardEl.style.transition = 'transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                            cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
-                        }
-                    } else {
-                        // Fue un clic o toque simple
-                        cardEl.style.transform = 'translate3d(0, 0, 0)';
-                    }
-                };
-
-                const onPointerDown = (e) => {
-                    // Si se presiona un botón dentro de la tarjeta (ej. Inspeccionar FDS), no arrastrar
-                    if (e.target.closest('button')) return;
-
-                    if (canDragCondition && !canDragCondition()) return;
-
-                    this.wasDragged = false;
-                    isDragging = true;
-                    hasMoved = false;
-                    startX = e.clientX;
-                    startY = e.clientY;
-                    currentHoverZone = null;
-
-                    cardEl.style.transition = 'none';
-
-                    // Resaltar sutilmente todas las zonas destino de soltado
-                    document.querySelectorAll(dropZoneSelector).forEach(el => {
-                        el.classList.add('drop-target-active');
-                    });
-
-                    // Capturar el puntero para garantizar seguimiento en cualquier posición
-                    try {
-                        if (typeof cardEl.setPointerCapture === 'function' && e.pointerId !== undefined) {
-                            cardEl.setPointerCapture(e.pointerId);
-                        }
-                    } catch (_) {}
-
-                    window.addEventListener('pointermove', onPointerMove, { passive: false });
-                    window.addEventListener('pointerup', onPointerUp);
-                    window.addEventListener('pointercancel', onPointerUp);
-                };
-
-                cardEl.addEventListener('pointerdown', onPointerDown);
-            }
-
-            updateStreakDisplay() {
-                if (!this.dom.examComboBadge) return;
-                if (this.streak > 1) {
-                    this.dom.examComboBadge.classList.remove('hidden');
-                    this.dom.examComboVal.textContent = `x${this.streak}`;
-                } else {
-                    this.dom.examComboBadge.classList.add('hidden');
-                }
-            }
-
-            /**
-             * Construye las 6 tarjetas de químicos. Cada una se puede arrastrar a un pictograma
-             * o seleccionar con un toque y luego tocar el pictograma destino.
-             */
             renderExamCards() {
                 this.dom.examCardsTray.innerHTML = '';
                 this.selectedCardId = null;
@@ -2749,55 +3265,38 @@
                     card.dataset.chemId = chem.id;
                     card.innerHTML = `
                         <div class="flex items-center gap-2 pointer-events-none" style="min-width: 0; width: 100%;">
-                            <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #34d399; flex-shrink: 0;">
+                            <div style="width: 30px; height: 30px; border-radius: var(--radius-sm); background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #34d399; flex-shrink: 0;">
                                 <i class="fa-solid ${chem.icon}"></i>
                             </div>
                             <div style="min-width: 0; flex: 1; overflow: hidden;">
-                                <h3 style="font-weight: 700; font-size: 12px; color: #f8fafc; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${chem.name}</h3>
-                                <span style="display: block; font-size: 10.5px; color: var(--text-muted); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${chem.alias}</span>
-                                <div id="badge-attempts-${chem.id}" class="card-attempts-badge">
-                                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
-                                    <span>1 Intento (-10s)</span>
-                                </div>
+                                <h3 style="font-weight: 700; font-size: 11.5px; color: #f8fafc; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${chem.name}</h3>
+                                <span style="display: block; font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${chem.alias}</span>
                             </div>
                         </div>
                         <button class="btn-card-fds">
                             <i class="fa-solid fa-file-shield text-bolivar-yellow"></i>
-                            <span>Inspeccionar FDS</span>
+                            <span>FDS</span>
                         </button>
                         <div class="card-status hidden exam-card-status"></div>
                     `;
-                    setTimeout(() => card.classList.remove('pop-comic'), 600);
 
                     card.querySelector('.btn-card-fds').addEventListener('click', (e) => {
                         e.stopPropagation();
                         sound.tap();
-                        const btn = card.querySelector('.btn-card-fds');
-                        if (btn) btn.classList.remove('fds-hint-glow');
                         this.openFds(chem);
                     });
 
                     card.addEventListener('click', () => {
-                        if (this.wasDragged) {
-                            this.wasDragged = false;
-                            return;
-                        }
+                        if (this.wasDragged) { this.wasDragged = false; return; }
                         if (card.dataset.state === 'done') return;
                         sound.tap();
                         this.selectCard(this.selectedCardId === chem.id ? null : chem.id);
                     });
 
-                    this.setupDragAndDrop(card, '.sga-pictogram-tile',
-                        (sgaId) => this.handleExamSelection(sgaId, chem.id),
-                        () => this.phase === 'exam' && card.dataset.state !== 'done');
-
                     this.dom.examCardsTray.appendChild(card);
                 });
             }
 
-            /**
-             * Resalta en amarillo Bolívar la tarjeta seleccionada (o ninguna si id es null).
-             */
             selectCard(id) {
                 this.selectedCardId = id;
                 this.dom.examCardsTray.querySelectorAll('.exam-card').forEach(card => {
@@ -2807,9 +3306,6 @@
                 });
             }
 
-            /**
-             * Bloquea una tarjeta ya clasificada y la marca con ✓ (acierto) o ✗ (error).
-             */
             markCardResolved(cardEl, isCorrect) {
                 cardEl.dataset.state = 'done';
                 cardEl.classList.remove('draggable-card', 'pulse-selected', 'card-selected');
@@ -2822,14 +3318,7 @@
                 cardEl.querySelector('.btn-card-fds').disabled = true;
             }
 
-            /**
-             * Evalúa la clasificación de una tarjeta contra el pictograma elegido.
-             * Cero intentos blandos: Un fallo penaliza inmediatamente -10 segundos, rompe racha y quema la tarjeta.
-             * @param {string} chosenSgaKey Clave del pictograma SGA destino.
-             * @param {string} chemId Id del químico clasificado.
-             */
             handleExamSelection(chosenSgaKey, chemId) {
-                if (this.phase !== 'exam') return;
                 const currentChem = EXAM_CHEMICALS.find(c => c.id === chemId);
                 const cardEl = this.dom.examCardsTray.querySelector(`[data-chem-id="${chemId}"]`);
                 if (!currentChem || !cardEl || cardEl.dataset.state === 'done') return;
@@ -2838,386 +3327,188 @@
                 const tileEl = this.dom.examGrid.querySelector(`[data-sga-id="${chosenSgaKey}"]`);
 
                 if (isCorrect) {
-                    this.streak++;
-                    if (this.streak > this.maxStreak) this.maxStreak = this.streak;
-                    this.updateStreakDisplay();
-
-                    this.answersLog.push({
-                        chem: currentChem,
-                        chosenSga: chosenSgaKey,
-                        correctSga: currentChem.correctSga,
-                        isCorrect: true,
-                        attemptsUsed: 1
-                    });
-
+                    this.score3A++;
+                    this.answersLog3A.push({ chem: currentChem, chosenSga: chosenSgaKey, isCorrect: true });
                     this.markCardResolved(cardEl, true);
                     this.selectedCardId = null;
 
                     sound.success();
-                    this.score++;
-                    this.dom.examScoreDisplay.textContent = this.score;
-                    this.playAnimation(this.dom.examScoreDisplay, 'happy-jiggle', 650);
-                    this.playAnimation(cardEl, 'happy-jiggle', 700);
+                    this.dom.examScoreDisplay.textContent = this.score3A;
                     this.celebrateCorrect(tileEl);
-
-                    // Reacción arcade directa sin modales de preguntas y respuestas
-                    this.advanceExam();
                 } else {
-                    // PENALIZACIÓN INMEDIATA POR INFRACCIÓN TÉCNICA SGA (-10s / Pérdida de Tarjeta)
-                    this.streak = 0;
-                    this.updateStreakDisplay();
-
-                    this.timeLeft = Math.max(2, this.timeLeft - 10);
-                    this.updateTimerDisplay();
-
-                    this.answersLog.push({
-                        chem: currentChem,
-                        chosenSga: chosenSgaKey,
-                        correctSga: currentChem.correctSga,
-                        isCorrect: false,
-                        attemptsUsed: 1
-                    });
-
+                    this.answersLog3A.push({ chem: currentChem, chosenSga: chosenSgaKey, isCorrect: false });
                     this.markCardResolved(cardEl, false);
                     this.selectedCardId = null;
 
                     sound.error();
                     this.triggerScreenShake();
-                    this.playAnimation(cardEl, 'dazed-wobble', 500);
                     this.punishWrong(tileEl);
-                    this.showComicBubble('-10s ¡ERROR SGA!', 'bad', this.getCenterInViewport(cardEl));
-
-                    // Micro-pausa antes de abrir el modal pedagógico "Hora de aprender"
+                    this.showComicBubble('¡ERROR PICTOGRAMA!', 'bad', this.getCenterInViewport(cardEl));
                     setTimeout(() => {
                         this.showErrorFeedback(currentChem, chosenSgaKey, false);
-                    }, 450);
+                    }, 400);
+                }
+
+                const answered = this.answersLog3A.length;
+                this.dom.examItemCounter.textContent = `${answered} de ${EXAM_CHEMICALS.length}`;
+
+                if (answered >= EXAM_CHEMICALS.length) {
+                    // Switch to 3B FDS automatically after small delay
+                    setTimeout(() => {
+                        this.setSubphase('3b');
+                    }, 1000);
                 }
             }
 
-            /**
-             * Mini-Reto Técnico FDS Sección 2: Doble Criterio Obligatorio (Palabra + Frase H)
-             * Cuenta regresiva estricta de 5 segundos con penalización directa de -10s y ruptura de racha ante cualquier fallo o timeout.
-             * Otorga +5 segundos de bonificación técnica si se superan ambos criterios.
-             */
-            openWordChallenge(chem) {
-                if (!this.dom.modalWordChallenge) {
-                    this.advanceExam();
+            // ==============================================================
+            // SUBFASE 3B: BÚSQUEDA SITUACIONAL EN 16 SECCIONES FDS
+            // ==============================================================
+            initLevel3B() {
+                this.fdsIndex = 0;
+                this.fdsScore = 0;
+                this.fdsAnswersLog = [];
+
+                this.dom.fdsScoreDisplay.textContent = '0';
+                this.dom.btnFinishAllLevels.disabled = true;
+                this.dom.btnFinishAllLevels.style.background = '#1e293b';
+                this.dom.btnFinishAllLevels.style.cursor = 'not-allowed';
+
+                // Render 16 Sections Grid
+                this.dom.fdsNavGrid.innerHTML = '';
+                FDS_SECTIONS_LIST.forEach(sec => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'fds-sec-card-btn';
+                    btn.dataset.secNum = sec.num;
+                    btn.innerHTML = `
+                        <span class="fds-sec-badge">Sec. ${sec.num}</span>
+                        <span style="font-size: 0.7rem; line-height: 1.25;">${sec.name}</span>
+                    `;
+                    btn.addEventListener('click', () => this.handleFdsSectionSelection(sec.num, btn));
+                    this.dom.fdsNavGrid.appendChild(btn);
+                });
+
+                this.renderFdsQuestion();
+            }
+
+            renderFdsQuestion() {
+                if (this.fdsIndex >= FDS_SITUATIONAL_QUESTIONS.length) {
+                    // All FDS questions answered
+                    sound.victory();
+                    this.dom.btnFinishAllLevels.disabled = false;
+                    this.dom.btnFinishAllLevels.style.background = 'var(--bolivar-green)';
+                    this.dom.btnFinishAllLevels.style.color = '#fff';
+                    this.dom.btnFinishAllLevels.style.borderColor = 'var(--bolivar-green-glow)';
+                    this.dom.btnFinishAllLevels.style.cursor = 'pointer';
+                    this.playAnimation(this.dom.btnFinishAllLevels, 'happy-jiggle', 800);
                     return;
                 }
 
-                const expectedWord = chem.fds.warning.toUpperCase(); // 'PELIGRO' o 'ATENCIÓN'
-                const correctH = chem.hChallenge ? chem.hChallenge.correct : chem.fds.code;
-                const distractorH = chem.hChallenge ? chem.hChallenge.distractors : ['H226: Líquido inflamable', 'H280: Gas a presión'];
-                
-                this.dom.wordChallengeChemName.textContent = chem.name;
-                this.dom.wordChallengeStepBadge.textContent = 'PASO 1/2';
-                this.dom.wordChallengeInstruction.innerHTML = 'Paso 1: Según la <strong>FDS Sección 2</strong>, ¿cuál es su Palabra de Advertencia oficial?';
-                this.dom.wordChallengeStep1.classList.remove('hidden');
-                this.dom.wordChallengeStep2.classList.add('hidden');
-                this.dom.wordChallengeStep2.innerHTML = '';
-                this.dom.modalWordChallenge.classList.remove('hidden');
+                const q = FDS_SITUATIONAL_QUESTIONS[this.fdsIndex];
+                this.dom.fdsQuestionStep.textContent = `Caso FDS ${this.fdsIndex + 1} de ${FDS_SITUATIONAL_QUESTIONS.length}`;
+                this.dom.fdsQuestionTitle.textContent = q.title;
+                this.dom.fdsQuestionPrompt.innerHTML = `${q.prompt} <br><strong style="color: var(--bolivar-yellow);">${q.hint}</strong>`;
 
-                let resolved = false;
-                let currentStep = 1;
-                let startTime = performance.now();
-                const totalDuration = 5000;
-
-                const failChallenge = (reason) => {
-                    if (resolved) return;
-                    resolved = true;
-                    clearInterval(wordTimerInterval);
-
-                    sound.error();
-                    this.streak = 0;
-                    this.updateStreakDisplay();
-                    this.timeLeft = Math.max(2, this.timeLeft - 10);
-                    this.updateTimerDisplay();
-                    this.triggerScreenShake();
-
-                    const modalDialog = this.dom.modalWordChallenge.querySelector('.modal-dialog');
-                    if (modalDialog) {
-                        const rect = modalDialog.getBoundingClientRect();
-                        this.showComicBubble('-10s FALLO RETO FDS!', 'bad', { x: rect.left + rect.width / 2, y: rect.top - 20 });
-                    }
-                    this.luchoQuote.textContent = reason;
-                    this.luchoAvatar.textContent = '❌';
-
-                    setTimeout(() => {
-                        this.dom.modalWordChallenge.classList.add('hidden');
-                        cleanupListeners();
-                        this.advanceExam();
-                    }, 1100);
-                };
-
-                const successChallenge = () => {
-                    if (resolved) return;
-                    resolved = true;
-                    clearInterval(wordTimerInterval);
-
-                    sound.victory();
-                    this.timeLeft = Math.min(100, this.timeLeft + 5);
-                    this.updateTimerDisplay();
-                    const modalDialog = this.dom.modalWordChallenge.querySelector('.modal-dialog');
-                    if (modalDialog) {
-                        const rect = modalDialog.getBoundingClientRect();
-                        this.fx.confetti(rect.left + rect.width / 2, rect.top + rect.height / 2, 35);
-                        this.showComicBubble('+5s RETO FDS SUPERADO! ⚡', 'good', { x: rect.left + rect.width / 2, y: rect.top - 20 });
-                    }
-                    this.luchoQuote.textContent = `¡Sobresaliente! FDS validada: ${expectedWord} + Frase H confirmada.`;
-                    this.luchoAvatar.textContent = '⚡';
-
-                    setTimeout(() => {
-                        this.dom.modalWordChallenge.classList.add('hidden');
-                        cleanupListeners();
-                        this.advanceExam();
-                    }, 800);
-                };
-
-                const advanceToStep2 = () => {
-                    currentStep = 2;
-                    startTime = performance.now(); // 5s estrictos para responder la Frase H
-                    this.dom.wordChallengeStepBadge.textContent = 'PASO 2/2';
-                    this.dom.wordChallengeInstruction.innerHTML = 'Paso 2: ¿Cuál es la <strong>Indicación de Peligro (Frase H)</strong> oficial?';
-                    this.dom.wordChallengeStep1.classList.add('hidden');
-                    this.dom.wordChallengeStep2.classList.remove('hidden');
-
-                    const options = [correctH, ...distractorH].sort(() => Math.random() - 0.5);
-                    this.dom.wordChallengeStep2.innerHTML = '';
-                    options.forEach(optText => {
-                        const btnH = document.createElement('button');
-                        btnH.type = 'button';
-                        btnH.className = 'btn';
-                        btnH.style.cssText = 'background: rgba(30, 41, 59, 0.9); border: 1.5px solid rgba(255, 199, 44, 0.4); border-radius: var(--radius-sm); color: #f8fafc; font-size: 11px; font-weight: 700; padding: 8px 10px; text-align: left; cursor: pointer; transition: all 0.15s ease; line-height: 1.35;';
-                        btnH.innerHTML = `<i class="fa-solid fa-file-lines text-amber-400" style="margin-right: 6px;"></i>${optText}`;
-                        btnH.addEventListener('click', () => {
-                            if (optText === correctH) {
-                                btnH.style.borderColor = '#10b981';
-                                btnH.style.background = 'rgba(16, 185, 129, 0.3)';
-                                successChallenge();
-                            } else {
-                                btnH.style.borderColor = '#ef4444';
-                                btnH.style.background = 'rgba(239, 68, 68, 0.3)';
-                                failChallenge(`Frase H incorrecta (-10s). La FDS exigía: ${correctH}`);
-                            }
-                        });
-                        this.dom.wordChallengeStep2.appendChild(btnH);
-                    });
-                };
-
-                const onDangerClick = () => {
-                    if (expectedWord.includes('PELIGRO')) {
-                        sound.tap();
-                        advanceToStep2();
-                    } else {
-                        failChallenge('Palabra incorrecta (-10s). La FDS indica ATENCIÓN.');
-                    }
-                };
-
-                const onWarningClick = () => {
-                    if (expectedWord.includes('ATENCIÓN')) {
-                        sound.tap();
-                        advanceToStep2();
-                    } else {
-                        failChallenge('Palabra incorrecta (-10s). La FDS indica PELIGRO.');
-                    }
-                };
-
-                const cleanupListeners = () => {
-                    this.dom.btnWordDanger.removeEventListener('click', onDangerClick);
-                    this.dom.btnWordWarning.removeEventListener('click', onWarningClick);
-                };
-
-                this.dom.btnWordDanger.addEventListener('click', onDangerClick);
-                this.dom.btnWordWarning.addEventListener('click', onWarningClick);
-
-                const wordTimerInterval = setInterval(() => {
-                    const elapsed = performance.now() - startTime;
-                    const remainingPercent = Math.max(0, 100 - (elapsed / totalDuration) * 100);
-                    this.dom.wordChallengeTimerBar.style.width = `${remainingPercent}%`;
-
-                    if (elapsed >= totalDuration) {
-                        failChallenge(currentStep === 1 
-                            ? '¡Tiempo agotado en Palabra SGA (-10s)!' 
-                            : '¡Tiempo agotado en Frase H (-10s)!');
-                    }
-                }, 40);
-            }
-
-            /**
-             * Muestra el modal pedagógico "Hora de aprender" con la explicación concisa
-             * de por qué falló la selección y cómo funciona la regla química del SGA.
-             * @param {Object} chem Químico evaluado.
-             * @param {string} chosenSgaKey Clave del pictograma erróneo elegido.
-             * @param {boolean} isTutorial Indica si el error ocurrió durante la fase de tutorial.
-             */
-            showErrorFeedback(chem, chosenSgaKey, isTutorial = false) {
-                if (!this.dom.modalError) return;
-                this.isErrorFeedbackTutorial = isTutorial;
-                this.currentErrorChem = chem;
-
-                if (this.phase === 'exam') {
-                    this.pauseTimer();
-                }
-
-                const chosen = SGA_PICTOGRAMS[chosenSgaKey] || { name: 'Desconocido', desc: 'No especificado', svg: '' };
-                const correct = SGA_PICTOGRAMS[chem.correctSga] || { name: 'Desconocido', desc: 'No especificado', svg: '' };
-                const guide = LEARNING_GUIDES[chem.id] || {
-                    whyFailed: `Seleccionaste "${chosen.name}", pero el peligro principal del producto no coincide con esta clasificación.`,
-                    howItWorks: `La FDS Oficial exige el pictograma "${correct.name}" (${chem.fds ? chem.fds.code : ''}).`
-                };
-
-                if (this.dom.errorFeedbackTitle) {
-                    this.dom.errorFeedbackTitle.textContent = chem.name;
-                }
-
-                this.dom.errorFeedbackContent.innerHTML = `
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <!-- Bloque 1: ¿Por qué falló? -->
-                        <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.28); border-left: 4px solid #ef4444; border-radius: var(--radius-sm); padding: 10px 12px; display: flex; gap: 10px; align-items: flex-start;">
-                            <div style="width: 38px; height: 38px; flex-shrink: 0; background: rgba(15, 23, 42, 0.75); border-radius: var(--radius-sm); border: 1px solid rgba(239, 68, 68, 0.35); padding: 3px; display: flex; align-items: center; justify-content: center;">
-                                ${chosen.svg}
-                            </div>
-                            <div style="flex: 1; min-width: 0;">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; flex-wrap: wrap; gap: 4px;">
-                                    <span style="font-weight: 800; color: #f87171; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em;">
-                                        <i class="fa-solid fa-circle-xmark"></i> ¿Por qué falló?
-                                    </span>
-                                    <span style="font-size: 10px; background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 1px 6px; border-radius: 4px; font-weight: 700;">Elegiste: ${chosen.name}</span>
-                                </div>
-                                <p style="margin: 0; font-size: 11.5px; color: #e2e8f0; line-height: 1.4;">${guide.whyFailed}</p>
-                            </div>
-                        </div>
-
-                        <!-- Bloque 2: ¿Cómo funciona la regla? -->
-                        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.28); border-left: 4px solid #10b981; border-radius: var(--radius-sm); padding: 10px 12px; display: flex; gap: 10px; align-items: flex-start;">
-                            <div style="width: 38px; height: 38px; flex-shrink: 0; background: rgba(15, 23, 42, 0.75); border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.35); padding: 3px; display: flex; align-items: center; justify-content: center;">
-                                ${correct.svg}
-                            </div>
-                            <div style="flex: 1; min-width: 0;">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; flex-wrap: wrap; gap: 4px;">
-                                    <span style="font-weight: 800; color: #34d399; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em;">
-                                        <i class="fa-solid fa-circle-check"></i> ¿Cómo funciona la regla SGA?
-                                    </span>
-                                    <span style="font-size: 10px; background: rgba(16, 185, 129, 0.2); color: #6ee7b7; padding: 1px 6px; border-radius: 4px; font-weight: 700;">Correcto: ${correct.name}</span>
-                                </div>
-                                <p style="margin: 0; font-size: 11.5px; color: #e2e8f0; line-height: 1.4;">${guide.howItWorks}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                this.dom.modalError.classList.remove('hidden');
-            }
-
-            /**
-             * Cierra el modal "Hora de aprender" y reanuda el flujo del juego.
-             */
-            dismissErrorFeedback() {
-                if (!this.dom.modalError || this.dom.modalError.classList.contains('hidden')) return;
-                sound.tap();
-                this.dom.modalError.classList.add('hidden');
-
-                if (this.isErrorFeedbackTutorial) {
-                    this.isErrorFeedbackTutorial = false;
-                } else {
-                    this.resumeTimer();
-                    this.advanceExam();
-                }
-            }
-
-            /**
-             * Actualiza el contador de tarjetas clasificadas y cierra el examen cuando todas fueron resueltas.
-             */
-            advanceExam() {
-                const answered = this.answersLog.length;
-                this.dom.examItemCounter.textContent = `${answered} de ${EXAM_CHEMICALS.length}`;
-                if (answered >= EXAM_CHEMICALS.length) {
-                    setTimeout(() => this.endExam(false), 800);
-                }
-            }
-
-            endExam(timeExpired = false) {
-                if (this.phase === 'results') return;
-                if (this.timerInterval) clearInterval(this.timerInterval);
-                this.phase = 'results';
-                this.dom.modalError.classList.add('hidden');
-                if (this.dom.modalWordChallenge) this.dom.modalWordChallenge.classList.add('hidden');
-
-                // Tarjetas sin clasificar al agotarse el tiempo cuentan como fallo
-                EXAM_CHEMICALS.forEach(chem => {
-                    if (!this.answersLog.some(a => a.chem.id === chem.id)) {
-                        this.answersLog.push({ chem, chosenSga: null, correctSga: chem.correctSga, isCorrect: false });
-                    }
+                // Reset section buttons classes
+                this.dom.fdsNavGrid.querySelectorAll('.fds-sec-card-btn').forEach(b => {
+                    b.classList.remove('card-resolved-correct', 'card-resolved-error');
+                    b.style.pointerEvents = 'auto';
                 });
-                
-                this.dom.phaseExam.classList.add('hidden');
-                this.dom.phaseResults.classList.remove('hidden');
-                this.dom.timerPill.classList.add('hidden');
+            }
 
-                const total = EXAM_CHEMICALS.length;
-                const percent = Math.round((this.score / total) * 100);
+            handleFdsSectionSelection(secNum, btnEl) {
+                if (this.fdsIndex >= FDS_SITUATIONAL_QUESTIONS.length) return;
+                const q = FDS_SITUATIONAL_QUESTIONS[this.fdsIndex];
+                const isCorrect = (secNum === q.correctSection);
+
+                // Disable grid during feedback
+                this.dom.fdsNavGrid.querySelectorAll('.fds-sec-card-btn').forEach(b => b.style.pointerEvents = 'none');
+
+                if (isCorrect) {
+                    sound.success();
+                    this.fdsScore++;
+                    this.fdsAnswersLog.push({ q, chosenSec: secNum, isCorrect: true });
+                    this.dom.fdsScoreDisplay.textContent = this.fdsScore;
+
+                    btnEl.style.background = 'rgba(16, 185, 129, 0.3)';
+                    btnEl.style.borderColor = '#10b981';
+                    const pos = this.getCenterInViewport(btnEl);
+                    this.fx.confetti(pos.x, pos.y, 35);
+                    this.showComicBubble(`¡SECCIÓN ${secNum} CORRECTA!`, 'good', pos);
+
+                    this.fdsIndex++;
+                    setTimeout(() => this.renderFdsQuestion(), 700);
+                } else {
+                    sound.error();
+                    this.triggerScreenShake();
+                    this.fdsAnswersLog.push({ q, chosenSec: secNum, isCorrect: false });
+
+                    btnEl.style.background = 'rgba(239, 68, 68, 0.3)';
+                    btnEl.style.borderColor = '#ef4444';
+                    this.showComicBubble(`¡ERA LA SECCIÓN ${q.correctSection}!`, 'bad', this.getCenterInViewport(btnEl));
+
+                    // Highlight the correct one
+                    const correctBtn = this.dom.fdsNavGrid.querySelector(`[data-sec-num="${q.correctSection}"]`);
+                    if (correctBtn) {
+                        correctBtn.style.background = 'rgba(16, 185, 129, 0.3)';
+                        correctBtn.style.borderColor = '#10b981';
+                    }
+
+                    this.fdsIndex++;
+                    setTimeout(() => this.renderFdsQuestion(), 1100);
+                }
+            }
+
+            // ==============================================================
+            // RESULTADOS FINALES Y REPORTE SCORM
+            // ==============================================================
+            showFinalResults() {
+                this.dom.phaseL1.classList.add('hidden');
+                this.dom.phaseL2.classList.add('hidden');
+                this.dom.phaseL3.classList.add('hidden');
+                this.dom.phaseResults.classList.remove('hidden');
+
+                // Total Evaluation: 4 (L1) + 6 (L2) + 6 (L3A) + 6 (L3B) = 22 total items
+                const totalPossible = 4 + 6 + 6 + 6;
+                const totalEarned = (Object.keys(this.level1Matches).length) + this.level2Score + this.score3A + this.fdsScore;
+                const percent = Math.round((totalEarned / totalPossible) * 100);
 
                 this.dom.resultsPercent.textContent = `${percent}%`;
-                this.dom.resultsBadgeCount.textContent = `${this.score}/${total} Aciertos`;
+                this.dom.resBadgeL1.textContent = `${Object.keys(this.level1Matches).length}/4`;
+                this.dom.resBadgeL2.textContent = `${this.level2Score}/6`;
+                this.dom.resBadgeL3.textContent = `${this.score3A + this.fdsScore}/12`;
 
                 if (percent >= 80) {
                     sound.victory();
                     this.dom.resultsTitle.textContent = '¡Aprobación Sobresaliente SST!';
-                    this.dom.resultsSubtitle.textContent = 'Cumples cabalmente con la Resolución 773/2021 para el manejo seguro de químicos en obras KMA.';
+                    this.dom.resultsSubtitle.textContent = 'Cumples cabalmente con la Ley 55/1993, Decreto 1496/2018 y la Resolución 773/2021 para el manejo seguro de químicos en obras KMA.';
                     this.fx.rain(110);
-                } else if (percent >= 50) {
+                } else if (percent >= 60) {
                     sound.success();
-                    this.dom.resultsTitle.textContent = 'Aprobado con Observaciones';
-                    this.dom.resultsSubtitle.textContent = 'Revisa las FDS de los productos errados para afianzar el criterio de prevención de riesgos.';
+                    this.dom.resultsTitle.textContent = 'Aprobado con Observaciones SST';
+                    this.dom.resultsSubtitle.textContent = 'Superaste el umbral general, pero debes reforzar la consulta rápida en las 16 secciones de la FDS.';
                     this.fx.rain(40);
                 } else {
                     sound.error();
                     this.dom.resultsTitle.textContent = 'No Aprobado - Refuerzo Obligatorio';
-                    this.dom.resultsSubtitle.textContent = timeExpired ? 'Se agotó el tiempo límite de 120 segundos. Debes reforzar la lectura ágil de FDS.' : 'Porcentaje insuficiente. Revisa detalladamente la Sección 2 de cada químico.';
+                    this.dom.resultsSubtitle.textContent = 'Porcentaje insuficiente. Revisa detalladamente el Marco Legal y las 3 familias de peligro SGA.';
                 }
-                this.playAnimation(this.dom.resultsPercent.parentElement, percent >= 50 ? 'pop-comic' : 'dazed-wobble', 600);
 
-                // Reporte Automático a Moodle LMS (SCORM 1.2 / 2004 y iFrame postMessage)
+                // Report to SCORM
                 if (this.lmsBridge) {
                     this.lmsBridge.reportCompletion(percent, {
-                        correctCount: this.score,
-                        totalCount: total,
-                        timeExpired: timeExpired
+                        level1: Object.keys(this.level1Matches).length,
+                        level2: this.level2Score,
+                        level3A: this.score3A,
+                        level3B: this.fdsScore,
+                        totalScore: totalEarned
                     });
                 }
-
-                // Render Review List
-                this.dom.resultsList.innerHTML = '';
-                this.answersLog.forEach((item, index) => {
-                    const row = document.createElement('div');
-                    row.className = `results-row ${item.isCorrect ? 'results-row-correct' : 'results-row-error'}`;
-                    
-                    row.innerHTML = `
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid ${item.isCorrect ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'}" style="font-size: 1.25rem;"></i>
-                            <div>
-                                <h4 style="font-weight: 800; font-size: var(--font-sm); color: #fff;">${item.chem.name}</h4>
-                                <span style="font-size: var(--font-xs); color: var(--text-muted); display: block; margin-top: 2px;">${item.isCorrect ? 'Clasificado como ' + SGA_PICTOGRAMS[item.chosenSga].name + (item.attemptsUsed === 1 ? ' (1er intento)' : ' (2do intento)') : (item.chosenSga ? 'Elegiste: ' + SGA_PICTOGRAMS[item.chosenSga].name : 'Sin clasificar (tiempo agotado)') + ' | Correcto: ' + SGA_PICTOGRAMS[item.correctSga].name}</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-secondary btn-review-fds">
-                            <i class="fa-solid fa-file-shield text-bolivar-yellow"></i>
-                            <span>Ver FDS</span>
-                        </button>
-                    `;
-
-                    row.querySelector('.btn-review-fds').addEventListener('click', () => {
-                        sound.tap();
-                        this.openFds(item.chem);
-                    });
-
-                    this.dom.resultsList.appendChild(row);
-                });
             }
 
-            /**
-             * MODAL VISOR TÉCNICO FDS
-             */
+            // ==============================================================
+            // HELPERS, MODALS Y FX
+            // ==============================================================
             openFds(chem) {
                 this.dom.fdsTitle.textContent = `FDS: ${chem.name}`;
                 this.dom.fdsSec1.textContent = chem.fds.sec1;
@@ -3232,17 +3523,49 @@
                 this.dom.modalFds.classList.add('hidden');
             }
 
-            triggerScreenShake() {
-                this.dom.viewport.classList.add('shake-screen');
-                setTimeout(() => {
-                    this.dom.viewport.classList.remove('shake-screen');
-                }, 400);
+            showErrorFeedback(chem, chosenKey, isTutorial = false) {
+                if (!this.dom.modalError) return;
+                const chosen = SGA_PICTOGRAMS[chosenKey] || { name: chosenKey, desc: '', svg: '' };
+                const correct = SGA_PICTOGRAMS[chem.correctSga] || { name: chem.correctSga, desc: '', svg: '' };
+                const guide = LEARNING_GUIDES[chem.id] || {
+                    whyFailed: `La clasificación elegida no coincide con las propiedades técnicas de esta sustancia.`,
+                    howItWorks: `Revisa la Sección 2 de la FDS oficial y la Res. 773/2021 para verificar los peligros correspondientes.`
+                };
+
+                if (this.dom.errorFeedbackTitle) {
+                    this.dom.errorFeedbackTitle.textContent = chem.name;
+                }
+
+                this.dom.errorFeedbackContent.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; padding: 8px 10px; border-radius: var(--radius-sm);">
+                            <span style="color: #f87171; font-weight: 800; font-size: 11px; text-transform: uppercase;">
+                                <i class="fa-solid fa-circle-xmark"></i> ¿Por qué falló?
+                            </span>
+                            <p style="margin: 3px 0 0; color: #e2e8f0; font-size: 11px; line-height: 1.35;">${guide.whyFailed}</p>
+                        </div>
+                        <div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; padding: 8px 10px; border-radius: var(--radius-sm);">
+                            <span style="color: #34d399; font-weight: 800; font-size: 11px; text-transform: uppercase;">
+                                <i class="fa-solid fa-circle-check"></i> Regla Oficial SGA:
+                            </span>
+                            <p style="margin: 3px 0 0; color: #e2e8f0; font-size: 11px; line-height: 1.35;">${guide.howItWorks}</p>
+                        </div>
+                    </div>
+                `;
+
+                this.dom.modalError.classList.remove('hidden');
             }
 
-            /**
-             * Reinicia y dispara una clase de animación CSS sobre un elemento.
-             * Se retira al terminar para no interferir con el transform inline del arrastre.
-             */
+            dismissErrorFeedback() {
+                if (!this.dom.modalError) return;
+                this.dom.modalError.classList.add('hidden');
+            }
+
+            triggerScreenShake() {
+                this.dom.viewport.classList.add('shake-screen');
+                setTimeout(() => this.dom.viewport.classList.remove('shake-screen'), 400);
+            }
+
             playAnimation(el, className, durationMs = 700) {
                 if (!el) return;
                 el.classList.remove(className);
@@ -3251,21 +3574,13 @@
                 setTimeout(() => el.classList.remove(className), durationMs);
             }
 
-            /**
-             * Centro de un elemento en coordenadas relativas al contenedor principal (para FX).
-             */
             getCenterInViewport(el) {
+                if (!el) return { x: this.dom.viewport.clientWidth / 2, y: 260 };
                 const host = this.dom.viewport.getBoundingClientRect();
                 const r = el.getBoundingClientRect();
                 return { x: r.left - host.left + r.width / 2, y: r.top - host.top + r.height / 2 };
             }
 
-            /**
-             * Globo de historieta ("¡POW!", "¡SANTAS REACCIONES!") que aparece con rebote y se desvanece.
-             * @param {string} text Texto del globo.
-             * @param {'good'|'bad'} mood Define colores (amarillo Bolívar / rojo alerta).
-             * @param {{x:number,y:number}} pos Coordenadas relativas al contenedor principal.
-             */
             showComicBubble(text, mood, pos) {
                 const tilt = (Math.random() * 14 - 7).toFixed(1);
                 const wrapper = document.createElement('div');
@@ -3284,57 +3599,25 @@
                     wrapper.style.transition = 'opacity 0.35s ease, top 0.35s ease';
                     wrapper.style.opacity = '0';
                     wrapper.style.top = `${pos.y - 30}px`;
-                }, 1000);
-                setTimeout(() => wrapper.remove(), 1400);
+                }, 900);
+                setTimeout(() => wrapper.remove(), 1300);
             }
 
-            /**
-             * Cambia el avatar y la frase de Lucho según su estado de ánimo.
-             * @param {'idle'|'happy'|'hurt'|'scared'} mood
-             */
-            luchoReact(mood) {
-                const moods = {
-                    idle:   { face: '👨‍🔧', quotes: ['¡Lucho en guardia!', 'A clasificar, jefe', 'Ojo con la FDS'] },
-                    happy:  { face: '🤩', quotes: ['¡Eso es, jefe!', '¡Cero accidentes!', '¡Soy un crack SST!'] },
-                    hurt:   { face: '😵‍💫', quotes: ['¡Casi me achicharro!', '¡Mis cejas!', '¡Santas reacciones!'] },
-                    scared: { face: '😰', quotes: ['¡Se acaba el tiempo!', '¡Apúrate, jefe!'] }
-                };
-                const m = moods[mood] || moods.idle;
-                this.dom.luchoAvatar.textContent = m.face;
-                this.dom.luchoQuote.textContent = m.quotes[Math.floor(Math.random() * m.quotes.length)];
-                this.playAnimation(this.dom.luchoAvatar, mood === 'hurt' ? 'dazed-wobble' : 'happy-jiggle', 700);
-                if (mood === 'happy' || mood === 'hurt') {
-                    clearTimeout(this.luchoResetTimer);
-                    this.luchoResetTimer = setTimeout(() => this.luchoReact('idle'), 2200);
-                }
-            }
-
-            /**
-             * Efecto de acierto: confeti dorado/verde, globo "¡POW!" y salto feliz del pictograma.
-             */
             celebrateCorrect(tileEl) {
                 const pos = tileEl ? this.getCenterInViewport(tileEl) : { x: this.dom.viewport.clientWidth / 2, y: 260 };
-                this.fx.confetti(pos.x, pos.y, 45);
-                const words = ['¡POW!', '¡PLOP!', '¡BIEN LUCHO!', '¡SEGURIDAD!', '¡CLASE A!'];
+                this.fx.confetti(pos.x, pos.y, 40);
+                const words = ['¡POW!', '¡BIEN HECHO!', '¡SEGURIDAD!', '¡CLASE A!'];
                 this.showComicBubble(words[Math.floor(Math.random() * words.length)], 'good', { x: pos.x, y: pos.y - 70 });
                 this.playAnimation(tileEl, 'happy-jiggle', 700);
-                this.luchoReact('happy');
             }
 
-            /**
-             * Efecto de error: humo, chispas, globo cómico, destello rojo y Lucho tiznado.
-             */
             punishWrong(tileEl) {
                 const pos = tileEl ? this.getCenterInViewport(tileEl) : { x: this.dom.viewport.clientWidth / 2, y: 260 };
-                this.fx.smoke(pos.x, pos.y, 16);
-                this.fx.sparks(pos.x, pos.y, 18);
-                const words = ['¡SANTAS REACCIONES!', '¡CASI ME ACHICHARRO!', '¡BOOM!', '¡AY, MIS OJOS!'];
+                this.fx.smoke(pos.x, pos.y, 14);
+                this.fx.sparks(pos.x, pos.y, 16);
+                const words = ['¡ERROR!', '¡CASI ME ACHICHARRO!', '¡CUIDADO!'];
                 this.showComicBubble(words[Math.floor(Math.random() * words.length)], 'bad', { x: pos.x, y: pos.y - 70 });
                 this.playAnimation(tileEl, 'dazed-wobble', 500);
-                this.playAnimation(this.dom.phaseExam, 'flash-alert', 400);
-                const modalIcon = this.dom.modalError.querySelector('i');
-                this.playAnimation(modalIcon, 'dazed-wobble', 500);
-                this.luchoReact('hurt');
             }
         }
 
