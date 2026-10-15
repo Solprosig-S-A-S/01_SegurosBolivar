@@ -3135,6 +3135,8 @@
                     countAmbiente: document.getElementById('count-ambiente'),
                     l2ProgressText: document.getElementById('level2-progress-text'),
                     l2ScoreText: document.getElementById('level2-score-text'),
+                    level2ProgressText: document.getElementById('level2-progress-text'),
+                    level2ScoreText: document.getElementById('level2-score-text'),
                     btnAdvanceL3: document.getElementById('btn-advance-level3'),
                     l2FeedbackBanner: document.getElementById('level2-feedback-banner'),
 
@@ -3310,7 +3312,11 @@
                     setTimeout(() => this.updateLevel1Wires(), 60);
                 } else if (lvlNum === 2) {
                     this.dom.phaseL2.classList.remove('hidden');
-                    if (this.level2Index === 0) this.initLevel2();
+                    if (!this.level2Initialized) {
+                        this.initLevel2();
+                    } else {
+                        this.renderLevel2Card();
+                    }
                 } else if (lvlNum === 3) {
                     this.dom.phaseL3.classList.remove('hidden');
                     if (this.score3A === 0 && this.answersLog3A.length === 0) {
@@ -3328,6 +3334,7 @@
                 this.selectedConceptKey = null;
                 this.level1Score = 0;
 
+                this.level2Initialized = false;
                 this.level2Index = 0;
                 this.level2Score = 0;
                 this.level2BucketCounts = { fisico: 0, salud: 0, ambiente: 0 };
@@ -3747,26 +3754,33 @@
             // NIVEL 2: CLASIFICACIÓN Y PELIGROS SEGÚN EL SGA (3 FAMILIAS)
             // ==============================================================
             initLevel2() {
+                this.level2Initialized = true;
                 this.level2Index = 0;
                 this.level2Score = 0;
                 this.level2BucketCounts = { fisico: 0, salud: 0, ambiente: 0 };
-                this.dom.countFisico.textContent = '0 clasificados';
-                this.dom.countSalud.textContent = '0 clasificados';
-                this.dom.countAmbiente.textContent = '0 clasificados';
-                this.dom.level2ProgressText.textContent = '0 de 6';
-                this.dom.level2ScoreText.textContent = '0';
-                this.dom.btnAdvanceL3.disabled = true;
-                this.dom.btnAdvanceL3.style.background = '#1e293b';
-                this.dom.btnAdvanceL3.style.cursor = 'not-allowed';
-                this.dom.btnAdvanceL3.innerHTML = `<span>Clasifica las sustancias para avanzar</span> <i class="fa-solid fa-lock" style="font-size: var(--font-xs);"></i>`;
+                if (this.dom.countFisico) this.dom.countFisico.textContent = '0 clasificados';
+                if (this.dom.countSalud) this.dom.countSalud.textContent = '0 clasificados';
+                if (this.dom.countAmbiente) this.dom.countAmbiente.textContent = '0 clasificados';
+                if (this.dom.level2ProgressText) this.dom.level2ProgressText.textContent = '0 de 6';
+                if (this.dom.l2ProgressText) this.dom.l2ProgressText.textContent = '0 de 6';
+                if (this.dom.level2ScoreText) this.dom.level2ScoreText.textContent = '0';
+                if (this.dom.l2ScoreText) this.dom.l2ScoreText.textContent = '0';
+                if (this.dom.btnAdvanceL3) {
+                    this.dom.btnAdvanceL3.disabled = true;
+                    this.dom.btnAdvanceL3.style.background = '#1e293b';
+                    this.dom.btnAdvanceL3.style.cursor = 'not-allowed';
+                    this.dom.btnAdvanceL3.innerHTML = `<span>Clasifica las sustancias para avanzar</span> <i class="fa-solid fa-lock" style="font-size: var(--font-xs);"></i>`;
+                }
 
                 // Setup Buckets Click Handlers
-                this.dom.hazardBucketsGrid.querySelectorAll('.hazard-bucket').forEach(bucket => {
-                    bucket.onclick = () => {
-                        const family = bucket.dataset.family;
-                        this.classifyLevel2Item(family);
-                    };
-                });
+                if (this.dom.hazardBucketsGrid) {
+                    this.dom.hazardBucketsGrid.querySelectorAll('.hazard-bucket').forEach(bucket => {
+                        bucket.onclick = () => {
+                            const family = bucket.dataset.family;
+                            this.classifyLevel2Item(family);
+                        };
+                    });
+                }
 
                 this.renderLevel2Card();
             }
@@ -3775,44 +3789,52 @@
                 if (this.level2Index >= HAZARD_ITEMS.length) {
                     // Level 2 Finished
                     sound.victory();
-                    this.dom.l2CardContainer.innerHTML = `
-                        <div style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid var(--bolivar-green-glow); border-radius: var(--radius-md); padding: 18px; text-align: center;">
-                            <div style="font-size: 2rem; margin-bottom: 6px;">🎉</div>
-                            <h3 style="color: #34d399; font-size: 1rem; font-weight: 800; margin-bottom: 4px;">¡Nivel 2 Completado!</h3>
-                            <p style="font-size: 0.75rem; color: #cbd5e1; margin: 0;">Has clasificado correctamente las 3 familias de peligro SGA.</p>
-                        </div>
-                    `;
-                    this.dom.btnAdvanceL3.disabled = false;
-                    this.dom.btnAdvanceL3.style.background = 'var(--bolivar-green)';
-                    this.dom.btnAdvanceL3.style.color = '#ffffff';
-                    this.dom.btnAdvanceL3.style.borderColor = 'var(--bolivar-green-glow)';
-                    this.dom.btnAdvanceL3.style.cursor = 'pointer';
-                    this.dom.btnAdvanceL3.innerHTML = `<span>¡Nivel 2 Superado! Avanzar a Comunicación y FDS</span> <i class="fa-solid fa-arrow-right"></i>`;
-                    this.playAnimation(this.dom.btnAdvanceL3, 'happy-jiggle', 800);
+                    if (this.dom.l2CardContainer) {
+                        this.dom.l2CardContainer.innerHTML = `
+                            <div style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid var(--bolivar-green-glow); border-radius: var(--radius-md); padding: 18px; text-align: center;">
+                                <div style="font-size: 2rem; margin-bottom: 6px;">🎉</div>
+                                <h3 style="color: #34d399; font-size: 1rem; font-weight: 800; margin-bottom: 4px;">¡Nivel 2 Completado!</h3>
+                                <p style="font-size: 0.75rem; color: #cbd5e1; margin: 0;">Has clasificado correctamente las 3 familias de peligro SGA.</p>
+                            </div>
+                        `;
+                    }
+                    if (this.dom.btnAdvanceL3) {
+                        this.dom.btnAdvanceL3.disabled = false;
+                        this.dom.btnAdvanceL3.style.background = 'var(--bolivar-green)';
+                        this.dom.btnAdvanceL3.style.color = '#ffffff';
+                        this.dom.btnAdvanceL3.style.borderColor = 'var(--bolivar-green-glow)';
+                        this.dom.btnAdvanceL3.style.cursor = 'pointer';
+                        this.dom.btnAdvanceL3.innerHTML = `<span>¡Nivel 2 Superado! Avanzar a Comunicación y FDS</span> <i class="fa-solid fa-arrow-right"></i>`;
+                        this.playAnimation(this.dom.btnAdvanceL3, 'happy-jiggle', 800);
+                    }
                     return;
                 }
 
                 const item = HAZARD_ITEMS[this.level2Index];
-                this.dom.level2ProgressText.textContent = `${this.level2Index + 1} de ${HAZARD_ITEMS.length}`;
+                const progressStr = `${this.level2Index + 1} de ${HAZARD_ITEMS.length}`;
+                if (this.dom.level2ProgressText) this.dom.level2ProgressText.textContent = progressStr;
+                if (this.dom.l2ProgressText) this.dom.l2ProgressText.textContent = progressStr;
 
-                this.dom.l2CardContainer.innerHTML = `
-                    <div class="exam-card pop-comic" style="padding: 14px 16px; border-left: 4px solid var(--bolivar-yellow);">
-                        <div class="flex items-center gap-2" style="margin-bottom: 8px;">
-                            <span style="font-size: 0.65rem; background: rgba(255,199,44,0.15); border: 1px solid rgba(255,199,44,0.3); color: var(--bolivar-yellow); padding: 2px 6px; border-radius: 4px; font-weight: 700;">CASO ${this.level2Index + 1}/6</span>
-                            <h3 style="font-size: 0.95rem; font-weight: 800; color: #fff; margin: 0;">${item.name}</h3>
+                if (this.dom.l2CardContainer) {
+                    this.dom.l2CardContainer.innerHTML = `
+                        <div class="exam-card pop-comic" style="padding: 14px 16px; border-left: 4px solid var(--bolivar-yellow);">
+                            <div class="flex items-center gap-2" style="margin-bottom: 8px;">
+                                <span style="font-size: 0.65rem; background: rgba(255,199,44,0.15); border: 1px solid rgba(255,199,44,0.3); color: var(--bolivar-yellow); padding: 2px 6px; border-radius: 4px; font-weight: 700;">CASO ${this.level2Index + 1}/6</span>
+                                <h3 style="font-size: 0.95rem; font-weight: 800; color: #fff; margin: 0;">${item.name}</h3>
+                            </div>
+                            <p style="font-size: 0.75rem; color: #e2e8f0; line-height: 1.35; margin-bottom: 6px;">${item.situation}</p>
+                            <div style="font-size: 0.68rem; color: var(--text-muted); font-style: italic;">
+                                <i class="fa-solid fa-hand-pointer text-bolivar-yellow"></i> Toca abajo el casillero correspondiente: Físico, Salud o Medio Ambiente.
+                            </div>
                         </div>
-                        <p style="font-size: 0.75rem; color: #e2e8f0; line-height: 1.35; margin-bottom: 6px;">${item.situation}</p>
-                        <div style="font-size: 0.68rem; color: var(--text-muted); font-style: italic;">
-                            <i class="fa-solid fa-hand-pointer text-bolivar-yellow"></i> Toca abajo el casillero correspondiente: Físico, Salud o Medio Ambiente.
-                        </div>
-                    </div>
-                `;
+                    `;
+                }
             }
 
             classifyLevel2Item(chosenFamily) {
                 if (this.level2Index >= HAZARD_ITEMS.length) return;
                 const item = HAZARD_ITEMS[this.level2Index];
-                const bucketEl = this.dom.hazardBucketsGrid.querySelector(`[data-family="${chosenFamily}"]`);
+                const bucketEl = this.dom.hazardBucketsGrid ? this.dom.hazardBucketsGrid.querySelector(`[data-family="${chosenFamily}"]`) : null;
 
                 if (chosenFamily === item.correctFamily) {
                     sound.success();
@@ -3822,11 +3844,14 @@
                     const countEl = document.getElementById(`count-${chosenFamily}`);
                     if (countEl) countEl.textContent = `${this.level2BucketCounts[chosenFamily]} clasificados`;
 
-                    this.dom.level2ScoreText.textContent = `${this.level2Score}`;
-                    const pos = this.getCenterInViewport(bucketEl);
-                    this.fx.confetti(pos.x, pos.y, 30);
-                    this.showComicBubble('¡CORRECTO!', 'good', pos);
-                    this.playAnimation(bucketEl, 'happy-jiggle', 600);
+                    if (this.dom.level2ScoreText) this.dom.level2ScoreText.textContent = `${this.level2Score}`;
+                    if (this.dom.l2ScoreText) this.dom.l2ScoreText.textContent = `${this.level2Score}`;
+                    if (bucketEl) {
+                        const pos = this.getCenterInViewport(bucketEl);
+                        this.fx.confetti(pos.x, pos.y, 30);
+                        this.showComicBubble('¡CORRECTO!', 'good', pos);
+                        this.playAnimation(bucketEl, 'happy-jiggle', 600);
+                    }
 
                     if (this.dom.l2FeedbackBanner) {
                         this.dom.l2FeedbackBanner.style.borderColor = 'rgba(52, 211, 153, 0.5)';
