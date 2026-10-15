@@ -1018,7 +1018,9 @@
             border: 1px solid rgba(255, 199, 44, 0.4);
             border-left: 4px solid var(--bolivar-yellow);
             border-radius: 4px;
-            max-width: 520px;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
             width: 100%;
             padding: 22px 24px;
             display: flex;
@@ -1063,7 +1065,7 @@
         .briefing-steps {
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 8px;
             background: rgba(15, 23, 42, 0.7);
             border: 1px solid rgba(148, 163, 184, 0.15);
             border-radius: 4px;
@@ -1071,11 +1073,11 @@
         }
         .briefing-step-row {
             display: flex;
-            align-items: center;
-            gap: 9px;
-            font-size: 0.8rem;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.78rem;
             color: #cbd5e1;
-            line-height: 1.35;
+            line-height: 1.4;
         }
         .briefing-step-row strong {
             color: #ffffff;
@@ -1448,6 +1450,12 @@
                     </div>
                 </div>
 
+                <!-- Feedback Banner Pedagógico Nivel 1 -->
+                <div id="level1-feedback-banner" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 199, 44, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 0.73rem; color: #cbd5e1; margin: 4px 0 6px; min-height: 38px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-scale-balanced text-bolivar-yellow"></i>
+                    <span><strong>Fundamento Legal:</strong> Relaciona cada norma con su mandato legal en Colombia.</span>
+                </div>
+
                 <!-- Tablero de Correspondencia -->
                 <div class="match-pairs-board" id="level1-match-board">
                     <div class="match-column" id="level1-col-laws">
@@ -1486,6 +1494,12 @@
                             Identifica si el producto y su situación de riesgo afecta la <strong>Salud</strong>, genera <strong>Peligros Físicos</strong> (fuego/presión) o afecta el <strong>Medio Ambiente</strong>.
                         </p>
                     </div>
+                </div>
+
+                <!-- Feedback Banner Pedagógico Nivel 2 -->
+                <div id="level2-feedback-banner" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 199, 44, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 0.73rem; color: #cbd5e1; margin: 4px 0 6px; min-height: 38px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-info text-bolivar-yellow"></i>
+                    <span><strong>Criterio SGA:</strong> Evalúa si el producto genera daño físico (fuego/presión), a la salud humana (toxicidad/corrosión) o impacto ambiental duradero.</span>
                 </div>
 
                 <!-- Tarjeta Activa a Clasificar -->
@@ -1574,6 +1588,12 @@
                             <h4 id="fds-question-title" style="font-size: 0.8rem; font-weight: 800; color: var(--bolivar-yellow); margin: 2px 0;">Almacenamiento Seguro</h4>
                             <p id="fds-question-prompt" style="font-size: 0.72rem; color: #e2e8f0; line-height: 1.3;">¿A qué sección dirigirse?</p>
                         </div>
+                    </div>
+
+                    <!-- Feedback Banner Pedagógico Nivel 3B -->
+                    <div id="fds-feedback-banner" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 199, 44, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 0.73rem; color: #cbd5e1; margin-bottom: 6px; min-height: 38px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-compass text-bolivar-yellow"></i>
+                        <span><strong>Estructura FDS (16 Secciones):</strong> La NTC 4435 y la Res. 773 estandarizan la posición de cada respuesta técnica para actuar sin perder tiempo.</span>
                     </div>
 
                     <p style="font-size: 0.7rem; font-weight: 800; color: var(--bolivar-yellow); text-transform: uppercase; margin-bottom: 4px;">
@@ -1813,15 +1833,30 @@
                 <div class="briefing-steps">
                     <div class="briefing-step-row">
                         <span class="briefing-step-num">1</span>
-                        <span><strong>Nivel 1 (Marco Legal):</strong> Relaciona Ley 55, Dec. 1072, Dec. 1496 y Res. 773 con su alcance.</span>
+                        <div>
+                            <strong style="color: #38bdf8; font-size: 0.82rem;">Nivel 1 • Marco Legal Colombiano y Adopción SGA</strong>
+                            <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                                Comprende los 4 fundamentos normativos: <strong>Ley 55/1993</strong> (Convenio OIT 170 y derecho a saber del trabajador), <strong>Decreto 1072/2015</strong> (matriz de sustancias y riesgos del SG-SST), <strong>Decreto 1496/2018</strong> (adopción formal nacional del SGA en Colombia) y <strong>Resolución 773/2021</strong> (reglamentación operativa obligatoria de rotulado y FDS en los centros de trabajo).
+                            </p>
+                        </div>
                     </div>
                     <div class="briefing-step-row">
                         <span class="briefing-step-num">2</span>
-                        <span><strong>Nivel 2 (Familias SGA):</strong> Clasifica sustancias en Peligros Físicos, para la Salud y Medio Ambiente.</span>
+                        <div>
+                            <strong style="color: #facc15; font-size: 0.82rem;">Nivel 2 • Las 3 Grandes Familias de Peligro del SGA</strong>
+                            <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                                Distingue el origen del daño técnico: <strong>Peligros Físicos</strong> (inflamabilidad, explosión, presión en cilindros), <strong>Peligros para la Salud</strong> (toxicidad sistémica, quemaduras/corrosión cutánea, carcinogenicidad) y <strong>Peligros para el Medio Ambiente</strong> (mortandad acuática y degradación del ozono).
+                            </p>
+                        </div>
                     </div>
                     <div class="briefing-step-row">
                         <span class="briefing-step-num">3</span>
-                        <span><strong>Nivel 3 (Etiqueta & FDS):</strong> Identifica elementos de la etiqueta y navega en las 16 secciones FDS.</span>
+                        <div>
+                            <strong style="color: #4ade80; font-size: 0.82rem;">Nivel 3 • Comunicación de Peligros (Etiquetas y FDS 16 Secciones)</strong>
+                            <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                                Domina las herramientas en campo: <strong>Subfase 3A</strong> (reconocimiento de etiquetas, pictogramas y palabras de advertencia <em>Peligro</em> o <em>Atención</em>) y <strong>Subfase 3B</strong> (búsqueda situacional en las 16 secciones estandarizadas de la FDS para primeros auxilios, EPP, almacenaje o emergencias).
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -2120,6 +2155,30 @@
             chem_6: {
                 whyFailed: 'Las resinas epóxicas con endurecedores de amina conllevan un riesgo biológico más severo que una simple irritación pasajera.',
                 howItWorks: 'Actúan como agentes sensibilizantes crónicos y sospechosos de daño genético (H317 / H341). El SGA exige pictograma de <strong>Peligro para la Salud</strong>.'
+            },
+            item_acpm: {
+                whyFailed: 'El ACPM / Diésel no ataca primariamente el tejido celular ni el ozono; es un hidrocarburo líquido inflamable.',
+                howItWorks: 'Peligro Físico (Líquido Inflamable Cat. 3, H226). Sus vapores se mezclan con el oxígeno y deflagran ante chispas mecánicas o superficies calientes a >55°C.'
+            },
+            item_acetileno: {
+                whyFailed: 'El acetileno en cilindro no se clasifica por toxicidad oral ni corrosión dérmica; su peligro crítico reside en el estado termodinámico a alta presión.',
+                howItWorks: 'Peligro Físico (Gas Inflamable y a Presión Disuelto, H220 / H280). Está sometido a alta presión en solvente; un golpe o calentamiento puede desatar explosión física masiva.'
+            },
+            item_acido: {
+                whyFailed: 'El Ácido Muriático no genera combustión espontánea ni afecta el ozono atmosférico; su impacto destructor es sobre la materia viva por pH extremo.',
+                howItWorks: 'Peligro para la Salud (Corrosión Cutánea y Lesiones Oculares Graves Cat. 1, H314). El ion ácido destruye membranas biológicas por desnaturalización proteica instantánea.'
+            },
+            item_thinner: {
+                whyFailed: 'Aunque el thinner puede arder, en este caso evaluamos su toxicidad sistémica y efecto por aspiración al inhalarse reiteradamente.',
+                howItWorks: 'Peligro para la Salud (Peligro por Aspiración H304 / Toxicidad para Órganos H373). Si los hidrocarburos entran a vías aéreas causan edema pulmonar mortal y neurotoxicidad.'
+            },
+            item_pesticida: {
+                whyFailed: 'El pesticida agrícola/de obra no es un gas a presión ni un inflamable; su persistencia tóxica destruye los ciclos biológicos acuáticos.',
+                howItWorks: 'Peligro para el Medio Ambiente (Toxicidad Acuática Aguda y Crónica Cat. 1, H410). No se biodegrada con facilidad, bioacumula en peces y destruye cadenas tróficas completas.'
+            },
+            item_cfc: {
+                whyFailed: 'Los solventes clorofluorocarbonados no suelen arder en obra, pero sus moléculas gaseosas ascienden y destruyen la atmósfera superior.',
+                howItWorks: 'Peligro para el Medio Ambiente (Peligroso para la Capa de Ozono H420). Libera cloro activo en la estratósfera que cataliza la destrucción masiva de moléculas de ozono (O3).'
             }
         };
 
@@ -2515,10 +2574,11 @@
             {
                 id: 'ley55',
                 norma: 'Ley 55 de 1993',
-                subtitle: 'Convenio OIT 170',
+                subtitle: 'Convenio OIT 170 (Fuerza de Ley)',
                 badge: 'OIT / Ley',
                 concept: 'Seguridad en la utilización de los productos químicos en el trabajo: deberes del empleador, clasificación y derechos de información de los trabajadores.',
-                key: 'oit'
+                key: 'oit',
+                explanation: 'La Ley 55/1993 ratifica el Convenio OIT 170. Consagra el DERECHO A SABER del trabajador y obliga al empleador a etiquetar todos los químicos y capacitar sobre sus peligros.'
             },
             {
                 id: 'dec1072',
@@ -2526,7 +2586,8 @@
                 subtitle: 'SG-SST & Estándares Mínimos',
                 badge: 'Decreto Único',
                 concept: 'Obligación del SG-SST de identificar, inventariar y evaluar los riesgos por sustancias químicas peligrosas y cancerígenas en el centro de trabajo.',
-                key: 'sgsst'
+                key: 'sgsst',
+                explanation: 'El Dec. 1072/2015 exige a toda empresa contar con matriz de riesgos químicos, inventario periódico de sustancias y vigilancia médica para sustancias cancerígenas.'
             },
             {
                 id: 'dec1496',
@@ -2534,7 +2595,8 @@
                 subtitle: 'Adopción Formal SGA',
                 badge: 'Adopción Nacional',
                 concept: 'Adopción formal del Sistema Globalmente Armonizado (SGA) de clasificación y etiquetado de productos químicos para todos los sectores productivos en Colombia.',
-                key: 'adopcion'
+                key: 'adopcion',
+                explanation: 'El Dec. 1496/2018 adoptó formalmente el Libro Púrpura de la ONU (SGA) en Colombia, unificando los criterios de peligro físico, a la salud y ambiental en todo el territorio.'
             },
             {
                 id: 'res773',
@@ -2542,7 +2604,8 @@
                 subtitle: 'Reglamentación en Lugares de Trabajo',
                 badge: 'MinTrabajo',
                 concept: 'Reglamentación técnica obligatoria del SGA en los lugares de trabajo: etiquetado de recipientes, hojas FDS de 16 secciones en español y capacitación SST.',
-                key: 'reglamento'
+                key: 'reglamento',
+                explanation: 'La Res. 773/2021 fija los estándares operativos: etiquetado obligatorio en envases principales y trasvases, FDS en 16 secciones en español y reentrenamiento anual.'
             }
         ];
 
@@ -2578,7 +2641,7 @@
                 alias: 'Líquido Combustible (Llama)',
                 situation: 'Líquido combustible cuyos vapores se inflaman ante chispas mecánicas o superficies calientes a >55°C.',
                 correctFamily: 'fisico',
-                explanation: 'Es un líquido inflamable (Cat. 3, H226), clasificado en la familia de Peligros Físicos del SGA.'
+                explanation: 'Peligro Físico (Líquido Inflamable Cat. 3, H226): Los vapores del ACPM forman atmósferas explosivas que deflagran violentamente ante cualquier fuente de ignición térmica o chispa.'
             },
             {
                 id: 'item_acetileno',
@@ -2586,7 +2649,7 @@
                 alias: 'Gas Disuelto a Alta Presión',
                 situation: 'Gas a alta presión que puede deflagrar o estallar si el cilindro sufre golpes, caídas o sobrecalentamiento.',
                 correctFamily: 'fisico',
-                explanation: 'Es un gas a presión comprimido/disuelto (H280), perteneciente a la familia de Peligros Físicos.'
+                explanation: 'Peligro Físico (Gas a Presión / Inflamable, H220/H280): Está comprimido en acetona y masa porosa. Un impacto o calentamiento puede desatar polimerización explosiva interna.'
             },
             {
                 id: 'item_acido',
@@ -2594,7 +2657,7 @@
                 alias: 'Ácido Clorhídrico al 28%',
                 situation: 'Salpicadura ácida que causa destrucción química inmediata de epidermis y necrosis ocular irreversible.',
                 correctFamily: 'salud',
-                explanation: 'Provoca quemaduras graves en la piel y lesiones oculares (H314), clasificado en Peligros para la Salud.'
+                explanation: 'Peligro para la Salud (Corrosión Cutánea Cat. 1B, H314): El ion hidrógeno libre desnaturaliza proteínas celulares vivas, provocando quemaduras químicas de tercer grado en segundos.'
             },
             {
                 id: 'item_thinner',
@@ -2602,7 +2665,7 @@
                 alias: 'Mezcla de Hidrocarburos Aromáticos',
                 situation: 'Inhalación reiterada de vapores que causa daño al sistema nervioso central y peligro mortal por aspiración H304.',
                 correctFamily: 'salud',
-                explanation: 'Peligro crónico por aspiración pulmonar y neurotoxicidad (H304 / H373), perteneciente a Peligros para la Salud.'
+                explanation: 'Peligro para la Salud (Toxicidad por Aspiración H304 / Neurotoxicidad H336): Si entra a vías respiratorias, causa neumonitis química mortal y depresión del sistema nervioso central.'
             },
             {
                 id: 'item_pesticida',
@@ -2610,7 +2673,7 @@
                 alias: 'Compuesto Organofosforado',
                 situation: 'Escorrentía accidental a cunetas y quebradas que causa mortandad masiva y persistente de peces y algas.',
                 correctFamily: 'ambiente',
-                explanation: 'Toxicidad acuática aguda y de efectos nocivos duraderos (H410), perteneciente a Peligros para el Medio Ambiente.'
+                explanation: 'Peligro para el Medio Ambiente (Toxicidad Acuática Aguda y Crónica Cat. 1, H410): Inhibe la fotosíntesis y bioacumula en la cadena trófica con mortandad persistente de fauna acuática.'
             },
             {
                 id: 'item_cfc',
@@ -2618,7 +2681,7 @@
                 alias: 'Clorofluorocarbonado',
                 situation: 'Emisión gaseosa a la atmósfera que destruye y agota la capa de ozono estratosférico del planeta.',
                 correctFamily: 'ambiente',
-                explanation: 'Peligroso para la capa de ozono (H420), perteneciente a Peligros para el Medio Ambiente.'
+                explanation: 'Peligro para el Medio Ambiente (Destrucción del Ozono H420 / Protocolo de Montreal): Libera radicales de cloro libres en la estratósfera que rompen las moléculas de O3.'
             }
         ];
 
@@ -2649,7 +2712,7 @@
                 prompt: 'El supervisor necesita saber las incompatibilidades químicas, temperaturas máximas y cómo estibar los bidones de solvente en la bodega.',
                 hint: '¿A qué sección de la FDS debe dirigirse para consultar el almacenaje seguro?',
                 correctSection: 7,
-                explanation: 'Sección 7: Manipulación y almacenamiento (especifica condiciones seguras de ventilación, separación y temperaturas).'
+                explanation: 'Sección 7 (Manipulación y Almacenamiento): Es el capítulo legal obligatorio que determina distancias de segregación, ventilación requerida, estibado y límites térmicos de bodega.'
             },
             {
                 id: 'fds_q2',
@@ -2657,7 +2720,7 @@
                 prompt: 'Un operario sufrió salpicadura de ácido muriático en los ojos. La brigada debe saber los minutos exactos de lavado continuo y actuación urgente.',
                 hint: '¿A qué sección acudir para aplicar las medidas de socorro inmediato?',
                 correctSection: 4,
-                explanation: 'Sección 4: Primeros auxilios (indica actuación inmediata para ojos, piel, inhalación e ingestión).'
+                explanation: 'Sección 4 (Primeros Auxilios): Especifica el protocolo de emergencia inmediata (e.g. irrigación ocular continua por mínimo 15 minutos en lavaojos, posición de rescate y qué NO hacer).'
             },
             {
                 id: 'fds_q3',
@@ -2665,7 +2728,7 @@
                 prompt: 'Se generaron llamas sobre un derrame de ACPM. Se requiere verificar qué agentes extintores usar y cuáles están tajantemente prohibidos.',
                 hint: '¿A qué sección acudir para verificar el agente extintor adecuado?',
                 correctSection: 5,
-                explanation: 'Sección 5: Medidas de lucha contra incendios (especifica agentes extintores apropiados y peligros específicos de combustión).'
+                explanation: 'Sección 5 (Medidas de Lucha contra Incendios): Define agentes autorizados (PQS ABC, espuma, CO2) y prohíbe chorros de agua por riesgo de proyección violenta o boilover.'
             },
             {
                 id: 'fds_q4',
@@ -2673,7 +2736,7 @@
                 prompt: 'El encargado SST debe dotar al pintor con el tipo exacto de guante (nitrilo vs PVA) y cartucho respiratorio reglamentario.',
                 hint: '¿A qué sección dirigirse para los valores límite TLV y EPP individual?',
                 correctSection: 8,
-                explanation: 'Sección 8: Controles de exposición / protección individual (EPP obligatorio y límites permisibles de exposición).'
+                explanation: 'Sección 8 (Controles de Exposición / Protección Personal): Fija los límites TLV-TWA y especifica el material técnico de protección (guantes de nitrilo/butilo y filtros para vapores orgánicos).'
             },
             {
                 id: 'fds_q5',
@@ -2681,7 +2744,7 @@
                 prompt: 'Un tambor de desengrasante se perforó en el patio y corre hacia el alcantarillado. Se debe contener con barreras absorbentes.',
                 hint: '¿A qué sección acudir para el protocolo de vertido accidental?',
                 correctSection: 6,
-                explanation: 'Sección 6: Medidas en caso de vertido accidental (procedimientos de contención, limpieza y precauciones ambientales).'
+                explanation: 'Sección 6 (Medidas en Caso de Vertido Accidental): Describe el protocolo operativo para contención perimetral, prohibición de lavado hacia desagües y uso de absorbentes inertes.'
             },
             {
                 id: 'fds_q6',
@@ -2689,7 +2752,7 @@
                 prompt: 'Tras recoger un derrame, quedan paños y arena contaminada. Se debe rotular y entregar al gestor ambiental autorizado.',
                 hint: '¿A qué sección dirigirse para clasificar y eliminar los residuos?',
                 correctSection: 13,
-                explanation: 'Sección 13: Consideraciones relativas a la eliminación (gestión de residuos peligrosos RESPEL y envases contaminados).'
+                explanation: 'Sección 13 (Consideraciones Relativas a la Eliminación): Regula el manejo de RESPEL bajo Dec. 4741/2005, prohibiendo vertimientos o incineración abierta y exigiendo gestor certificado.'
             }
         ];
 
@@ -2748,6 +2811,7 @@
                     l1ProgressText: document.getElementById('level1-progress-text'),
                     l1ScoreText: document.getElementById('level1-score-text'),
                     btnAdvanceL2: document.getElementById('btn-advance-level2'),
+                    l1FeedbackBanner: document.getElementById('level1-feedback-banner'),
 
                     // Nivel 2 Elements
                     l2CardContainer: document.getElementById('level2-card-container'),
@@ -2758,6 +2822,7 @@
                     l2ProgressText: document.getElementById('level2-progress-text'),
                     l2ScoreText: document.getElementById('level2-score-text'),
                     btnAdvanceL3: document.getElementById('btn-advance-level3'),
+                    l2FeedbackBanner: document.getElementById('level2-feedback-banner'),
 
                     // Nivel 3 Elements
                     tabBtnLabel: document.getElementById('tab-btn-label'),
@@ -2776,6 +2841,7 @@
                     fdsNavGrid: document.getElementById('fds-nav-grid'),
                     fdsScoreDisplay: document.getElementById('fds-score-display'),
                     btnFinishAllLevels: document.getElementById('btn-finish-all-levels'),
+                    fdsFeedbackBanner: document.getElementById('fds-feedback-banner'),
 
                     // Modals
                     modalFds: document.getElementById('modal-fds'),
@@ -3042,6 +3108,7 @@
             checkLevel1Pair() {
                 const lawCard = this.dom.l1ColLaws.querySelector(`[data-key="${this.selectedLawKey}"]`);
                 const conceptCard = this.dom.l1ColConcepts.querySelector(`[data-concept-key="${this.selectedConceptKey}"]`);
+                const lawData = LEGAL_FRAMEWORK_DATA.find(d => d.key === this.selectedLawKey);
 
                 if (this.selectedLawKey === this.selectedConceptKey) {
                     // Correct Match
@@ -3058,12 +3125,22 @@
                     this.fx.confetti(centerPos.x, centerPos.y, 25);
                     this.showComicBubble('¡CORRECTO!', 'good', centerPos);
 
+                    // Feedback pedagógico interactivo
+                    if (this.dom.l1FeedbackBanner && lawData) {
+                        this.dom.l1FeedbackBanner.style.borderColor = 'rgba(52, 211, 153, 0.5)';
+                        this.dom.l1FeedbackBanner.style.background = 'rgba(6, 78, 59, 0.4)';
+                        this.dom.l1FeedbackBanner.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span><strong style="color: #34d399;">${lawData.norma}:</strong> ${lawData.explanation}</span>`;
+                    }
+
                     const matchedCount = Object.keys(this.level1Matches).length;
                     this.dom.l1ProgressText.textContent = `${matchedCount} de 4`;
                     this.dom.l1ScoreText.textContent = `${this.level1Score}`;
 
                     if (matchedCount === 4) {
                         sound.victory();
+                        if (this.dom.l1FeedbackBanner) {
+                            this.dom.l1FeedbackBanner.innerHTML = `<i class="fa-solid fa-award text-bolivar-yellow"></i> <span><strong style="color: var(--bolivar-yellow);">¡Marco Legal Dominado!</strong> Has comprendido la integración de convenios OIT, normas SG-SST, adopción nacional y la Res. 773 en Colombia.</span>`;
+                        }
                         this.dom.btnAdvanceL2.disabled = false;
                         this.dom.btnAdvanceL2.style.background = 'var(--bolivar-green)';
                         this.dom.btnAdvanceL2.style.color = '#ffffff';
@@ -3079,6 +3156,12 @@
                     lawCard.classList.add('mismatched');
                     conceptCard.classList.add('mismatched');
                     this.showComicBubble('¡NORMA ERRADA!', 'bad', this.getCenterInViewport(lawCard));
+
+                    if (this.dom.l1FeedbackBanner && lawData) {
+                        this.dom.l1FeedbackBanner.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                        this.dom.l1FeedbackBanner.style.background = 'rgba(127, 29, 29, 0.3)';
+                        this.dom.l1FeedbackBanner.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400"></i> <span><strong style="color: #f87171;">Discrepancia Normativa:</strong> La norma "${lawData.norma}" no tiene ese alcance técnico. Revisa si es un tratado OIT, norma de SG-SST o resolución operativa.</span>`;
+                    }
 
                     setTimeout(() => {
                         lawCard.classList.remove('selected', 'mismatched');
@@ -3175,23 +3258,37 @@
                     this.showComicBubble('¡CORRECTO!', 'good', pos);
                     this.playAnimation(bucketEl, 'happy-jiggle', 600);
 
+                    if (this.dom.l2FeedbackBanner) {
+                        this.dom.l2FeedbackBanner.style.borderColor = 'rgba(52, 211, 153, 0.5)';
+                        this.dom.l2FeedbackBanner.style.background = 'rgba(6, 78, 59, 0.4)';
+                        this.dom.l2FeedbackBanner.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span><strong style="color: #34d399;">¡Correcto! ${item.name}:</strong> ${item.explanation}</span>`;
+                    }
+
                     this.level2Index++;
-                    setTimeout(() => this.renderLevel2Card(), 500);
+                    setTimeout(() => this.renderLevel2Card(), 900);
                 } else {
                     sound.error();
                     this.triggerScreenShake();
                     this.playAnimation(bucketEl, 'dazed-wobble', 500);
                     this.showComicBubble('¡FAMILIA INCORRECTA!', 'bad', this.getCenterInViewport(bucketEl));
 
+                    if (this.dom.l2FeedbackBanner) {
+                        const familyName = HAZARD_FAMILIES[chosenFamily] ? HAZARD_FAMILIES[chosenFamily].name : chosenFamily;
+                        this.dom.l2FeedbackBanner.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                        this.dom.l2FeedbackBanner.style.background = 'rgba(127, 29, 29, 0.3)';
+                        this.dom.l2FeedbackBanner.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400"></i> <span><strong style="color: #f87171;">Discrepancia:</strong> "${item.name}" no es ${familyName}. Revisa la regla técnica en pantalla.</span>`;
+                    }
+
+                    this.onDismissErrorCallback = () => {
+                        this.level2Index++;
+                        this.renderLevel2Card();
+                    };
+
                     this.showErrorFeedback({
                         name: item.name,
                         id: item.id,
                         correctSga: item.correctFamily
                     }, chosenFamily, false);
-
-                    // Avanzar tras error para permitir completar el nivel pedagógicamente
-                    this.level2Index++;
-                    setTimeout(() => this.renderLevel2Card(), 500);
                 }
             }
 
@@ -3395,6 +3492,11 @@
                 if (this.fdsIndex >= FDS_SITUATIONAL_QUESTIONS.length) {
                     // All FDS questions answered
                     sound.victory();
+                    if (this.dom.fdsFeedbackBanner) {
+                        this.dom.fdsFeedbackBanner.style.borderColor = 'rgba(52, 211, 153, 0.5)';
+                        this.dom.fdsFeedbackBanner.style.background = 'rgba(6, 78, 59, 0.4)';
+                        this.dom.fdsFeedbackBanner.innerHTML = `<i class="fa-solid fa-award text-bolivar-yellow"></i> <span><strong style="color: var(--bolivar-yellow);">¡Excelente Navegación FDS!</strong> Has dominado la localización rápida en las 16 secciones obligatorias según Res. 773/2021.</span>`;
+                    }
                     this.dom.btnFinishAllLevels.disabled = false;
                     this.dom.btnFinishAllLevels.style.background = 'var(--bolivar-green)';
                     this.dom.btnFinishAllLevels.style.color = '#fff';
@@ -3408,6 +3510,12 @@
                 this.dom.fdsQuestionStep.textContent = `Caso FDS ${this.fdsIndex + 1} de ${FDS_SITUATIONAL_QUESTIONS.length}`;
                 this.dom.fdsQuestionTitle.textContent = q.title;
                 this.dom.fdsQuestionPrompt.innerHTML = `${q.prompt} <br><strong style="color: var(--bolivar-yellow);">${q.hint}</strong>`;
+
+                if (this.dom.fdsFeedbackBanner) {
+                    this.dom.fdsFeedbackBanner.style.borderColor = 'rgba(255, 199, 44, 0.3)';
+                    this.dom.fdsFeedbackBanner.style.background = 'rgba(15, 23, 42, 0.7)';
+                    this.dom.fdsFeedbackBanner.innerHTML = `<i class="fa-solid fa-compass text-bolivar-yellow"></i> <span><strong>Situación Operativa:</strong> ${q.prompt}</span>`;
+                }
 
                 // Reset section buttons classes
                 this.dom.fdsNavGrid.querySelectorAll('.fds-sec-card-btn').forEach(b => {
@@ -3436,8 +3544,14 @@
                     this.fx.confetti(pos.x, pos.y, 35);
                     this.showComicBubble(`¡SECCIÓN ${secNum} CORRECTA!`, 'good', pos);
 
+                    if (this.dom.fdsFeedbackBanner) {
+                        this.dom.fdsFeedbackBanner.style.borderColor = 'rgba(52, 211, 153, 0.5)';
+                        this.dom.fdsFeedbackBanner.style.background = 'rgba(6, 78, 59, 0.4)';
+                        this.dom.fdsFeedbackBanner.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span><strong style="color: #34d399;">¡Correcto!</strong> ${q.explanation}</span>`;
+                    }
+
                     this.fdsIndex++;
-                    setTimeout(() => this.renderFdsQuestion(), 700);
+                    setTimeout(() => this.renderFdsQuestion(), 1600);
                 } else {
                     sound.error();
                     this.triggerScreenShake();
@@ -3447,6 +3561,12 @@
                     btnEl.style.borderColor = '#ef4444';
                     this.showComicBubble(`¡ERA LA SECCIÓN ${q.correctSection}!`, 'bad', this.getCenterInViewport(btnEl));
 
+                    if (this.dom.fdsFeedbackBanner) {
+                        this.dom.fdsFeedbackBanner.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                        this.dom.fdsFeedbackBanner.style.background = 'rgba(127, 29, 29, 0.3)';
+                        this.dom.fdsFeedbackBanner.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400"></i> <span><strong style="color: #f87171;">Sección Errada:</strong> La consulta obligatoria es en la <strong>Sección ${q.correctSection}</strong>. ${q.explanation}</span>`;
+                    }
+
                     // Highlight the correct one
                     const correctBtn = this.dom.fdsNavGrid.querySelector(`[data-sec-num="${q.correctSection}"]`);
                     if (correctBtn) {
@@ -3455,7 +3575,7 @@
                     }
 
                     this.fdsIndex++;
-                    setTimeout(() => this.renderFdsQuestion(), 1100);
+                    setTimeout(() => this.renderFdsQuestion(), 2400);
                 }
             }
 
@@ -3525,10 +3645,10 @@
 
             showErrorFeedback(chem, chosenKey, isTutorial = false) {
                 if (!this.dom.modalError) return;
-                const chosen = SGA_PICTOGRAMS[chosenKey] || { name: chosenKey, desc: '', svg: '' };
-                const correct = SGA_PICTOGRAMS[chem.correctSga] || { name: chem.correctSga, desc: '', svg: '' };
+                const chosen = SGA_PICTOGRAMS[chosenKey] || HAZARD_FAMILIES[chosenKey] || { name: chosenKey, desc: '', svg: '' };
+                const correct = SGA_PICTOGRAMS[chem.correctSga] || HAZARD_FAMILIES[chem.correctSga] || { name: chem.correctSga, desc: '', svg: '' };
                 const guide = LEARNING_GUIDES[chem.id] || {
-                    whyFailed: `La clasificación elegida no coincide con las propiedades técnicas de esta sustancia.`,
+                    whyFailed: `La clasificación elegida (${chosen.name || chosenKey}) no coincide con las propiedades técnicas de esta sustancia.`,
                     howItWorks: `Revisa la Sección 2 de la FDS oficial y la Res. 773/2021 para verificar los peligros correspondientes.`
                 };
 
@@ -3540,13 +3660,13 @@
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid #ef4444; padding: 8px 10px; border-radius: var(--radius-sm);">
                             <span style="color: #f87171; font-weight: 800; font-size: 11px; text-transform: uppercase;">
-                                <i class="fa-solid fa-circle-xmark"></i> ¿Por qué falló?
+                                <i class="fa-solid fa-circle-xmark"></i> ¿Por qué no es ${chosen.name || chosenKey}?
                             </span>
                             <p style="margin: 3px 0 0; color: #e2e8f0; font-size: 11px; line-height: 1.35;">${guide.whyFailed}</p>
                         </div>
                         <div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; padding: 8px 10px; border-radius: var(--radius-sm);">
                             <span style="color: #34d399; font-weight: 800; font-size: 11px; text-transform: uppercase;">
-                                <i class="fa-solid fa-circle-check"></i> Regla Oficial SGA:
+                                <i class="fa-solid fa-circle-check"></i> Clasificación Correcta (${correct.name || chem.correctSga}):
                             </span>
                             <p style="margin: 3px 0 0; color: #e2e8f0; font-size: 11px; line-height: 1.35;">${guide.howItWorks}</p>
                         </div>
@@ -3559,6 +3679,11 @@
             dismissErrorFeedback() {
                 if (!this.dom.modalError) return;
                 this.dom.modalError.classList.add('hidden');
+                if (this.onDismissErrorCallback) {
+                    const cb = this.onDismissErrorCallback;
+                    this.onDismissErrorCallback = null;
+                    cb();
+                }
             }
 
             triggerScreenShake() {

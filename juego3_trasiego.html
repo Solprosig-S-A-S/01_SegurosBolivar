@@ -1230,7 +1230,9 @@
             border: 1px solid rgba(255, 199, 44, 0.4);
             border-left: 4px solid var(--amarillo-bolivar, #FFC72C);
             border-radius: 4px;
-            max-width: 520px;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
             width: 100%;
             padding: 22px 24px;
             display: flex;
@@ -1275,7 +1277,7 @@
         .briefing-steps {
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 8px;
             background: rgba(15, 23, 42, 0.7);
             border: 1px solid rgba(148, 163, 184, 0.15);
             border-radius: 4px;
@@ -1283,11 +1285,11 @@
         }
         .briefing-step-row {
             display: flex;
-            align-items: center;
-            gap: 9px;
-            font-size: 0.8rem;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.78rem;
             color: #cbd5e1;
-            line-height: 1.35;
+            line-height: 1.4;
         }
         .briefing-step-row strong {
             color: #ffffff;
@@ -1899,15 +1901,30 @@
             <div class="briefing-steps">
                 <div class="briefing-step-row">
                     <span class="briefing-step-num">1</span>
-                    <span><strong>Inmovilización Mecánica:</strong> Coloca cuñas y apaga el motor antes de intervenir.</span>
+                    <div>
+                        <strong style="color: #38bdf8;">Inmovilización Mecánica y Apagado (Dec. 1079/2015):</strong>
+                        <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                            Bloquea el camión cisterna con cuñas en llantas traseras y apaga el motor para eliminar vibraciones y fuentes térmicas de ignición en el escape.
+                        </p>
+                    </div>
                 </div>
                 <div class="briefing-step-row">
                     <span class="briefing-step-num">2</span>
-                    <span><strong>Polo a Tierra:</strong> Conecta la pinza a tierra al chasis para disipar estática (&lt;10 Ω).</span>
+                    <div>
+                        <strong style="color: #facc15;">Equipotencialidad y Polo a Tierra (NFPA 77):</strong>
+                        <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                            Conecta la pinza a tierra en metal sin pintar del chasis (&lt;10 Ω) para disipar cargas electrostáticas generadas por la fricción del combustible al fluir.
+                        </p>
+                    </div>
                 </div>
                 <div class="briefing-step-row">
                     <span class="briefing-step-num">3</span>
-                    <span><strong>Contención y Extintor:</strong> Ubica la bandeja de goteo, kit de derrames y extintor a 5m.</span>
+                    <div>
+                        <strong style="color: #4ade80;">Contención de Goteo y Protección Contra Fuego:</strong>
+                        <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                            Ubica la bandeja colectora bajo el acople rápido de la manguera y ten listo el extintor PQS a 5 metros para sofocar cualquier chispa incipiente.
+                        </p>
+                    </div>
                 </div>
             </div>
 

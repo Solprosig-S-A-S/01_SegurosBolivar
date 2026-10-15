@@ -2335,7 +2335,9 @@
             border: 1px solid rgba(255, 199, 44, 0.4);
             border-left: 4px solid var(--bolivar-yellow);
             border-radius: 4px;
-            max-width: 520px;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
             width: 100%;
             padding: 22px 24px;
             display: flex;
@@ -2380,7 +2382,7 @@
         .briefing-steps {
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 8px;
             background: rgba(15, 23, 42, 0.7);
             border: 1px solid rgba(148, 163, 184, 0.15);
             border-radius: 4px;
@@ -2388,11 +2390,11 @@
         }
         .briefing-step-row {
             display: flex;
-            align-items: center;
-            gap: 9px;
-            font-size: 0.8rem;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.78rem;
             color: #cbd5e1;
-            line-height: 1.35;
+            line-height: 1.4;
         }
         .briefing-step-row strong {
             color: #ffffff;
@@ -3941,15 +3943,30 @@
                 <div class="briefing-steps">
                     <div class="briefing-step-row">
                         <span class="briefing-step-num">1</span>
-                        <span><strong>Segregación NTC 4435:</strong> Separa ácidos de bases y líquidos de gases inflamables.</span>
+                        <div>
+                            <strong style="color: #38bdf8;">Segregación Química Incompatible (NTC 4435):</strong>
+                            <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                                Separa tajantemente ácidos fuertes de álcalis/bases (evita neutralizaciones exotérmicas explosivas) y líquidos inflamables de gases comprimidos.
+                            </p>
+                        </div>
                     </div>
                     <div class="briefing-step-row">
                         <span class="briefing-step-num">2</span>
-                        <span><strong>Buffers y Contención:</strong> Ubica estibas antiderrame y extintores como barreras neutras.</span>
+                        <div>
+                            <strong style="color: #facc15;">Contención Secundaria y Buffers Neutros:</strong>
+                            <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                                Emplea estibas antiderrames de polietileno para colectar fugas y ubica extintores como barreras físicas intermedias que garanticen distanciamiento seguro.
+                            </p>
+                        </div>
                     </div>
                     <div class="briefing-step-row">
                         <span class="briefing-step-num">3</span>
-                        <span><strong>Zona de Rechazo:</strong> Desecha la botella de refresco reenvasada en RESPEL.</span>
+                        <div>
+                            <strong style="color: #4ade80;">Zona de Rechazo RESPEL (Res. 773/2021):</strong>
+                            <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                                Confiscación inmediata de envases alimenticios con solventes sin rotular; están prohibidos expresamente por ley y van a la caneca de residuos peligrosos.
+                            </p>
+                        </div>
                     </div>
                 </div>
 

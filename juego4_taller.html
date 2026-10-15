@@ -2469,7 +2469,9 @@
             border: 1px solid rgba(255, 199, 44, 0.4);
             border-left: 4px solid var(--amarillo-bolivar, #FFC72C);
             border-radius: 4px;
-            max-width: 520px;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
             width: 100%;
             padding: 22px 24px;
             display: flex;
@@ -2514,7 +2516,7 @@
         .briefing-steps {
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 8px;
             background: rgba(15, 23, 42, 0.7);
             border: 1px solid rgba(148, 163, 184, 0.15);
             border-radius: 4px;
@@ -2522,11 +2524,11 @@
         }
         .briefing-step-row {
             display: flex;
-            align-items: center;
-            gap: 9px;
-            font-size: 0.8rem;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.78rem;
             color: #cbd5e1;
-            line-height: 1.35;
+            line-height: 1.4;
         }
         .briefing-step-row strong {
             color: #ffffff;
@@ -3262,15 +3264,30 @@
             <div class="briefing-steps">
                 <div class="briefing-step-row">
                     <span class="briefing-step-num">1</span>
-                    <span><strong>Vestidor y Checkpoint:</strong> Equipa los 4 EPP homologados y supera el escáner láser.</span>
+                    <div>
+                        <strong style="color: #38bdf8;">Vestidor y Checkpoint Biométrico (Res. 2400/1979):</strong>
+                        <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                            Equipa los 4 EPP reglamentarios (casco, monogafas químicas, guantes de nitrilo y botas de seguridad con puntera dieléctrica) para habilitar el acceso.
+                        </p>
+                    </div>
                 </div>
                 <div class="briefing-step-row">
                     <span class="briefing-step-num">2</span>
-                    <span><strong>Desengrase y Motor:</strong> Limpia piezas con paño y purga aceite con bandeja colectora.</span>
+                    <div>
+                        <strong style="color: #facc15;">Mantenimiento y Control en Fuente:</strong>
+                        <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                            Aplica desengrasante con paño en piezas mecánicas y purga el cárter usando obligatoriamente la bandeja colectora para evitar derrames en el piso del taller.
+                        </p>
+                    </div>
                 </div>
                 <div class="briefing-step-row">
                     <span class="briefing-step-num">3</span>
-                    <span><strong>Segregación RESPEL:</strong> Clasifica trapos, filtros y aceite usado en sus canecas.</span>
+                    <div>
+                        <strong style="color: #4ade80;">Segregación y Confinamiento RESPEL (Dec. 4741/2005):</strong>
+                        <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+                            Separa y deposita cada residuo peligroso en su recipiente reglamentario: trapos impregnados (caneca roja), filtros usados y tambor de aceite quemado.
+                        </p>
+                    </div>
                 </div>
             </div>
 

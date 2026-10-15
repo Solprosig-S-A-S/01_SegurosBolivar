@@ -1277,15 +1277,17 @@
 
         /* ===== Modal de Misión Star Wars Simplificado ===== */
         .fps-briefing-dialog {
-            max-width: 520px;
+            max-width: 590px;
+            max-height: 92vh;
+            overflow-y: auto;
             background: #060a14;
             border: 1px solid rgba(255, 199, 44, 0.4);
             border-left: 4px solid var(--amarillo-bolivar);
             border-radius: 0;
             clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
             box-shadow: 0 0 35px rgba(0, 0, 0, 0.9);
-            padding: 24px 28px;
-            gap: 16px;
+            padding: 22px 26px;
+            gap: 14px;
             font-family: var(--font-mono);
         }
 
@@ -1325,11 +1327,11 @@
 
         .step-row {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 10px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: #cbd5e1;
-            line-height: 1.3;
+            line-height: 1.35;
         }
 
         .step-row strong {
@@ -1728,15 +1730,33 @@
                     </p>
                 </div>
 
-                <!-- Lista limpia de 2 niveles -->
+                <!-- Lista estructurada de 2 misiones con sustento técnico SST -->
                 <div class="briefing-steps-clean">
                     <div class="step-row">
-                        <span class="step-num">1</span>
-                        <span><strong>Misión 1 (Derrame Químico):</strong> EPP → Cerrar Válvula → Lavaojos → Cordón y Paños → Acopio RESPEL.</span>
+                        <span class="step-num" style="background: rgba(56, 189, 248, 0.2); border-color: #38bdf8; color: #38bdf8;">1</span>
+                        <div>
+                            <strong style="color: #38bdf8; font-size: 0.86rem;">Misión 1: Control de Derrame Químico & Rescate (120s)</strong>
+                            <p style="margin: 3px 0 0; font-size: 0.73rem; color: #cbd5e1; line-height: 1.4;">
+                                Secuencia obligatoria de control operacional:
+                                <br>• <strong>Caseta EPP:</strong> Aísla vías respiratorias y piel antes de ingresar a la zona de vapores densos.
+                                <br>• <strong>Válvula Norte:</strong> Corta el flujo en la fuente; ninguna barrera tolera un derrame activo continuo.
+                                <br>• <strong>Lavaojos Sur (ANSI Z358.1):</strong> Activa irrigación urgente en los primeros 10-15s para prevenir ceguera corneal.
+                                <br>• <strong>Kit Antiderrame Este:</strong> Coloca el cordón perimetral para proteger el drenaje pluvial y absorbe con paños.
+                                <br>• <strong>Acopio RESPEL Oeste:</strong> Confinar en bolsa roja y rotular como residuo peligroso (Dec. 4741/2005).
+                            </p>
+                        </div>
                     </div>
                     <div class="step-row">
-                        <span class="step-num">2</span>
-                        <span><strong>Misión 2 (Incendio Clase B):</strong> Identifica el extintor PQS reglamentario y sofoca las llamas en la base con técnica PASS.</span>
+                        <span class="step-num" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #fca5a5;">2</span>
+                        <div>
+                            <strong style="color: #f87171; font-size: 0.86rem;">Misión 2: Conato de Incendio Clase B (Líquidos Inflamables - 90s)</strong>
+                            <p style="margin: 3px 0 0; font-size: 0.73rem; color: #cbd5e1; line-height: 1.4;">
+                                Extinción táctica de hidrocarburos encendidos:
+                                <br>• <strong>Extintor PQS ABC (NFPA 10):</strong> El fosfato monoamónico inhibe la reacción en cadena de los vapores inflamables.
+                                <br>• <strong>¡PROHIBIDO USAR AGUA!:</strong> Causa fenómeno de <em>Boilover / Slopover</em>; el agua vaporiza violentamente en el fondo y proyecta combustible ardiendo.
+                                <br>• <strong>Técnica PASS:</strong> Acércate a 2-3m, apunta a la <strong>base del fuego</strong> (donde nacen las llamas) y descarga barriendo en abanico.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -2628,7 +2648,7 @@
             equipExtinguisher(type) {
                 if (type === 'water') {
                     this.audio.playAlarm();
-                    this.damageHealth(15, "¡ALERTA BOILOVER! Prohibido usar agua en fuego Clase B (líquidos inflamables). Usa el extintor PQS ABC.");
+                    this.damageHealth(15, "¡ALERTA BOILOVER! Prohibido usar agua en fuego Clase B (líquidos inflamables). El agua es más densa, hierve bruscamente bajo el solvente (expansión 1:1700) y proyecta líquido encendido. ¡Usa el extintor PQS ABC!");
                     return;
                 }
 
@@ -2639,7 +2659,7 @@
                     bExt.classList.add('completed');
                     bExt.innerHTML = '<i class="fa-solid fa-check"></i> PQS EQUIPADO';
                 }
-                this.setBotMessage('¡Extintor PQS ABC listo! Acércate a 2-3 metros del fuego, apunta a la base y presiona [E] para sofocarlo.', '🧯');
+                this.setBotMessage('¡Extintor PQS ABC reglamentario listo! El fosfato monoamónico inhibe la reacción en cadena. Acércate a 2-3m, apunta a la BASE de las llamas y presiona [E] con técnica PASS.', '🧯');
                 this.checkProximity();
             }
 
@@ -2658,7 +2678,7 @@
                     if (st.id === 'fire') {
                         if (!this.extinguisherEquipped) {
                             this.audio.playAlarm();
-                            this.setBotMessage("¡No puedes sofocar el fuego con las manos! Toma el extintor PQS ABC en la Pared Este.", '⚠️');
+                            this.setBotMessage("¡Peligro! No puedes sofocar fuego de hidrocarburos con las manos. Toma el extintor PQS ABC en la Pared Este.", '⚠️');
                             return;
                         }
                         // Descargar PQS
@@ -2684,10 +2704,10 @@
                         if (this.fireIntensity <= 0) {
                             if (this.dom.fireCluster) this.dom.fireCluster.style.display = 'none';
                             this.mission2Completed = true;
-                            this.setBotMessage("¡FUEGO LIQUIDADO! Has controlado el conato con técnica PASS reglamentaria.", '🏆');
+                            this.setBotMessage("¡FUEGO CLASE B SOFOCADO! Has liquidado el conato en origen conforme a NFPA 10 sin dispersión ni boilover.", '🏆');
                             this.triggerGameOver(true);
                         } else {
-                            this.setBotMessage(`¡Buen barrido! Intensidad reducida al ${Math.round(this.fireIntensity)}%. Continúa descargando a la base.`, '🧯');
+                            this.setBotMessage(`¡Descarga efectiva a la base! Polvo sofocando vapores inflamables. Intensidad al ${Math.round(this.fireIntensity)}%. Continúa barriendo en abanico.`, '🧯');
                         }
                         return;
                     }
@@ -2697,7 +2717,7 @@
                 switch(st.id) {
                     case 'epp':
                         if (this.gameState.hasGloves && this.gameState.hasMask) {
-                            this.setBotMessage("Tu EPP está completo. Camina hacia la Válvula Norte.", '✅');
+                            this.setBotMessage("Tu EPP está completo. Camina hacia la Válvula Norte a cortar el flujo en origen.", '✅');
                             return;
                         }
                         this.gameState.hasGloves = true;
@@ -2708,13 +2728,13 @@
                         document.getElementById('badge-epp').classList.add('completed');
                         document.getElementById('badge-epp').innerHTML = '<i class="fa-solid fa-check"></i> EPP EQUIPADO';
                         this.audio.playBreath();
-                        this.setBotMessage("¡EPP Químico equipado! Ahora camina hacia la Válvula Norte y gira la manivela.", '🛡️');
+                        this.setBotMessage("¡EPP Químico equipado! Vías respiratorias y piel blindadas. Ahora corre a la Válvula Norte a cortar el flujo en la fuente.", '🛡️');
                         this.checkProximity();
                         break;
 
                     case 'valve':
                         if (this.gameState.valveClosed) {
-                            this.setBotMessage("La válvula ya está cerrada. Camina al Lavaojos (Pared Sur).", 'ℹ️');
+                            this.setBotMessage("La válvula ya está cerrada. Camina al Lavaojos Sur para auxiliar al compañero.", 'ℹ️');
                             return;
                         }
                         if (!this.gameState.hasGloves) {
@@ -2729,13 +2749,13 @@
                         this.audio.playValveClank();
                         document.getElementById('badge-valve').classList.add('completed');
                         document.getElementById('badge-valve').innerHTML = '<i class="fa-solid fa-check"></i> VÁLVULA CERRADA';
-                        this.setBotMessage("¡Flujo cortado! Camina al Lavaojos (Pared Sur) para auxiliar al compañero.", '💧');
+                        this.setBotMessage("¡Flujo cortado en la fuente! Sin fuga activa, el derrame es controlable. Corre de inmediato al Lavaojos Sur a descontaminar a tu compañero (ANSI Z358.1).", '💧');
                         this.checkProximity();
                         break;
 
                     case 'eyewash':
                         if (this.gameState.eyewashActive) {
-                            this.setBotMessage("El lavaojos ya está en funcionamiento continuo. Ve al Estante Kit Antiderrame (Pared Este).", 'ℹ️');
+                            this.setBotMessage("El lavaojos ya está en funcionamiento continuo (15 min). Ve al Estante Kit Antiderrame (Pared Este).", 'ℹ️');
                             return;
                         }
                         this.gameState.eyewashActive = true;
@@ -2743,7 +2763,7 @@
                         this.audio.playWaterRush();
                         document.getElementById('badge-eyewash').classList.add('completed');
                         document.getElementById('badge-eyewash').innerHTML = '<i class="fa-solid fa-check"></i> LAVADO ACTIVO';
-                        this.setBotMessage("¡Lavaojos activado! Operario fuera de peligro. Ve al Estante Kit (Pared Este) a tomar los cordones y paños.", '💧');
+                        this.setBotMessage("¡Lavaojos en marcha continua! Irrigación urgente dentro de los 15s iniciales: necrosis corneal evitada (ANSI Z358.1). Corre a la Pared Este por el Kit Antiderrame.", '💧');
                         this.checkProximity();
                         break;
 
@@ -2754,14 +2774,14 @@
                             return;
                         }
                         if (this.gameState.kitOpened) {
-                            this.setBotMessage("Ya tienes los insumos en mano. Camina hacia el charco en el centro.", '🟡');
+                            this.setBotMessage("Ya tienes los insumos en mano. Camina hacia el centro para delimitar el charco con el cordón absorbente.", '🟡');
                             return;
                         }
                         this.gameState.kitOpened = true;
                         document.getElementById('badge-kit').classList.add('completed');
                         document.getElementById('badge-kit').innerHTML = '<i class="fa-solid fa-check"></i> KIT EN MANO';
                         this.audio.playTone(550, 'sine', 0.2);
-                        this.setBotMessage("¡Insumos en mano! Camina hacia el centro para delimitar el charco con el cordón absorbente.", '🟡');
+                        this.setBotMessage("¡Kit Antiderrame listo! Camina hacia el centro para instalar el cordón absorbente perimetral y proteger el drenaje pluvial.", '🟡');
                         this.checkProximity();
                         break;
 
@@ -2782,7 +2802,7 @@
                             const bSpill = document.getElementById('badge-spill');
                             if (bSpill) bSpill.innerHTML = '<i class="fa-solid fa-ring"></i> CORDÓN INSTALADO';
                             this.audio.playTone(480, 'sine', 0.2);
-                            this.setBotMessage("¡Cordón delimitador colocado! El químico quedó cercado. Vuelve a interactuar para absorberlo con los paños.", '🧻');
+                            this.setBotMessage("¡Dique perimetral cerrado! El químico quedó confinado, protegiendo el drenaje pluvial. Interactúa de nuevo para absorberlo con los paños.", '🧻');
                             this.checkProximity();
                             return;
                         }
@@ -2797,7 +2817,7 @@
                                 bSpill.innerHTML = '<i class="fa-solid fa-check"></i> DERRAME ABSORBIDO';
                             }
                             this.audio.playTone(520, 'sine', 0.2);
-                            this.setBotMessage("¡Químico absorbido! Ahora camina al Acopio RESPEL (Pared Oeste) para confinar el residuo en la bolsa roja.", '🔴');
+                            this.setBotMessage("¡Químico absorbido por polímero inerte! Ahora recoge los paños contaminados y llévalos al Acopio RESPEL (Pared Oeste) en bolsa roja.", '🔴');
                             this.checkProximity();
                             return;
                         }
@@ -2818,7 +2838,7 @@
                         document.getElementById('badge-respel').classList.add('completed');
                         document.getElementById('badge-respel').innerHTML = '<i class="fa-solid fa-check"></i> RESIDUO CONFINADO';
                         this.audio.playTone(660, 'sine', 0.3);
-                        this.setBotMessage("¡Residuo confinado y rotulado con éxito! Has completado la Misión 1.", '🏆');
+                        this.setBotMessage("¡Residuo peligroso confinado y rotulado! Conforme al Dec. 4741/2005, el material queda listo para entrega a gestor ambiental certificado.", '🏆');
                         this.triggerGameOver(true);
                         break;
                 }
@@ -2942,10 +2962,10 @@
                     if (elHazards) elHazards.textContent = `${hazardsCount}/4 pines (+${hazardsBonus} pts)`;
 
                     if (this.currentMission === 1) {
-                        this.dom.modalAuditDesc.innerHTML = '<strong>¡Misión 1 Completada con Éxito!</strong> Has contenido la fuga de químico, protegido el drenaje y auxiliado a tu compañero conforme a Res. 773/2021. Ahora avanza a la Misión 2 para sofocar el conato de incendio con extintor.';
+                        this.dom.modalAuditDesc.innerHTML = '<strong>¡Misión 1 Completada con Éxito Operacional!</strong> Has blindado tu protección respiratoria/dérmica, cerrado la fuga en la fuente, auxiliado a tu compañero dentro de los 15s (ANSI Z358.1), delimitado el perímetro para proteger el alcantarillado pluvial y acopiado los residuos peligrosos en bolsa roja según el Decreto 4741/2005. Ahora avanza a la <strong>Misión 2</strong> para controlar el conato de incendio con extintor.';
                         if (this.dom.btnNextMissionFire) this.dom.btnNextMissionFire.style.display = 'block';
                     } else {
-                        this.dom.modalAuditDesc.innerHTML = '<strong>¡Simulacro Total Superado con Distinción SST!</strong> Has extinguido el conato de incendio Clase B aplicando técnica de barrido PASS y agente PQS conforme a la norma NFPA 10.';
+                        this.dom.modalAuditDesc.innerHTML = '<strong>¡Simulacro Total Superado con Distinción SST!</strong> Has seleccionado el extintor reglamentario PQS ABC (fosfato monoamónico) evitando el riesgo crítico de <em>Boilover</em> del agua, y has sofocado las llamas en la base con la técnica de barrido PASS a 2-3 metros según la norma NFPA 10.';
                         if (this.dom.btnNextMissionFire) this.dom.btnNextMissionFire.style.display = 'none';
                     }
 
