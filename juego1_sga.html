@@ -3930,6 +3930,114 @@
                 });
             }
 
+            /**
+             * CONTROLADOR UNIVERSAL DE ARRASTRE Y SOLTADO (DRAG & DROP TÁCTIL Y RATÓN)
+             */
+            setupDragAndDrop(cardEl, dropZoneSelector, onDropCallback, canDragCondition) {
+                if (!cardEl) return;
+                let isDragging = false;
+                let startX = 0;
+                let startY = 0;
+                let currentHoverZone = null;
+                let hasMoved = false;
+
+                const onPointerMove = (e) => {
+                    if (!isDragging) return;
+
+                    const dx = e.clientX - startX;
+                    const dy = e.clientY - startY;
+
+                    // Umbral de 6px para diferenciar toque simple de arrastre intencional
+                    if (!hasMoved && Math.hypot(dx, dy) > 6) {
+                        hasMoved = true;
+                        this.wasDragged = true;
+                        cardEl.classList.add('is-dragging');
+                    }
+
+                    if (hasMoved) {
+                        const rot = Math.max(-10, Math.min(10, dx * 0.04));
+                        cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(0.96) rotate(${rot}deg)`;
+                        cardEl.style.zIndex = '100';
+
+                        // Detección precisa de colisión bajo el puntero
+                        const elemUnder = document.elementFromPoint(e.clientX, e.clientY);
+                        const dropZone = elemUnder ? elemUnder.closest(dropZoneSelector) : null;
+
+                        if (dropZone !== currentHoverZone) {
+                            if (currentHoverZone) {
+                                currentHoverZone.classList.remove('drop-target-hover');
+                            }
+                            currentHoverZone = dropZone;
+                            if (currentHoverZone) {
+                                currentHoverZone.classList.add('drop-target-hover');
+                                sound.tap();
+                            }
+                        }
+                    }
+                };
+
+                const onPointerUp = (e) => {
+                    if (!isDragging) return;
+                    isDragging = false;
+
+                    window.removeEventListener('pointermove', onPointerMove);
+                    window.removeEventListener('pointerup', onPointerUp);
+                    window.removeEventListener('pointercancel', onPointerUp);
+
+                    // Limpiar clases de las zonas destino
+                    document.querySelectorAll(dropZoneSelector).forEach(el => {
+                        el.classList.remove('drop-target-active', 'drop-target-hover');
+                    });
+
+                    if (hasMoved) {
+                        cardEl.classList.remove('is-dragging');
+                        const targetZone = currentHoverZone;
+                        currentHoverZone = null;
+
+                        if (targetZone) {
+                            cardEl.style.transition = 'transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                            cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+                            cardEl.style.zIndex = '';
+                            
+                            const dropValue = targetZone.dataset.sgaId || targetZone.dataset.family;
+                            onDropCallback(dropValue);
+                        } else {
+                            cardEl.style.transition = 'transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                            cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+                            setTimeout(() => {
+                                cardEl.style.transition = '';
+                                cardEl.style.zIndex = '';
+                            }, 300);
+                        }
+                    } else {
+                        cardEl.style.zIndex = '';
+                    }
+                };
+
+                const onPointerDown = (e) => {
+                    if (e.target && e.target.closest && e.target.closest('button')) return;
+
+                    if (canDragCondition && !canDragCondition()) return;
+
+                    this.wasDragged = false;
+                    isDragging = true;
+                    hasMoved = false;
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    cardEl.style.transition = 'none';
+
+                    document.querySelectorAll(dropZoneSelector).forEach(el => {
+                        el.classList.add('drop-target-active');
+                    });
+
+                    window.addEventListener('pointermove', onPointerMove);
+                    window.addEventListener('pointerup', onPointerUp);
+                    window.addEventListener('pointercancel', onPointerUp);
+                };
+
+                cardEl.addEventListener('pointerdown', onPointerDown);
+            }
+
             // ==============================================================
             // NIVEL 2: CLASIFICACIÓN Y PELIGROS SEGÚN EL SGA (3 FAMILIAS)
             // ==============================================================
@@ -3997,7 +4105,7 @@
 
                 if (this.dom.l2CardContainer) {
                     this.dom.l2CardContainer.innerHTML = `
-                        <div class="level2-classified-card pop-comic">
+                        <div class="level2-classified-card draggable-card pop-comic" id="level2-active-chem-card">
                             <div class="level2-chem-visual">
                                 ${item.svgIllustration || ''}
                                 <span class="level2-chem-badge-pill">SUSTANCIA</span>
@@ -4010,11 +4118,20 @@
                                 <h3 style="font-size: 0.95rem; font-weight: 800; color: #fff; margin: 0 0 3px 0; line-height: 1.25;">${item.name}</h3>
                                 <p style="font-size: 0.74rem; color: #e2e8f0; line-height: 1.35; margin: 0 0 5px 0;">${item.situation}</p>
                                 <div style="font-size: 0.68rem; color: var(--bolivar-yellow); font-weight: 600; display: flex; align-items: center; gap: 5px;">
-                                    <i class="fa-solid fa-arrow-down"></i> Toca abajo el casillero correspondiente: Físico, Salud o Medio Ambiente.
+                                    <i class="fa-solid fa-hand-pointer"></i> Arrastra hacia un casillero o tócalo abajo para clasificar.
                                 </div>
                             </div>
                         </div>
                     `;
+
+                    const cardEl = document.getElementById('level2-active-chem-card');
+                    if (cardEl) {
+                        this.setupDragAndDrop(cardEl, '.hazard-bucket', (family) => {
+                            if (family) {
+                                this.classifyLevel2Item(family);
+                            }
+                        }, () => this.currentLevel === 2 && this.level2Index < HAZARD_ITEMS.length);
+                    }
                 }
             }
 
@@ -4171,6 +4288,12 @@
                         sound.tap();
                         this.selectCard(this.selectedCardId === chem.id ? null : chem.id);
                     });
+
+                    this.setupDragAndDrop(card, '.sga-pictogram-tile', (sgaId) => {
+                        if (sgaId) {
+                            this.handleExamSelection(sgaId, chem.id);
+                        }
+                    }, () => this.currentLevel === 3 && card.dataset.state !== 'done');
 
                     this.dom.examCardsTray.appendChild(card);
                 });
