@@ -1203,56 +1203,135 @@
             color: #070b14;
         }
 
-        /* NIVEL 1: Tablero de Correspondencia Normativa */
-        .match-pairs-board {
+        /* ============================================================== */
+        /* NIVEL 1: CONSOLA INDUSTRIAL DE CABLEADO Y CONECTORES (PATCH BAY) */
+        /* ============================================================== */
+        .patch-panel-container {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin: 6px 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(10, 15, 29, 0.98) 100%);
+            border: 1px solid rgba(255, 199, 44, 0.28);
+            border-radius: var(--radius-md);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 0 24px rgba(0, 0, 0, 0.7), 0 8px 24px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .patch-panel-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 12px;
+            background: rgba(30, 41, 59, 0.75);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            font-size: 0.7rem;
+            z-index: 15;
+            position: relative;
+        }
+        .patch-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #e2e8f0;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+        .patch-led-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 6px #ef4444;
+            transition: all 0.3s ease;
+        }
+        .patch-led-indicator.active {
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+        .patch-circuit-badge {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 199, 44, 0.3);
+            border-radius: 4px;
+            padding: 2px 8px;
+            color: var(--bolivar-yellow);
+            font-weight: 800;
+            font-size: 0.68rem;
+            letter-spacing: 0.05em;
+        }
+        .patch-wires-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 12;
+            overflow: visible;
+        }
+        .patch-columns-board {
+            position: relative;
+            z-index: 5;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 16px;
             width: 100%;
-            margin: 8px 0;
+            padding: 10px;
             flex: 1;
             overflow-y: auto;
         }
-        .match-column {
+        @media (max-width: 640px) {
+            .patch-columns-board {
+                gap: 10px;
+                padding: 8px;
+            }
+        }
+        .patch-column {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        .match-card {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-sm);
-            padding: 9px 11px;
+        .patch-card {
+            background: rgba(30, 41, 59, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            padding: 8px 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 4px;
-            min-height: 68px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 68px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
         }
-        .match-card:hover:not(.matched) {
-            border-color: var(--bolivar-yellow);
-            background: rgba(45, 62, 80, 0.85);
-            transform: translateY(-2px);
+        .patch-card:hover:not(.matched) {
+            border-color: rgba(255, 199, 44, 0.6);
+            background: rgba(30, 41, 59, 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 199, 44, 0.2);
         }
-        .match-card.selected {
-            border-color: var(--bolivar-yellow);
-            box-shadow: 0 0 14px rgba(255, 199, 44, 0.4);
-            background: rgba(255, 199, 44, 0.12);
+        .patch-card.selected {
+            border-color: var(--bolivar-yellow) !important;
+            background: rgba(255, 199, 44, 0.12) !important;
+            box-shadow: 0 0 16px rgba(255, 199, 44, 0.45) !important;
             transform: scale(1.02);
         }
-        .match-card.matched {
-            border-color: var(--bolivar-green-glow);
-            background: rgba(16, 185, 129, 0.15);
+        .patch-card.matched {
+            border-color: rgba(16, 185, 129, 0.4) !important;
+            background: rgba(6, 78, 59, 0.22) !important;
             cursor: default;
-            opacity: 0.85;
+            box-shadow: inset 0 0 12px rgba(16, 185, 129, 0.15);
         }
-        .match-card.wrong {
-            border-color: var(--hazard-red);
-            background: rgba(239, 68, 68, 0.2);
+        .patch-card.wrong {
+            border-color: #ef4444 !important;
+            background: rgba(239, 68, 68, 0.2) !important;
             animation: matchShake 0.4s ease;
         }
         @keyframes matchShake {
@@ -1260,24 +1339,208 @@
             20%, 60% { transform: translateX(-6px); }
             40%, 80% { transform: translateX(6px); }
         }
-        .match-card-law {
-            font-size: 0.82rem;
-            font-weight: 800;
-            color: var(--bolivar-yellow);
+
+        /* Clavija de Salida Izquierda (Norma) */
+        .patch-card-source {
+            justify-content: space-between;
+        }
+        .patch-card-source .patch-card-body {
+            flex: 1;
+            min-width: 0;
+            padding-right: 6px;
+        }
+        .patch-jack-pin {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #475569, #0f172a);
+            border: 2px solid #64748b;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.5);
+            transition: all 0.25s ease;
+            cursor: grab;
         }
-        .match-card-subtitle {
+        .patch-jack-pin:active {
+            cursor: grabbing;
+        }
+        .patch-jack-pin::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            width: 7px;
+            height: 12px;
+            border-radius: 0 3px 3px 0;
+            background: var(--jack-wire-color, #94a3b8);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        }
+        .patch-card-source:hover .patch-jack-pin,
+        .patch-card-source.selected .patch-jack-pin {
+            border-color: var(--jack-wire-color, var(--bolivar-yellow));
+            box-shadow: 0 0 12px var(--jack-wire-color, var(--bolivar-yellow)), inset 0 0 4px rgba(255,255,255,0.4);
+            transform: scale(1.1);
+        }
+        .jack-pin-led {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 4px #ef4444;
+            transition: all 0.25s ease;
+        }
+        .patch-card-source.selected .jack-pin-led {
+            background: var(--jack-wire-color, var(--bolivar-yellow));
+            box-shadow: 0 0 8px var(--jack-wire-color, var(--bolivar-yellow));
+            animation: ledBlink 0.5s infinite alternate;
+        }
+        .patch-card-source.matched .jack-pin-led {
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        /* Toma Receptora Derecha (Concepto) */
+        .patch-card-target {
+            justify-content: flex-start;
+        }
+        .patch-card-target .patch-card-body {
+            flex: 1;
+            min-width: 0;
+            padding-left: 6px;
+        }
+        .patch-socket-port {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%, #050811 40%, #1e293b 70%, #475569 100%);
+            border: 2px solid #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.4);
+            transition: all 0.25s ease;
+        }
+        .socket-port-hole {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #020617;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .socket-led-ring {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 1.5px solid transparent;
+            transition: all 0.25s ease;
+            pointer-events: none;
+        }
+        .patch-card-target:hover .patch-socket-port,
+        .patch-card-target.target-hover .patch-socket-port {
+            border-color: var(--bolivar-yellow);
+            box-shadow: 0 0 14px rgba(255, 199, 44, 0.6), inset 0 0 6px rgba(255, 199, 44, 0.3);
+            transform: scale(1.12);
+        }
+        .patch-card-target.target-hover .socket-led-ring {
+            border-color: var(--bolivar-yellow);
+            box-shadow: 0 0 10px var(--bolivar-yellow);
+            animation: haloPulse 0.5s infinite alternate;
+        }
+        .patch-card-target.matched .patch-socket-port {
+            border-color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+        .patch-card-target.matched .socket-port-hole {
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        /* Textos de Tarjeta */
+        .patch-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: rgba(15, 23, 42, 0.8);
+            margin-bottom: 3px;
+            letter-spacing: 0.04em;
+        }
+        .patch-title {
+            font-size: 0.82rem;
+            font-weight: 800;
+            line-height: 1.25;
+        }
+        .patch-subtitle {
             font-size: 0.68rem;
             color: var(--text-muted);
             line-height: 1.35;
+            margin-top: 2px;
         }
-        .match-card-concept {
+        .patch-text {
             font-size: 0.74rem;
             color: #f1f5f9;
             line-height: 1.35;
             font-weight: 500;
+        }
+
+        /* Rutas SVG de Cables Elásticos */
+        .wire-outer-glow {
+            fill: none;
+            stroke-linecap: round;
+            filter: url(#neon-glow-filter);
+            opacity: 0.45;
+        }
+        .wire-cable-body {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .wire-cable-core {
+            fill: none;
+            stroke: #ffffff;
+            stroke-linecap: round;
+            opacity: 0.9;
+        }
+        .wire-energy-pulse {
+            fill: none;
+            stroke: #ffffff;
+            stroke-linecap: round;
+            stroke-dasharray: 8 20;
+            animation: wireEnergyFlow 1.1s linear infinite;
+        }
+        @keyframes wireEnergyFlow {
+            from { stroke-dashoffset: 56; }
+            to { stroke-dashoffset: 0; }
+        }
+        .active-wire-path {
+            fill: none;
+            stroke-width: 4px;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 6px rgba(255, 199, 44, 0.7));
+            stroke-dasharray: 6 6;
+            animation: activeWireDash 0.8s linear infinite;
+        }
+        @keyframes activeWireDash {
+            from { stroke-dashoffset: 24; }
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes ledBlink {
+            from { opacity: 0.4; }
+            to { opacity: 1; }
+        }
+        @keyframes haloPulse {
+            from { transform: scale(0.9); opacity: 0.6; }
+            to { transform: scale(1.2); opacity: 1; }
         }
 
         /* NIVEL 2: Clasificación en Familias SGA */
@@ -1445,7 +1708,7 @@
                             <span class="bot-tag">Adopción SGA</span>
                         </div>
                         <p id="level1-instruction" class="bot-dialog-text" style="font-size: var(--font-xs);">
-                            Relaciona cada <strong>norma jurídica</strong> colombiana de la izquierda con su <strong>objeto técnico</strong> en el SGA de la derecha. Toca una norma y luego su concepto correspondiente.
+                            Conecta cada <strong>clavija de norma legal</strong> (izquierda) con su <strong>puerto técnico receptor</strong> (derecha). Arrastra el cable de conexión o toca ambos terminales para cerrar el circuito normativo.
                         </p>
                     </div>
                 </div>
@@ -1456,13 +1719,46 @@
                     <span><strong>Fundamento Legal:</strong> Relaciona cada norma con su mandato legal en Colombia.</span>
                 </div>
 
-                <!-- Tablero de Correspondencia -->
-                <div class="match-pairs-board" id="level1-match-board">
-                    <div class="match-column" id="level1-col-laws">
-                        <!-- Generado dinámicamente -->
+                <!-- Consola Industrial de Cableado y Conectores SGA -->
+                <div class="patch-panel-container custom-scroll" id="level1-patch-panel">
+                    <!-- Barra de Instrumentación de la Consola -->
+                    <div class="patch-panel-topbar">
+                        <div class="patch-topbar-left">
+                            <span class="patch-led-indicator active"></span>
+                            <span class="patch-topbar-title"><i class="fa-solid fa-bolt text-bolivar-yellow mr-1"></i> PANEL DE CABLEADO SST • LÍNEAS NORMATIVAS</span>
+                        </div>
+                        <div class="patch-topbar-right">
+                            <span class="patch-circuit-badge" id="level1-circuit-status">
+                                <i class="fa-solid fa-network-wired"></i> 0/4 CIRCUITOS ACTIVOS
+                            </span>
+                        </div>
                     </div>
-                    <div class="match-column" id="level1-col-concepts">
-                        <!-- Generado dinámicamente -->
+
+                    <!-- SVG Overlay para Cables Físicos Elásticos -->
+                    <svg class="patch-wires-svg" id="level1-wires-svg" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="neon-glow-filter" x="-30%" y="-30%" width="160%" height="160%">
+                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                <feMerge>
+                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Capa para cables permanentes conectados -->
+                        <g id="level1-permanent-wires"></g>
+                        <!-- Capa para cable activo mientras se arrastra -->
+                        <path id="level1-active-wire" class="active-wire-path" d="" style="display: none;"></path>
+                    </svg>
+
+                    <!-- Columnas de Parcheo: Clavijas Emisoras (Normas) y Tomas Receptoras (Conceptos) -->
+                    <div class="match-pairs-board patch-columns-board" id="level1-match-board">
+                        <div class="match-column patch-column-sources" id="level1-col-laws">
+                            <!-- Generado dinámicamente con clavijas de cable -->
+                        </div>
+                        <div class="match-column patch-column-targets" id="level1-col-concepts">
+                            <!-- Generado dinámicamente con tomas jack -->
+                        </div>
                     </div>
                 </div>
 
@@ -2220,6 +2516,11 @@
 
             tap() { this.playTone(600, 'sine', 0.05, 0.15); }
 
+            electricSnap() {
+                this.playTone(850, 'sawtooth', 0.05, 0.22);
+                setTimeout(() => this.playTone(1200, 'triangle', 0.08, 0.2), 30);
+            }
+
             success() {
                 this.playTone(523.25, 'triangle', 0.12, 0.2); // C5
                 setTimeout(() => this.playTone(659.25, 'triangle', 0.2, 0.2), 90); // E5
@@ -2569,13 +2870,15 @@
          * 3. BASES DE DATOS PEDAGÓGICAS MULTINIVEL (Res. 773/2021)
          * ==============================================================
          */
-        // Nivel 1: Marco Legal Colombiano y Adopción SGA
+        // Nivel 1: Marco Legal Colombiano y Adopción SGA (Consola de Cableado)
         const LEGAL_FRAMEWORK_DATA = [
             {
                 id: 'ley55',
                 norma: 'Ley 55 de 1993',
                 subtitle: 'Convenio OIT 170 (Fuerza de Ley)',
-                badge: 'OIT / Ley',
+                badge: 'OIT / LEY',
+                icon: 'fa-earth-americas',
+                color: '#38bdf8', // Cyan eléctrico
                 concept: 'Seguridad en la utilización de los productos químicos en el trabajo: deberes del empleador, clasificación y derechos de información de los trabajadores.',
                 key: 'oit',
                 explanation: 'La Ley 55/1993 ratifica el Convenio OIT 170. Consagra el DERECHO A SABER del trabajador y obliga al empleador a etiquetar todos los químicos y capacitar sobre sus peligros.'
@@ -2584,7 +2887,9 @@
                 id: 'dec1072',
                 norma: 'Decreto 1072 / Res. 0312',
                 subtitle: 'SG-SST & Estándares Mínimos',
-                badge: 'Decreto Único',
+                badge: 'SG-SST',
+                icon: 'fa-shield-halved',
+                color: '#facc15', // Volt Yellow
                 concept: 'Obligación del SG-SST de identificar, inventariar y evaluar los riesgos por sustancias químicas peligrosas y cancerígenas en el centro de trabajo.',
                 key: 'sgsst',
                 explanation: 'El Dec. 1072/2015 exige a toda empresa contar con matriz de riesgos químicos, inventario periódico de sustancias y vigilancia médica para sustancias cancerígenas.'
@@ -2593,7 +2898,9 @@
                 id: 'dec1496',
                 norma: 'Decreto 1496 de 2018',
                 subtitle: 'Adopción Formal SGA',
-                badge: 'Adopción Nacional',
+                badge: 'ADOPCIÓN SGA',
+                icon: 'fa-book-bookmark',
+                color: '#fb923c', // Neón Orange
                 concept: 'Adopción formal del Sistema Globalmente Armonizado (SGA) de clasificación y etiquetado de productos químicos para todos los sectores productivos en Colombia.',
                 key: 'adopcion',
                 explanation: 'El Dec. 1496/2018 adoptó formalmente el Libro Púrpura de la ONU (SGA) en Colombia, unificando los criterios de peligro físico, a la salud y ambiental en todo el territorio.'
@@ -2602,7 +2909,9 @@
                 id: 'res773',
                 norma: 'Resolución 773 de 2021',
                 subtitle: 'Reglamentación en Lugares de Trabajo',
-                badge: 'MinTrabajo',
+                badge: 'MINTRABAJO',
+                icon: 'fa-clipboard-check',
+                color: '#4ade80', // Láser Green
                 concept: 'Reglamentación técnica obligatoria del SGA en los lugares de trabajo: etiquetado de recipientes, hojas FDS de 16 secciones en español y capacitación SST.',
                 key: 'reglamento',
                 explanation: 'La Res. 773/2021 fija los estándares operativos: etiquetado obligatorio en envases principales y trasvases, FDS en 16 secciones en español y reentrenamiento anual.'
@@ -2806,6 +3115,11 @@
                     phaseResults: document.getElementById('phase-results'),
 
                     // Nivel 1 Elements
+                    l1PatchPanel: document.getElementById('level1-patch-panel'),
+                    l1WiresSvg: document.getElementById('level1-wires-svg'),
+                    l1PermanentWires: document.getElementById('level1-permanent-wires'),
+                    l1ActiveWire: document.getElementById('level1-active-wire'),
+                    l1CircuitStatus: document.getElementById('level1-circuit-status'),
                     l1ColLaws: document.getElementById('level1-col-laws'),
                     l1ColConcepts: document.getElementById('level1-col-concepts'),
                     l1ProgressText: document.getElementById('level1-progress-text'),
@@ -2993,6 +3307,7 @@
 
                 if (lvlNum === 1) {
                     this.dom.phaseL1.classList.remove('hidden');
+                    setTimeout(() => this.updateLevel1Wires(), 60);
                 } else if (lvlNum === 2) {
                     this.dom.phaseL2.classList.remove('hidden');
                     if (this.level2Index === 0) this.initLevel2();
@@ -3030,90 +3345,252 @@
             }
 
             // ==============================================================
-            // NIVEL 1: MARCO LEGAL COLOMBIANO
+            // NIVEL 1: MARCO LEGAL COLOMBIANO (CONSOLA DE CABLEADO Y CONECTORES)
             // ==============================================================
             initLevel1() {
                 this.level1Matches = {};
-                this.selectedLawId = null;
+                this.selectedLawKey = null;
                 this.selectedConceptKey = null;
                 this.level1Score = 0;
+                this.permanentWires = {};
+                this.isDraggingWire = false;
+                this.dragSourceKey = null;
+                this.dragStartPos = null;
+                this.dragMoved = false;
+
+                // Limpiar cables en el overlay SVG
+                if (this.dom.l1PermanentWires) this.dom.l1PermanentWires.innerHTML = '';
+                if (this.dom.l1ActiveWire) {
+                    this.dom.l1ActiveWire.style.display = 'none';
+                    this.dom.l1ActiveWire.setAttribute('d', '');
+                }
 
                 this.dom.l1ProgressText.textContent = '0 de 4';
                 this.dom.l1ScoreText.textContent = '0';
+                if (this.dom.l1CircuitStatus) {
+                    this.dom.l1CircuitStatus.innerHTML = `<i class="fa-solid fa-network-wired"></i> 0/4 CIRCUITOS ACTIVOS`;
+                }
+
                 this.dom.btnAdvanceL2.disabled = true;
                 this.dom.btnAdvanceL2.style.background = '#1e293b';
                 this.dom.btnAdvanceL2.style.cursor = 'not-allowed';
                 this.dom.btnAdvanceL2.innerHTML = `<span>Enlaza todas las normas para avanzar</span> <i class="fa-solid fa-lock" style="font-size: var(--font-xs);"></i>`;
 
-                // Render Laws Column
+                // Render Emisores de Señal / Normas (Columna Izquierda con Clavijas Jack)
                 this.dom.l1ColLaws.innerHTML = '';
                 LEGAL_FRAMEWORK_DATA.forEach(item => {
                     const card = document.createElement('div');
-                    card.className = 'match-card';
+                    card.className = 'patch-card patch-card-source';
                     card.dataset.lawId = item.id;
                     card.dataset.key = item.key;
+                    card.style.setProperty('--jack-wire-color', item.color);
                     card.innerHTML = `
-                        <div class="match-badge">${item.badge}</div>
-                        <div class="match-title">${item.norma}</div>
-                        <div class="match-subtitle">${item.subtitle}</div>
+                        <div class="patch-card-body">
+                            <span class="patch-badge" style="color: ${item.color}; border: 1px solid ${item.color}55;">
+                                <i class="fa-solid ${item.icon} mr-1"></i> ${item.badge}
+                            </span>
+                            <div class="patch-title" style="color: ${item.color};">${item.norma}</div>
+                            <div class="patch-subtitle">${item.subtitle}</div>
+                        </div>
+                        <div class="patch-jack-pin" title="Clavija de conexión: arrastra o pulsa" style="--jack-wire-color: ${item.color};">
+                            <div class="jack-pin-led" id="led-pin-${item.key}"></div>
+                        </div>
                     `;
-                    card.addEventListener('click', () => this.handleLevel1LawClick(card, item));
+
+                    // Eventos de arrastre táctil / puntero y clic
+                    card.addEventListener('pointerdown', (e) => this.handleWirePointerDown(e, card, item));
                     this.dom.l1ColLaws.appendChild(card);
                 });
 
-                // Render Shuffled Concepts Column
+                // Render Receptores / Conceptos Técnicos (Columna Derecha con Tomas Hembra Jack)
                 this.dom.l1ColConcepts.innerHTML = '';
                 const shuffled = [...LEGAL_FRAMEWORK_DATA].sort(() => Math.random() - 0.5);
                 shuffled.forEach(item => {
                     const card = document.createElement('div');
-                    card.className = 'match-card';
+                    card.className = 'patch-card patch-card-target';
                     card.dataset.conceptKey = item.key;
                     card.innerHTML = `
-                        <div class="match-text">${item.concept}</div>
+                        <div class="patch-socket-port" title="Puerto receptor de señal normativa">
+                            <div class="socket-led-ring"></div>
+                            <div class="socket-port-hole">
+                                <div class="jack-pin-led" id="led-socket-${item.key}" style="width: 6px; height: 6px;"></div>
+                            </div>
+                        </div>
+                        <div class="patch-card-body">
+                            <div class="patch-text">${item.concept}</div>
+                        </div>
                     `;
+
                     card.addEventListener('click', () => this.handleLevel1ConceptClick(card, item));
                     this.dom.l1ColConcepts.appendChild(card);
                 });
+
+                // Vincular eventos globales de arrastre de cable
+                if (!this.l1EventsBound && this.dom.l1PatchPanel) {
+                    this.dom.l1PatchPanel.addEventListener('pointermove', (e) => this.handleWirePointerMove(e));
+                    window.addEventListener('pointerup', (e) => this.handleWirePointerUp(e));
+                    window.addEventListener('pointercancel', (e) => this.handleWirePointerUp(e));
+                    window.addEventListener('resize', () => this.updateLevel1Wires());
+                    const board = document.getElementById('level1-match-board');
+                    if (board) board.addEventListener('scroll', () => this.updateLevel1Wires());
+                    this.l1EventsBound = true;
+                }
+            }
+
+            getRelativeCenter(el) {
+                if (!el || !this.dom.l1PatchPanel) return { x: 0, y: 0 };
+                const panelRect = this.dom.l1PatchPanel.getBoundingClientRect();
+                const rect = el.getBoundingClientRect();
+                return {
+                    x: (rect.left + rect.right) / 2 - panelRect.left,
+                    y: (rect.top + rect.bottom) / 2 - panelRect.top
+                };
+            }
+
+            buildWirePath(x1, y1, x2, y2) {
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const curvature = Math.max(35, Math.abs(dx) * 0.42);
+                const sag = Math.max(8, Math.min(28, Math.abs(dx) * 0.1));
+                const cx1 = x1 + curvature;
+                const cy1 = y1 + (dy * 0.08) + sag;
+                const cx2 = x2 - curvature;
+                const cy2 = y2 - (dy * 0.08) + sag;
+                return `M ${x1.toFixed(1)} ${y1.toFixed(1)} C ${cx1.toFixed(1)} ${cy1.toFixed(1)}, ${cx2.toFixed(1)} ${cy2.toFixed(1)}, ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+            }
+
+            handleWirePointerDown(e, cardEl, lawItem) {
+                if (this.level1Matches[lawItem.key]) return;
+                if (e.button !== undefined && e.button !== 0) return;
+
+                this.isDraggingWire = true;
+                this.dragMoved = false;
+                this.dragSourceKey = lawItem.key;
+                this.dragSourceEl = cardEl;
+                this.dragSourceColor = lawItem.color;
+
+                const pin = cardEl.querySelector('.patch-jack-pin');
+                this.dragStartPos = this.getRelativeCenter(pin);
+
+                if (this.dom.l1ActiveWire) {
+                    this.dom.l1ActiveWire.style.stroke = lawItem.color;
+                    this.dom.l1ActiveWire.style.display = 'block';
+                    this.dom.l1ActiveWire.setAttribute('d', `M ${this.dragStartPos.x} ${this.dragStartPos.y} L ${this.dragStartPos.x} ${this.dragStartPos.y}`);
+                }
+
+                this.dom.l1ColLaws.querySelectorAll('.patch-card').forEach(c => c.classList.remove('selected'));
+                cardEl.classList.add('selected');
+                this.selectedLawKey = lawItem.key;
+
+                sound.tap();
+            }
+
+            handleWirePointerMove(e) {
+                if (!this.isDraggingWire || !this.dragStartPos || !this.dom.l1PatchPanel) return;
+
+                const panelRect = this.dom.l1PatchPanel.getBoundingClientRect();
+                const curX = e.clientX - panelRect.left;
+                const curY = e.clientY - panelRect.top;
+
+                const dist = Math.hypot(curX - this.dragStartPos.x, curY - this.dragStartPos.y);
+                if (dist > 8) this.dragMoved = true;
+
+                if (this.dom.l1ActiveWire) {
+                    this.dom.l1ActiveWire.setAttribute('d', this.buildWirePath(this.dragStartPos.x, this.dragStartPos.y, curX, curY));
+                }
+
+                // Iluminar puerto receptor bajo el puntero
+                const targetCards = this.dom.l1ColConcepts.querySelectorAll('.patch-card-target:not(.matched)');
+                let hoveredTarget = null;
+                targetCards.forEach(tc => {
+                    const r = tc.getBoundingClientRect();
+                    if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+                        hoveredTarget = tc;
+                    }
+                });
+
+                targetCards.forEach(tc => tc.classList.toggle('target-hover', tc === hoveredTarget));
+            }
+
+            handleWirePointerUp(e) {
+                if (!this.isDraggingWire) return;
+
+                if (this.dom.l1ActiveWire) {
+                    this.dom.l1ActiveWire.style.display = 'none';
+                    this.dom.l1ActiveWire.setAttribute('d', '');
+                }
+
+                const targetCards = this.dom.l1ColConcepts.querySelectorAll('.patch-card-target:not(.matched)');
+                let droppedTarget = null;
+                targetCards.forEach(tc => {
+                    tc.classList.remove('target-hover');
+                    const r = tc.getBoundingClientRect();
+                    if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+                        droppedTarget = tc;
+                    }
+                });
+
+                const sourceKey = this.dragSourceKey;
+                const wasMoved = this.dragMoved;
+
+                this.isDraggingWire = false;
+                this.dragStartPos = null;
+
+                if (droppedTarget) {
+                    const conceptKey = droppedTarget.dataset.conceptKey;
+                    this.connectLevel1Circuit(sourceKey, conceptKey);
+                } else if (!wasMoved) {
+                    // Clic estático
+                    if (this.selectedConceptKey) {
+                        this.connectLevel1Circuit(this.selectedLawKey, this.selectedConceptKey);
+                    }
+                } else {
+                    sound.tap();
+                }
             }
 
             handleLevel1LawClick(cardEl, lawItem) {
-                if (this.level1Matches[lawItem.key]) return; // Ya enlazada
+                if (this.level1Matches[lawItem.key]) return;
                 sound.tap();
 
-                // Clear previous law selection
-                this.dom.l1ColLaws.querySelectorAll('.match-card').forEach(c => c.classList.remove('selected'));
-                this.selectedLawId = lawItem.id;
+                this.dom.l1ColLaws.querySelectorAll('.patch-card').forEach(c => c.classList.remove('selected'));
                 this.selectedLawKey = lawItem.key;
                 cardEl.classList.add('selected');
 
                 if (this.selectedConceptKey) {
-                    this.checkLevel1Pair();
+                    this.connectLevel1Circuit(this.selectedLawKey, this.selectedConceptKey);
                 }
             }
 
             handleLevel1ConceptClick(cardEl, conceptItem) {
-                if (Object.values(this.level1Matches).includes(conceptItem.key)) return; // Ya enlazado
+                if (this.level1Matches[conceptItem.key]) return;
                 sound.tap();
 
-                // Clear previous concept selection
-                this.dom.l1ColConcepts.querySelectorAll('.match-card').forEach(c => c.classList.remove('selected'));
-                this.selectedConceptKey = conceptItem.key;
-                cardEl.classList.add('selected');
-
                 if (this.selectedLawKey) {
-                    this.checkLevel1Pair();
+                    this.connectLevel1Circuit(this.selectedLawKey, conceptItem.key);
+                } else {
+                    this.dom.l1ColConcepts.querySelectorAll('.patch-card').forEach(c => c.classList.remove('selected'));
+                    this.selectedConceptKey = conceptItem.key;
+                    cardEl.classList.add('selected');
                 }
             }
 
-            checkLevel1Pair() {
-                const lawCard = this.dom.l1ColLaws.querySelector(`[data-key="${this.selectedLawKey}"]`);
-                const conceptCard = this.dom.l1ColConcepts.querySelector(`[data-concept-key="${this.selectedConceptKey}"]`);
-                const lawData = LEGAL_FRAMEWORK_DATA.find(d => d.key === this.selectedLawKey);
+            connectLevel1Circuit(lawKey, conceptKey) {
+                const lawCard = this.dom.l1ColLaws.querySelector(`[data-key="${lawKey}"]`);
+                const conceptCard = this.dom.l1ColConcepts.querySelector(`[data-concept-key="${conceptKey}"]`);
+                const lawData = LEGAL_FRAMEWORK_DATA.find(d => d.key === lawKey);
 
-                if (this.selectedLawKey === this.selectedConceptKey) {
-                    // Correct Match
-                    sound.success();
-                    this.level1Matches[this.selectedLawKey] = true;
+                if (!lawCard || !conceptCard || !lawData) return;
+
+                const lawPin = lawCard.querySelector('.patch-jack-pin');
+                const conceptSocket = conceptCard.querySelector('.patch-socket-port');
+
+                if (lawKey === conceptKey) {
+                    // CIRCUITO CORRECTO: Acoplamiento exitoso
+                    sound.electricSnap();
+                    setTimeout(() => sound.success(), 60);
+
+                    this.level1Matches[lawKey] = true;
                     this.level1Score += 25;
 
                     lawCard.classList.remove('selected');
@@ -3121,12 +3598,16 @@
                     lawCard.classList.add('matched');
                     conceptCard.classList.add('matched');
 
-                    const centerPos = this.getCenterInViewport(lawCard);
-                    this.fx.confetti(centerPos.x, centerPos.y, 25);
-                    this.showComicBubble('¡CORRECTO!', 'good', centerPos);
+                    // Crear cable físico permanente en el SVG
+                    this.renderPermanentWire(lawKey, lawPin, conceptSocket, lawData.color);
+
+                    // Chispas en el puerto receptor
+                    const socketCenter = this.getCenterInViewport(conceptSocket);
+                    this.fx.confetti(socketCenter.x, socketCenter.y, 25);
+                    this.showComicBubble('¡CIRCUITO CERRADO!', 'good', socketCenter);
 
                     // Feedback pedagógico interactivo
-                    if (this.dom.l1FeedbackBanner && lawData) {
+                    if (this.dom.l1FeedbackBanner) {
                         this.dom.l1FeedbackBanner.style.borderColor = 'rgba(52, 211, 153, 0.5)';
                         this.dom.l1FeedbackBanner.style.background = 'rgba(6, 78, 59, 0.4)';
                         this.dom.l1FeedbackBanner.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span><strong style="color: #34d399;">${lawData.norma}:</strong> ${lawData.explanation}</span>`;
@@ -3135,11 +3616,14 @@
                     const matchedCount = Object.keys(this.level1Matches).length;
                     this.dom.l1ProgressText.textContent = `${matchedCount} de 4`;
                     this.dom.l1ScoreText.textContent = `${this.level1Score}`;
+                    if (this.dom.l1CircuitStatus) {
+                        this.dom.l1CircuitStatus.innerHTML = `<i class="fa-solid fa-network-wired text-emerald-400"></i> ${matchedCount}/4 CIRCUITOS ACTIVOS`;
+                    }
 
                     if (matchedCount === 4) {
                         sound.victory();
                         if (this.dom.l1FeedbackBanner) {
-                            this.dom.l1FeedbackBanner.innerHTML = `<i class="fa-solid fa-award text-bolivar-yellow"></i> <span><strong style="color: var(--bolivar-yellow);">¡Marco Legal Dominado!</strong> Has comprendido la integración de convenios OIT, normas SG-SST, adopción nacional y la Res. 773 en Colombia.</span>`;
+                            this.dom.l1FeedbackBanner.innerHTML = `<i class="fa-solid fa-award text-bolivar-yellow"></i> <span><strong style="color: var(--bolivar-yellow);">¡Marco Legal y Adopción SGA Dominados!</strong> Has conectado con éxito todas las fuentes jurídicas (OIT 170, Dec. 1072, Dec. 1496 y Res. 773) con sus mandatos técnicos de SST en Colombia.</span>`;
                         }
                         this.dom.btnAdvanceL2.disabled = false;
                         this.dom.btnAdvanceL2.style.background = 'var(--bolivar-green)';
@@ -3150,27 +3634,113 @@
                         this.playAnimation(this.dom.btnAdvanceL2, 'happy-jiggle', 800);
                     }
                 } else {
-                    // Wrong Match
+                    // CORTO CIRCUITO / DISCREPANCIA
                     sound.error();
                     this.triggerScreenShake();
-                    lawCard.classList.add('mismatched');
-                    conceptCard.classList.add('mismatched');
-                    this.showComicBubble('¡NORMA ERRADA!', 'bad', this.getCenterInViewport(lawCard));
 
-                    if (this.dom.l1FeedbackBanner && lawData) {
+                    this.renderTemporaryErrorWire(lawPin, conceptSocket);
+
+                    lawCard.classList.add('wrong');
+                    conceptCard.classList.add('wrong');
+                    this.showComicBubble('¡DISCREPANCIA!', 'bad', this.getCenterInViewport(conceptSocket));
+
+                    if (this.dom.l1FeedbackBanner) {
                         this.dom.l1FeedbackBanner.style.borderColor = 'rgba(239, 68, 68, 0.5)';
                         this.dom.l1FeedbackBanner.style.background = 'rgba(127, 29, 29, 0.3)';
-                        this.dom.l1FeedbackBanner.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400"></i> <span><strong style="color: #f87171;">Discrepancia Normativa:</strong> La norma "${lawData.norma}" no tiene ese alcance técnico. Revisa si es un tratado OIT, norma de SG-SST o resolución operativa.</span>`;
+                        this.dom.l1FeedbackBanner.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400"></i> <span><strong style="color: #f87171;">Discrepancia Normativa:</strong> La norma "${lawData.norma}" no corresponde a ese mandato. Revisa si se trata de un convenio OIT internacional, sistema de gestión SG-SST o resolución técnica operativa.</span>`;
                     }
 
                     setTimeout(() => {
-                        lawCard.classList.remove('selected', 'mismatched');
-                        conceptCard.classList.remove('selected', 'mismatched');
+                        lawCard.classList.remove('selected', 'wrong');
+                        conceptCard.classList.remove('selected', 'wrong');
                     }, 650);
                 }
 
                 this.selectedLawKey = null;
                 this.selectedConceptKey = null;
+            }
+
+            renderPermanentWire(key, pinEl, socketEl, color) {
+                if (!this.dom.l1PermanentWires) return;
+                const p1 = this.getRelativeCenter(pinEl);
+                const p2 = this.getRelativeCenter(socketEl);
+                const pathD = this.buildWirePath(p1.x, p1.y, p2.x, p2.y);
+
+                const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                group.setAttribute('class', 'wire-circuit-group');
+                group.dataset.wireKey = key;
+
+                // 1. Resplandor exterior Neón
+                const glow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                glow.setAttribute('class', 'wire-outer-glow');
+                glow.setAttribute('d', pathD);
+                glow.setAttribute('stroke', color);
+                glow.setAttribute('stroke-width', '8');
+
+                // 2. Cuerpo engomado del cable
+                const body = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                body.setAttribute('class', 'wire-cable-body');
+                body.setAttribute('d', pathD);
+                body.setAttribute('stroke', color);
+                body.setAttribute('stroke-width', '4.5');
+
+                // 3. Filamento central blanco
+                const core = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                core.setAttribute('class', 'wire-cable-core');
+                core.setAttribute('d', pathD);
+                core.setAttribute('stroke-width', '1.6');
+
+                // 4. Pulso animado de corriente
+                const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                pulse.setAttribute('class', 'wire-energy-pulse');
+                pulse.setAttribute('d', pathD);
+                pulse.setAttribute('stroke-width', '2.2');
+
+                group.appendChild(glow);
+                group.appendChild(body);
+                group.appendChild(core);
+                group.appendChild(pulse);
+
+                this.dom.l1PermanentWires.appendChild(group);
+
+                this.permanentWires[key] = {
+                    group,
+                    pinEl,
+                    socketEl,
+                    paths: [glow, body, core, pulse]
+                };
+            }
+
+            renderTemporaryErrorWire(pinEl, socketEl) {
+                if (!this.dom.l1PermanentWires) return;
+                const p1 = this.getRelativeCenter(pinEl);
+                const p2 = this.getRelativeCenter(socketEl);
+                const pathD = this.buildWirePath(p1.x, p1.y, p2.x, p2.y);
+
+                const errPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                errPath.setAttribute('d', pathD);
+                errPath.setAttribute('stroke', '#ef4444');
+                errPath.setAttribute('stroke-width', '4');
+                errPath.setAttribute('fill', 'none');
+                errPath.setAttribute('stroke-linecap', 'round');
+                errPath.setAttribute('stroke-dasharray', '4 4');
+                errPath.style.filter = 'drop-shadow(0 0 6px #ef4444)';
+
+                this.dom.l1PermanentWires.appendChild(errPath);
+                setTimeout(() => {
+                    if (errPath.parentNode) errPath.parentNode.removeChild(errPath);
+                }, 600);
+            }
+
+            updateLevel1Wires() {
+                if (!this.permanentWires) return;
+                Object.values(this.permanentWires).forEach(wire => {
+                    if (!wire.pinEl || !wire.socketEl) return;
+                    const p1 = this.getRelativeCenter(wire.pinEl);
+                    const p2 = this.getRelativeCenter(wire.socketEl);
+                    const pathD = this.buildWirePath(p1.x, p1.y, p2.x, p2.y);
+                    wire.paths.forEach(p => p.setAttribute('d', pathD));
+                });
             }
 
             // ==============================================================
