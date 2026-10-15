@@ -1291,7 +1291,7 @@
                 padding: 6px;
             }
         }
-        .patch-column {
+        .patch-column, .patch-column-sources, .patch-column-targets, .match-column {
             display: grid;
             grid-template-rows: repeat(4, 1fr);
             gap: 6px;
@@ -1765,10 +1765,10 @@
 
                     <!-- Columnas de Parcheo: Clavijas Emisoras (Normas) y Tomas Receptoras (Conceptos) -->
                     <div class="match-pairs-board patch-columns-board" id="level1-match-board">
-                        <div class="match-column patch-column-sources" id="level1-col-laws">
+                        <div class="patch-column patch-column-sources match-column" id="level1-col-laws">
                             <!-- Generado dinámicamente con clavijas de cable -->
                         </div>
-                        <div class="match-column patch-column-targets" id="level1-col-concepts">
+                        <div class="patch-column patch-column-targets match-column" id="level1-col-concepts">
                             <!-- Generado dinámicamente con tomas jack -->
                         </div>
                     </div>
