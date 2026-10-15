@@ -15,7 +15,23 @@
   - [x] Fase 2: Desafío de bodega de 120 segundos con 6 piezas y evaluación en tiempo real de adyacencias.
   - [x] Conexiones dinámicas luminosas (Verde compatible / Rojo incompatible con alarma y sacudida de pantalla).
   - [x] Zona de Rechazo & RESPEL (Art. 20 Res. 773/2021) para envases de bebidas no conformes.
-  - [x] Modal interactivo con Matriz de Compatibilidad Química SGA (Res. 773/2021).
+  - [x] Modal interactivo con Matriz Oficial de Compatibilidad Química SGA (NTC 4435 / Res. 773/2021).
+    - [x] Rediseño visual completo estilo CISTEMA / ARL Bolívar con rombos SGA vectoriales en cabeceras de fila y columna.
+    - [x] Matriz Detallada de Obra (10x10) con 100 combinaciones químicas interactivas que abarcan todos los reactivos de obra (ACPM, Gasolina, Thinner, Ácido Muriático, Soda Cáustica, Acetileno, Oxígeno, Epóxica, Aceite Lubricante, Baterías).
+    - [x] Inspector HUD interactivo con Cruce Rápido por doble selector desplegable (`select-compound-a` vs `select-compound-b`), tarjetas enfrentadas (Sustancia A vs Sustancia B), veredicto luminoso y explicación técnica.
+    - [x] Integración y clarificación del Símbolo de Candado [🔒 E] (Almacenamiento Exclusivo bajo llave):
+      - [x] Explicación explícita dentro de las opciones de los selectores desplegables para Clase 1 (Explosivos - Polvorín INDUMIL) y Clase 5.2 (Peróxidos - Cámara Fría TDAA).
+      - [x] Banner aclaratorio directo en la barra de selección rápida del Inspector HUD.
+      - [x] Leyenda de semáforo con chip oficial `⚫ [🔒 E] Candado = Exclusivo` y descripción normativa.
+      - [x] Badge interactivo `🔒 ⚫ E: ALMACENAMIENTO EXCLUSIVO (BAJO LLAVE)` y justificación legal en tiempo real en `inspDescText`.
+      - [x] Fichas en Guía de Etiquetas SGA y tarjeta táctica formativa dedicada en Pestaña 3.
+    - [x] Reorganización jerárquica y ergonómica de la Leyenda y del Inspector HUD:
+      - [x] Posicionamiento prioritario de las 4 Convenciones Oficiales (`.matrix-legend-grid`) bajo las pestañas.
+      - [x] Limpieza radical de redundancia visual: eliminación de dobles emojis (`🟢`, `🟡`, `🔴`, `⚫`) y formato uniforme (`[C] Compatible`, `[P] Precaución`, `[I] Incompatible`, `[🔒 E] Exclusivo Bajo Llave`).
+      - [x] Inspector HUD estructurado con cabecera integrada, selectores directos, veredicto con tipografía homogénea y nota normativa de candados.
+      - [x] Transformación del Inspector en ventana modal flotante emergente (`#modal-matrix-inspector`): desacoplado del flujo estático para despejar la vista de la matriz 12x12, activándose exclusivamente al hacer clic o tocar cualquier casilla (cuadradito) de la matriz o pulsar el botón de consulta.
+    - [x] Sistema de 3 pestañas: Matriz Oficial por Tipos y Etiquetas (NTC 4435 / SGA 12x12), Guía de Etiquetas SGA con fichas por clase, y Reglas de Buffers Neutros & RESPEL.
+    - [x] Retícula activa (crosshair highlight) con iluminación coordinada de filas y columnas al pasar el mouse o tocar casillas en ambas tablas.
   - [x] Fase 3: Auditoría técnica y reporte de cumplimiento normativo (Res. 773/2021 y Dec. 4741/2005).
   - [x] Escalado tipográfico y accesibilidad visual (text-xs a text-base en todas las fases y catálogo de consecuencias).
 - [x] Juego 3: 'Inspector de Trasiego: Inspección de Campo y Corrección de Riesgos' (juego3_trasiego.html).
@@ -116,7 +132,12 @@
     - [x] Checkpoint biométrico de tolerancia cero: rechazo inmediato sin intentos formativos gratis (-15s / -100 pts), ruptura de racha y expulsión física del avatar.
     - [x] Riesgo operacional y ambiental en motor: drenar o manipular motor sin bandeja colectora dispara ¡DELITO AMBIENTAL! (Ley 1333/2009 / Dec. 4741/2005) con -20s, -150 pts y animación de derrame de hidrocarburos.
     - [x] Cronómetro reducido de 240s a 90 segundos.
-    - [x] Barajado dinámico e intercalado de tarjetas de casillero (Fisher-Yates), opciones de retos operacionales y contenedores RESPEL para exigir máxima atención del jugador.
+    - [x] Barajado dinámico e intercalado de tarjetas de casillero (Fisher-Yates) y opciones de retos operacionales.
+    - [x] Estación de Segregación RESPEL Estocástica de Alta Dificultad:
+      - [x] Catálogo expandido de 8 residuos de taller y 8 contenedores homologados (filtros, trapos, aceite, baterías, aerosoles, refrigerante, garrafas plásticas y cartón limpio como trampa ordinaria).
+      - [x] Selección aleatoria Fisher-Yates: 4 residuos al azar por partida y 5 contenedores desplegados en orden barajado (incluyendo distractores no utilizados).
+      - [x] Penalizaciones severas e infracción ambiental: -5 segundos al reloj, -40 puntos, pérdida total de racha, sacudida de pantalla (screen shake) y retroalimentación técnica con leyes aplicables (Decreto 4741/2005, Ley 430/1998, Res. 773/2021 y Decreto 1077/2015).
+      - [x] Grilla CSS Grid auto-adaptativa, delegación reactiva de eventos y sincronización dinámica con la auditoría final SST y el reinicio de partida.
     - [x] Neutralidad cromática estricta (Anti-Delación Visual): Erradicación de pistas cromáticas evidentes en casillero (diseño homogéneo sin iconos rojos o advertencias obvias), eliminación de tintado verde prematuro en opciones de retos (`openWorkshopChallenge`), y neutralización de iconos de residuos RESPEL a tono acero `#94a3b8` (evitando emparejamiento directo rojo/amarillo con las canecas).
   - [x] Desbloqueo Integral de Puntero e Interacción en Juego 1 (Desafío SGA):
     - [x] Inmunidad de capas flotantes (`#fx-canvas` y `#comic-reaction-layer`): inclusión de `.pointer-events-none` en el CSS y asignación inline para evitar que el canvas intercepte clics y arrastres.
@@ -127,7 +148,137 @@
     - [x] Cabina y barra HUD superior sobrias (botón de 34px, fuentes 11-15px, background calmado).
     - [x] Tarjetas químicas de examen con borde pizarra neutro (eliminado borde verde delator previo a clasificar), icono de 32px y badge de intentos sutil.
     - [x] Modales técnicos (`#modal-error-feedback` y `#modal-word-challenge`) estandarizados con acento lateral de 4px y tipografía legible.
-  - [ ] Estandarización Visual Integral de Interfaz - Juego 2 (Bodega Segura):
-    - [ ] Desaturación de HUD, visor de compatibilidad y panel de consecuencias.
-    - [ ] Calibración de tipografía y tarjetas de piezas isométricas sin sobrecarga.
-  - [x] Actualización de documentación técnica individual en docs/juegos/ (01, 02, 03 y 04) y bitácoras técnicas findings.md y task_plan.md.
+  - [x] Estandarización Visual Integral de Interfaz - Juego 2 (Bodega Segura):
+    - [x] Desaturación de HUD, visor de compatibilidad y panel de consecuencias con acento lateral de 4px.
+    - [x] Calibración de tipografía (12px–26px) y cierre de modal por backdrop y Escape.
+  - [x] Estandarización Visual Integral de Interfaz - Juego 3 (Inspector de Trasiego):
+    - [x] Homogeneización de tokens en :root, app-viewport, tech-feedback-toast y modal de auditoría final.
+  - [x] Estandarización Visual Integral de Interfaz - Juego 4 (Taller Seguro):
+    - [x] Homogeneización de tokens en :root, app-viewport y modal-dialog en CSS Grid.
+  - [x] Estandarización Visual y Briefing Táctico Previo - Juego 5 (Brigada de Emergencia):
+    - [x] Homogeneización de tokens en :root y modal de certificación.
+    - [x] Cuadro Previo de Contexto Táctico de Emergencia Química (#modal-briefing-overlay) con telemetría PID multigas, orden de 5 pasos, mapa de controles y botón de despliegue [ASUMIR EL MANDO DE LA BRIGADA (120s)].
+  - [x] Actualización de documentación técnica individual en docs/juegos/ (01 a 05) y bitácoras técnicas findings.md y task_plan.md.
+  - [x] Rediseño Estilo Star Wars Datapad Simplificado en Juego 5:
+    - [x] Siluetas geométricas biseladas en esquinas a 45° (`clip-path: polygon(...)`) en modal, tarjetas de telemetría, badges numéricos y botón de mando.
+    - [x] Tipografía táctica monoespaciada `JetBrains Mono` con espaciado amplio y prefijos de interfaz imperial/rebelde (`// ALERTA ROJA SST`, `// DIRECTIVA OPERATIVA`, `// SUSTANCIA EN FUGA`).
+    - [x] Barra superior de consola `[ DATAPAD SST-05 // HOLOTERMINAL ]` y botón de despliegue en amarillo Star Wars `[ ▶ ASUMIR EL MANDO DE LA BRIGADA // 120s ]`.
+    - [x] Diseño sencillo, limpio y ligero sin animaciones invasivas ni sobrecarga de GPU.
+  - [x] Simplificación Radical del Briefing de Juego 5 (KISS):
+    - [x] Supresión de cajas de telemetría redundantes y decoraciones superfluas.
+    - [x] Homogeneización tipográfica a escala uniforme (0.85rem / 14px).
+    - [x] Lista concisa de 5 pasos directos en contenedor compacto de 520px.
+    - [x] Barra de controles en un solo renglón y botón directo de inicio.
+  - [x] Corrección de Toast de Advertencia Oclusivo en Juego 2 (Bodega Segura):
+    - [x] Extracción de `#hazard-toast` fuera de `.iso-viewport` para evitar que tape el tablero 3x3.
+    - [x] Rediseño de tarjeta oclusiva (240px) a banner de notificación delgado (~40px) y no invasivo.
+    - [x] Tablero 3x3 100% visible e interactivo para retirar y mover sustancias sin bloqueos.
+  - [x] Corrección Integral de Tarjetas e Interacción Dual en Juego 2 (Bodega Segura):
+    - [x] Desacople de Pointer Events: Umbral elevado a 8px sin setPointerCapture para distinguir de forma limpia entre clics y arrastres.
+    - [x] Regla CSS .is-dragging, .is-dragging * { pointer-events: none !important; } para evitar colisiones con elementos hijos SVG durante el arrastre.
+    - [x] Soporte fluido de reemplazo y swap tanto por Drag & Drop como por Tap-to-Select en celdas ocupadas.
+    - [x] Unificación del identificador de combustible de item_fuel a item_acpm en reglas ambientales A3/C1 y auditoría técnica.
+  - [x] Corrección de Área Táctil e Interacción en Juego 4 (Taller Seguro):
+    - [x] Hitbox expandida con ::before (inset: -18px) en todos los props 3D y equipos de emergencia en pared.
+    - [x] Activación interactiva de demarcaciones de seguridad SST en el suelo (.floor-safety-zone) vinculadas a cada estación.
+    - [x] Enrutamiento inteligente en handleFloorClick para que clics en baldosas ocupadas activen el objeto correspondiente.
+    - [x] Corrección de overflow: visible en estación RESPEL y listeners en canecas individuales.
+  - [x] Compromisos de Reunión Técnica y Documentación para Facilitadores (Samuel & Yazlin):
+    - [x] Validación y afianzamiento de la Matriz de Compatibilidades Químicas NTC 4435 / Res. 773 de 2021 en Juego 2 (juego2_bodega.html).
+    - [x] Validación y afianzamiento del Procedimiento de Trasiego paso a paso conforme a Dec. 1079/2015 y NFPA 77 en Juego 3 (juego3_trasiego.html).
+    - [x] Validación y afianzamiento del Procedimiento de Mantenimiento y Gestión RESPEL en Juego 4 (juego4_taller.html).
+    - [x] Creación de Guía Paso a Paso de Cada Juego en Texto Plano / Lenguaje No Técnico (`docs/GUIA_PASO_A_PASO_JUEGOS.md`) adaptada a todos los niveles de educación del personal.
+    - [x] Creación de Guía de Preguntas y Respuestas ante Fallas o Posibles Problemas (`docs/PREGUNTAS_Y_RESPUESTAS_FALLAS.md`) para facilitadores SST en campo.
+  - [x] Ejecución Integral de Requerimientos de la Reunión Técnica (Samuel):
+    - [x] Juego 3 (Inspector de Trasiego): Implementación del Procedimiento de Trasiego Paso a Paso guiado con barra superior de ruta (`.trasiego-roadmap-guide`), 6 etapas secuenciales (1. Cuñas ➔ 2. Motor ➔ 3. Polo a Tierra ➔ 4. Bandeja ➔ 5. Kit Derrames ➔ 6. Extintor), bloqueo visual e interactivo de pasos adelantados y orientación continua de Bolívar Safety Bot.
+    - [x] Juego 2 (Bodega Segura): Implementación de la Barra de Semáforo de Compatibilidad Química (`.matrix-quick-legend-bar`) con chips visuales (Verde, Amarillo, Rojo), botón de acceso rápido `[ Tabla NTC 4435 ]`, y enseñanza explícita de la matriz en el Paso 2 del tutorial guiado.
+  - [x] Garantía y Despliegue de la Matriz Completa y Real Oficial de Compatibilidad Química:
+    - [x] Modal `#modal-matrix` en `juego2_bodega.html`: Sustitución de la tabla abreviada de 4x4 por la matriz completa oficial de 12 clases técnicas (Explosivos 1, Gases Inflamables 2.1, Gases Inertes 2.2, Gases Tóxicos 2.3, Líquidos Inflamables 3, Sólidos Inflamables 4, Comburentes 5.1, Peróxidos 5.2, Tóxicos 6.1, Corrosivos Ácidos 8A, Corrosivos Bases 8B, Misceláneos/Salud 9).
+    - [x] Implementación de las 4 convenciones cromáticas oficiales del estándar CISTEMA ARL Sura / CCS / NTC 4435 (🟢 Compatible, 🟡 Precaución/Separación física o FDS, 🔴 Incompatible, ⚫ Almacenamiento Especial Exclusivo).
+    - [x] Panel de mapeo de sustancias del juego directamente vinculadas a las clases de la matriz (ACPM ➔ Clase 3, Ácido Muriático ➔ Clase 8A, Soda Cáustica ➔ Clase 8B, Acetileno ➔ Clase 2.1, Pintura Epóxica ➔ Clase 9, Estiba/Extintor ➔ Buffers neutros, Botella Reenvasada ➔ Infracción Art. 20 Res. 773/2021 hacia RESPEL).
+    - [x] Actualización de principios técnicos fundamentales (Segregación Ácidos vs Álcalis a >90°C, NFPA 55 distanciamiento de 6m o muro 2h, estibas antiderrame al 110%).
+    - [x] Documentación técnica en `docs/juegos/02_juego2_bodega.md` con la tabla maestra de doble entrada y notas de compatibilidad.
+  - [x] Pantalla Previa de Contexto Situacional (Briefing Táctico Datapad) en los 5 Juegos:
+    - [x] **Juego 1 (Desafío SGA)**: Modal `#modal-briefing-overlay` con la situación de recepción de cargamento químico en obra, 3 pasos de directiva (FDS Sec. 2, Asignación SGA y Tolerancia Cero en 75s), controles PC/Móvil y botón directo de inicio.
+    - [x] **Juego 2 (Bodega Segura)**: Modal `#modal-briefing-overlay` con la situación de bodega central desorganizada, 3 pasos de directiva (Segregación NTC 4435, Buffers/Contención y Zona de Rechazo para refresco ilegal), controles PC/Móvil y botón de despliegue.
+    - [x] **Juego 3 (Inspector de Trasiego)**: Modal `#modal-briefing-overlay` con la situación de abastecimiento de combustible desde camión cisterna en obra, 3 pasos de directiva (Inmovilización y Motor, Polo a Tierra <10 Ω y Contención/Extintor a 5m), controles PC/Móvil y botón de despliegue.
+    - [x] **Juego 4 (Taller Seguro)**: Modal `#modal-briefing-overlay` con la situación de mantenimiento de volqueta y desengrase con solventes, 3 pasos de directiva (Vestidor y Checkpoint, Desengrase y Motor con bandeja, Segregación RESPEL), congelación del cronómetro de 90s durante la lectura y activación al pulsar el botón de despliegue.
+    - [x] **Juego 5 (Brigada de Emergencia)**: Modal `#modal-briefing-overlay` con la situación de fuga de ácido en planta, 5 pasos operativos y controles WASD/Ratón/[E].
+  - [x] Integración Nativa en Moodle LMS y Empaquetado SCORM 1.2:
+    - [x] Adaptador universal `BolivarLmsBridge` integrado en los 5 juegos (`juego1_sga.html` a `juego5_emergencias.html`) sin dependencias externas.
+    - [x] Detección recursiva de API SCORM 1.2 y SCORM 2004 (`window.API`, `window.parent.API`, `window.top.API`, `opener`).
+    - [x] Reporte automático de calificación final (0 a 100 puntos) a `cmi.core.score.raw` y estado `passed`/`failed` según mastery score de 80 puntos.
+    - [x] Emisión de evento HTML5 `postMessage` (`MOODLE_GAME_REPORT`) para soporte en iframes de Moodle (etiquetas y páginas).
+    - [x] Botón accesible en cabina de todos los juegos `[ ⛶ Pantalla Completa ]` (`#btn-moodle-fullscreen`) para anular márgenes de temas de Moodle.
+    - [x] Script automatizado de empaquetado `build_scorm.py` que genera los 5 paquetes `.zip` individuales y 1 paquete combo multi-SCO en `scorm_packages/`.
+    - [x] Creación de Guía Oficial de Integración y Despliegue en Moodle LMS (`docs/GUIA_INTEGRACION_MOODLE.md`).
+    - [x] Actualización de índices y requerimientos de plataforma (`docs/01_Requerimientos.md`, `docs/02_Arquitectura.md`, `README.md`).
+  - [x] Corrección de Bloqueo en Pestaña Inicial del Juego 1 (Desafío SGA):
+    - [x] Diagnóstico de excepción no controlada en `new FxEngine()` por ausencia de `<canvas id="fx-canvas">`.
+    - [x] Incorporación de `<canvas id="fx-canvas">` en capa de efectos de `juego1_sga.html`.
+    - [x] Blindaje defensivo de `FxEngine` frente a contextos gráficos nulos o no compatibles.
+    - [x] Cierres de contingencia para el modal de briefing mediante teclado (Enter, Escape, Espacio) y clic en backdrop.
+    - [x] Regeneración de paquetes SCORM en `scorm_packages/`.
+  - [x] Corrección de Zona de Arrastre Universal en Juego 1 (Desafío SGA):
+    - [x] Diagnóstico de interferencia de puntero en textos de la izquierda (`touch-action: auto`, selección nativa y eventos `dragstart` / `pointercancel`).
+    - [x] Aislamiento de puntero en descendientes no interactivos (`.draggable-card > *:not(button) { pointer-events: none; }`).
+    - [x] Asignación de `touch-action: none !important;` y `user-select: none !important;` universal.
+    - [x] Integración de `setPointerCapture` y `releasePointerCapture` para seguimiento ininterrumpido en cualquier posición de la tarjeta.
+    - [x] Bloqueo preventivo de drag nativo del navegador (`dragstart`).
+    - [x] Reconstrucción de paquetes SCORM.
+  - [x] Transición Directa de Victoria en Tutorial (Juego 1):
+    - [x] Supresión de apertura invasiva del modal FDS en `handleTutorialSelection`.
+    - [x] Avance directo y automático a `startExamPhase()` tras acertar el tutorial.
+    - [x] Actualización de paquetes SCORM.
+  - [x] Modal Pedagógico "Hora de aprender" al fallar (Juego 1: Desafío SGA):
+    - [x] Creación del diccionario `LEARNING_GUIDES` con causas técnicas cortas de fallo ("¿Por qué falló?") y funcionamiento de la regla SGA ("¿Cómo funciona?") para cada producto.
+    - [x] Rediseño de `#modal-error-feedback` con badge superior "💡 HORA DE APRENDER", micro-tarjetas con SVG comparativos (pictograma elegido vs. pictograma legal exigido) y botón de reanudación.
+    - [x] Pausa automática del temporizador de 75s en examen para permitir lectura calmada sin penalización adicional por tiempo transcurrido.
+    - [x] Integración de `showErrorFeedback` y `dismissErrorFeedback` en examen y tutorial, reanudando cronómetro y avanzando o permitiendo reintento según corresponda.
+    - [x] Regeneración de paquetes SCORM 1.2 mediante `build_scorm.py`.
+  - [x] Corrección de Deformación de Tarjetas y Arrastre en Juego 2 (Bodega Segura):
+    - [x] Eliminación de `aspect-ratio: 1 / 1 !important;` en `.is-dragging:not(.iso-sprite)` que forzaba a la grilla CSS a expandir la fila de 98px a >160px.
+    - [x] Eliminación de `transform: scale(1.04);` y animación oscilante `pulseGlow` en `.item-selected`, dejando resalte puramente cromático de borde y sombra.
+    - [x] Supresión de la clase `pop-comic` en `renderInventoryTray()` para evitar que las tarjetas se inflen a `scale(1.22)` al montarse.
+    - [x] Creación de `updateTraySelection(selectedId)` para alternar la clase `.item-selected` sin destruir ni recrear los nodos del DOM en cada clic.
+    - [x] Blindaje de gestos y eventos en `.draggable-card`: `user-select: none !important; -webkit-user-drag: none !important; touch-action: none !important;` e inmunidad de puntero en hijos (`.draggable-card > *:not(button) { pointer-events: none; }` y `.pointer-events-none`).
+    - [x] Implementación de `setPointerCapture` y `releasePointerCapture` en `setupCardDragAndDrop` para evitar cancelaciones prematuras por scroll táctil del contenedor `#phase-challenge` (`overflow-y-auto`).
+    - [x] Estabilización de escala de arrastre en bandeja a `scale(1.02)` con retorno elástico suave.
+    - [x] Reconstrucción de paquetes SCORM 1.2 (`scorm_packages/juego2_bodega_scorm.zip` y combo).
+  - [x] Estabilización de Alertas y Eliminación de Sacudida en Juego 2 (Bodega Segura):
+    - [x] Encapsulación de `#exothermic-alert-strip` y `#hazard-toast` en `.hazard-floating-container` (`position: absolute; top: 86px;`), erradicando al 100% el desplazamiento y empuje vertical del tablero isométrico y la bandeja.
+    - [x] Supresión de la sacudida y rotación física en `@keyframes shakeScreen` (`translateX`, `rotate`), sustituyéndola por un pulso perimetral lumínico estático sin alterar las coordenadas de pantalla.
+    - [x] Suavizado de aparición de alertas con animación `@keyframes alertFadeSlide` (fade + slide-down de 0.25s) en lugar del salto brusco instantáneo.
+    - [x] Ampliación del tiempo de reacción de Reacción Exotérmica de 6s a 10s y supresión del pitido de alarma repetitivo cada segundo en el intervalo.
+    - [x] Reconstrucción y sincronización de paquetes SCORM 1.2 (`scorm_packages/juego2_bodega_scorm.zip` y combo).
+  - [x] Ampliación Dimensional y Ergonomía del Tablero Isométrico en Juego 2 (Bodega Segura):
+    - [x] Escalado de `#warehouse-board` de 280px a 370px (hasta +70% de superficie visible) con gap de 10px y `max-width: 92vw`.
+    - [x] Aumento del tamaño de las celdas a `min-height: 96px` y ampliación de los sprites 3D (`.iso-sprite`) de 56px a 72px x 72px.
+    - [x] Escalado de etiquetas de coordenadas (`.iso-coord-label` a 0.82rem) y marcadores de peligro ambiental (`.cell-hazard-marker` a 0.72rem).
+    - [x] Reconstrucción de paquetes SCORM 1.2 (`scorm_packages/juego2_bodega_scorm.zip` y combo).
+
+
+  - [x] Corrección de Bloqueo Inicial y Sincronización de Cronómetro en Juego 3 (Inspector de Trasiego):
+    - [x] Implementación de `playTap()` en la clase `ProceduralAudioEngine` (tono sinusoidal 600Hz a 0.08 ganancia).
+    - [x] Corrección del disparador del botón `#btn-start-briefing`: llamada segura a audio, remoción de clase `hidden` de `#modal-briefing-overlay`, activación de `isGameActive = true`, inicio de `startTimer()` y actualización visual de pasos.
+    - [x] Sincronización de `startTutorialPhase()` para mantener en pausa el cronómetro en `01:10` mientras el usuario lee el modal de briefing.
+    - [x] Reconstrucción de paquetes SCORM 1.2 mediante `python build_scorm.py`.
+
+  - [x] Corrección de Padding y Holgura Visual en Tarjeta Inspector (juego2_bodega.html):
+    - [x] Aumento de padding a `16px 20px`, `flex-shrink: 0;` y `min-height: fit-content;` en `.matrix-inspector-panel`.
+    - [x] Calibración de `line-height: 1.6;` y padding vertical `4px 0 6px 0` en `.inspector-top-bar`.
+    - [x] Aumento de padding a `4px 10px` en `.inspector-hint-badge`.
+    - [x] Reconstrucción de paquetes SCORM 1.2 mediante `python build_scorm.py`.
+  - [x] Estabilización de Notificación Flotante en Juego 3 (juego3_trasiego.html):
+    - [x] Desacople de `#tech-feedback-toast` del flujo normal mediante `position: absolute; top: 68px; z-index: 50;`.
+    - [x] Erradicación de saltos o empujes verticales sobre la escena SVG y el mazo de tarjetas.
+    - [x] Reconstrucción de paquetes SCORM 1.2 mediante `python build_scorm.py`.
+
+  - [x] Ilustración SVG Dinámica y Coordenadas Adaptativas por Vehículo en Juego 3 (juego3_trasiego.html):
+    - [x] Definición de la matriz de coordenadas adaptativas `VEHICLE_CONFIGS` (Desktop y Mobile) para los 4 equipos receptores (Excavadora CAT 320D, Volqueta Kenworth T800, Bulldozer CAT D6T y Generador industrial 250kVA).
+    - [x] Implementación de los generadores modulares de gráficos SVG: `getExcavatorSvg()`, `getDumpTruckSvg()`, `getBulldozerSvg()` y `getGeneratorSvg()`.
+    - [x] Renderizado dinámico en tiempo real (`renderVehicleGraphic`) al iniciar, al avanzar de frente de obra y al reiniciar.
+    - [x] Reposicionamiento adaptativo automático de los 6 hotspots de inspección, manguera de trasiego, cable de polo a tierra, pinza de masa y bandeja de goteo en `applySvgResponsiveLayout()`.
+    - [x] Adaptación contextual de etiquetas en hotspots (`MOTOR / PANEL` para generador estacionario vs `MOTOR / CELULAR` para vehículos móviles).
+    - [x] Reconstrucción de paquetes SCORM 1.2 mediante `python build_scorm.py`.
+

@@ -41,20 +41,20 @@
             --border-subtle: rgba(148, 163, 184, 0.22);
             --border-highlight: rgba(255, 199, 44, 0.45);
 
-            /* Escala Tipográfica Ergonómica */
-            --font-xs: 0.8125rem;   /* 13px */
-            --font-sm: 0.9375rem;   /* 15px */
-            --font-base: 1.0625rem; /* 17px */
-            --font-lg: 1.25rem;     /* 20px */
-            --font-xl: 1.5rem;      /* 24px */
-            --font-2xl: 1.875rem;   /* 30px */
+            /* Escala Tipográfica Ergonómica (Estandarizada) */
+            --font-xs: 0.75rem;     /* 12px */
+            --font-sm: 0.875rem;    /* 14px */
+            --font-base: 0.9375rem; /* 15px */
+            --font-lg: 1.125rem;    /* 18px */
+            --font-xl: 1.375rem;    /* 22px */
+            --font-2xl: 1.625rem;   /* 26px */
 
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 18px;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
             --radius-full: 9999px;
-            --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.65), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-            --shadow-glow: 0 0 25px rgba(0, 103, 56, 0.35);
+            --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 12px rgba(0, 103, 56, 0.25);
         }
 
         * {
@@ -95,10 +95,10 @@
         .app-viewport {
             width: 100%;
             max-width: 1040px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 2px solid var(--border-subtle);
+            background: rgba(15, 23, 42, 0.96);
+            border: 1px solid rgba(148, 163, 184, 0.2);
             border-radius: var(--radius-lg);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), var(--shadow-glow);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(12px);
             display: flex;
             flex-direction: column;
@@ -586,6 +586,14 @@
             user-select: none;
         }
 
+        .prop-guide-beacon::before {
+            content: '';
+            position: absolute;
+            inset: -12px;
+            pointer-events: all;
+            cursor: pointer;
+        }
+
         .guide-beacon-bubble {
             background: rgba(11, 17, 32, 0.96);
             border: 1.5px solid rgba(255, 255, 255, 0.35);
@@ -823,6 +831,14 @@
             transition: transform 0.2s ease, filter 0.2s ease;
         }
 
+        .wall-eyewash::before {
+            content: '';
+            position: absolute;
+            inset: -16px;
+            pointer-events: all;
+            cursor: pointer;
+        }
+
         .wall-eyewash:hover {
             transform: scale(1.1);
             filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.7));
@@ -921,12 +937,21 @@
         }
 
         .wall-extinguisher {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 2px;
             cursor: pointer;
             transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .wall-extinguisher::before {
+            content: '';
+            position: absolute;
+            inset: -16px;
+            pointer-events: all;
+            cursor: pointer;
         }
 
         .wall-extinguisher:hover {
@@ -1038,13 +1063,25 @@
         /* ==================== DEMARCACIONES DE SEGURIDAD SST EN EL PISO ==================== */
         .floor-safety-zone {
             position: absolute;
-            border: 1.5px dashed rgba(255, 199, 44, 0.45);
-            background: rgba(255, 199, 44, 0.035);
-            border-radius: 4px;
-            pointer-events: none !important;
-            z-index: 5;
+            border: 2px dashed rgba(255, 199, 44, 0.55);
+            background: rgba(255, 199, 44, 0.05);
+            border-radius: 6px;
+            pointer-events: all;
+            cursor: pointer;
+            z-index: 15;
             box-sizing: border-box;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .floor-safety-zone:hover {
+            border-color: var(--amarillo-bolivar);
+            background: rgba(255, 199, 44, 0.15);
+            box-shadow: 0 0 16px rgba(255, 199, 44, 0.4);
+        }
+
+        .floor-safety-zone:active {
+            transform: scale(0.98);
         }
 
         .floor-safety-zone::after {
@@ -1052,9 +1089,9 @@
             position: absolute;
             bottom: 2px;
             right: 4px;
-            font-size: 0.34rem;
-            font-weight: 800;
-            color: rgba(255, 199, 44, 0.45);
+            font-size: 0.38rem;
+            font-weight: 900;
+            color: rgba(255, 199, 44, 0.85);
             letter-spacing: 0.05em;
             text-transform: uppercase;
             user-select: none;
@@ -1080,12 +1117,12 @@
             top: 304px;
             width: 184px;
             height: 102px;
-            border-color: rgba(239, 68, 68, 0.5);
-            background: rgba(239, 68, 68, 0.04);
+            border-color: rgba(239, 68, 68, 0.6);
+            background: rgba(239, 68, 68, 0.06);
         }
 
         .zone-mark-respel::after {
-            color: rgba(248, 113, 113, 0.7);
+            color: rgba(248, 113, 113, 0.85);
         }
 
         .zone-mark-lockers {
@@ -1093,12 +1130,12 @@
             top: 42px;
             width: 116px;
             height: 106px;
-            border-color: rgba(56, 189, 248, 0.4);
-            background: rgba(56, 189, 248, 0.035);
+            border-color: rgba(56, 189, 248, 0.5);
+            background: rgba(56, 189, 248, 0.05);
         }
 
         .zone-mark-lockers::after {
-            color: rgba(56, 189, 248, 0.55);
+            color: rgba(56, 189, 248, 0.8);
         }
 
         .zone-mark-checkpoint {
@@ -1106,12 +1143,12 @@
             top: 38px;
             width: 94px;
             height: 114px;
-            border-color: rgba(16, 185, 129, 0.4);
-            background: rgba(16, 185, 129, 0.035);
+            border-color: rgba(16, 185, 129, 0.5);
+            background: rgba(16, 185, 129, 0.05);
         }
 
         .zone-mark-checkpoint::after {
-            color: rgba(52, 211, 153, 0.55);
+            color: rgba(52, 211, 153, 0.8);
         }
 
         /* ==================== PROPS 2.5D (BILLBOARDS VERTICALES DINÁMICOS NÍTIDOS) ==================== */
@@ -1120,7 +1157,7 @@
             transform: rotateZ(var(--counter-rot-z, 45deg)) rotateX(var(--counter-rot-x, -60deg)) translateZ(0);
             transform-origin: 50% 100%; /* Apoyado en Z=0 para jamás cortar el piso */
             cursor: pointer;
-            z-index: 20;
+            z-index: 25;
             transition: transform 0.25s ease, filter 0.25s ease;
             pointer-events: all;
             -webkit-font-smoothing: antialiased;
@@ -1128,11 +1165,27 @@
             text-rendering: optimizeLegibility;
             image-rendering: -webkit-optimize-contrast;
             backface-visibility: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Hitbox invisible ampliada para toque infalible en móvil y PC */
+        .iso-prop::before {
+            content: '';
+            position: absolute;
+            inset: -18px;
+            border-radius: 8px;
+            z-index: 30;
+            pointer-events: all;
+            cursor: pointer;
         }
 
         .iso-prop:hover {
             transform: rotateZ(var(--counter-rot-z, 45deg)) rotateX(var(--counter-rot-x, -60deg)) scale(1.05);
             filter: drop-shadow(0 0 16px var(--amarillo-bolivar));
+        }
+
+        .iso-prop:active {
+            transform: rotateZ(var(--counter-rot-z, 45deg)) rotateX(var(--counter-rot-x, -60deg)) scale(0.97);
         }
 
         .prop-beacon {
@@ -1487,7 +1540,7 @@
             border-radius: 6px;
             box-sizing: border-box;
             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.85), 0 0 12px rgba(255, 199, 44, 0.25);
-            overflow: hidden; /* Garantiza matemáticamente que nada traspase el borde */
+            overflow: visible;
         }
 
         .respel-station-title {
@@ -1934,7 +1987,8 @@
 
         .modal-dialog {
             background: #0f172a;
-            border: 2px solid var(--border-subtle);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-left: 4px solid var(--amarillo-bolivar);
             border-radius: var(--radius-lg);
             width: 100%;
             max-width: 720px;
@@ -1942,7 +1996,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
             transform: translateY(16px);
             opacity: 0;
             transition: transform 0.25s ease-out, opacity 0.25s ease-out;
@@ -1957,7 +2011,35 @@
             opacity: 1;
         }
 
-        /* ==================== ESTACIÓN DE SEGREGACIÓN RESPEL (GRID 3x1 PERFECTO) ==================== */
+        /* ==================== ESTACIÓN DE SEGREGACIÓN RESPEL DINÁMICA ==================== */
+        .respel-grid-dynamic-source {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .respel-grid-dynamic-dest {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 768px) {
+            .respel-grid-dynamic-source {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+            .respel-grid-dynamic-dest {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+        }
+
+        /* Compatibilidad retroactiva */
         .respel-grid-3cols {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -2365,6 +2447,143 @@
                 font-size: 0.78rem;
             }
         }
+
+        /* Situational Mission Briefing (Star Wars Datapad clean style) */
+        .briefing-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 8, 16, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .briefing-backdrop.hidden {
+            display: none !important;
+        }
+        .briefing-dialog {
+            background: #0b1220;
+            border: 1px solid rgba(255, 199, 44, 0.4);
+            border-left: 4px solid var(--amarillo-bolivar, #FFC72C);
+            border-radius: 4px;
+            max-width: 520px;
+            width: 100%;
+            padding: 22px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 199, 44, 0.15);
+            animation: briefingPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes briefingPop {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .briefing-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .briefing-tag {
+            font-size: 0.68rem;
+            color: var(--amarillo-bolivar, #FFC72C);
+            font-family: var(--font-mono, monospace);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+        .briefing-title {
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.02em;
+        }
+        .briefing-subtitle {
+            font-size: 0.82rem;
+            color: #cbd5e1;
+            line-height: 1.45;
+            margin: 0;
+        }
+        .briefing-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 4px;
+            padding: 10px 12px;
+        }
+        .briefing-step-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            line-height: 1.35;
+        }
+        .briefing-step-row strong {
+            color: #ffffff;
+        }
+        .briefing-step-num {
+            min-width: 22px;
+            height: 22px;
+            background: rgba(255, 199, 44, 0.15);
+            border: 1px solid var(--amarillo-bolivar, #FFC72C);
+            color: var(--amarillo-bolivar, #FFC72C);
+            font-size: 0.72rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        .briefing-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.74rem;
+            color: #94a3b8;
+            padding: 7px 10px;
+            background: rgba(8, 14, 26, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 4px;
+            flex-wrap: wrap;
+        }
+        .briefing-controls strong {
+            color: var(--amarillo-bolivar, #FFC72C);
+        }
+        .btn-start-briefing {
+            background: linear-gradient(135deg, #FFC72C 0%, #F59E0B 100%);
+            border: 1px solid #FFE81F;
+            color: #070b14;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 199, 44, 0.35);
+            transition: all 0.2s ease;
+        }
+        .btn-start-briefing:hover {
+            background: linear-gradient(135deg, #FFE81F 0%, #FFC72C 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 0 28px rgba(255, 232, 31, 0.6);
+        }
     </style>
 </head>
 <body>
@@ -2401,7 +2620,10 @@
                     <i class="fa-solid fa-shield-halved"></i>
                     <span>Puntos: <strong id="stat-score" style="color: var(--exito-verde);">0</strong></span>
                 </div>
-                <button class="btn-icon" id="btn-toggle-sound" title="Silenciar / Activar Sonido">
+                <button class="btn-icon" id="btn-moodle-fullscreen" title="Pantalla Completa (Moodle)">
+                    <i class="fa-solid fa-expand" style="color: var(--amarillo-bolivar);"></i>
+                </button>
+                <button class="btn-icon" id="btn-sound-toggle" title="Silenciar / Activar Sonido">
                     <i class="fa-solid fa-volume-high" id="sound-icon"></i>
                 </button>
             </div>
@@ -2938,61 +3160,20 @@
                     Toca un <strong>Residuo Generado</strong> en la bandeja y luego toca su <strong>Contenedor Destino</strong> para certificar la disposición técnica.
                 </p>
 
-                <!-- Residuos Generados en Bandeja (Cuadrícula 3x1 Exacta sin Desbordes) -->
+                <!-- Residuos Generados en Bandeja (Cuadrícula Dinámica y Aleatoria) -->
                 <div style="background: rgba(15, 23, 42, 0.85); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); box-sizing: border-box; width: 100%;">
-                    <div style="font-size: 0.76rem; font-weight: 800; color: var(--amarillo-bolivar); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-boxes-stacked"></i> RESIDUOS PENDIENTES POR SEGREGAR:
+                    <div style="font-size: 0.76rem; font-weight: 800; color: var(--amarillo-bolivar); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-boxes-stacked"></i> RESIDUOS PENDIENTES POR SEGREGAR:</span>
+                        <span id="respel-counter-badge" style="color: var(--exito-verde); font-family: var(--font-mono); font-size: 0.74rem; font-weight: 900; background: rgba(16, 185, 129, 0.15); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--exito-verde);">0 de 4 Confinados</span>
                     </div>
-                    <div class="respel-grid-3cols" id="respel-items-source">
-                        <!-- Item A: Filtro Usado -->
-                        <div class="respel-source-card" id="respel-item-filter" data-waste="filter">
-                            <i class="fa-solid fa-filter" style="font-size: 1.8rem; color: #94a3b8; margin-top: 4px;"></i>
-                            <div style="margin: 6px 0;">
-                                <div style="font-size: 0.82rem; font-weight: 800; color: #fff; margin-bottom: 2px;">Filtro Usado</div>
-                                <div style="font-size: 0.67rem; color: #94a3b8; line-height: 1.25;">Impregnado en hidrocarburos</div>
-                            </div>
-                            <div class="respel-confined-badge"><i class="fa-solid fa-check"></i> CONFINADO</div>
-                        </div>
-                        <!-- Item B: Trapo con Solvente -->
-                        <div class="respel-source-card" id="respel-item-rag" data-waste="rag">
-                            <i class="fa-solid fa-toilet-paper" style="font-size: 1.8rem; color: #94a3b8; margin-top: 4px;"></i>
-                            <div style="margin: 6px 0;">
-                                <div style="font-size: 0.82rem; font-weight: 800; color: #fff; margin-bottom: 2px;">Trapo con Solvente</div>
-                                <div style="font-size: 0.67rem; color: #94a3b8; line-height: 1.25;">Sólido inflamable contaminado</div>
-                            </div>
-                            <div class="respel-confined-badge"><i class="fa-solid fa-check"></i> CONFINADO</div>
-                        </div>
-                        <!-- Item C: Aceite Usado -->
-                        <div class="respel-source-card" id="respel-item-oil" data-waste="oil">
-                            <i class="fa-solid fa-oil-can" style="font-size: 1.8rem; color: #94a3b8; margin-top: 4px;"></i>
-                            <div style="margin: 6px 0;">
-                                <div style="font-size: 0.82rem; font-weight: 800; color: #fff; margin-bottom: 2px;">Aceite Usado</div>
-                                <div style="font-size: 0.67rem; color: #94a3b8; line-height: 1.25;">Líquido lubricante degradado</div>
-                            </div>
-                            <div class="respel-confined-badge"><i class="fa-solid fa-check"></i> CONFINADO</div>
-                        </div>
+                    <div class="respel-grid-dynamic-source" id="respel-items-source">
+                        <!-- Generado aleatoriamente por JS -->
                     </div>
                 </div>
 
-                <!-- Contenedores Oficiales Destino (Cuadrícula 3x1 Exacta) -->
-                <div class="respel-grid-3cols" id="respel-bins-destination">
-                    <div class="respel-dest-card" data-bin="filter" style="border-color: #dc2626; background: rgba(220, 38, 38, 0.18);">
-                        <i class="fa-solid fa-trash-can" style="font-size: 1.8rem; color: #ef4444; margin-bottom: 6px;"></i>
-                        <span style="font-size: 0.78rem; font-weight: 900; color: #fca5a5;">CANECA ROJA</span>
-                        <span style="font-size: 0.66rem; color: #cbd5e1; margin-top: 2px;">Filtros de Aceite Usados</span>
-                    </div>
-
-                    <div class="respel-dest-card" data-bin="rag" style="border-color: #dc2626; background: rgba(220, 38, 38, 0.18);">
-                        <i class="fa-solid fa-trash-can" style="font-size: 1.8rem; color: #ef4444; margin-bottom: 6px;"></i>
-                        <span style="font-size: 0.78rem; font-weight: 900; color: #fca5a5;">CANECA ROJA</span>
-                        <span style="font-size: 0.66rem; color: #cbd5e1; margin-top: 2px;">Sólidos Contaminados / Trapos</span>
-                    </div>
-
-                    <div class="respel-dest-card" data-bin="oil" style="border-color: #eab308; background: rgba(234, 179, 8, 0.18);">
-                        <i class="fa-solid fa-drum" style="font-size: 1.8rem; color: #fde047; margin-bottom: 6px;"></i>
-                        <span style="font-size: 0.78rem; font-weight: 900; color: #fef08a;">TAMBOR AMARILLO</span>
-                        <span style="font-size: 0.66rem; color: #cbd5e1; margin-top: 2px;">Aceites Usados con Estiba</span>
-                    </div>
+                <!-- Contenedores Oficiales Destino (Cuadrícula Adaptativa Barajada) -->
+                <div class="respel-grid-dynamic-dest" id="respel-bins-destination">
+                    <!-- Generado y barajado aleatoriamente por JS -->
                 </div>
             </div>
 
@@ -3059,6 +3240,49 @@
                     <i class="fa-solid fa-rotate-right"></i> Iniciar Nueva Inspección de Taller
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL DE CONTEXTO Y SITUACIÓN DE OBRA (BRIEFING)
+         ========================================================================== -->
+    <div id="modal-briefing-overlay" class="briefing-backdrop">
+        <div class="briefing-dialog">
+            <div class="briefing-header">
+                <span class="briefing-tag">// REPORTE DE SITUACIÓN EN OBRA //</span>
+                <h2 class="briefing-title">
+                    <i class="fa-solid fa-screwdriver-wrench" style="color: var(--amarillo-bolivar, #FFC72C);"></i>
+                    MISIÓN: MANTENIMIENTO MECÁNICO Y RESPEL
+                </h2>
+                <p class="briefing-subtitle">
+                    Vas a ingresar al taller de mantenimiento para intervenir el motor de una volqueta y desengrasar piezas críticas. El taller maneja solventes y genera residuos peligrosos (RESPEL). Primero debes ingresar al vestidor para equiparte el EPP reglamentario y superar el escáner biométrico. Luego en el patio purga fluidos sin derrames y clasifica cada residuo en su caneca correspondiente.
+                </p>
+            </div>
+
+            <div class="briefing-steps">
+                <div class="briefing-step-row">
+                    <span class="briefing-step-num">1</span>
+                    <span><strong>Vestidor y Checkpoint:</strong> Equipa los 4 EPP homologados y supera el escáner láser.</span>
+                </div>
+                <div class="briefing-step-row">
+                    <span class="briefing-step-num">2</span>
+                    <span><strong>Desengrase y Motor:</strong> Limpia piezas con paño y purga aceite con bandeja colectora.</span>
+                </div>
+                <div class="briefing-step-row">
+                    <span class="briefing-step-num">3</span>
+                    <span><strong>Segregación RESPEL:</strong> Clasifica trapos, filtros y aceite usado en sus canecas.</span>
+                </div>
+            </div>
+
+            <div class="briefing-controls">
+                <span><i class="fa-solid fa-computer-mouse"></i> <strong>PC:</strong> Clic en baldosa para caminar / Clic en estación</span>
+                <span>•</span>
+                <span><i class="fa-solid fa-mobile-screen"></i> <strong>Celular:</strong> Toca para moverte / 2 dedos para cámara</span>
+            </div>
+
+            <button id="btn-start-briefing" class="btn-start-briefing">
+                <i class="fa-solid fa-play"></i> INGRESAR AL TALLER
+            </button>
         </div>
     </div>
 
@@ -3189,6 +3413,160 @@
 
         /**
          * =========================================================================
+         * INTEGRACIÓN MOODLE LMS & SCORM UNIVERSAL (SCORM 1.2 / 2004 / IFRAME)
+         * =========================================================================
+         */
+        class BolivarLmsBridge {
+            constructor(gameId, passingScore = 80) {
+                this.gameId = gameId;
+                this.passingScore = passingScore;
+                this.scormVersion = null;
+                this.api = null;
+                this.isInitialized = false;
+                this.studentName = '';
+                this.init();
+            }
+
+            findScormAPI(win) {
+                let attempts = 0;
+                let currentWin = win;
+                while (currentWin && attempts < 10) {
+                    try {
+                        if (currentWin.API) {
+                            this.scormVersion = '1.2';
+                            return currentWin.API;
+                        }
+                        if (currentWin.API_1484_11) {
+                            this.scormVersion = '2004';
+                            return currentWin.API_1484_11;
+                        }
+                    } catch (e) {
+                        break;
+                    }
+                    if (currentWin.parent && currentWin.parent !== currentWin) {
+                        currentWin = currentWin.parent;
+                    } else if (currentWin.opener) {
+                        currentWin = currentWin.opener;
+                    } else {
+                        break;
+                    }
+                    attempts++;
+                }
+                return null;
+            }
+
+            init() {
+                try {
+                    this.api = this.findScormAPI(window);
+                    if (this.api) {
+                        if (this.scormVersion === '1.2') {
+                            const res = this.api.LMSInitialize("");
+                            if (res === "true" || res === true) {
+                                this.isInitialized = true;
+                                this.api.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                                this.api.LMSSetValue("cmi.core.score.min", "0");
+                                this.api.LMSSetValue("cmi.core.score.max", "100");
+                                this.studentName = this.api.LMSGetValue("cmi.core.student_name") || '';
+                                this.api.LMSCommit("");
+                            }
+                        } else if (this.scormVersion === '2004') {
+                            const res = this.api.Initialize("");
+                            if (res === "true" || res === true) {
+                                this.isInitialized = true;
+                                this.api.SetValue("cmi.completion_status", "incomplete");
+                                this.api.SetValue("cmi.score.min", "0");
+                                this.api.SetValue("cmi.score.max", "100");
+                                this.studentName = this.api.GetValue("cmi.learner_name") || '';
+                                this.api.Commit("");
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.info('[LMS Bridge] Operando en modo standalone o iFrame web:', e);
+                }
+
+                window.addEventListener('beforeunload', () => this.terminate());
+            }
+
+            reportCompletion(score, details = {}) {
+                const passed = score >= this.passingScore;
+                const normalizedScore = Math.min(100, Math.max(0, Math.round(score)));
+
+                if (this.api && this.isInitialized) {
+                    try {
+                        if (this.scormVersion === '1.2') {
+                            this.api.LMSSetValue("cmi.core.score.raw", normalizedScore.toString());
+                            this.api.LMSSetValue("cmi.core.lesson_status", passed ? "passed" : "failed");
+                            this.api.LMSCommit("");
+                        } else if (this.scormVersion === '2004') {
+                            this.api.SetValue("cmi.score.raw", normalizedScore.toString());
+                            this.api.SetValue("cmi.score.scaled", (normalizedScore / 100).toFixed(2));
+                            this.api.SetValue("cmi.success_status", passed ? "passed" : "failed");
+                            this.api.SetValue("cmi.completion_status", "completed");
+                            this.api.Commit("");
+                        }
+                    } catch (e) {
+                        console.warn('[LMS Bridge] Error al reportar a SCORM:', e);
+                    }
+                }
+
+                try {
+                    if (window.parent && window.parent !== window) {
+                        window.parent.postMessage({
+                            type: 'MOODLE_GAME_REPORT',
+                            gameId: this.gameId,
+                            score: normalizedScore,
+                            passed: passed,
+                            details: details,
+                            timestamp: new Date().toISOString()
+                        }, '*');
+                    }
+                } catch (e) {}
+            }
+
+            terminate() {
+                if (!this.api || !this.isInitialized) return;
+                try {
+                    if (this.scormVersion === '1.2') {
+                        this.api.LMSCommit("");
+                        this.api.LMSFinish("");
+                    } else if (this.scormVersion === '2004') {
+                        this.api.Commit("");
+                        this.api.Terminate("");
+                    }
+                    this.isInitialized = false;
+                } catch (e) {}
+            }
+        }
+
+        function setupMoodleFullscreen(buttonId = 'btn-moodle-fullscreen') {
+            const btn = document.getElementById(buttonId);
+            if (!btn) return;
+            const updateIcon = () => {
+                const isFull = !!document.fullscreenElement;
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = isFull ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                }
+                btn.title = isFull ? 'Salir de Pantalla Completa' : 'Pantalla Completa (Moodle)';
+            };
+            btn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    const docEl = document.documentElement;
+                    if (docEl.requestFullscreen) docEl.requestFullscreen().catch(() => {});
+                    else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+                    else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                }
+            });
+            document.addEventListener('fullscreenchange', updateIcon);
+            document.addEventListener('webkitfullscreenchange', updateIcon);
+        }
+
+        /**
+         * =========================================================================
          * MOTOR DE PARTÍCULAS CANVAS (CONFETI Y CHISPAS)
          * =========================================================================
          */
@@ -3255,6 +3633,170 @@
 
         /**
          * =========================================================================
+         * CATÁLOGO MAESTRO DE RESIDUOS DE TALLER Y CONTENEDORES RESPEL (DEC. 4741/2005)
+         * =========================================================================
+         */
+        const RESPEL_CATALOG = {
+            filter: {
+                id: "filter",
+                name: "Filtro de Aceite Usado",
+                sub: "Impregnado en hidrocarburos (Metal/celulosa)",
+                icon: "fa-filter",
+                targetBin: "bin_red_filters",
+                law: "Dec. 4741/2005",
+                feedbackCorrect: "Filtros de aceite confinados en Caneca Roja para prensado y recuperación siderúrgica.",
+                feedbackWrong: "¡Infracción! Los filtros metálicos no van en tambor de líquidos ni con trapos; requieren drenaje específico."
+            },
+            rag: {
+                id: "rag",
+                name: "Trapo con Solvente",
+                sub: "Sólido inflamable contaminado con disolvente",
+                icon: "fa-toilet-paper",
+                targetBin: "bin_red_solids",
+                law: "Res. 773/2021",
+                feedbackCorrect: "Trapos contaminados en Caneca Roja rotulada para sólidos inflamables.",
+                feedbackWrong: "¡Infracción! Mezclar trapos con filtros o aceites líquidos genera riesgo de combustión espontánea."
+            },
+            oil: {
+                id: "oil",
+                name: "Aceite Lubricante Usado",
+                sub: "Líquido automotriz degradado hidrocarburo",
+                icon: "fa-oil-can",
+                targetBin: "bin_yellow_oil",
+                law: "Dec. 4741/2005",
+                feedbackCorrect: "Aceite usado dispuesto en Tambor Metálico con estiba colectora al 110%.",
+                feedbackWrong: "¡Delito Ambiental! El aceite usado líquido solo debe acopiarse en tambores cerrados con estiba antiderrame."
+            },
+            battery: {
+                id: "battery",
+                name: "Batería Plomo-Ácido",
+                sub: "Electrolito corrosivo y plomo pesado tóxico",
+                icon: "fa-car-battery",
+                targetBin: "bin_battery",
+                law: "Ley 430/1998",
+                feedbackCorrect: "Batería de plomo confinada en contenedor de polietileno anticorrosivo bajo techo.",
+                feedbackWrong: "¡Peligro Químico Severo! El ácido sulfúrico no puede mezclarse con hidrocarburos ni residuos metálicos."
+            },
+            aerosol: {
+                id: "aerosol",
+                name: "Lata Limpiador de Frenos",
+                sub: "Envase presurizado con vapores inflamables",
+                icon: "fa-spray-can",
+                targetBin: "bin_aerosol",
+                law: "Res. 773/2021",
+                feedbackCorrect: "Aerosoles presurizados en contenedor rojo específico sin riesgo de punción.",
+                feedbackWrong: "¡Peligro de Explosión! Los aerosoles a presión jamás deben mezclarse con sólidos triturables ni aceites calientes."
+            },
+            antifreeze: {
+                id: "antifreeze",
+                name: "Refrigerante Glicol Usado",
+                sub: "Líquido tóxico hidrosoluble degradado",
+                icon: "fa-flask-vial",
+                targetBin: "bin_antifreeze",
+                law: "Dec. 4741/2005",
+                feedbackCorrect: "Refrigerante de etilenglicol confinado en bidón sellado exclusivo sin mezclar.",
+                feedbackWrong: "¡Infracción! El glicol contamina y destruye la posibilidad de rerreflinado del aceite usado si se mezclan."
+            },
+            clean_carton: {
+                id: "clean_carton",
+                name: "Caja de Repuesto Limpia",
+                sub: "Empaque de cartón seco no contaminado",
+                icon: "fa-box-open",
+                targetBin: "bin_recyclable",
+                isNonHazardousTrap: true,
+                law: "Dec. 1077/2015",
+                feedbackCorrect: "Cartón limpio segregado en punto de reciclaje (Residuo ordinario aprovechable).",
+                feedbackWrong: "¡Infracción por Saturación de RESPEL! Arrojar cartón limpio a canecas rojas de residuos peligrosos es falta ambiental."
+            },
+            empty_chemical_jug: {
+                id: "empty_chemical_jug",
+                name: "Galón de Thinner Vacío",
+                sub: "Envase plástico con remanente de solvente",
+                icon: "fa-bottle-droplet",
+                targetBin: "bin_red_plastics",
+                law: "Dec. 4741/2005",
+                feedbackCorrect: "Envases plásticos químicos confinados en caneca roja para plásticos contaminados.",
+                feedbackWrong: "¡Infracción! Los envases de solventes son RESPEL y no pueden ir a reciclaje ordinario ni con aceites a granel."
+            }
+        };
+
+        const RESPEL_BINS_CATALOG = {
+            bin_red_filters: {
+                id: "bin_red_filters",
+                name: "CANECA ROJA",
+                sub: "Filtros de Aceite Usados",
+                icon: "fa-trash-can",
+                borderColor: "#dc2626",
+                bgColor: "rgba(220, 38, 38, 0.18)",
+                titleColor: "#fca5a5"
+            },
+            bin_red_solids: {
+                id: "bin_red_solids",
+                name: "CANECA ROJA",
+                sub: "Sólidos Contaminados / Trapos",
+                icon: "fa-trash-can",
+                borderColor: "#dc2626",
+                bgColor: "rgba(220, 38, 38, 0.18)",
+                titleColor: "#fca5a5"
+            },
+            bin_yellow_oil: {
+                id: "bin_yellow_oil",
+                name: "TAMBOR AMARILLO",
+                sub: "Aceites Usados con Estiba",
+                icon: "fa-drum",
+                borderColor: "#eab308",
+                bgColor: "rgba(234, 179, 8, 0.18)",
+                titleColor: "#fef08a"
+            },
+            bin_battery: {
+                id: "bin_battery",
+                name: "CONTENEDOR PE",
+                sub: "Baterías Plomo-Ácido (Anticorrosivo)",
+                icon: "fa-box-archive",
+                borderColor: "#0284c7",
+                bgColor: "rgba(2, 132, 199, 0.18)",
+                titleColor: "#7dd3fc"
+            },
+            bin_aerosol: {
+                id: "bin_aerosol",
+                name: "CANECA ROJA",
+                sub: "Aerosoles y Envases a Presión",
+                icon: "fa-fire-flame-simple",
+                borderColor: "#ef4444",
+                bgColor: "rgba(239, 68, 68, 0.22)",
+                titleColor: "#fca5a5"
+            },
+            bin_antifreeze: {
+                id: "bin_antifreeze",
+                name: "BIDÓN AZUL",
+                sub: "Refrigerantes / Anticongelantes",
+                icon: "fa-jug-detergent",
+                borderColor: "#2563eb",
+                bgColor: "rgba(37, 99, 235, 0.18)",
+                titleColor: "#93c5fd"
+            },
+            bin_recyclable: {
+                id: "bin_recyclable",
+                name: "PUNTO VERDE/BLANCO",
+                sub: "Aprovechables (No Contaminados)",
+                icon: "fa-recycle",
+                borderColor: "#10b981",
+                bgColor: "rgba(16, 185, 129, 0.18)",
+                titleColor: "#a7f3d0"
+            },
+            bin_red_plastics: {
+                id: "bin_red_plastics",
+                name: "CANECA ROJA",
+                sub: "Envases Plásticos Contaminados",
+                icon: "fa-dumpster",
+                borderColor: "#dc2626",
+                bgColor: "rgba(220, 38, 38, 0.18)",
+                titleColor: "#fca5a5"
+            }
+        };
+
+        /**
+         * =========================================================================
          * CONTROLADOR DEL JUEGO: TALLER SEGURO ISOMÉTRICO
          * =========================================================================
          */
@@ -3285,12 +3827,10 @@
                     respel: false
                 };
 
-                // Segregación RESPEL (Dec. 4741/2005)
-                this.respelSegregated = {
-                    filter: false,
-                    rag: false,
-                    oil: false
-                };
+                // Segregación RESPEL Dinámica y Aleatoria (Dec. 4741/2005)
+                this.activeRespelWastes = [];
+                this.activeRespelBins = [];
+                this.respelConfined = new Set();
                 this.selectedWaste = null;
 
                 // Coordenadas actuales del Avatar en cada escenario (Centrado en 500x500)
@@ -3311,8 +3851,7 @@
                 this.applyCameraTransform();
                 this.buildIsometricGrids();
                 this.bindEvents();
-                this.startTimer();
-                this.isGameActive = true;
+                this.isGameActive = false;
             }
 
             cacheDom() {
@@ -3369,7 +3908,7 @@
                     statTimerBadge: document.getElementById('stat-timer-badge'),
                     statScore: document.getElementById('stat-score'),
                     statStreak: document.getElementById('stat-streak'),
-                    btnToggleSound: document.getElementById('btn-toggle-sound'),
+                    btnToggleSound: document.getElementById('btn-sound-toggle') || document.getElementById('btn-toggle-sound'),
                     soundIcon: document.getElementById('sound-icon'),
                     trayCounter: document.getElementById('tray-task-counter'),
 
@@ -3421,6 +3960,10 @@
                     auditStatRespel: document.getElementById('audit-stat-respel'),
                     auditStatPoints: document.getElementById('audit-stat-points')
                 };
+
+                // Integración Moodle LMS & SCORM
+                this.lmsBridge = new BolivarLmsBridge('juego4_taller', 80);
+                setupMoodleFullscreen('btn-moodle-fullscreen');
             }
 
             /**
@@ -3440,17 +3983,6 @@
                     w.style.setProperty('--counter-rot-x', `${counterRotX}deg`);
                     w.style.setProperty('--scene-scale', this.camState.scale);
                 });
-
-                // Actualizar brújula / orientación
-                const normZ = ((this.camState.rotZ + 45) % 360 + 360) % 360;
-                const angleText = document.getElementById('angle-text');
-                if (angleText) {
-                    let dir = "0° Norte";
-                    if (normZ >= 45 && normZ < 135) dir = "90° Este";
-                    else if (normZ >= 135 && normZ < 225) dir = "180° Sur";
-                    else if (normZ >= 225 && normZ < 315) dir = "270° Oeste";
-                    angleText.textContent = dir;
-                }
             }
 
             /**
@@ -3496,6 +4028,19 @@
             }
 
             bindEvents() {
+                // Briefing Modal de Contexto Inicial
+                const briefingOverlay = document.getElementById('modal-briefing-overlay');
+                const btnStartBriefing = document.getElementById('btn-start-briefing');
+                if (btnStartBriefing && briefingOverlay) {
+                    btnStartBriefing.addEventListener('click', () => {
+                        this.audio.playTone(520, 'sine', 0.2);
+                        briefingOverlay.classList.add('hidden');
+                        this.isGameActive = true;
+                        this.startTimer();
+                        this.setBotMessage("¡Inspección iniciada! Dirígete al casillero para equiparte el EPP reglamentario.");
+                    });
+                }
+
                 // Audio Toggle
                 this.dom.btnToggleSound.addEventListener('click', () => {
                     const isMuted = this.audio.toggleMute();
@@ -3523,7 +4068,7 @@
                     });
                 }
 
-                // Tap-to-Move unificado en suelo isométrico (cubre baldosas y costuras intermedias)
+                // Tap-to-Move unificado en suelo isométrico con detección inteligente de zonas de trabajo
                 const handleFloorClick = (e, zoneNum) => {
                     if (this._hasDraggedCamera) return;
                     if (zoneNum !== this.currentZone) return;
@@ -3531,26 +4076,55 @@
 
                     e.stopPropagation();
 
-                    // 1. Si el clic impactó directamente en una baldosa
+                    // Detectar coordenadas de baldosa o del clic en el piso
                     const tile = e.target.closest('.iso-tile');
+                    let col = -1, row = -1;
                     if (tile) {
-                        const wx = parseFloat(tile.dataset.worldX);
-                        const wy = parseFloat(tile.dataset.worldY);
-                        this.moveAvatarTo(wx, wy);
-                        return;
-                    }
-
-                    // 2. Si el clic cayó entre baldosas o en los bordes del suelo de la zona activa
-                    const zoneEl = zoneNum === 1 ? this.dom.zoneLockerRoom : this.dom.zoneWorkshopYard;
-                    if (zoneEl) {
+                        col = parseInt(tile.dataset.col, 10);
+                        row = parseInt(tile.dataset.row, 10);
+                    } else {
                         const ox = typeof e.offsetX === 'number' ? e.offsetX : 250;
                         const oy = typeof e.offsetY === 'number' ? e.offsetY : 250;
-                        const col = Math.max(0, Math.min(4, Math.floor(ox / 100)));
-                        const row = Math.max(0, Math.min(4, Math.floor(oy / 100)));
-                        const wx = col * 100 + 50;
-                        const wy = row * 100 + 50;
-                        this.moveAvatarTo(wx, wy);
+                        col = Math.max(0, Math.min(4, Math.floor(ox / 100)));
+                        row = Math.max(0, Math.min(4, Math.floor(oy / 100)));
                     }
+
+                    // INTERCEPTOR INTELIGENTE: Tocar la baldosa/suelo de un objeto activa directamente el objeto
+                    if (zoneNum === 1) {
+                        // Zona 1: Vestidor EPP
+                        // Área Casilleros: (col 0, row 0) y (col 1, row 0)
+                        if ((col === 0 || col === 1) && row === 0) {
+                            this.moveAvatarTo(110, 160, () => this.openLockerModal());
+                            return;
+                        }
+                        // Área Checkpoint Salida: (col 3, row 0) y (col 4, row 0)
+                        if ((col === 3 || col === 4) && row === 0) {
+                            this.moveAvatarTo(385, 160, () => this.inspectCheckpointDoor());
+                            return;
+                        }
+                    } else if (zoneNum === 2) {
+                        // Zona 2: Patio de Taller
+                        // Área Mesa Desengrase: (col 0, row 0) y (col 0, row 1)
+                        if (col === 0 && (row === 0 || row === 1)) {
+                            this.moveAvatarTo(105, 155, () => this.handleDegreaseTask());
+                            return;
+                        }
+                        // Área Motor V8: (col 3, row 0) y (col 4, row 0)
+                        if ((col === 3 || col === 4) && row === 0) {
+                            this.moveAvatarTo(385, 155, () => this.handleMaintenanceTask());
+                            return;
+                        }
+                        // Área Punto RESPEL: Fila 3 en col 1, 2 o 3
+                        if (row === 3 && (col === 1 || col === 2 || col === 3)) {
+                            this.moveAvatarTo(250, 300, () => this.openRespelStation());
+                            return;
+                        }
+                    }
+
+                    // Baldosa libre: desplazamiento natural del avatar
+                    const wx = col * 100 + 50;
+                    const wy = row * 100 + 50;
+                    this.moveAvatarTo(wx, wy);
                 };
 
                 // Delegación en baldosas individuales
@@ -3567,6 +4141,43 @@
                 }
                 if (this.dom.zoneWorkshopYard) {
                     this.dom.zoneWorkshopYard.addEventListener('click', (e) => handleFloorClick(e, 2));
+                }
+
+                // Listeners en Demarcaciones de Seguridad SST del Piso (Toque en el suelo del equipo activa la estación)
+                const markLockers = document.querySelector('.zone-mark-lockers');
+                if (markLockers) {
+                    markLockers.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (this.currentZone === 1) this.moveAvatarTo(110, 160, () => this.openLockerModal());
+                    });
+                }
+                const markCheckpoint = document.querySelector('.zone-mark-checkpoint');
+                if (markCheckpoint) {
+                    markCheckpoint.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (this.currentZone === 1) this.moveAvatarTo(385, 160, () => this.inspectCheckpointDoor());
+                    });
+                }
+                const markWorkbench = document.querySelector('.zone-mark-workbench');
+                if (markWorkbench) {
+                    markWorkbench.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (this.currentZone === 2) this.moveAvatarTo(105, 155, () => this.handleDegreaseTask());
+                    });
+                }
+                const markEngine = document.querySelector('.zone-mark-engine');
+                if (markEngine) {
+                    markEngine.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (this.currentZone === 2) this.moveAvatarTo(385, 155, () => this.handleMaintenanceTask());
+                    });
+                }
+                const markRespel = document.querySelector('.zone-mark-respel');
+                if (markRespel) {
+                    markRespel.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (this.currentZone === 2) this.moveAvatarTo(250, 300, () => this.openRespelStation());
+                    });
                 }
 
                 // Tap en Casillero (Zona 1)
@@ -3620,6 +4231,17 @@
                     });
                 });
 
+                // Listeners directos en las canecas individuales de la estación RESPEL
+                ['bin-filters', 'bin-solids', 'bin-oil'].forEach(binId => {
+                    const el = document.getElementById(binId);
+                    if (el) {
+                        el.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            if (this.currentZone === 2) this.moveAvatarTo(250, 300, () => this.openRespelStation());
+                        });
+                    }
+                });
+
                 // Selección de EPP en Modal
                 document.querySelectorAll('.epp-item-card').forEach(card => {
                     card.addEventListener('click', () => {
@@ -3632,22 +4254,29 @@
                 this.dom.btnCloseLockerX.addEventListener('click', () => this.closeLockerModal());
                 this.dom.btnConfirmEpp.addEventListener('click', () => this.closeLockerModal());
 
-                // Segregación RESPEL en Modal
-                document.querySelectorAll('#respel-items-source .respel-source-card').forEach(item => {
-                    item.addEventListener('click', () => {
-                        document.querySelectorAll('#respel-items-source .respel-source-card').forEach(i => i.classList.remove('is-active'));
+                // Segregación RESPEL en Modal (Delegación reactiva para elementos dinámicos)
+                const sourceContainer = document.getElementById('respel-items-source');
+                if (sourceContainer) {
+                    sourceContainer.addEventListener('click', (e) => {
+                        const item = e.target.closest('.respel-source-card');
+                        if (!item || item.classList.contains('is-confined')) return;
+
+                        sourceContainer.querySelectorAll('.respel-source-card').forEach(i => i.classList.remove('is-active'));
                         item.classList.add('is-active');
                         this.selectedWaste = item.dataset.waste;
                         this.audio.playTone(480, 'sine', 0.1);
                     });
-                });
+                }
 
-                document.querySelectorAll('#respel-bins-destination .respel-dest-card').forEach(bin => {
-                    bin.addEventListener('click', () => {
+                const destContainer = document.getElementById('respel-bins-destination');
+                if (destContainer) {
+                    destContainer.addEventListener('click', (e) => {
+                        const bin = e.target.closest('.respel-dest-card');
+                        if (!bin) return;
                         const targetBin = bin.dataset.bin;
                         this.depositWasteInBin(targetBin);
                     });
-                });
+                }
 
                 this.dom.btnCloseRespel.addEventListener('click', () => {
                     this.dom.modalRespel.classList.remove('open');
@@ -4193,8 +4822,9 @@
                     this.dom.guideBeacon3?.classList.add('active');
                     if (this.dom.badgeTask3) {
                         this.dom.badgeTask3.className = 'action-card-status active-pulse';
-                        const count = Object.values(this.respelSegregated).filter(Boolean).length;
-                        this.dom.badgeTask3.textContent = `${count}/3 RESPEL`;
+                        const count = this.respelConfined ? this.respelConfined.size : 0;
+                        const total = (this.activeRespelWastes && this.activeRespelWastes.length) ? this.activeRespelWastes.length : 4;
+                        this.dom.badgeTask3.textContent = `${count}/${total} RESPEL`;
                     }
                 } else {
                     this.dom.roadmapStep3?.classList.remove('active', 'completed');
@@ -4550,32 +5180,91 @@
                 });
             }
 
+            /**
+             * Genera dinámicamente un reto aleatorio de segregación RESPEL (Decreto 4741/2005):
+             * Selecciona 4 residuos al azar de un catálogo de 8 residuos reales de taller de obra,
+             * reúne sus contenedores obligatorios más contenedores distractores, y los baraja aleatoriamente.
+             */
+            generateRandomRespelChallenge() {
+                const wasteKeys = Object.keys(RESPEL_CATALOG);
+                
+                // Mezclar y elegir 4 residuos al azar para cada ronda
+                const shuffledWasteKeys = [...wasteKeys].sort(() => 0.5 - Math.random());
+                const selectedWasteKeys = shuffledWasteKeys.slice(0, 4);
+
+                this.activeRespelWastes = selectedWasteKeys.map(k => RESPEL_CATALOG[k]);
+                this.respelConfined.clear();
+                this.selectedWaste = null;
+
+                // Identificar los contenedores necesarios para estos 4 residuos
+                const neededBinIds = new Set(this.activeRespelWastes.map(w => w.targetBin));
+
+                // Añadir 1 contenedor distractor no requerido para elevar la dificultad
+                const allBinIds = Object.keys(RESPEL_BINS_CATALOG);
+                const unusedBinIds = allBinIds.filter(id => !neededBinIds.has(id));
+                const shuffledUnused = [...unusedBinIds].sort(() => 0.5 - Math.random());
+                
+                if (shuffledUnused.length > 0) {
+                    neededBinIds.add(shuffledUnused[0]);
+                }
+                if (neededBinIds.size < 5 && shuffledUnused.length > 1) {
+                    neededBinIds.add(shuffledUnused[1]);
+                }
+
+                // Convertir y barajar los contenedores destino
+                this.activeRespelBins = Array.from(neededBinIds)
+                    .map(id => RESPEL_BINS_CATALOG[id])
+                    .filter(Boolean)
+                    .sort(() => 0.5 - Math.random());
+
+                // Renderizar la bandeja superior de residuos (Barajados)
+                const sourceContainer = document.getElementById('respel-items-source');
+                if (sourceContainer) {
+                    sourceContainer.innerHTML = this.activeRespelWastes.map(waste => `
+                        <div class="respel-source-card" id="respel-item-${waste.id}" data-waste="${waste.id}">
+                            <i class="fa-solid ${waste.icon}" style="font-size: 1.8rem; color: #94a3b8; margin-top: 4px;"></i>
+                            <div style="margin: 6px 0;">
+                                <div style="font-size: 0.82rem; font-weight: 800; color: #fff; margin-bottom: 2px;">${waste.name}</div>
+                                <div style="font-size: 0.67rem; color: #94a3b8; line-height: 1.25;">${waste.sub}</div>
+                            </div>
+                            <div class="respel-confined-badge"><i class="fa-solid fa-check"></i> CONFINADO</div>
+                        </div>
+                    `).join('');
+                }
+
+                // Renderizar los contenedores inferiores (Barajados)
+                const destContainer = document.getElementById('respel-bins-destination');
+                if (destContainer) {
+                    destContainer.innerHTML = this.activeRespelBins.map(bin => `
+                        <div class="respel-dest-card" data-bin="${bin.id}" style="border-color: ${bin.borderColor}; background: ${bin.bgColor};">
+                            <i class="fa-solid ${bin.icon}" style="font-size: 1.8rem; color: ${bin.titleColor}; margin-bottom: 6px;"></i>
+                            <span style="font-size: 0.78rem; font-weight: 900; color: ${bin.titleColor};">${bin.name}</span>
+                            <span style="font-size: 0.66rem; color: #cbd5e1; margin-top: 2px;">${bin.sub}</span>
+                        </div>
+                    `).join('');
+                }
+
+                // Actualizar el badge de progreso en la ventana modal
+                const badge = document.getElementById('respel-counter-badge');
+                if (badge) {
+                    badge.textContent = `0 de ${this.activeRespelWastes.length} Confinados`;
+                }
+            }
+
             openRespelStation() {
                 if (!this.tasksCompleted.degrease || !this.tasksCompleted.maintenance) {
-                    this.setBotMessage("Primero debes completar el Paso 1 (Desengrase) y el Paso 2 (Motor) para generar los 3 residuos a clasificar.", '⚠️');
+                    this.setBotMessage("Primero debes completar el Paso 1 (Desengrase) y el Paso 2 (Motor) para generar los residuos a clasificar.", '⚠️');
                     return;
                 }
 
-                this.shuffleRespelCards();
+                // Generar desafío aleatorio cada vez que se abre la estación si no está generado
+                if (!this.activeRespelWastes || this.activeRespelWastes.length === 0) {
+                    this.generateRandomRespelChallenge();
+                }
+
                 this.dom.modalRespel.classList.add('open');
                 this.audio.playTone(450, 'triangle', 0.12);
-                this.setBotMessage("Decreto 4741 de 2005: Como generador de residuos peligrosos (RESPEL), debes clasificar cada elemento en su contenedor homologado sin mezclarlos.");
-            }
-
-            /**
-             * Baraja aleatoriamente los contenedores destino de la estación RESPEL
-             * para romper patrones espaciales y forzar la lectura técnica del rótulo.
-             */
-            shuffleRespelCards() {
-                const destGrid = document.getElementById('respel-bins-destination');
-                if (destGrid) {
-                    const bins = Array.from(destGrid.children);
-                    for (let i = bins.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [bins[i], bins[j]] = [bins[j], bins[i]];
-                    }
-                    bins.forEach(b => destGrid.appendChild(b));
-                }
+                this.setBotMessage("Decreto 4741 de 2005: Como generador de residuos peligrosos (RESPEL), clasifica cada elemento en su contenedor técnico homologado sin mezclarlos.");
             }
 
             depositWasteInBin(targetBin) {
@@ -4584,19 +5273,20 @@
                     return;
                 }
 
-                const waste = this.selectedWaste;
+                const waste = RESPEL_CATALOG[this.selectedWaste];
+                if (!waste) return;
 
-                // Validación reglamentaria Decreto 4741/2005
-                if (waste === targetBin) {
+                // Validación reglamentaria Decreto 4741/2005 y Res. 773/2021
+                if (waste.targetBin === targetBin) {
                     // ACIERTO
                     this.audio.playCorrectChord(3);
-                    this.respelSegregated[waste] = true;
-                    this.addScore(50);
+                    this.respelConfined.add(waste.id);
+                    this.addScore(60);
                     this.streak++;
                     this.updateStreakDisplay();
 
                     // Marcar item como depositado de forma nítida y con tamaño estable
-                    const itemElem = document.getElementById(`respel-item-${waste}`);
+                    const itemElem = document.getElementById(`respel-item-${waste.id}`);
                     if (itemElem) {
                         itemElem.classList.remove('is-active');
                         itemElem.classList.add('is-confined');
@@ -4605,18 +5295,18 @@
 
                     this.selectedWaste = null;
 
-                    const wasteNames = {
-                        filter: "Filtros Usados en Contenedor Rojo",
-                        rag: "Sólidos Contaminados con Solvente en Caneca Roja",
-                        oil: "Aceite Usado en Tambor Metálico con Estiba Antiderrame"
-                    };
+                    // Actualizar badge de progreso en modal
+                    const badge = document.getElementById('respel-counter-badge');
+                    if (badge) {
+                        badge.textContent = `${this.respelConfined.size} de ${this.activeRespelWastes.length} Confinados`;
+                    }
 
-                    this.showTechToast("Segregación RESPEL Conforme", `${wasteNames[waste]} (Decreto 4741 de 2005: Clasificación técnica obligatoria).`, false);
+                    this.showTechToast("Segregación RESPEL Conforme", `${waste.feedbackCorrect} (${waste.law}).`, false);
                     this.fx.burst(window.innerWidth / 2, window.innerHeight / 2, 28);
                     this.updateScenario2Guide();
 
-                    // Verificar si completó los 3 residuos
-                    if (this.respelSegregated.filter && this.respelSegregated.rag && this.respelSegregated.oil) {
+                    // Verificar si completó todos los residuos seleccionados para esta ronda
+                    if (this.respelConfined.size === this.activeRespelWastes.length) {
                         this.tasksCompleted.respel = true;
                         this.updateTaskCounter();
                         this.updateScenario2Guide();
@@ -4632,11 +5322,19 @@
                     this.streak = 0;
                     this.updateStreakDisplay();
                     this.addScore(-40);
-                    this.timeLeft = Math.max(5, this.timeLeft - 4);
+                    this.timeLeft = Math.max(5, this.timeLeft - 5);
 
-                    const errorToastMsg = "¡Infracción al Dec. 4741/2005! Está prohibido mezclar residuos líquidos con sólidos o almacenar filtros en tambores de lubricante.";
-                    this.showTechToast("Infracción Ambiental RESPEL", errorToastMsg, true);
+                    const targetBinObj = RESPEL_BINS_CATALOG[targetBin];
+                    const binLabel = targetBinObj ? `[${targetBinObj.name}: ${targetBinObj.sub}]` : "este contenedor";
+                    const errorToastMsg = `${waste.feedbackWrong} No puedes depositar [${waste.name}] en ${binLabel} (${waste.law}).`;
+
+                    this.showTechToast("Infracción Ambiental RESPEL (-5s / -40 pts)", errorToastMsg, true);
                     this.setBotMessage(errorToastMsg, '🚫');
+
+                    if (this.dom.viewport) {
+                        this.dom.viewport.style.transform = 'translateX(-6px)';
+                        setTimeout(() => this.dom.viewport.style.transform = '', 250);
+                    }
                 }
             }
 
@@ -4757,8 +5455,19 @@
                 this.dom.finalScorePercent.textContent = `${ratio}%`;
                 this.dom.auditStatEpp.textContent = missingEPP === 0 ? "4 de 4 Aprobados" : `${4 - missingEPP} de 4 Aprobados`;
                 this.dom.auditStatTasks.textContent = `${tasksDone} de 3 Completadas`;
-                this.dom.auditStatRespel.textContent = this.tasksCompleted.respel ? "3 de 3 Confinados" : "Pendiente";
+                const respelTotal = this.activeRespelWastes ? this.activeRespelWastes.length : 4;
+                this.dom.auditStatRespel.textContent = this.tasksCompleted.respel ? `${respelTotal} de ${respelTotal} Confinados` : "Pendiente";
                 this.dom.auditStatPoints.textContent = `${this.score} pts`;
+
+                // Reporte Automático a Moodle LMS (SCORM 1.2 / 2004 y iFrame postMessage)
+                if (this.lmsBridge) {
+                    this.lmsBridge.reportCompletion(ratio, {
+                        eppApproved: missingEPP === 0,
+                        tasksDone: tasksDone,
+                        respelSegregated: this.tasksCompleted.respel,
+                        rawScore: this.score
+                    });
+                }
 
                 this.dom.modalAuditFinal.classList.add('open');
                 this.fx.burst(window.innerWidth / 2, window.innerHeight / 2, 45);
@@ -4776,6 +5485,10 @@
                 this.tasksCompleted = { degrease: false, maintenance: false, respel: false };
                 this.respelSegregated = { filter: false, rag: false, oil: false };
                 this.selectedWaste = null;
+                if (this.respelConfined) {
+                    this.respelConfined.clear();
+                }
+                this.activeRespelWastes = [];
 
                 // Reset visuales
                 this.dom.doorFrame.className = 'door-frame';
@@ -4789,13 +5502,10 @@
                 document.querySelectorAll('.action-card').forEach(c => c.classList.remove('is-completed', 'is-active'));
                 document.querySelectorAll('.epp-item-card').forEach(c => c.classList.remove('is-equipped', 'is-trap-warning'));
 
-                ['filter', 'rag', 'oil'].forEach(w => {
-                    const el = document.getElementById(`respel-item-${w}`);
-                    if (el) {
-                        el.classList.remove('is-confined', 'is-active');
-                        el.style.pointerEvents = 'all';
-                    }
-                });
+                const srcContainer = document.getElementById('respel-items-source');
+                if (srcContainer) srcContainer.innerHTML = '';
+                const dstContainer = document.getElementById('respel-bins-destination');
+                if (dstContainer) dstContainer.innerHTML = '';
 
                 this.updateSlotPills();
                 this.updateAvatarVisualEPP();

@@ -26,7 +26,29 @@
 - **Ergonomía Visual y Escalado Tipográfico Universal**:
   - Eliminación total de micro-fuentes (`text-[7px]` a `text-[10px]`).
   - Adopción de tokens estándar Tailwind (`text-xs sm:text-sm` a `text-base sm:text-lg`) con `leading-relaxed` y `break-words`.
-  - Ampliación del ancho de cabina táctica (`max-w-xl md:max-w-2xl lg:max-w-3xl`) y del modal de matriz química (`max-w-2xl`) para máxima legibilidad sin distorsión en la perspectiva isométrica 2.5D.
+  - Ampliación del ancho de cabina táctica (`max-w-xl md:max-w-2xl lg:max-w-3xl`) y del modal de matriz química (`max-width: min(1160px, 98vw)`).
+- **Matriz Oficial de Compatibilidad por Tipos y Etiquetas (SGA / NTC 4435)**:
+  - Estructuración estricta de la matriz según el estándar internacional oficial (CISTEMA / NTC 4435 / Res. 773/2021) organizada por **Tipos de Peligro y Etiquetas SGA (12 Clases ONU)** en lugar de artículos comerciales individuales.
+  - Las 12 etiquetas oficiales implementadas con rombos vectoriales SGA: 1. Explosivos, 2.1 Gases Inflamables, 2.2 Gases Inertes, 2.3 Gases Tóxicos, 3. Líquidos Inflamables, 4. Sólidos Inflamables, 5.1 Comburentes, 5.2 Peróxidos Orgánicos, 6.1 Tóxicos, 8A. Corrosivos Ácidos, 8B. Corrosivos Álcalis y 9. Misceláneos / Salud.
+  - Cada etiqueta mapea explícitamente sus productos de obra correspondientes (ej. Clase 3: ACPM, Gasolina, Thinner; Clase 8A: Ácido Muriático, Baterías; Clase 2.1: Acetileno; Clase 5.1: Oxígeno).
+  - Selector rápido en HUD (`#select-compound-a` vs `#select-compound-b`) con cruce instantáneo entre los 12 tipos/etiquetas, rombos SGA de alta resolución, justificación técnica y retícula luminosa en la matriz 12x12.
+  - 3 pestañas limpias: Matriz Oficial por Tipos y Etiquetas, Guía de Etiquetas SGA con fichas por cada clase, y Reglas de Buffers Neutros & RESPEL.
+- **Clarificación e Integración del Símbolo de Candado [🔒 E] (Almacenamiento Exclusivo)**:
+  - Justificación normativa: En las matrices NTC 4435, CISTEMA y Dec. 2535 / Res. 773, la letra 'E' con icono de candado ('🔒') designa Almacenamiento Exclusivo bajo llave. Sustancias con peligro de detonación en masa (Clase 1: Explosivos) o inestabilidad térmica autoacelerada (Clase 5.2: Peróxidos) tienen prohibición legal de ingresar a una bodega común de obra.
+  - Opciones de Selectores Rápidos ('#select-compound-a' y '#select-compound-b'): Se etiquetaron explícitamente las opciones con '🔒 1. Explosivos [CANDADO E: Almacenamiento Exclusivo bajo llave - Polvorín INDUMIL (Prohibido en bodega común)]' y '🔒 5.2 Peróxidos Orgánicos [CANDADO E: Almacenamiento Exclusivo bajo llave - Cámara Fría TDAA (Prohibido en bodega común)]'.
+  - Barra explicativa en HUD y Leyenda de Semáforo: Se sustituyó el chip genérico negro por '⚫ [🔒 E] Candado = Exclusivo' con descripción explícita de custodia bajo llave fuera de bodega. Se añadió un banner de soporte directo bajo los selectores.
+  - Inspector en tiempo real ('updateInspector'): Al detectar 'status === e', el badge emite '🔒 ⚫ E: ALMACENAMIENTO EXCLUSIVO (BAJO LLAVE)' y el cuadro de justificación redacta la explicación reglamentaria detallada del porqué del candado.
+  - Fichas SGA y Reglas Tácticas (Pestañas 2 y 3): Se incorporaron insignias de candado y una tarjeta táctica formativa dedicada al significado legal y operativo de las celdas con candado en la matriz.
+- **Reorganización Jerárquica y Ergonómica de la Leyenda y del Inspector HUD en el Modal**:
+  - **Jerarquía Natural en Modal**: Se reordenó la estructura interna de `modal-body` para posicionar la Leyenda Oficial de 4 Convenciones (`.matrix-legend-grid`) inmediatamente debajo del selector de pestañas (`matrix-tabs-container`), de modo que el usuario comprenda el código de colores antes de interactuar con el Inspector y la Matriz 12x12.
+  - **Limpieza de Convenciones y Supresión de Redundancia Visual**: Se eliminaron los emojis redundantes (`🟢`, `🟡`, `🔴`, `⚫`) y dobles símbolos que saturaban los chips de leyenda. Cada tarjeta (`.matrix-legend-card`) presenta ahora un icono centrado FontAwesome (`<i class="fa-solid fa-check"></i>`, `fa-triangle-exclamation`, `fa-ban`, `fa-lock`), un chip tipográfico con el código oficial (`[C]`, `[P]`, `[I]`, `[🔒 E]`), título claro y descripción reglamentaria de NTC 4435.
+  - **Inspector HUD Compacto y Articulado**: Se rediseñó la cabecera `.inspector-top-bar` con insignia de ayuda (`.inspector-hint-badge`), selector rápido horizontal, tarjeta de veredicto con tipografía unificada (`[I] INCOMPATIBLE CRÍTICO`) y un banner compacto para los candados legales.
+- **Transformación del Inspector de Compatibilidad en Ventana Modal Emergente por Celda (Juego 2)**:
+  - *Diagnóstico*: Anteriormente, el panel del inspector residía de forma estática y permanente dentro del cuerpo del modal (`modal-body`) ubicado entre la leyenda y la matriz. Ocupaba más de 280px de altura vertical, forzando al usuario a desplazarse hacia abajo para visualizar la tabla 12x12 de reactividad.
+  - *Solución*:
+    1. Se desacopló el inspector del flujo vertical estático reemplazándolo por un banner compacto (`.matrix-instruction-banner`) que invita a pulsar cualquier casilla.
+    2. El inspector se convirtió en un diálogo modal flotante independiente (`#modal-matrix-inspector`) con backdrop semitransparente (`z-index: 70`), botón de cierre `[×]`, botón inferior de retorno a matriz, soporte de tecla Escape y cierre al tocar fuera.
+    3. Al hacer clic o tocar cualquier casilla [cuadradito] de la matriz, o al pulsar el botón "Consultar por Selectores", la ventana emergente se abre suavemente (`popInInspector`) cargando el cruce de las sustancias seleccionadas, sus rombos SGA vectoriales y la justificación técnica de la consecuencia real.
 
 ## Decisiones de Arquitectura - Suite Completa (CSS Nativo & Eliminación de Tailwind)
 - **Desacople 100% de Tailwind CSS**:
@@ -151,6 +173,14 @@
       - **2 Dedos**: Escucha de eventos `touchstart`/`touchmove` con `e.touches.length === 2`, calculando el punto medio dinámico `(midX, midY)` y la distancia euclidiana entre ambos dedos. Aplica paneo libre del escenario (`panX`, `panY`) y zoom suave proporcional (`scale`) mediante pellizco (`pinch-to-zoom`).
     - **Protección contra Toques Fantasma**: Al levantar los dedos (`touchend`), se mantiene una bandera de supresión de toques de 120ms para impedir que el release del último dedo detone un clic involuntario en una baldosa.
     - **Soporte Preservado en Escritorio**: En PC se mantiene el arrastre mediante clic de ratón (`mousedown`/`mousemove`), garantizando ergonomía multiplataforma.
+- **Estación de Segregación RESPEL Estocástica y de Alta Dificultad (Juego 4 - Dec. 4741/2005 & Ley 430/1998)**:
+  - *Diagnóstico*: La estación anterior constaba de 3 residuos fijos y 3 canecas predecibles siempre en las mismas posiciones, lo que permitía superar el nivel por memorización mecánica de memoria muscular sin análisis normativo crítico.
+  - *Arquitectura Implementada*:
+    1. **Catálogo de 8 Residuos de Obra (`RESPEL_CATALOG`)**: Filtro de aceite metálico, trapos impregnados de solvente, aceite de motor usado, batería plomo-ácido, lata de aerosol inflamable, refrigerante/anticongelante (etilenglicol), cartón seco limpio (trampa no peligrosa para reciclaje) y garrafa plástica vacía de solvente.
+    2. **Catálogo de 8 Contenedores Homologados (`RESPEL_BINS_CATALOG`)**: Canecas rojas especializadas para filtros, sólidos y plásticos; tambor amarillo sobre estiba de retención; contenedor de polietileno resistente a ácido sulfúrico para baterías; bidón azul para anticongelante; y punto ecológico blanco/gris para residuos reciclables ordinarios.
+    3. **Algoritmo de Selección Estocástica (Fisher-Yates Shuffle)**: En cada partida se extraen al azar 4 residuos activos y 5 contenedores en orden barajado (generando distractores no utilizados en la ronda).
+    4. **Penalizaciones Severas y Feedback Normativo**: Errores en clasificación restan **-5 segundos** al cronómetro, deducen **-40 puntos**, quiebran la racha a cero y detonan sacudida de pantalla con citación estricta de la ley aplicable (Decreto 4741/2005, Ley 430/1998, Res. 773/2021 o Decreto 1077/2015).
+    5. **Renderizado Reactivo y Estabilidad Dimensional**: CSS Grid auto-ajustable (`.respel-grid-dynamic-source` y `.respel-grid-dynamic-dest`), delegación de eventos unificada en `bindEvents()` y preservación milimétrica de dimensiones para prevenir desbordes o parpadeos.
 - **Arquitectura de Simulación 100% en Primera Persona (Juego 5: Brigada de Emergencia)**:
   - *Decisión de Diseño de Cámara (Zero 3rd-Person / Zero Isometric)*:
     - Para responder a la restricción crítica de representar fielmente los ojos del brigadista, se eliminaron avatares en pantalla y se diseñó un viewport panorámico 360° con proyección continua de rumbo cardinal (`translate3d` de 280% de ancho sobre viewport de 100vw/100vh).
@@ -291,3 +321,397 @@
        - Si es correcta: Se disparan de inmediato los efectos audiovisuales (`sound.success()`, confeti, animación en la casilla), se incrementa el puntaje y la racha, se sella la tarjeta como resuelta con `✓` y se avanza sin pausa con `advanceExam()`.
        - Si es incorrecta: Se aplica la penalización directa de -10 segundos, sonido de error, sacudida de pantalla (*screen shake*), comic bubble de advertencia, se quema la tarjeta con `✗` y se avanza de inmediato.
     3. **Retroalimentación Formativa en Resultados (Fase 3)**: El análisis técnico y la re-inspección de FDS quedan disponibles al finalizar los 75s en el botón "Revisar FDS" de cada reactivo en la pantalla de resultados, preservando el valor pedagógico sin entorpecer el juego.
+- **Estandarización Visual de Interfaz en los 5 Juegos y Cuadro Previo de Contexto en Juego 5**:
+  - *Diagnóstico*:
+    1. Disparidad estética entre los juegos iniciales y los posteriores: Juegos 2, 3 y 4 conservaban bordes gruesos de 2px, sombras fluorescentes pesadas, pesos de fuente de 900 excesivos y disparidad en escalas tipográficas (fuentes de 13px–30px frente a 12px–26px de Juego 1).
+    2. En Juego 5, al cargar la página el jugador era arrojado de inmediato a la habitación 3D con el cronómetro de 120s ya corriendo, sin contexto de la emergencia ni claridad sobre la secuencia de 5 pasos requerida.
+  - *Solución*:
+    1. **Estandarización de Tokens (:root) y Modales en Juegos 2, 3, 4 y 5**:
+       - Unificación estricta de la escala tipográfica: ont-xs: 12px, ont-sm: 14px, ont-base: 15px, ont-lg: 18px, ont-xl: 22px, ont-2xl: 26px.
+       - Reemplazo de sombras de neón por --shadow-card: 0 4px 16px rgba(0,0,0,0.4) y bordes sutiles de 1px (
+gba(148, 163, 184, 0.18)).
+       - Modales técnicos (.modal-dialog, .fps-modal-dialog) estandarizados con fondo pizarra oscura #0f172a y acento lateral sobrio de 4px (order-left: 4px solid ...).
+       - Toasts y finding-cards desaturados con bordes laterales según su severidad técnica.
+    2. **Cuadro Previo de Contexto Táctico en Juego 5 (#modal-briefing-overlay)**:
+       - Pantalla previa de briefing estilo terminal táctico militar/industrial de emergencias.
+       - Telemetría en tiempo real: Sustancia en fuga (Ácido Clorhídrico + Solvente), lectura PID de 420 ppm, reporte de operario con salpicadura y ventana de 120 segundos.
+       - Guía paso a paso de los 5 frentes de intervención (Caseta EPP ➔ Válvula ➔ Lavaojos ➔ Kit/Cordón ➔ Acopio RESPEL) y mapa de controles para PC y móvil.
+       - Pausa táctica: La física de marcha y la cuenta regresiva de 120s permanecen congeladas hasta que el brigadista presiona [ ASUMIR EL MANDO DE LA BRIGADA (120s) ], garantizando inmersión total y entendimiento de la misión.
+
+- **Rediseño Estilo Star Wars Datapad Simplificado en Juego 5 ("más a lo star war, pero sencillo")**:
+  - *Diagnóstico*:
+    1. El cuadro de briefing inicial empleaba esquinas redondeadas estándar (`border-radius: 12px`, `border-radius: var(--radius-full)`), botones con degradados tradicionales y tipografías sans-serif que lucían como un formulario web convencional, restándole solemnidad e inmersión a la simulación tridimensional en primera persona.
+  - *Solución*:
+    1. **Geometría y Silueta Táctica (Cortes Angulares a 45°)**: Implementación de cortes geométricos biselados con `clip-path: polygon(...)` en el contenedor principal (`.fps-briefing-dialog`), en las cajas de telemetría (`.telemetry-box`), en los badges de paso (`.step-num-badge`) y en el botón de despliegue (`.btn-start-emergency-mission`), erradicando bordes redondeados estándar.
+    2. **Paleta y Holoterminal Espacial**: Fondo en obsidiana espacial (`#060A14`), scanlines tenues holográficas estáticas (`rgba(56, 189, 248, 0.03)` cada 4px), acento primario en amarillo Star Wars (`#FFC72C` / `#FFE81F`), cian láser (`#38BDF8`) y rojo advertencia (`#EF4444`).
+    3. **Tipografía Táctica Monoespaciada**: Integración de Google Font `JetBrains Mono` con espaciado amplio (`letter-spacing: 0.08em` a `0.14em`), prefijos de transmisión militar imperial/rebelde (`// ALERTA ROJA SST`, `// DIRECTIVA OPERATIVA`, `// SUSTANCIA EN FUGA`) y barra superior de consola (`[ DATAPAD SST-05 // HOLOTERMINAL ]`).
+    4. **Simplicidad Radical (KISS)**: Sin animaciones mareantes, sin textos en idiomas ficticios ininteligibles, sin librerías adicionales ni pesadez de carga; 100% CSS nativo ligero y de alta legibilidad en computadores y dispositivos móviles.
+- **Simplificación Radical del Briefing de Juego 5 ("demasiado texto en diferentes tamaños y formatos, quiero algo sencillo")**:
+  - *Diagnóstico*: La iteración previa del briefing Datapad introdujo una sobrecarga de información (barra de consola superior, píldora de alerta roja, 4 cajas de telemetría de PID/tiempos, 5 pasos con textos normativos largos y citas a decretos, barra de controles con badges dispersos y más de 6 tamaños tipográficos distintos). Toda esa información generaba fatiga visual y duplicaba telemetría que ya existe en el HUD de juego.
+  - *Solución*:
+    1. **Eliminación de Elementos Redundantes**: Supresión de la barra superior de sistema, píldora de alerta roja y las 4 cajas de telemetría.
+    2. **Homogeneización Tipográfica**: Jerarquía única y limpia: título a 1.15rem (18px) en amarillo Star Wars, cuerpo uniforme a 0.85rem (14px) y texto de controles a 0.75rem (12px).
+    3. **5 Pasos Operativos Ultra-Concisos**: Redacción de 1 sola frase directa por paso (Caseta EPP, Válvula, Lavaojos, Derrame, RESPEL) con números del 1 al 5 en badges compactos.
+    4. **Controles en 1 Renglón**: Formato directo `WASD: Caminar • Ratón: Mirar • [E] / Clic: Interactuar`.
+    5. **Botón Directo**: `[ INICIAR MISIÓN (120s) ]` sin adornos excesivos.
+    6. **Contenedor Compacto**: Reducción de ancho de 680px a 520px para lectura inmediata y cómoda en computadores y dispositivos móviles.
+- **Resolución de Bloqueo por Toast de Advertencia en Juego 2 ("la pantalla de advertencia es tan grande que cubre todo, cámbialo")**:
+  - *Causa Raíz*: El elemento `#hazard-toast` estaba ubicado dentro de `.iso-viewport` con posicionamiento absoluto (`position: absolute; top: 4px; left: 8px; right: 8px; max-width: 460px; max-height: 240px;`). Al activarse una incompatibilidad química entre dos reactivos contiguos, la tarjeta medía hasta 240px de alto con fondos opacos y dos párrafos extensos de texto normativo, cubriendo el 80% de la superficie del tablero isométrico (`warehouse-board`, 280x280px). Al quedar el tablero tapado por el modal, las celdas quedaban inaccesibles e interceptaban los toques/clics del jugador, impidiéndole separar las sustancias y provocando deflagraciones involuntarias bajo la cuenta regresiva de 6 segundos.
+  - *Solución*:
+    1. **Extracción Fuera del Iso-Viewport**: Se reubicó `#hazard-toast` en el flujo de la cabina, inmediatamente después de `#exothermic-alert-strip` y antes de `.iso-viewport`. Al salir del contenedor del tablero, es físicamente imposible que tape las celdas 3D.
+    2. **Diseño Ultra-Compacto de Tira Delgada**: Se redujo la altura total a ~40px con diseño de una sola línea informativa (`Ácido Muriático ⚡ Soda Cáustica: Reacción violenta exotérmica. ¡Sepáralas!`).
+    3. **Despeje y Usabilidad Total en el Tablero 3x3**: El tablero en `.iso-viewport` permanece 100% visible, interactivo y despejado en todo momento para arrastrar o tocar celdas de forma fluida.
+    4. **Integridad Técnica y Cero Regresiones**: Se preservaron todos los selectores esperados por la clase `WarehouseGame` (`hazardToast`, `hazardToastPairNames`, `hazardToastFalla`, `hazardToastConsecuencia`, `hazardToastNorma`, `hazardToastNav`, `btnCloseHazardToast`, etc.), manteniendo el cierre automático de 5s y navegación de riesgos sin errores de consola.
+
+- **Resolución de Fallo en Tarjetas y Mecánica de Interacción en Juego 2 ("las tarjetas no funcionan")**:
+  - *Causas Raíz Diagnosticadas*:
+    1. **Umbral de Arrastre Excesivamente Sensible (4px)**: `Math.hypot(dx, dy) > 4` marcaba `this.wasDragged = true` ante cualquier vibración imperceptible de dedo en pantallas táctiles o ratón de alta resolución. Al dispararse el evento `click`, la guarda `if (this.wasDragged) return;` abortaba el clic, ignorando de manera recurrente el toque del jugador para seleccionar tarjetas.
+    2. **Colisión de Hit-Testing por SVGs Hijos**: Al arrastrar una tarjeta o sprite con `document.elementFromPoint(e.clientX, e.clientY)`, la clase `.is-dragging` tenía `pointer-events: none` pero sus elementos descendientes (SVG `<path>`, `<polygon>`, `<text>`) no lo tenían explícitamente en todas las reglas, provocando que `elemUnder.closest('.dropZoneSelector')` devolviera `null` y el drop fallara haciendo rebote elástico.
+    3. **Interferencia de `setPointerCapture`**: `cardEl.setPointerCapture(e.pointerId)` redirigía todos los eventos de puntero exclusivamente a la tarjeta en arrastre, afectando la detección limpia del elemento subyacente.
+    4. **Incompatibilidad en la Máquina de Estados de Clic en Celdas Ocupadas**: Al tener una tarjeta de bandeja seleccionada y tocar una celda que ya contenía un reactivo, el código sobreescribía la selección en vez de ejecutar un reemplazo o advertencia, dejando al usuario bloqueado.
+    5. **Inconsistencia de Identificador de ACPM**: Las reglas ambientales de A3 y C1 validaban `a3Item === 'item_fuel'`, pero en `CHEMICAL_ITEMS` el combustible está registrado con `id: 'item_acpm'`.
+  - *Solución Implementada*:
+    1. **Desacople y Umbral de 8px**: Se elevó el umbral de movimiento a 8px y se retiraron las llamadas a `setPointerCapture` / `releasePointerCapture`. En `onPointerUp`, si no hubo arrastre (`!hasMoved`), se asegura explícitamente `this.wasDragged = false`.
+    2. **Pointer-Events None Universal en Drag**: Regla global `.is-dragging, .is-dragging * { pointer-events: none !important; }` aplicada en CSS tanto a tarjetas de inventario como a sprites 3D del tablero.
+    3. **Reemplazo y Swap Fluido por Drag y Tap**: En `handleTrayCardDrop` y `handleCellClick`, si se suelta o toca una celda ocupada con un reactivo de la bandeja, se ejecuta el reemplazo automático (el ítem previo vuelve a la bandeja y el nuevo se ubica en la celda) con feedback sonoro y de chispas, o alerta SST si es la botella ilegal de gaseosa.
+    4. **Unificación de Identificador a `item_acpm`**: Corrección integral en las verificaciones de tablero eléctrico A3 y radiación solar C1, así como en el cómputo de la auditoría final.
+
+- **Resolución de Dificultad de Toque en Objetos de Juego 4 ("no se dejan tocar bien los objetos, hay que presionar en lugares muy específicos")**:
+  - *Causas Raíz Diagnosticadas*:
+    1. **Hit-box Estricta e Inclinada en Espacio 3D**: Cada `.iso-prop` tenía dimensiones exactas ceñidas a su silueta visual (ej. 78x102px o 96x86px) con contrarrotación en Z y X. El raycasting de eventos de puntero en Chromium/WebKit a través de `preserve-3d` dejaba áreas interactivas muy estrechas.
+    2. **Falsos Clics de Piso en Baldosas Ocupadas**: Cuando el usuario intentaba presionar la base del prop, los bordes o el suelo frente al objeto, el evento impactaba la baldosa `.iso-tile` subyacente. El manejador `handleFloorClick` interpretaba esto como una orden de marcha y movía al avatar a esa baldosa en vez de activar la acción del objeto.
+    3. **Demarcaciones de Seguridad Bloqueadas**: Las demarcaciones `.floor-safety-zone` en el piso tenían `pointer-events: none !important;`, lo que hacía que tocar el piso de la estación cayera en la baldosa vacía.
+    4. **Recorte en Estación RESPEL**: `.prop-respel-station` tenía `overflow: hidden;`, lo que cortaba la baliza superior flotante `#guide-beacon-3` (`top: -26px`), impidiendo interactuar con ella limpiamente.
+  - *Solución Integral Implementada*:
+    1. **Hitbox Expandida (`::before` en `.iso-prop`)**: Inclusión de un pseudo-elemento invisible con `inset: -18px; z-index: 30; pointer-events: all; cursor: pointer;` en todos los props (`prop-locker`, `prop-security-door`, `prop-workbench`, `prop-engine`, `prop-respel-station`, `wall-eyewash`, `wall-extinguisher`), ampliando el área de toque en más de un 40% en todas las direcciones.
+    2. **Demarcaciones de Piso Interactivas (`.floor-safety-zone`)**: Se activó `pointer-events: all; cursor: pointer;` con listeners específicos para cada estación (`zone-mark-lockers`, `zone-mark-checkpoint`, `zone-mark-workbench`, `zone-mark-engine`, `zone-mark-respel`), de modo que tocar el suelo demarcado de un equipo activa inmediatamente su función.
+    3. **Enrutamiento Inteligente en `handleFloorClick`**: Si el clic impacta una baldosa ocupada por un mueble o maquinaria (ej. fila 0 en Vestidor; fila 0 o fila 3 en Patio), el sistema reconoce la intención y activa la estación correspondiente en lugar de mover al avatar adentro del obstáculo.
+    4. **Corrección de `overflow` en RESPEL**: Se configuró `overflow: visible;` en `.prop-respel-station` y se agregaron listeners directos en cada una de las 3 canecas individuales (`bin-filters`, `bin-solids`, `bin-oil`).
+
+
+- **Compromisos de Reunión Técnica y Documentación No Técnica (Samuel & Yazlin)**:
+  - *Contexto y Necesidad*:
+    1. Se atendieron las directrices acordadas con el cliente ("lo que dice Samuel y podemos hacerlo, hazlo").
+    2. Se requirió entregar dos documentos en texto plano/Markdown, redactados sin jerga técnica de programación o desarrollo, orientados a explicar el funcionamiento paso a paso de cada juego y cómo proceder ante fallas o dudas en terreno.
+  - *Entregables Creados*:
+    1. `docs/GUIA_PASO_A_PASO_JUEGOS.md`: Guía detallada y accesible para cualquier nivel de formación del personal sobre los 5 juegos (SGA, Bodega, Trasiego, Taller y Brigada), explicando propósito de SST, controles simples para PC y celular, paso a paso de tareas, consecuencias de errores y cómo ganar.
+    2. `docs/PREGUNTAS_Y_RESPUESTAS_FALLAS.md`: Manual de preguntas frecuentes y contingencias operativas para facilitadores de SST ante pantallas congeladas, dudas pedagógicas en obra, errores de puntero/toque, reinicios y validaciones normativas.
+  - *Validación de Procedimientos Técnicos Existentes en Código*:
+    1. **Juego 2 (Bodega)**: Matriz NTC 4435 y Res. 773/2021 plenamente funcional con detección ortogonal y zona de rechazo RESPEL para envases ilegales de bebidas.
+    2. **Juego 3 (Trasiego)**: Procedimiento paso a paso según Dec. 1079/2015 (Motor OFF/cuñas -> Masa/polo a tierra chasis -> Manguera/bandeja -> Extintor satélite perimetral).
+    3. **Juego 4 (Taller)**: Flujo procedimental por etapas (EPP Casillero -> Checkpoint -> Desengrase -> Motor V8 -> RESPEL segregado) con hitboxes optimizadas.
+
+
+- **Implementación del Procedimiento de Trasiego Paso a Paso - Juego 3 (`juego3_trasiego.html`)**:
+  - *Diagnóstico*: En la versión previa, el juego penalizaba errores de secuencia ATS en el código pero todos los 6 hotspots parpadeaban en rojo al mismo tiempo, lo que generaba incertidumbre para operarios en obra que no dominaban de antemano el orden legal.
+  - *Solución*:
+    1. **Barra Superior de Ruta (`.trasiego-roadmap-guide`)**: Implementación de una barra interactiva con las 6 etapas canónicas del Decreto 1079 de 2015 / NFPA 77:
+       - Paso 1: Cuñas en Llantas (Inmovilización mecánica).
+       - Paso 2: Motor / Cabina (Apagado y aislamiento de celulares).
+       - Paso 3: Polo a Tierra (<10 Ω al chasis).
+       - Paso 4: Bandeja de Goteo (Contención secundaria al 110%).
+       - Paso 5: Kit de Derrames (Alistamiento in situ).
+       - Paso 6: Extintor ABC 150 lbs (Perímetro a 5 metros).
+    2. **Estados Dinámicos de Hotspots**: El paso activo pulsa intensamente en dorado (`is-step-active`) con su número de etapa y etiqueta destacada. Los pasos futuros permanecen bloqueados y atenuados (`is-step-locked`) con etiqueta `🔒 ESPERA PASO X`. Los completados se marcan en verde (`is-certified`).
+    3. **Enrutamiento y Diálogos de Bolívar Safety Bot**: Al tocar o soltar una acción en un punto adelantado, el sistema indica amablemente: *"¡Punto bloqueado! El procedimiento paso a paso exige completar primero el [Paso X: Nombre]"* y resalta el hotspot activo con rebote GSAP.
+
+- **Refuerzo Pedagógico de la Matriz de Compatibilidades Química - Juego 2 (`juego2_bodega.html`)**:
+  - *Diagnóstico*: La matriz química (NTC 4435 / Res. 773/2021) estaba confinada a un botón secundario en el header y evaluada internamente, pero operarios de bajo nivel de escolaridad necesitaban una referencia rápida y constante en pantalla.
+  - *Solución*:
+    1. **Paso 2 del Tutorial**: Rediseñado para enseñar explícitamente el Semáforo de Compatibilidad Química (Verde = Compatible, Amarillo = Precaución/Separar con estiba o extintor, Rojo = Incompatible violento).
+    2. **Barra de Guía Rápida de Semáforo (`.matrix-quick-legend-bar`)**: Ubicada permanentemente arriba de la bandeja de sustancias con chips visuales coloreados y el botón de acceso directo `[ Tabla NTC 4435 ]`.
+
+- **Garantía y Despliegue de la Matriz Completa y Real de Compatibilidad Química - Juego 2 (`juego2_bodega.html`)**:
+  - *Causa Raíz de la Solicitud*: El usuario solicitó asegurar que la matriz fuera completa y real. Anteriormente, el modal `#modal-matrix` contenía una tabla simplificada de 4 clases agrupadas que no distinguía entre ácidos y álcalis/bases (Ácido Muriático vs Soda Cáustica), omitiendo además las clases ONU/SGA canónicas (Explosivos 1, Comburentes 5.1, Peróxidos 5.2, Sólidos 4, Tóxicos 6.1, Inertes 2.2).
+  - *Solución Integral Implementada*:
+    1. **Matriz Oficial Completa de 12 Clases Técnicas (NTC 4435 / CISTEMA ARL Sura / CCS / MinAmbiente)**:
+       - Fila y Columna 1: 💥 Clase 1 - Explosivos (Almacenamiento exclusivo en polvorín Indumil).
+       - Fila y Columna 2: 🔥 Clase 2.1 - Gases Inflamables (`item_acetylene`: Acetileno).
+       - Fila y Columna 3: 🛢️ Clase 2.2 - Gases Inertes / No Inflamables (Argón, CO2, Nitrógeno).
+       - Fila y Columna 4: ☠️ Clase 2.3 - Gases Tóxicos (Cloro, Amoníaco).
+       - Fila y Columna 5: 🔥 Clase 3 - Líquidos Inflamables (`item_acpm`: ACPM / Diésel).
+       - Fila y Columna 6: 📦 Clase 4 - Sólidos Inflamables / Reactivos (4.1, 4.2, 4.3).
+       - Fila y Columna 7: ⭕ Clase 5.1 - Comburentes / Sustancias Oxidantes (Nitrato, Peróxido de hidrógeno conc.).
+       - Fila y Columna 8: ❄️ Clase 5.2 - Peróxidos Orgánicos (Cuarto frío refrigerado con control TDAA).
+       - Fila y Columna 9: ☠️ Clase 6.1 - Sustancias Tóxicas Agudas (Venenos).
+       - Fila y Columna 10: 🧪 Clase 8A - Corrosivos ÁCIDOS (`item_muriatic`: Ácido Muriático 28%).
+       - Fila y Columna 11: 🧼 Clase 8B - Corrosivos BÁSICOS / ÁLCALIS (`item_soda_caustic`: Soda Cáustica líquida).
+       - Fila y Columna 12: ☣️ Clase 9 - Misceláneos / SGA Salud (`item_paint`: Pintura Epóxica + Catalizador).
+    2. **Las 4 Convenciones Oficiales del Semáforo Colombiano**:
+       - 🟢 *Verde (Compatible)*: Almacenamiento conjunto permitido en el mismo módulo o estante.
+       - 🟡 *Amarillo (Precaución / Condicional)*: Requiere revisión de FDS y separación física (2-3 metros, contención secundaria independiente o buffer neutro).
+       - 🔴 *Rojo (Incompatible)*: Prohibido almacenar juntos; exige muros cortafuego de 2 horas o distancia > 6 metros (NFPA 30 / NFPA 55).
+       - ⚫ *Negro/Gris Oscuro (Almacenamiento Especial Exclusivo)*: Polvorín Indumil o cámara refrigerada; no almacenar en bodega común.
+    3. **Panel de Mapeo Directo de Insumos de Obra**: Tarjetas de identificación en la cabecera del modal que vinculan cada ítem del juego con su clase de riesgo oficial y su regla operativa, incluyendo la infracción mortal del Art. 20 Res. 773/2021 (botella de refresco reenvasada ➔ envío inmediato a RESPEL).
+    4. **Ergonomía de Visualización**: Diálogo expandido a 980px con cabecera fija (`sticky top: 0`) y primera columna fija (`sticky left: 0`), celdas con badges explicativos y scroll horizontal suave `.custom-scroll`.
+
+- **Despliegue del Modal de Contexto Situacional (Briefing Táctico Datapad) en los 5 Juegos**:
+  - *Causa Raíz de la Solicitud*: El usuario solicitó: *"Verifica, y bueno, sale un contexto a todos los juegos, como un texto que explica la situación"*. Se detectó que, si bien el Juego 5 ya disponía de un modal de misión antes de iniciar, los Juegos 1, 2, 3 y 4 ingresaban directamente al tutorial o a la cabina interactiva sin que el operario comprendiera claramente el escenario operacional de infraestructura vial en el que se encontraba (recepción de insumos, bodega central desordenada, abastecimiento con camión cisterna, intervención de taller).
+  - *Solución Integral Arquitectónica*:
+    1. **Estandarización Estética Star Wars Datapad Simplificado**:
+       - Contenedor modal `#modal-briefing-overlay` con clase `.open` por defecto.
+       - Silueta biselada con corte a 45° (`clip-path: polygon(...)`), paleta institucional Bolívar con acentos amarillos Star Wars (`#FFC72C`) y fondo obsidiana espacial (`#060A14`).
+       - Tipografía monoespaciada limpia `JetBrains Mono` con escala uniforme (14px en cuerpo) sin disparidad ni saturación visual.
+    2. **Estructura Modular Homogénea**:
+       - *Encabezado*: Título con prefijo táctico de consola (`DATAPAD // SST-0X`) e icono temático FontAwesome.
+       - *Contexto Situacional*: Breve descripción de la situación operativa real de obra (2-3 líneas).
+       - *Directiva Operativa en 3 Pasos*: Badges numéricos claros y concisos indicando las acciones clave a ejecutar.
+       - *Controles Directos*: Renglón compacto con la asignación para PC y dispositivos móviles/pantallas táctiles.
+       - *Botón de Despliegue*: Botón destacado `btn-start-briefing` con hover luminoso y sonido procedimental `tap()`.
+    3. **Sincronización de Cronómetros y Ciclo de Vida**:
+       - **Juego 4 (`juego4_taller.html`)**: Se corrigió el inicio prematuro del temporizador de 90s (anteriormente se activaba en `DOMContentLoaded`). Ahora el juego inicia en reposo (`isGameActive = false`) y el reloj arranca exactamente cuando el operario pulsa el botón de despliegue tras leer el briefing.
+       - **Juegos 1, 2 y 3**: El cierre del overlay oculta el backdrop (`display: none`), remueve la clase `.open` y arranca la interacción sin consumos de tiempo indebidos.
+
+- **Integración Nativa en Moodle LMS y Empaquetado SCORM 1.2 (`BolivarLmsBridge`)**:
+  - *Causa Raíz de la Solicitud*: El usuario indicó: *"Serán usados en moodle, haz lo que veas necesario"*. Para que los juegos se utilicen de forma profesional en Moodle de Seguros Bolívar / KMA, se requiere comunicación bidireccional estándar para asentar las calificaciones de los operarios directamente en el Libro de Calificaciones (Gradebook), capacidad de empaquetado como actividades SCORM y adaptación a iframes estrechos de Moodle.
+  - *Solución Integral Arquitectónica*:
+    1. **Adaptador Universal Autocontenido (`BolivarLmsBridge`)**:
+       - Integrado en los 5 juegos (`juego1_sga.html` a `juego5_emergencias.html`) sin ninguna librería externa adicional.
+       - Algoritmo de búsqueda jerárquica y recursiva del objeto API SCORM en `window`, `window.parent`, `window.top` y `window.opener`.
+       - Soporta nativamente tanto **SCORM 1.2** (`LMSInitialize`, `LMSSetValue`, `LMSCommit`, `LMSFinish`) como **SCORM 2004** (`Initialize`, `SetValue`, `Commit`, `Terminate`).
+       - Asignación de variables estándar CMI:
+         - `cmi.core.score.raw` = Puntaje numérico final (0 a 100).
+         - `cmi.core.score.min` = 0.
+         - `cmi.core.score.max` = 100.
+         - `cmi.core.lesson_status` = `passed` (para calificaciones $\ge 80\%$) o `failed` (para $< 80\%$).
+       - Cierre de sesión limpio con `beforeunload` para evitar sesiones colgadas en Moodle.
+    2. **Canal de Comunicación iFrame (`postMessage`)**:
+       - Al finalizar la auditoría, emite `window.parent.postMessage({ type: 'MOODLE_GAME_REPORT', gameId, score, passed, details }, '*')`, habilitando integración en etiquetas o páginas HTML de Moodle que utilicen scripts de captura externa.
+    3. **Botón Integrado de Pantalla Completa (`btn-moodle-fullscreen`)**:
+       - Ubicado en la barra superior / HUD de los 5 juegos.
+       - Acciona la API nativa de pantalla completa (`requestFullscreen` / `exitFullscreen`) permitiendo que el operario se concentre en la simulación al 100% de su pantalla sin sufrir por las barras laterales o cabeceras del tema de Moodle.
+    4. **Pipeline Automatizado de Empaquetado (`build_scorm.py`)**:
+       - Genera paquetes ZIP canónicos estándar SCORM 1.2 en la carpeta `scorm_packages/`:
+         - `juego1_sga_scorm.zip`
+         - `juego2_bodega_scorm.zip`
+         - `juego3_trasiego_scorm.zip`
+         - `juego4_taller_scorm.zip`
+         - `juego5_emergencias_scorm.zip`
+         - `suite_completa_5juegos_scorm.zip` (Multi-SCO combo)
+       - Cada paquete contiene su manifiesto oficial `imsmanifest.xml` con esquema ADL SCORM 1.2 y `index.html` como recurso de lanzamiento.
+    5. **Documentación de Despliegue (`docs/GUIA_INTEGRACION_MOODLE.md`)**:
+       - Manual paso a paso para administradores de Moodle explicando configuración de intentos, calificación más alta, ventana emergente vs actual y resolución de contingencias.
+
+## Depuración Crítica - Juego 1 (juego1_sga.html): Bloqueo en Pestaña Inicial
+- **Diagnóstico del Fallo ("No pasa de la pestaña primera, antes de empezar el juego")**:
+  - Al instanciar `new SgaGameController()`, el constructor inicializaba `this.fx = new FxEngine(this.dom.fxCanvas, this.dom.viewport)`.
+  - El elemento `<canvas id="fx-canvas">` no estaba presente en el árbol DOM de `juego1_sga.html`, por lo que `this.dom.fxCanvas` retornaba `null`.
+  - El constructor de `FxEngine` intentaba ejecutar `this.ctx = canvas.getContext('2d')`, arrojando una excepción fatal no controlada: `TypeError: Cannot read properties of null (reading 'getContext')`.
+  - Como resultado, la ejecución de JavaScript se detenía antes de llamar a `this.bindEvents()` y `this.initTutorial()`.
+  - Al no registrarse los eventos, el modal de briefing inicial `#modal-briefing-overlay` ("MISIÓN: RECEPCIÓN Y CLASIFICACIÓN SGA") quedaba congelado sobre la pantalla sin responder al clic del botón `btn-start-briefing`, y el tutorial subyacente no inyectaba sus casillas interactivas ni habilitaba el inicio del examen.
+- **Corrección Quirúrgica Aplicada**:
+  1. Se incorporó el elemento `<canvas id="fx-canvas" style="position: absolute; inset: 0; pointer-events: none; z-index: 45; width: 100%; height: 100%;"></canvas>` dentro de `#app-viewport`.
+  2. Se blindó la clase `FxEngine` con defensas exhaustivas (`if (!canvas || !host || typeof canvas.getContext !== 'function') { this.enabled = false; return; }`), asegurando que ningún fallo en el contexto gráfico interrumpa el ciclo de vida del juego.
+  3. Se añadieron cierres de contingencia para el modal de briefing mediante clic en backdrop y teclas `Enter`, `Escape` y `Espacio`, garantizando accesibilidad y respuesta instantánea.
+
+## Depuración Crítica - Juego 1 (juego1_sga.html): Arrastre Universal de la Tarjeta ("Solo permite arrastrar desde la derecha")
+- **Diagnóstico del Fallo ("No permite arrastrar el cuadrado desde cualquier punto, solo desde la derecha")**:
+  - En la tarjeta del químico (`#tutorial-chem-card` y `.exam-card`), los elementos hijos del lado izquierdo (el encabezado con icono, el título `<h3>`, el alias y el párrafo `.chem-desc`) tenían `touch-action: auto` y carecían de `pointer-events: none`.
+  - Al pulsar sobre el lado izquierdo o central de la tarjeta, el navegador interpretaba el movimiento como un intento de selección de texto o desplazamiento nativo de contenedor (`overflow-y-auto`), disparando el evento nativo `dragstart` o emitiendo `pointercancel`. Esto cancelaba inmediatamente el listener de arrastre antes de alcanzar el umbral de movimiento de 6px.
+  - En contraste, el lado derecho de la tarjeta carecía de bloques de texto (era fondo plano o margen), por lo que el navegador sí respetaba el `touch-action: none` del contenedor raíz `.draggable-card`, permitiendo arrastrar únicamente desde esa zona.
+- **Corrección Quirúrgica Aplicada**:
+  1. **Aislamiento de Puntero en Hijos**: Se aplicó `.draggable-card > *:not(button) { pointer-events: none; }`, asegurando que cualquier clic en cualquier coordenada de la tarjeta (izquierda, centro o derecha) tenga como objetivo directo a `cardEl`.
+  2. **Inmunidad a Selección y Drag Nativo**: Se configuró `touch-action: none !important; user-select: none !important; -webkit-user-drag: none !important;` en la tarjeta y en todos sus descendientes, y se añadió `cardEl.addEventListener('dragstart', (e) => e.preventDefault())`.
+  3. **Pointer Capture Robusto**: En `onPointerDown`, se activó `cardEl.setPointerCapture(e.pointerId)`, garantizando que el flujo de eventos de movimiento y soltado se mantenga fijado a la tarjeta en todo momento.
+  4. **Preservación de Botones**: Los botones internos (`.btn-inspect-fds` y `.btn-card-fds`) retienen `pointer-events: auto !important` y `cursor: pointer` para que la inspección de la FDS continúe funcionando con total fluidez.
+
+## Depuración Crítica - Juego 1 (juego1_sga.html): Flujo Directo de Victoria del Tutorial
+- **Diagnóstico del Fallo ("Al ganar el tutorial, sale el mensaje del fds en lugar de seguir directo")**:
+  - `handleTutorialSelection` contenía una condición `if (this.tutorialStep === 1)` que forzaba la apertura del modal FDS (`this.openFds(...)`) interceptando la primera clasificación exitosa.
+  - Además, tras cerrar el modal o clasificar, el tutorial no avanzaba automáticamente al juego, sino que requería hacer clic en un botón desbloqueado.
+- **Corrección Quirúrgica Aplicada**:
+  - Se eliminó la intercepción invasiva de `openFds` dentro del arrastre/selección del tutorial.
+  - Al clasificar correctamente en el pictograma Corrosivo, el juego reproduce el sonido de acierto, lanza confeti y transiciona de forma directa e inmediata a `startExamPhase()` tras 400ms, eliminando cualquier paso redundante.
+
+## Arquitectura y UX - Juego 1 (juego1_sga.html): Modal Pedagógico "Hora de aprender" al Fallar
+- **Requerimiento del Usuario**: Al cometer un error de clasificación (sea en tutorial o en examen), desplegar un mensaje corto y pedagógico que explique claramente "cómo funciona y por qué falló", bajo el concepto "Hora de aprender".
+- **Desafíos Técnicos y de Experiencia de Usuario**:
+  1. *Preservación del Tiempo de Examen*: En la fase de examen, el temporizador de 75s corre continuamente. Si el usuario se detiene a leer una explicación educativa mientras el reloj avanza, sufriría una doble penalización injusta (los -10s del fallo + el tiempo de lectura).
+  2. *Doble Perspectiva Didáctica*: El mensaje no debe limitarse a decir "incorrecto". Debe responder con exactitud dos incógnitas clave: "¿Por qué falló?" (por qué la opción elegida no aplica) y "¿Cómo funciona la regla?" (por qué la FDS exige el pictograma correcto).
+  3. *Coherencia de Flujo Tutorial vs. Examen*: En el tutorial, cerrar el feedback debe mantener al usuario en la pantalla para intentar de nuevo. En el examen, cerrar el feedback debe reanudar el cronómetro y pasar a la siguiente tarjeta o concluir el examen.
+- **Solución Quirúrgica Implementada**:
+  1. **Catálogo Estructurado `LEARNING_GUIDES`**: Mapeo exacto para cada uno de los 7 productos químicos (`tut_0` y `chem_1` a `chem_6`), sintetizando en 1-2 líneas idiomáticas el motivo del fallo y la regla técnica del SGA / FDS.
+  2. **Diseño Visual de Alto Impacto**: Rediseño del modal `#modal-error-feedback` con insignia superior dorada `💡 HORA DE APRENDER`, presentación visual de los pictogramas SVG en contenedores coloreados (rojo para el elegido y verde para el legal), micro-tarjetas de alto contraste y botón `[ Entendido, Continuar → ]`.
+  3. **Pausado y Reanudación Automática del Reloj**: Métodos `pauseTimer()` y `resumeTimer()` que congelan el intervalo de tiempo durante la lectura y lo restauran inmediatamente tras el cierre.
+  4. **Accesibilidad Multi-input**: Cierre garantizado mediante clic en botón, clic fuera del diálogo (backdrop) o teclas `Enter` / `Escape`.
+
+## Depuración Crítica - Juego 2 (juego2_bodega.html): Deformación de Tarjetas y Fallo de Arrastre
+- **Diagnóstico del Fallo ("Las tarjetas crecen sin razón y la tarjeta no se arrastra")**:
+  1. *Crecimiento desmedido de tarjetas*:
+     - `.is-dragging:not(.iso-sprite)` contenía la regla `aspect-ratio: 1 / 1 !important;`. Las tarjetas de la bandeja miden normalmente 98px de alto y ~160px de ancho en pantallas estándar. Al forzar una relación de aspecto 1:1, su altura saltaba instantáneamente a ~160px. Como la bandeja `#items-tray` es un CSS Grid, expandir un elemento forzaba a **toda la fila de la cuadrícula a triplicar su tamaño**, deformando las tarjetas adyacentes.
+     - En `setupCardDragAndDrop`, se aplicaba `scale(1.12)` a la tarjeta durante el movimiento, incrementando aún más sus dimensiones.
+     - En `.item-selected`, existía `transform: scale(1.04);` y una animación cíclica `pulseGlow`.
+     - En `renderInventoryTray()`, se inyectaba la clase `pop-comic` (`scale(1.22)`), y en `handleTrayItemClick()` se volvía a llamar a `renderInventoryTray()`, destruyendo y recreando todos los nodos del DOM en cada clic, lo que hacía que todas las tarjetas se inflaran y rebotaran simultáneamente.
+     - `.tray-card` tenía `transition: all 0.2s ease;`, animando los cambios dimensionales de forma retardada.
+  2. *Fallo e interrupción del arrastre*:
+     - En pantallas táctiles o paneles con gestos, el contenedor padre `#phase-challenge` posee `overflow-y-auto`. Al mover el dedo verticalmente hacia el tablero, el navegador interpretaba el gesto como scroll vertical de página y disparaba un evento `pointercancel`, interrumpiendo el arrastre a los pocos píxeles.
+     - Faltaba la captura activa del puntero (`setPointerCapture`), ya que se había omitido intencionalmente en el código original.
+     - Los descendientes (`.tray-card-name`, `.tray-card-badge` y el contenedor del SVG) no tenían `pointer-events: none` definido en CSS (la clase `.pointer-events-none` no existía en el archivo), lo que permitía selección de texto nativa o cancelación de eventos de puntero.
+- **Corrección Quirúrgica Aplicada**:
+  1. **Estabilización Dimensional Radical**: Se retiró `aspect-ratio: 1 / 1 !important;` de `.is-dragging:not(.iso-sprite)` y se eliminó `transform: scale(1.04)` de `.item-selected`. La transición de `.tray-card` se restringió exclusivamente a colores y sombras (`transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;`).
+  2. **Selección Eficiente sin Re-renderizado**: Se implementó `updateTraySelection(selectedId)` que conmuta la clase `.item-selected` de forma quirúrgica en el DOM sin destruir los elementos ni re-invocar `renderInventoryTray()`. Se retiró la animación `pop-comic` de las tarjetas de la bandeja.
+  3. **Pointer Capture Robusto y Universal**: Se integró `cardEl.setPointerCapture(e.pointerId)` en `onPointerDown` y `releasePointerCapture` en `onPointerUp`, blindando el flujo de eventos frente a cancelaciones por scroll vertical en `#phase-challenge`.
+  4. **Blindaje de Puntero en Hijos**: Se declararon las reglas `.draggable-card > *:not(button) { pointer-events: none; }`, `.pointer-events-none { pointer-events: none !important; }` y `touch-action: none !important; user-select: none !important; -webkit-user-drag: none !important;` en hijos.
+  6. **Regeneración de Paquetes SCORM 1.2**: Sincronización completa de `scorm_packages/juego2_bodega_scorm.zip` y del combo suite.
+
+## Optimización de UX y Ergonomía Visual - Juego 2 (juego2_bodega.html): Eliminación de Layout Shift y Sacudida Brusca
+- **Diagnóstico del Fallo ("Esa advertencia mueve todo, sale muy repentina, y es algo complicada de llevar por el movimiento tan brusco")**:
+  1. *Desplazamiento del Layout (Mueve todo)*:
+     - `#exothermic-alert-strip` y `#hazard-toast` se renderizaban en el flujo flex vertical normal de `#phase-challenge` (`justify-between`), directamente arriba de `.iso-viewport` (el tablero isométrico).
+     - Al activarse una incompatibilidad, ambos banners pasaban de `hidden` a visibles agregando >110px de altura, empujando instantáneamente el tablero hacia abajo. Al resolverse la incompatibilidad, desaparecían y jalaban el tablero hacia arriba. Esto hacía que el tablero se moviera debajo del cursor o dedo mientras el usuario intentaba manipular reactivos.
+  2. *Aparición Repentina y Tensa*:
+     - La alerta pasaba de 0 a 100% en 0ms sin interpolación ni animación de entrada.
+     - La cuenta regresiva de 6 segundos generaba una presión excesiva y precipitada antes de que el usuario pudiera leer qué sustancias estaban en conflicto.
+  3. *Movimiento Físico Brusco y Fatiga Auditiva*:
+     - `@keyframes shakeScreen` sacudía físicamente todo `#app-viewport` mediante `translateX(-8px) rotate(-0.5deg)`, desestabilizando la vista y dificultando la precisión del puntero.
+     - `sound.hazardAlarm()` se disparaba en bucle cada 1 segundo en `setInterval`, provocando aturdimiento auditivo.
+- **Corrección Quirúrgica Aplicada**:
+  1. **Cero Layout Shift (Contenedor Flotante Absoluto)**:
+     - Se encapsularon los elementos de alerta en `.hazard-floating-container` (`position: absolute; top: 86px; left: 14px; right: 14px; z-index: 60;`), desacoplándolos del flujo del layout.
+     - El tablero isométrico `.iso-viewport`, la zona de rechazo `#zone-reject` y la bandeja `#items-tray` permanecen **estrictamente fijos y estables** en sus posiciones originales; no se desplazan ni un solo píxel al saltar o retirarse una alerta.
+  2. **Entrada Suave y Ergonomía Temporal**:
+     - Animación suave de entrada `@keyframes alertFadeSlide` (fade + slide-down sutil de 0.25s) y diseño compacto con `backdrop-filter: blur(8px)`.
+     - Ampliación del tiempo de reacción de 6s a 10s para permitir una lectura calmada y analítica del riesgo químico.
+  3. **Eliminación Total de Sacudida Física y Spam de Audio**:
+     - `@keyframes shakeScreen` fue redefinido como un pulso lumínico perimetral (`box-shadow: inset 0 0 26px rgba(239, 68, 68, 0.45)`), sin traslación (`translateX: 0`) ni rotación. La pantalla física nunca se mueve.
+     - Supresión del pitido repetitivo de alarma en cada segundo del temporizador: la señal sonora de advertencia se activa una única vez por detección de incompatibilidad.
+  4. **Regeneración SCORM 1.2**:
+     - Paquetes actualizados y reconstruidos en `scorm_packages/juego2_bodega_scorm.zip` y `suite_completa_5juegos_scorm.zip`.
+
+## Optimización de Escala y Legibilidad - Juego 2 (juego2_bodega.html): Redimensionamiento del Tablero Isométrico
+- **Diagnóstico del Fallo ("El tablero de juego se ve demasiado pequeño")**:
+  - En el layout original, `#warehouse-board` tenía fijadas dimensiones rígidas de `280px x 280px`.
+  - Debido a la proyección isométrica (`rotateX(60deg) rotateZ(-45deg)`), la perspectiva 3D comprime la altura vertical aparente a la mitad (`cos(60°) = 0.5`), provocando que un tablero de 280px se proyectara con apenas ~140px de altura vertical en pantalla.
+  - Como resultado, dentro de un viewport de hasta 820px de ancho, el tablero ocupaba una pequeña fracción central, las 9 celdas medían solo ~82px y los sprites de químicos medían 56px (`w-14`), viéndose apretados, difíciles de pulsar y con micro-etiquetas.
+- **Corrección Quirúrgica Aplicada**:
+  1. **Escalado del Tablero a 370px (+70% de Superficie)**:
+     - Se aumentó la cuadrícula de `#warehouse-board` de 280px a `370px x 370px` (`max-width: 92vw; aspect-ratio: 1/1;`) con `gap: 10px; padding: 10px;`. En pantallas estrechas (<420px) se adapta automáticamente a `330px x 330px`.
+  2. **Ampliación de Sprites y Celdas de Almacén**:
+     - Las celdas pasaron a tener una altura mínima de `96px` (más de 105px de área efectiva de contacto).
+     - Los sprites vectoriales de reactivos (`.iso-sprite`) se incrementaron de 56px a `72px x 72px` (`w-18 / w-20`), proyectando detalles nítidos de pictogramas SGA y sombras de oclusión más profundas.
+  3. **Escalado Tipográfico de Coordenadas y Marcadores**:
+     - Las coordenadas (`.iso-coord-label`: A1-C3) se aumentaron a `0.82rem` (`var(--font-mono)`).
+     - Los marcadores de peligro ambiental (`⚡ 440V` y `☀️ CALOR`) se ampliaron a `0.72rem` con `padding: 2px 6px;`.
+  4. **Adaptación Vectorial Láser**:
+     - Como la capa SVG `#board-connections-svg` utiliza `viewBox="0 0 300 300"` y `width: 100%; height: 100%;`, todas las líneas láser dinámicas ortogonales y diagonales escalaron perfectamente sin desalineación geométrica.
+  5. **Regeneración de Paquetes SCORM 1.2**:
+     - Paquetes actualizados en `scorm_packages/juego2_bodega_scorm.zip` y `suite_completa_5juegos_scorm.zip`.
+
+
+
+## Corrección Visual y Desacople de CSS - Juego 2 (juego2_bodega.html): Tutorial Paso 1
+- **Diagnóstico del Fallo ('Se ve mal' en el Tutorial Paso 1)**:
+  - Al aplicar previamente width: 370px; height: 370px; y min-height: 96px; a nivel global en .iso-board y .iso-cell, se afectó la celda de demostración individual #tut-demo-cell en el Paso 1 del Tutorial (#tut-panel-1).
+  - El contenedor demo del tutorial, al heredar la clase .iso-board, se expandió a 370px, desplazó la flecha ➔ y la tarjeta del químico hacia la izquierda, y proyectó la celda solitaria A1 fuera de centro, rodeada por un área vacía desproporcionada.
+- **Corrección Quirúrgica Aplicada**:
+  1. **Aislamiento Estricto de Reglas CSS**:
+     - Se restringieron las dimensiones de 370px exclusivamente al ID del tablero de juego principal: #warehouse-board { width: 370px; height: 370px; ... }.
+     - La clase genérica .iso-board conserva únicamente las propiedades 3D (transform-style: preserve-3d; transform: rotateX(60deg) rotateZ(-45deg); transition: ...).
+     - min-height: 96px se restringió exclusivamente a las celdas del tablero #warehouse-board .iso-cell.
+  2. **Rediseño Proporcional del Paso 1 del Tutorial**:
+     - Se encapsuló el destino de demostración en un viewport isométrico dedicado (width: 120px; height: 100px; perspective: 700px;) con tarjeta simétrica de 140px.
+     - #tut-demo-cell se fijó exactamente a 86px x 86px coincidiendo con su tablero local, asegurando rotación concéntrica y centrada sin desfase.
+     - Se reemplazó la animación 2D genérica (happy-jiggle) por happy-jiggle-3d sobre el sprite del tambor para preservar intacto el plano isométrico al soltar o colocar el químico.
+  3. **Reconstrucción SCORM 1.2**:
+     - Paquetes regenerados y validados con python build_scorm.py.
+
+## Homologación Visual de Arrastre - Juego 2 (juego2_bodega.html): Proxy de Tarjeta para Piezas Ubicadas
+- **Diagnóstico del Requerimiento ('Que cuando estén ya colocados, al arrastrarlos a otro puesto se vea igual la tarjeta')**:
+  - Al arrastrar un reactivo directamente desde la bandeja inferior, se desplazaba la tarjeta completa (\	ray-card\) con fondo, borde amarillo, tipografía de reactivo y badge clasificador.
+  - Sin embargo, al arrastrar una pieza que ya estaba ubicada sobre una celda del almacén (\.iso-sprite\), el sistema aplicaba una proyección 3D local con CSS transparente, moviendo únicamente el icono SVG desnudo sin tarjeta ni rotulado.
+- **Solución Quirúrgica Aplicada**:
+  1. **Proxy Flotante Universal (\dragProxy\)**:
+     - Al detectar arrastre en una pieza de casilla (\.iso-sprite\), se genera dinámicamente un elemento proxy clon idéntico a la tarjeta (\	ray-card is-dragging\) en \position: fixed\ montado en \document.body\.
+     - Contiene exactamente el icono SVG, el nombre completo (\.tray-card-name\) y el badge SGA (\.tray-card-badge\) con su borde amarillo de combate y sombra táctica.
+     - Sigue al cursor suavemente con inclinación física (\scale(1.04) rotate(rot)\), mientras la celda de origen se atenúa temporalmente (\opacity: 0.25\).
+  2. **Interacción y Liberación Limpia**:
+     - \document.elementFromPoint\ detecta limpiamente la celda destino, la zona de rechazo o la bandeja de inventario.
+     - Al soltar, el proxy se destruye sin dejar residuos en el DOM y se ejecuta el intercambio (\swap\), traslado o retorno a inventario.
+  3. **Reconstrucción SCORM 1.2**:
+     - Paquetes actualizados en \scorm_packages/juego2_bodega_scorm.zip\ y \suite_completa_5juegos_scorm.zip\.
+
+## Rediseño Integral de Pantalla y Jerarquía Hero - Juego 2 (juego2_bodega.html)
+- **Diagnóstico del Fallo ('Tapa gran parte. Puedes rediseñar la pantalla para que el juego sea ese principal ámbito')**:
+  - Al desencadenarse una reacción exotérmica o incompatibilidad, los dos banners de advertencia (\exothermic-alert-strip\ y \hazard-toast\) flotaban en \	op: 86px\, tapando de forma directa las casillas superiores A1, A2 y A3 del tablero isométrico.
+  - Además, la acumulación vertical de barras secundarias independientes (barra de estado, banner de probando, zona de rechazo de 65px, barra de matriz de 40px y bandeja de 160px) comprimía el espacio útil, empujando la bandeja fuera de pantalla.
+- **Solución Quirúrgica y Rediseño de Layout**:
+  1. **El Tablero 3D como Hero Principal**:
+     - Se dotó al \.iso-viewport\ de una holgura superior (\padding: 70px 0 15px 0\) y altura mínima de 380px, dejando el tablero 3x3 totalmente despejado y visible en todas sus 9 celdas y conexiones sin superposiciones.
+  2. **Reubicación de Alertas sin Colisión**:
+     - Las alertas flotantes se posicionaron en \	op: 48px\ con diseño ultra-compacto (34px-38px), alojándose limpiamente en el margen superior por encima del vértice del tablero isométrico, garantizando visibilidad 100% de la fila A.
+  3. **Consolidación de Controles Periféricos**:
+     - Se integró el estado de seguridad y la sustancia activa en una sola barra táctica de cabecera de 36px.
+     - Se unificó la Zona de Rechazo RESPEL y el Semáforo de la Matriz Química en un solo dock inferior horizontal side-by-side de 42px, recuperando más de 160px verticales.
+     - La bandeja de inventario (\#items-tray\) queda inmediatamente visible y accesible sin scroll.
+  4. **Reconstrucción SCORM 1.2**:
+     - Paquetes actualizados en \scorm_packages/juego2_bodega_scorm.zip\ y \suite_completa_5juegos_scorm.zip\.
+
+## Recreación Visual de la Matriz de Compatibilidad Química - Juego 2 (juego2_bodega.html)
+- **Diagnóstico del Requerimiento ('Muestra la matriz no solo con texto, recrea la matriz de verdad, que sea visual')**:
+  - La tabla previa de compatibilidad en #modal-matrix presentaba una apariencia de hoja de cálculo genérica basada en texto plano con abreviaturas diminutas (⚫ E, 🟢 C, 🟡 P, 🔴 I) y encabezados sin representación gráfica de los riesgos.
+  - El usuario requería la representación gráfica auténtica de la matriz de almacenamiento químico (estilo oficial CISTEMA / ARL Bolívar / CCS / NTC 4435 / Res. 773 de 2021), dotada de rombos SGA, bloques de color semáforo y claridad interactiva.
+- **Implementación y Arquitectura Visual**:
+  1. **Rombos Oficiales SGA / GHS Vectoriales en Cabeceras**:
+     - Se incorporaron rombos normalizados SVG vectoriales con borde carmesí #dc2626 y pictogramas de peligro (Llama, Corrosión, Bombona Gas a Presión, Calavera, Comburente, Explosivo, Exclamación) en los encabezados de columnas y filas.
+  2. **Selector Dual de Pestañas Tácticas**:
+     - **Pestaña 1 - Matriz Táctica de Obra (5x5)**: Enfocada directamente en los reactivos del desafío (ACPM, Ácido Muriático, Soda Cáustica, Acetileno, Pintura Epóxica) con sus sprites 3D vectoriales, semáforos de alto impacto y reglas de incompatibilidad directas. Incluye guías dedicadas para Buffers Neutros (Estiba 110% y Extintor PQS) y RESPEL (Botella Reenvasada).
+     - **Pestaña 2 - Matriz Oficial Completa NTC 4435**: Cuadrícula de 12 clases ONU con rombos SGA y celdas semáforo de alto contraste.
+  3. **Inspector HUD Interactivo en Tiempo Real (#matrix-visual-inspector)**:
+     - Consola superior que al pasar el cursor o tocar cualquier casilla muestra las dos sustancias enfrentadas ([Sustancia A] ⚡ VS ⚡ [Sustancia B]), el badge luminoso con el veredicto oficial (🟢 COMPATIBLE, 🟡 PRECAUCIÓN, 🔴 INCOMPATIBLE CRÍTICO, ⚫ EXCLUSIVO) y el párrafo de justificación técnica y consecuencias químicas.
+  4. **Retícula Activa (Crosshair Highlighting)**:
+     - Al interactuar con una celda, la fila y la columna correspondiente se iluminan simultáneamente con resplandor dorado institucional, facilitando la lectura sin perder el cruce.
+  5. **Reconstrucción de Paquetes SCORM 1.2**:
+     - uild_scorm.py ejecutado exitosamente generando paquetes actualizados para Moodle LMS.
+
+## Corrección de Bloqueo de Inicio y Sincronización de Temporizador - Juego 3 (juego3_trasiego.html)
+- **Diagnóstico del Fallo ('El 3 tampoco pasa del principio')**:
+  - En `juego3_trasiego.html`, al hacer clic en el botón de inicio `#btn-start-briefing` (*"INICIAR PROCEDIMIENTO DE TRASIEGO"*), la consola arrojaba la excepción no controlada:
+    `Uncaught TypeError: this.audio.playTap is not a function`.
+  - En la clase `ProceduralAudioEngine`, el método `playTap()` no estaba definido, interrumpiendo la ejecución antes de invocar `briefingOverlay.classList.add('hidden')`, lo que provocaba que el modal de briefing permaneciera fijo en pantalla bloqueando toda interacción.
+  - Además, el temporizador (`this.startTimer()`) se iniciaba de forma prematura en el `constructor` a través de `startTutorialPhase()`, consumiendo los 70 segundos antes de que el usuario cerrara el modal.
+- **Solución Quirúrgica**:
+  1. Se implementó el método `playTap()` en `ProceduralAudioEngine` generando un tono sinusoidal sutil (`this.playTone(600, 'sine', 0.05, 0.08)`).
+  2. Se protegió la invocación de audio con bloque defensivo `try/catch` en `bindEvents()` y se sincronizó el arranque del juego: al pulsar `#btn-start-briefing` se oculta `#modal-briefing-overlay`, se asigna `this.isGameActive = true`, se dispara `this.startTimer()` y se actualiza `this.updateRoadmapStepVisuals()`.
+  3. Se calibró `startTutorialPhase()` para que, si el modal de briefing se encuentra activo, mantenga el cronómetro congelado en `01:10` y el juego en espera (`isGameActive = false`), iniciando el conteo regresivo únicamente cuando el usuario presiona iniciar.
+  4. Se reconstruyeron todos los paquetes SCORM 1.2 mediante `python build_scorm.py`.
+
+## Corrección de Padding y Holgura Visual en Tarjeta Inspector - Juego 2 (juego2_bodega.html)
+- **Diagnóstico del Fallo ('Arregla esta tarjeta / subirle el padding')**:
+  - En la tarjeta del Inspector de Compatibilidad (`.matrix-inspector-panel`), el padding y la altura de línea de la cabecera (`.inspector-top-bar`) eran demasiado ajustados, provocando que los caracteres tipográficos quedaran cortados y comprimidos verticalmente.
+  - Además, la presencia de `overflow: hidden` sin `flex-shrink: 0` permitía que el contenedor flexible redujera el espacio vertical útil de la tarjeta.
+- **Solución Quirúrgica**:
+  1. Se aumentó el padding general de `.matrix-inspector-panel` a `16px 20px`, con `gap: 12px`, `flex-shrink: 0;` y `min-height: fit-content;`.
+  2. En `.inspector-top-bar`, se calibró `line-height: 1.6;` y se añadió padding vertical `4px 0 6px 0` para garantizar lectura completa sin corte de fuentes.
+  3. En `.inspector-hint-badge`, se incrementó el padding a `4px 10px` con `line-height: 1.3;`.
+  4. Se reconstruyeron los paquetes SCORM 1.2 vía `python build_scorm.py`.
+
+## Estabilización de Toast Técnico Flotante - Juego 3 (juego3_trasiego.html)
+- **Diagnóstico del Fallo ('Al igual que en el dos, en el 3, la aparición brusca hace que la tarjeta baje/crezca de golpe')**:
+  - Al validar un paso o cometer un error, `#tech-feedback-toast` se insertaba en el flujo estático del DOM entre el avatar de Bolívar Safety Bot y la escena SVG del vehículo.
+  - Al ganar o perder contenido y visibilidad, alteraba la altura de la cabecera empujando bruscamente hacia abajo el escenario de trasiego y la bandeja de tarjetas.
+- **Solución Quirúrgica**:
+  1. Se convirtió `.tech-feedback-toast` en un elemento flotante desacoplado del layout (`position: absolute; top: 68px; left: 16px; right: 16px; z-index: 50; max-width: 800px; margin: 0 auto;`).
+  2. Se configuró `pointer-events: none;` mientras está inactivo y `pointer-events: auto;` al activarse con `.show`.
+  3. Se calibró la regla para móviles (`top: 60px; left: 8px; right: 8px;`).
+  4. La escena técnica SVG y el mazo de tarjetas permanecen 100% estables sin desplazamiento ni salto de layout.
+  5. Se actualizaron los paquetes SCORM 1.2 mediante `python build_scorm.py`.
+
+## Ilustración SVG Dinámica y Coordenadas Adaptativas por Vehículo - Juego 3 (juego3_trasiego.html)
+- **Diagnóstico de Necesidad**:
+  - El Juego 3 definía lógicamente 4 frentes de obra distintos (Excavadora CAT 320D, Volqueta Kenworth T800, Bulldozer CAT D6T y Generador 250kVA), pero el gráfico receptor SVG `#machinery-truck` estaba estático y hardcodeado únicamente para la excavadora.
+  - Los 6 hotspots de inspección, manguera de trasiego, cable de polo a tierra, pinza y bandeja de goteo tenían posiciones fijas, sin alineación anatómica con las características de cada máquina.
+- **Solución Implementada (Opción 1)**:
+  1. **Tabla de Coordenadas Anatómicas `VEHICLE_CONFIGS`**: Se configuraron coordenadas específicas tanto para Desktop como para Mobile para cada uno de los 4 vehículos, definiendo:
+     - Posición del grupo de maquinaria (`machineTransform`).
+     - Trazado de manguera de combustible (`hose`) conectando la cisterna a la boca del tanque receptor.
+     - Trazado y punto final del cable de polo a tierra (`groundCable` y `clamp`) hacia la masa metálica certificada.
+     - Posición de bandeja de goteo (`dripTray`), extintor satélite (`extinguisher`), cuñas (`wheelChocks`) y kit de derrames (`spillKit`).
+     - Posiciones de los 6 hotspots (`hotspots[1..6]`).
+  2. **Generadores SVG Dinámicos**: Se crearon métodos modulares en `FieldInspectorGame`:
+     - `getExcavatorSvg()`: Orugas de acero, cuerpo amarillo CAT, pluma hidráulica, cabina con operador Lucho y escape.
+     - `getDumpTruckSvg()`: Volqueta trompuda Kenworth con doble troque trasero, tolva inclinada, escape cromado vertical con silenciador, tanque diésel lateral de aluminio con boca de llenado.
+     - `getBulldozerSvg()`: Bulldozer CAT con tren de rodaje triangular High-Drive, pala topadora delantera pesada, cabina ROPS con jaula blindada, boca de llenado posterior.
+     - `getGeneratorSvg()`: Skid de vigas I con argollas de izaje, cabina acústica insonorizada con lamas de ventilación, panel de control digital (tacómetros y botón parada de emergencia STOP), silenciador en techo y boca lateral.
+  3. **Sincronización Reactiva**: En `updateVehicleDisplay()` se invoca `this.renderVehicleGraphic(this.currentVehicleIndex)` y `this.applySvgResponsiveLayout()`, reenganchando las referencias a elementos animados (`#svg-motor-safe-sign`, `#exhaust-smoke`, `#lucho-cabin-avatar`).
+  4. **Adaptación de Etiquetas**: En `resetHotspotsAndCards()`, la etiqueta del Punto 1 conmuta automáticamente entre `"MOTOR / PANEL"` para el Generador y `"MOTOR / CELULAR"` para los vehículos móviles.
+  5. **Verificación y SCORM**: Comprobación de integridad sintáctica sin errores y reconstrucción exitosa de paquetes SCORM 1.2 vía `python build_scorm.py`.

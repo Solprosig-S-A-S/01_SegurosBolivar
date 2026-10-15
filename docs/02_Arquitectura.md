@@ -128,6 +128,21 @@ Generación procedural de efectos sonoros sin archivos `.mp3` ni `.wav`:
 - **Motor de Audio Procedimental Sintético (Web Audio API)**:
   - Generación en tiempo real de sirenas de emergencia moduladas, silbido de vapor químico, clank mecánico de válvula, flujo turbulento de agua en lavaojos, respiración rítmica del filtro de máscara y tonos de confirmación.
 
+### 2.8. Arquitectura de Integración LMS Moodle y SCORM Universal (`BolivarLmsBridge`)
+> 📄 **Especificación Detallada de Integración**: [`docs/GUIA_INTEGRACION_MOODLE.md`](GUIA_INTEGRACION_MOODLE.md)
+- **Capa de Abstracción Universal (`BolivarLmsBridge`)**:
+  - Embebida directamente en cada uno de los 5 juegos, garantizando cero dependencias externas y ejecución dual (Moodle LMS vs Web Standalone).
+  - Detección recursiva del API SCORM de Moodle (`window.API` / `window.parent.API` / `window.top.API` / `opener`) con soporte para SCORM 1.2 y SCORM 2004.
+  - Almacena automáticamente en el Libro de Calificaciones de Moodle:
+    - `cmi.core.score.raw`: Puntaje de 0 a 100 puntos.
+    - `cmi.core.lesson_status`: `passed` si $\ge 80\%$, `failed` si $< 80\%$.
+    - `cmi.core.exit`: Cierre de sesión limpio en eventos `beforeunload`.
+  - Capa de comunicación secundaria vía **HTML5 `postMessage`** (`MOODLE_GAME_REPORT`) para cuando los juegos se embeben en etiquetas o páginas mediante `<iframe>`.
+- **Botón de Pantalla Completa Moodle (`btn-moodle-fullscreen`)**:
+  - Control de pantalla completa con la API `requestFullscreen()` de HTML5, permitiendo al operario expandir el juego y anular los márgenes y bloques laterales de Moodle.
+- **Pipeline de Empaquetado Automatizado (`build_scorm.py`)**:
+  - Generador Python que produce paquetes `.zip` estándar con manifiesto `imsmanifest.xml` canónico e `index.html` en la carpeta `scorm_packages/`.
+
 ---
 
 ## 3. Índice de Documentación Exclusiva por Juego

@@ -39,17 +39,28 @@ El **Juego 4** es un simulador isométrico 2.5D de alta fidelidad que entrena al
 
 ```mermaid
 flowchart TD
-    subgraph Zona 1: El Vestidor
+    Z[Apertura: Briefing Situacional de Obra] -->|Botón Iniciar Despliegue| Zona1
+    subgraph Zona1 [Zona 1: El Vestidor]
         A[Casillero EPP] -->|Seleccionar 4 EPP Técnicos Correctos| B[Checkpoint Biométrico]
         B -->|Escaneo Láser Aprobado| C[Transición Cinematográfica con Apertura de Compuertas]
     end
-    subgraph Zona 2: Patio de Taller
+    subgraph Zona2 [Zona 2: Patio de Taller]
         C --> D[Paso 1: Mesa de Desengrase de Piezas]
         D --> E[Paso 2: Motor V8 con Bandeja Antiderrame]
         E --> F[Paso 3: Segregación Técnica RESPEL en Estiba]
         F --> G[Auditoría Final SST y Certificado de Taller Seguro]
     end
 ```
+
+### Pantalla Previa de Contexto Situacional (Briefing Táctico Datapad)
+- **Overlay Previo (`#modal-briefing-overlay`)**: Pantalla previa estilo Datapad de Star Wars simplificada y limpia. El cronómetro de 90s se mantiene congelado hasta pulsar el botón de despliegue.
+- **Situación Operativa**: *"Vas a intervenir el motor de una volqueta y desengrasar piezas con solventes. Manejarás hidrocarburos y sustancias químicas peligrosas. Debes equiparte correctamente y ejecutar el mantenimiento sin causar derrames ni contaminación."*
+- **Directiva Operativa en 3 Pasos**:
+  1. *Vestidor y Checkpoint*: Equípate con los 4 EPP reglamentarios y supera el escaneo.
+  2. *Desengrase y Motor*: Usa bandeja de contención obligatoria para evitar delito ambiental.
+  3. *Segregación RESPEL*: Deposita filtros, trapos y aceite en su caneca correspondiente.
+- **Instrucciones Directas de Control**: `PC: Clic en baldosa para caminar / Clic en objeto` / `Móvil: Tocar suelo para mover / Tocar objeto`.
+- **Botón de Despliegue (`btn-start-briefing`)**: Inicia el temporizador de 90 segundos y el escenario de vestidor.
 
 ### 3.1. Zona 1: El Vestidor de Bioseguridad
 - **Casillero de Dotación EPP (Margen de Error Pedagógico)**:
@@ -77,13 +88,22 @@ Guiado por una barra superior de ruta (`workshop-roadmap-guide`) y balizas 3D fl
    - Opciones barajadas con idéntico tratamiento cromático neutro previo a la elección.
    - **Infracción Ambiental Severa**: Intentar drenar o cambiar filtro sin bandeja dispara *¡DELITO AMBIENTAL!*, penaliza con **-20 segundos** al cronómetro, descuenta **-150 puntos**, rompe racha y activa la animación de derrame de hidrocarburos en la base colectora (`.engine-spill-active`).
    - Acierto posiciona la bandeja, extrae el filtro, drena el fluido en contención y suma +85 pts con racha.
-3. **Paso 3: Estación de Segregación RESPEL en Estiba Continua**:
-   - Modal interactivo con **CSS Grid 3x1** para clasificar 3 residuos contaminados en sus recipientes normativos:
-     - *Caneca 1 (Filtros)*: Filtros metálicos de aceite usados.
-     - *Caneca 2 (Trapos)*: Trapos y waypes impregnados con solvente/grasa (residuo inflamable).
-     - *Tambor Colector (Aceite sobre Estiba)*: Aceite lubricante usado (Dec. 4741/2005).
-   - **Neutralidad Cromática en Iconografía**: Los iconos de los residuos en bandeja utilizan un tono neutro uniforme (`#94a3b8`) sin tintes amarillos ni rojos previos, impidiendo que el jugador empareje residuos por colorimetría obvia con las canecas roja y amarilla.
-   - Error en segregación penaliza con **-4s** y **-40 pts**. Acierto suma +50 pts.
+3. **Paso 3: Estación de Segregación RESPEL Estocástica de Alta Dificultad (Dec. 4741/2005 & Ley 430/1998)**:
+   - **Mecánica Aleatoria Dinámica (Fisher-Yates)**: Erradica la memorización mecánica de patrones fijos. En cada partida se extraen al azar **4 residuos de obra** de un catálogo técnico de 8 elementos, y se despliegan **5 contenedores homologados** en orden aleatorio (incluyendo distractores no utilizados).
+   - **Catálogo Técnico de Residuos de Obra (`RESPEL_CATALOG`)**:
+     1. *Filtro de Aceite Metálico*: Contiene hidrocarburo atrapado; requiere caneca roja con bolsa roja y rótulo RESPEL.
+     2. *Waype / Trapo con Grasa y Solvente*: Sólido impregnado inflamable; requiere caneca roja de sólidos contaminados (Res. 773/2021).
+     3. *Aceite de Motor Usado*: Residuo líquido de hidrocarburo; requiere tambor amarillo con rótulo sobre estiba antiderrame de polietileno (Dec. 4741/2005).
+     4. *Batería Plomo-Ácido*: Contiene ácido sulfúrico (Clase 8) y plomo tóxico (Clase 6.1); requiere contenedor plástico PE rotulado anticorrosivo (Ley 430/1998).
+     5. *Lata de Aerosol Desengrasante*: Recipiente a presión con propelente inflamable; requiere caneca roja para aerosoles con válvula protegida.
+     6. *Refrigerante / Anticongelante (Etilenglicol)*: Tóxico para organismos acuáticos y suelo; requiere bidón azul hermético de líquidos técnicos.
+     7. *Caja de Cartón Limpia (Trampa No Peligrosa)*: Embalaje seco no contaminado; debe ir al punto ecológico blanco/gris de reciclaje (Dec. 1077/2015). Arrojarlo a RESPEL satura innecesariamente la celda de seguridad y acarrea sanción.
+     8. *Garrafa Plástica de Solvente Vacía*: Envase químico no desgasificado; requiere caneca roja para plásticos contaminados.
+   - **Catálogo de Contenedores Homologados (`RESPEL_BINS_CATALOG`)**: Canecas rojas especializadas, tambor amarillo sobre estiba, contenedor PE para baterías, bidón azul de refrigerante y estación de reciclaje ordinario.
+   - **Penalización Rigurosa e Infracción Ambiental**:
+     - Cada segregación errónea penaliza con **-5 segundos** al cronómetro, descuenta **-40 puntos**, quiebra la racha a 0 y activa sacudida de pantalla (*screen shake*) con citación de la norma ambiental infringida.
+     - Acierto otorga **+60 puntos**, racha progresiva y retroalimentación técnica en pantalla.
+   - **Diseño Ergonómico y Anti-Deformación**: Grilla CSS Grid auto-adaptativa (`.respel-grid-dynamic-source` y `.respel-grid-dynamic-dest`), badges de estado confinado y dimensiones estables sin saltos de layout.
 
 ---
 
@@ -98,7 +118,15 @@ El motor permite rotar el escenario en los 4 rumbos cardinales (`0°`, `90°`, `
   ```
 - Al rotar la escena, cada objeto y el operador giran en contrasentido sobre su eje base (`transform-origin: 50% 100%`), garantizando que siempre miren de frente a la cámara sin sufrir deformaciones trapezoidales ni aplastamiento visual.
 
-### 4.2. Algoritmo Tap-to-Move sin Puntos Muertos
+### 4.2. Algoritmo Tap-to-Move y Detección Omnidireccional de Objetos (Hit-Target Expandido)
+1. **Hitbox Invisible Ampliada (`::before` en `.iso-prop`)**:
+   - Cada prop interactivo (`prop-locker`, `prop-security-door`, `prop-workbench`, `prop-engine`, `prop-respel-station`, `wall-eyewash`, `wall-extinguisher`) cuenta con un pseudo-elemento `::before` expandido en 18px en todas las direcciones (`inset: -18px; z-index: 30;`). Erradica la necesidad de presionar en píxeles hiper-específicos y absorbe toques imprecisos de dedos en móviles y clics rápidos de ratón.
+2. **Demarcaciones de Seguridad SST Interactivas en el Piso (`.floor-safety-zone`)**:
+   - Las demarcaciones perimetrales en el suelo (`.zone-mark-lockers`, `.zone-mark-checkpoint`, `.zone-mark-workbench`, `.zone-mark-engine`, `.zone-mark-respel`) son 100% interactivas (`pointer-events: all`). Al tocar la base o el área de suelo delimitada de cualquier estación, el juego activa automáticamente la acción de dicho equipo.
+3. **Interceptor Inteligente de Baldosas Ocupadas en `handleFloorClick`**:
+   - Si el impacto de un clic cae sobre una baldosa física ocupada por un mueble o maquinaria (ej. fila 0, col 0-1 para casilleros; fila 0, col 3-4 para motor o puerta; fila 3, col 1-3 para RESPEL), el sistema reconoce la intención operacional y traslada al avatar hacia la estación ejecutando la tarea correspondiente, en lugar de intentar pararse dentro de la maquinaria.
+4. **Respaldo en Contenedores y Sub-elementos**:
+   - Listeners directos sobre las canecas individuales de la estación RESPEL (`bin-filters`, `bin-solids`, `bin-oil`), los casilleros y las balizas flotantes 3D.
 1. **Anclaje Z=0 del Avatar**:
    - Se configuró `margin-left: -28px; margin-top: -96px;` en el sprite de 56x96px. La posición GSAP de los pies coincide con precisión milimétrica ($\Delta = 0$) con el centro exacto de la baldosa pulsada en cualquier ángulo de rotación.
 2. **Erradicación de Puntos Muertos entre Baldosas**:

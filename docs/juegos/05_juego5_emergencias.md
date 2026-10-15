@@ -104,7 +104,22 @@ Mientras controla la emergencia, el brigadista puede explorar el entorno e inter
 
 ---
 
+---
+
 ## 6. HUD de la Visera y Reglas de Crisis
+
+### 6.1. Cuadro Previo de Contexto Táctico (Briefing de Misión SST - Estilo Star Wars Simplificado)
+Para evitar saturación visual y sobrecarga cognitiva, el simulador incorpora una pantalla previa de misión limpia, sobria y de lectura rápida (KISS):
+- **Silueta Biselada Espacial**: Contenedor compacto (`max-width: 520px`) con corte angular a 45° (`clip-path: polygon(...)`), fondo obsidiana (`#060A14`) y acento amarillo Star Wars / Bolívar.
+- **Jerarquía Tipográfica Homogénea**: Fuente monoespaciada `JetBrains Mono` con escala uniforme (0.85rem / 14px en cuerpo) erradicando la disparidad de tamaños y formatos.
+- **5 Pasos Operativos Claros y Concisos**:
+  1. *Caseta EPP*: Equípate con guantes y máscara.
+  2. *Válvula*: Ciérrala para frenar la fuga.
+  3. *Lavaojos*: Atiende al compañero afectado.
+  4. *Derrame*: Contén el charco con cordón y paños.
+  5. *RESPEL*: Desecha los paños en la caneca roja.
+- **Controles en Línea Única**: `WASD: Caminar • Ratón: Mirar • [E] / Clic: Interactuar`.
+- **Botón Directo de Inicio**: `[ INICIAR MISIÓN (120s) ]`. La física de marcha y el reloj de crisis permanecen pausados hasta pulsar este botón.
 
 - **Detector PID de Gases en Vivo (PPM)**: Calcula la concentración de vapores orgánicos según la distancia real al charco y estado de la válvula. Si supera los 90 PPM emite alerta roja estroboscópica.
 - **Reloj de Crisis (120 Segundos)**: Cuenta regresiva digital de alta tensión.

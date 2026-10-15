@@ -120,3 +120,18 @@ Desarrollo de una suite interactiva de micro-juegos de simulación técnica y ar
 - **Cero dependencias externas**: Eliminación de Tailwind CDN; diseño 100% nativo con variables CSS (`:root`).
 - **Accesibilidad visual y ergonomía**: Escala tipográfica ergonómica (13px a 30px) y contraste superior a 4.5:1 para visualización óptima en dispositivos móviles, tablets de campo y kioscos de capacitación.
 - **Audio procedimental**: Efectos de sonido generados en tiempo real mediante la Web Audio API nativa sin requerir archivos de audio externos.
+
+## 5. Requerimientos de Plataforma LMS (Moodle) y Despliegue SCORM
+> 📄 **Guía de Despliegue en Plataforma**: [`docs/GUIA_INTEGRACION_MOODLE.md`](GUIA_INTEGRACION_MOODLE.md)
+- **Compatibilidad Universal con Moodle LMS (3.9+ a 4.4+)**:
+  - Toda la suite debe operar tanto de forma autocontenida web como integrada nativamente dentro de Moodle.
+- **Protocolo de Calificación SCORM 1.2 / 2004**:
+  - Detección automática del API SCORM de Moodle (`window.API` / `parent.API`).
+  - Envío automático de la calificación numérica final (0% a 100%) a `cmi.core.score.raw` y estado de aprobación a `cmi.core.lesson_status` (`passed` para $\ge 80\%$, `failed` para $< 80\%$).
+- **Soporte de iFrame con HTML5 postMessage**:
+  - Emisión de eventos `MOODLE_GAME_REPORT` hacia la ventana padre para incrustación dentro de páginas y etiquetas de Moodle.
+- **Empaquetado Automatizado**:
+  - Disponibilidad de paquetes ZIP canónicos (`imsmanifest.xml` e `index.html`) en la carpeta `scorm_packages/` listos para ser subidos como actividades SCORM.
+- **Control de Pantalla Completa (Fullscreen)**:
+  - Botón accesible en cabina (`btn-moodle-fullscreen`) para expandir el juego al 100% de la pantalla del operario, anulando márgenes o marcos reducidos de Moodle.
+

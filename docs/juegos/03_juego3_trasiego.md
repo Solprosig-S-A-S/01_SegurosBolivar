@@ -76,22 +76,39 @@ El juego incluye tarjetas trampa contextuales por cada vehículo que ponen a pru
 ## 4. Experiencia de Usuario, HUD y Controles
 
 ```mermaid
-flowchart LR
-    A[Mazo de Tarjetas: Zona B] -->|Drag & Drop o Tap-to-Place| B[Hotspots de Inspección: Zona A]
+flowchart TD
+    Z[Apertura: Briefing Situacional de Obra] -->|Botón Iniciar Inspección| A[Mazo de Tarjetas: Zona B]
+    A -->|Drag & Drop o Tap-to-Place| B[Hotspots de Inspección: Zona A]
     B --> C{Evaluación Técnica}
     C -->|Medida Correcta| D[Hotspot Resuelto: Glow Verde + Feedback Normativo]
-    C -->|Tarjeta Trampa| E[Sacudida de Pantalla + Alarma Roja + Explicación del Error]
+    C -->|Tarjeta Trampa / Fuera de Orden| E[Sacudida + Alarma + Penalización -4s / -10s]
 ```
 
-### Controles Ergonómicos y Complejidad Procedimental (SOP / ATS)
+### Pantalla Previa de Contexto Situacional (Briefing Táctico Datapad)
+- **Overlay Previo (`#modal-briefing-overlay`)**: Pantalla previa estilo Datapad de Star Wars simplificada y limpia.
+- **Situación Operativa**: *"Un camión cisterna está abasteciendo combustible a la maquinaria pesada en frente de obra. Existe alto riesgo de incendio por electricidad estática y derrame de hidrocarburos. Debes ejecutar el procedimiento de trasiego paso a paso conforme a la ley."*
+- **Directiva Operativa en 3 Pasos**:
+  1. *Inmovilización y Motor*: Bloquea llantas con cuñas y apaga el motor del vehículo.
+  2. *Polo a Tierra*: Conecta la pinza antiestática al chasis (<10 Ω).
+  3. *Contención y Extintor*: Ubica la bandeja de goteo y el extintor ABC a 5 metros.
+- **Instrucciones Directas de Control**: `PC: Arrastrar tarjeta o clic en tarjeta y punto` / `Móvil: Tocar tarjeta y tocar punto`.
+- **Botón de Despliegue (`btn-start-briefing`)**: Inicia la inspección y activa la telemetría.
+
+### Controles Ergonómicos y Procedimiento Paso a Paso (SOP / ATS Canónico)
 1. **Drag & Drop con Pointer Events**: Arrastre fluido de la tarjeta de seguridad hasta el hotspot visual en la máquina.
-2. **Tap-to-Place para Pantallas Táctiles**: Toque en la tarjeta de acción (se eleva con halo dorado) seguido de toque en el hotspot parpadeante en rojo.
-3. **Secuencia Operacional ATS Obligatoria (Decreto 1079 de 2015)**:
-   - *Paso 1 Obligatorio (Inmovilización Mecánica)*: Las **Cuñas en Llantas (Punto 5)** deben ser colocadas antes de cualquier otra intervención. Cualquier intento de intervenir acoples o sistemas eléctricos sin acuñar dispara una **Violación Crítica de Secuencia ATS** (-4s / -30 pts).
-   - *Paso 2 Obligatorio (Desconexión de Ignición y Puesta a Tierra)*: El **Motor/Celular (Punto 1)** y el **Polo a Tierra (Punto 2)** deben resolverse antes de preparar bandejas de derrame o manipular acoples de combustible, previniendo ignición por arco estático (-4s / -30 pts).
-   - *Paso 3 (Mitigación Ambiental y Extintores)*: Instalación de bandeja de goteo, extintor a barlovento y kit de derrames.
+2. **Tap-to-Place para Pantallas Táctiles**: Toque en la tarjeta de acción (se eleva con halo dorado) seguido de toque en el hotspot parpadeante en la máquina.
+3. **Barra de Guía Secuencial de Ruta (`.trasiego-roadmap-guide`)**:
+   - Barra horizontal superior con las 6 etapas del procedimiento oficial de trasiego (Decreto 1079 de 2015, NFPA 77 y Dec. 4741/2005):
+     1. **Paso 1: Cuñas en Llantas** (Inmovilización mecánica obligatoria).
+     2. **Paso 2: Motor / Cabina** (Apagado de motor y bloqueo de celulares).
+     3. **Paso 3: Polo a Tierra** (Conexión equipotencial < 10 $\Omega$ al chasis).
+     4. **Paso 4: Bandeja de Goteo** (Contención secundaria al 110% bajo el acople).
+     5. **Paso 5: Kit de Derrames** (Alistamiento de material absorbente in situ).
+     6. **Paso 6: Extintor ABC 150 lbs** (Protección perimetral a 5 metros contra el viento).
+   - El paso activo parpadea en halo dorado (`.step-active`), los pasos superados se marcan en verde con checkmark (`✓ Hecho`), y los pasos futuros permanecen bloqueados (`🔒 Paso X`).
+   - El hotspot en el SVG correspondiente al paso activo pulsa intensamente con su número y etiqueta (`PASO X: [NOMBRE]`), mientras los demás muestran advertencia de espera (`🔒 ESPERA PASO X`).
 4. **Penalización Directa y Cero Pistas Gratuitas**:
-   - Cada intento erróneo penaliza inmediatamente **-3 segundos y -30 puntos**, rompiendo la racha combo para exigir rigor al jugador.
+   - Cada intento fuera de orden penaliza inmediatamente **-4 segundos y -25 puntos**, sacudiendo la pantalla y señalando con animación el punto activo requerido.
    - El uso de tarjetas trampa descuenta **-10 segundos y -100 puntos**.
 5. **Telemetría en Vivo y Dinamismo (HUD)**:
    - Medidor de racha técnica con multiplicador de puntaje (`x1`, `x2`, `x3`).
@@ -117,4 +134,35 @@ flowchart LR
    - Al completar los 4 hotspots del vehículo 1, la escena SVG debe ejecutar una transición suave mediante GSAP hacia el vehículo 2, actualizando condiciones ambientales y barajando el mazo de tarjetas.
 3. **Prueba de Certificación Final**:
    - Al superar los 4 frentes de obra, se emite el certificado oficial de "Inspector Técnico de Trasiego Seguro" conforme al Dec. 1079/2015.
+
+
+---
+
+## 7. Control de Inicialización y Modal de Briefing Situacional
+
+- **Flujo de Inicio Controlado**: Al cargar la página, se despliega el modal de contexto en obra (`#modal-briefing-overlay`). El temporizador permanece en espera (`01:10`) y el juego inactivo (`isGameActive = false`) para evitar consumir tiempo mientras el operador asimila la misión.
+- **Transición y Audio Seguro**: Al pulsar `#btn-start-briefing`, se ejecuta `ProceduralAudioEngine.playTap()`, se oculta el modal (`.hidden`), se activa la partida y se dispara el cronómetro (`this.startTimer()`), sincronizando la ruta de pasos y controles.
+
+- **Estabilización Flotante de Notificaciones**: El panel `#tech-feedback-toast` se configuró con `position: absolute; top: 68px; z-index: 50;`, garantizando que al mostrarse o desaparecer el feedback técnico normativo no altere las coordenadas ni empuje verticalmente la escena vectorial del camión cisterna ni el mazo de tarjetas.
+
+---
+
+## 8. Ilustración SVG Dinámica y Coordenadas Adaptativas por Vehículo
+
+El escenario de trasiego cuenta con renderizado vectorial dinámico para cada uno de los 4 frentes de obra:
+
+1. **Catálogo de Gráficos SVG Anatómicos (`#machinery-truck`)**:
+   - **Excavadora CAT 320D (`getExcavatorSvg()`)**: Tren de orugas de acero con 5 rodillos, pluma hidráulica segmentada, cuerpo y contrapeso amarillo CAT, cabina con operador Lucho y boquilla de diésel izquierda.
+   - **Volqueta Kenworth T800 (`getDumpTruckSvg()`)**: Cabina trompuda americana Kenworth con visera, escape vertical cromado alto con silenciador, tolva de volteo inclinada reforzada, doble troque trasero y tanque de diésel lateral de aluminio con boca de llenado.
+   - **Bulldozer CAT D6T (`getBulldozerSvg()`)**: Tren de rodaje triangular distintivo *High-Drive* Caterpillar con rueda motriz elevada, pala topadora delantera (*blade* pesado) con pistones hidráulicos, cabina ROPS blindada con jaula estructural y boca de combustible trasera.
+   - **Generador Industrial 250kVA (`getGeneratorSvg()`)**: Skid de acero estructural con cáncamos de izaje, cabina acústica insonorizada modular con lamas de ventilación, panel de control digital PowerWizard con tacómetros y botón de parada de emergencia (*STOP* tipo hongo), silenciador en techo y boca lateral.
+
+2. **Matriz de Coordenadas Adaptativas (`VEHICLE_CONFIGS`)**:
+   - Cada vehículo define de forma paramétrica sus puntos clave en **Desktop** y **Móvil**:
+     - Posición del grupo receptor (`machineTransform`).
+     - Trayectoria Bézier de la manguera de trasiego (`hose`) desde la cisterna nodriza hasta el tanque receptor.
+     - Trayectoria y pinza de masa del cable equipotencial de polo a tierra (`groundCable` y `clamp`) hacia el chasis metálico.
+     - Ubicación de la bandeja colectora antiderrame (`dripTray`), extintor satélite (`extinguisher`), cuñas de inmovilización (`wheelChocks`) y kit de derrames (`spillKit`).
+     - Posición adaptativa exacta de los 6 hotspots de inspección (`hotspots[1..6]`).
+   - Al avanzar de vehículo o redimensionar la pantalla, `applySvgResponsiveLayout()` sincroniza la geometría en tiempo real garantizando cero colisiones y ergonomía táctil en cualquier resolución.
 

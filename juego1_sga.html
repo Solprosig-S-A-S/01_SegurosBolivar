@@ -72,6 +72,17 @@
             padding: 0;
         }
 
+        html, body {
+            overflow: hidden !important;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        ::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
         body {
             font-family: var(--font-sans);
             background-color: var(--bg-body);
@@ -885,24 +896,40 @@
             100% { transform: scale(1.05); opacity: 1; }
         }
 
+        .custom-scroll {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
         .custom-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #008244;
-            border-radius: 4px;
+            display: none;
+            width: 0;
+            height: 0;
         }
 
         .draggable-card {
             cursor: grab;
-            touch-action: none;
+            touch-action: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-user-drag: none !important;
             will-change: transform;
         }
         .draggable-card:active {
             cursor: grabbing;
+        }
+        .draggable-card * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-user-drag: none !important;
+            touch-action: none !important;
+        }
+        .draggable-card > *:not(button) {
+            pointer-events: none;
+        }
+        .draggable-card button {
+            pointer-events: auto !important;
+            touch-action: auto !important;
+            cursor: pointer;
         }
         .is-dragging {
             opacity: 0.92;
@@ -919,7 +946,7 @@
         }
         .drop-target-active {
             border-style: dashed !important;
-            border-color: rgba(16, 185, 129, 0.7) !important;
+            border-color: rgba(255, 199, 44, 0.45) !important;
         }
 
         @keyframes popComic {
@@ -969,6 +996,143 @@
         .flash-alert {
             animation: flashRedAlert 0.35s ease-in-out;
         }
+
+        /* Situational Mission Briefing (Star Wars Datapad clean style) */
+        .briefing-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 8, 16, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .briefing-backdrop.hidden {
+            display: none !important;
+        }
+        .briefing-dialog {
+            background: #0b1220;
+            border: 1px solid rgba(255, 199, 44, 0.4);
+            border-left: 4px solid var(--bolivar-yellow);
+            border-radius: 4px;
+            max-width: 520px;
+            width: 100%;
+            padding: 22px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 199, 44, 0.15);
+            animation: briefingPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes briefingPop {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .briefing-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .briefing-tag {
+            font-size: 0.68rem;
+            color: var(--bolivar-yellow);
+            font-family: var(--font-mono);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+        .briefing-title {
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.02em;
+        }
+        .briefing-subtitle {
+            font-size: 0.82rem;
+            color: #cbd5e1;
+            line-height: 1.45;
+            margin: 0;
+        }
+        .briefing-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 4px;
+            padding: 10px 12px;
+        }
+        .briefing-step-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            line-height: 1.35;
+        }
+        .briefing-step-row strong {
+            color: #ffffff;
+        }
+        .briefing-step-num {
+            min-width: 22px;
+            height: 22px;
+            background: rgba(255, 199, 44, 0.15);
+            border: 1px solid var(--bolivar-yellow);
+            color: var(--bolivar-yellow);
+            font-size: 0.72rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        .briefing-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.74rem;
+            color: #94a3b8;
+            padding: 7px 10px;
+            background: rgba(8, 14, 26, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 4px;
+            flex-wrap: wrap;
+        }
+        .briefing-controls strong {
+            color: var(--bolivar-yellow);
+        }
+        .btn-start-briefing {
+            background: linear-gradient(135deg, #FFC72C 0%, #F59E0B 100%);
+            border: 1px solid #FFE81F;
+            color: #070b14;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 199, 44, 0.35);
+            transition: all 0.2s ease;
+        }
+        .btn-start-briefing:hover {
+            background: linear-gradient(135deg, #FFE81F 0%, #FFC72C 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 0 28px rgba(255, 232, 31, 0.6);
+        }
     </style>
 </head>
 <body>
@@ -991,12 +1155,15 @@
                 </div>
             </div>
 
-            <!-- Header Controls: Sound & Timer/Badge -->
+            <!-- Header Controls: Sound & Timer/Badge & Moodle Fullscreen -->
             <div class="header-controls">
                 <div id="ui-timer-pill" class="timer-pill hidden">
                     <i class="fa-regular fa-clock"></i>
                     <span id="exam-timer-display">02:00</span>
                 </div>
+                <button id="btn-moodle-fullscreen" class="btn-icon" title="Pantalla Completa (Moodle)">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
                 <button id="btn-sound-toggle" class="btn-icon" title="Activar/Silenciar Sonido">
                     <i id="sound-icon" class="fa-solid fa-volume-high"></i>
                 </button>
@@ -1009,7 +1176,7 @@
             <!-- ============================================================== -->
             <!-- FASE 1: ONBOARDING & TUTORIAL GUIADO -->
             <!-- ============================================================== -->
-            <section id="phase-tutorial" class="flex-1 flex flex-col justify-between overflow-y-auto custom-scroll" style="padding: 16px;">
+            <section id="phase-tutorial" class="flex-1 flex flex-col justify-between overflow-hidden" style="padding: 16px;">
                 <!-- Bot Intro Bubble -->
                 <div class="bot-bubble-card">
                     <div class="bot-avatar">🤖</div>
@@ -1246,22 +1413,27 @@
         </div>
 
         <!-- ============================================================== -->
-        <!-- MODAL 2: FEEDBACK NORMATIVO DE ERROR (Res. 773 / Dec. 1496) -->
+        <!-- MODAL 2: FEEDBACK PEDAGÓGICO DE ERROR: HORA DE APRENDER -->
         <!-- ============================================================== -->
-        <div id="modal-error-feedback" class="modal-backdrop hidden">
-            <div class="modal-dialog" style="max-width: 440px; padding: 18px; text-align: center; border: 1px solid rgba(148, 163, 184, 0.2); border-left: 4px solid var(--hazard-red);">
-                <div style="width: 40px; height: 40px; border-radius: var(--radius-sm); background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; font-size: 1.25rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto;">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+        <div id="modal-error-feedback" class="modal-backdrop hidden" style="z-index: 60;">
+            <div class="modal-dialog" style="max-width: 470px; padding: 18px 20px; text-align: center; border: 1.5px solid rgba(255, 199, 44, 0.45); border-top: 4px solid var(--bolivar-yellow); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85); background: #0f172a; border-radius: var(--radius-lg);">
+                <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: var(--radius-full); background: rgba(255, 199, 44, 0.15); border: 1px solid rgba(255, 199, 44, 0.4); color: var(--bolivar-yellow); font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 8px;">
+                    <i class="fa-solid fa-lightbulb"></i> Hora de aprender
                 </div>
-                <h3 style="font-size: var(--font-base); font-weight: 700; color: #fff; margin-bottom: 2px;">Infracción Técnica SGA</h3>
-                <p style="font-size: var(--font-xs); color: #fca5a5; font-weight: 600; margin-bottom: 12px;">Clasificación no conforme según FDS Oficial</p>
+                <h3 id="error-feedback-title" style="font-size: 1.15rem; font-weight: 800; color: #fff; margin-bottom: 2px;">
+                    Producto Químico
+                </h3>
+                <p id="error-feedback-subtitle" style="font-size: var(--font-xs); color: #94a3b8; margin-bottom: 14px;">
+                    ¿Por qué falló la clasificación y cómo funciona la regla SGA?
+                </p>
                 
-                <div id="error-feedback-content" style="background: rgba(30, 41, 59, 0.5); padding: 12px; border-radius: var(--radius-sm); border: 1px solid rgba(148, 163, 184, 0.15); text-align: left; margin-bottom: 14px; font-size: var(--font-xs); line-height: 1.45; color: #e2e8f0;">
+                <div id="error-feedback-content" style="text-align: left; margin-bottom: 16px; font-size: var(--font-xs); line-height: 1.45;">
                     <!-- Injected on error -->
                 </div>
 
-                <button id="btn-dismiss-error" class="btn btn-primary w-full" style="background: #991b1b; border-color: rgba(239, 68, 68, 0.4); padding: 10px 16px; font-size: var(--font-sm);">
-                    Revisar y Continuar
+                <button id="btn-dismiss-error" class="btn btn-primary w-full" style="padding: 10px 16px; font-size: var(--font-sm); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span>Entendido, Continuar</span>
+                    <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
         </div>
@@ -1308,8 +1480,51 @@
         <!-- Floating Comic Reaction Speech Balloon Layer -->
         <div id="comic-reaction-layer" class="pointer-events-none absolute inset-0 z-50 flex items-center justify-center overflow-hidden" style="padding: 16px; pointer-events: none;"></div>
 
-        <!-- Confetti & Sparkles Canvas FX Layer -->
-        <canvas id="fx-canvas" class="pointer-events-none absolute inset-0 z-50 w-full h-full" style="pointer-events: none;"></canvas>
+        <!-- Canvas de Efectos Visuales y Partículas -->
+        <canvas id="fx-canvas" style="position: absolute; inset: 0; pointer-events: none; z-index: 45; width: 100%; height: 100%;"></canvas>
+
+        <!-- ============================================================== -->
+        <!-- MODAL DE CONTEXTO Y SITUACIÓN DE OBRA (BRIEFING) -->
+        <!-- ============================================================== -->
+        <div id="modal-briefing-overlay" class="briefing-backdrop">
+            <div class="briefing-dialog">
+                <div class="briefing-header">
+                    <span class="briefing-tag">// REPORTE DE SITUACIÓN EN OBRA //</span>
+                    <h2 class="briefing-title">
+                        <i class="fa-solid fa-boxes-stacked" style="color: var(--bolivar-yellow);"></i>
+                        MISIÓN: RECEPCIÓN Y CLASIFICACIÓN SGA
+                    </h2>
+                    <p class="briefing-subtitle">
+                        Ha arribado al campamento de obra un cargamento de insumos químicos (solventes, desmoldantes, aditivos de concreto, combustibles y ácidos). Como inspector SST, debes revisar la FDS de cada sustancia y asignar su pictograma SGA oficial antes de autorizar su ingreso a bodega.
+                    </p>
+                </div>
+
+                <div class="briefing-steps">
+                    <div class="briefing-step-row">
+                        <span class="briefing-step-num">1</span>
+                        <span><strong>Inspección Técnica:</strong> Revisa la Sección 2 (Peligros) y Frases H en la FDS.</span>
+                    </div>
+                    <div class="briefing-step-row">
+                        <span class="briefing-step-num">2</span>
+                        <span><strong>Asignación SGA:</strong> Empareja el pictograma oficial correspondiente.</span>
+                    </div>
+                    <div class="briefing-step-row">
+                        <span class="briefing-step-num">3</span>
+                        <span><strong>Tolerancia Cero:</strong> Tienes 75 segundos; clasifica con precisión sin fallos.</span>
+                    </div>
+                </div>
+
+                <div class="briefing-controls">
+                    <span><i class="fa-solid fa-computer-mouse"></i> <strong>PC:</strong> Arrastre / Clic</span>
+                    <span>•</span>
+                    <span><i class="fa-solid fa-mobile-screen"></i> <strong>Celular:</strong> Toca para seleccionar y asignar</span>
+                </div>
+
+                <button id="btn-start-briefing" class="btn-start-briefing">
+                    <i class="fa-solid fa-play"></i> INICIAR INSPECCIÓN SGA
+                </button>
+            </div>
+        </div>
 
     </main>
 
@@ -1564,6 +1779,40 @@
         ];
 
         /**
+         * 2.b GUÍAS PEDAGÓGICAS ("HORA DE APRENDER"): Retroalimentación técnica corta al fallar
+         */
+        const LEARNING_GUIDES = {
+            tut_0: {
+                whyFailed: 'Este desengrasante no es un gas ni un inflamable primario; es un reactivo químico de limpieza pesada altamente cáustico.',
+                howItWorks: 'Posee pH alcalino > 11.5 y destruye el tejido cutáneo (H314). La regla SGA exige el pictograma <strong>Corrosivo</strong>.'
+            },
+            chem_1: {
+                whyFailed: 'El Ácido Muriático no genera combustión ni es gas comprimido; es una disolución inorgánica concentrada que ataca superficies y piel.',
+                howItWorks: 'Provoca quemaduras químicas severas y corroe metales (H314 / H290). La regla SGA exige el pictograma <strong>Corrosivo</strong>.'
+            },
+            chem_2: {
+                whyFailed: 'Aunque es un disolvente común, su peligro técnico crítico según FDS no es superficial, sino la toxicidad por inhalación pulmonar.',
+                howItWorks: 'Sus hidrocarburos causan daño pulmonar letal y neurotoxicidad acumulada (H304 / H373). El SGA exige el pictograma de <strong>Peligro para la Salud</strong>.'
+            },
+            chem_3: {
+                whyFailed: 'El ACPM no se clasifica como gas a presión ni corrosivo. Es un combustible automotriz de hidrocarburos líquidos.',
+                howItWorks: 'Emite vapores inflamables con punto de ignición (H226). La norma técnica exige el pictograma de <strong>Llama (Inflamable)</strong> y control antiestático.'
+            },
+            chem_4: {
+                whyFailed: 'El factor crítico en obra es el confinamiento mecánico del gas dentro del cilindro de acero a alta presión.',
+                howItWorks: 'Almacena gas disuelto a alta presión (H280) con riesgo de explosión por calor. La norma exige el pictograma de <strong>Gas a Presión (Bombona)</strong>.'
+            },
+            chem_5: {
+                whyFailed: 'La soda cáustica es un hidróxido sólido fuertemente alcalino, no un líquido inflamable ni un gas.',
+                howItWorks: 'Al humedecerse genera necrosis celular instantánea y lesiones oculares graves (H314). La regla SGA exige el pictograma <strong>Corrosivo</strong>.'
+            },
+            chem_6: {
+                whyFailed: 'Las resinas epóxicas con endurecedores de amina conllevan un riesgo biológico más severo que una simple irritación pasajera.',
+                howItWorks: 'Actúan como agentes sensibilizantes crónicos y sospechosos de daño genético (H317 / H341). El SGA exige pictograma de <strong>Peligro para la Salud</strong>.'
+            }
+        };
+
+        /**
          * 3. SINTETIZADOR DE AUDIO PROCEDURAL (Web Audio API)
          */
         class SoundEngine {
@@ -1627,6 +1876,160 @@
         const sound = new SoundEngine();
 
         /**
+         * =========================================================================
+         * INTEGRACIÓN MOODLE LMS & SCORM UNIVERSAL (SCORM 1.2 / 2004 / IFRAME)
+         * =========================================================================
+         */
+        class BolivarLmsBridge {
+            constructor(gameId, passingScore = 80) {
+                this.gameId = gameId;
+                this.passingScore = passingScore;
+                this.scormVersion = null;
+                this.api = null;
+                this.isInitialized = false;
+                this.studentName = '';
+                this.init();
+            }
+
+            findScormAPI(win) {
+                let attempts = 0;
+                let currentWin = win;
+                while (currentWin && attempts < 10) {
+                    try {
+                        if (currentWin.API) {
+                            this.scormVersion = '1.2';
+                            return currentWin.API;
+                        }
+                        if (currentWin.API_1484_11) {
+                            this.scormVersion = '2004';
+                            return currentWin.API_1484_11;
+                        }
+                    } catch (e) {
+                        break;
+                    }
+                    if (currentWin.parent && currentWin.parent !== currentWin) {
+                        currentWin = currentWin.parent;
+                    } else if (currentWin.opener) {
+                        currentWin = currentWin.opener;
+                    } else {
+                        break;
+                    }
+                    attempts++;
+                }
+                return null;
+            }
+
+            init() {
+                try {
+                    this.api = this.findScormAPI(window);
+                    if (this.api) {
+                        if (this.scormVersion === '1.2') {
+                            const res = this.api.LMSInitialize("");
+                            if (res === "true" || res === true) {
+                                this.isInitialized = true;
+                                this.api.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                                this.api.LMSSetValue("cmi.core.score.min", "0");
+                                this.api.LMSSetValue("cmi.core.score.max", "100");
+                                this.studentName = this.api.LMSGetValue("cmi.core.student_name") || '';
+                                this.api.LMSCommit("");
+                            }
+                        } else if (this.scormVersion === '2004') {
+                            const res = this.api.Initialize("");
+                            if (res === "true" || res === true) {
+                                this.isInitialized = true;
+                                this.api.SetValue("cmi.completion_status", "incomplete");
+                                this.api.SetValue("cmi.score.min", "0");
+                                this.api.SetValue("cmi.score.max", "100");
+                                this.studentName = this.api.GetValue("cmi.learner_name") || '';
+                                this.api.Commit("");
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.info('[LMS Bridge] Operando en modo standalone o iFrame web:', e);
+                }
+
+                window.addEventListener('beforeunload', () => this.terminate());
+            }
+
+            reportCompletion(score, details = {}) {
+                const passed = score >= this.passingScore;
+                const normalizedScore = Math.min(100, Math.max(0, Math.round(score)));
+
+                if (this.api && this.isInitialized) {
+                    try {
+                        if (this.scormVersion === '1.2') {
+                            this.api.LMSSetValue("cmi.core.score.raw", normalizedScore.toString());
+                            this.api.LMSSetValue("cmi.core.lesson_status", passed ? "passed" : "failed");
+                            this.api.LMSCommit("");
+                        } else if (this.scormVersion === '2004') {
+                            this.api.SetValue("cmi.score.raw", normalizedScore.toString());
+                            this.api.SetValue("cmi.score.scaled", (normalizedScore / 100).toFixed(2));
+                            this.api.SetValue("cmi.success_status", passed ? "passed" : "failed");
+                            this.api.SetValue("cmi.completion_status", "completed");
+                            this.api.Commit("");
+                        }
+                    } catch (e) {
+                        console.warn('[LMS Bridge] Error al reportar a SCORM:', e);
+                    }
+                }
+
+                try {
+                    if (window.parent && window.parent !== window) {
+                        window.parent.postMessage({
+                            type: 'MOODLE_GAME_REPORT',
+                            gameId: this.gameId,
+                            score: normalizedScore,
+                            passed: passed,
+                            details: details,
+                            timestamp: new Date().toISOString()
+                        }, '*');
+                    }
+                } catch (e) {}
+            }
+
+            terminate() {
+                if (!this.api || !this.isInitialized) return;
+                try {
+                    if (this.scormVersion === '1.2') {
+                        this.api.LMSCommit("");
+                        this.api.LMSFinish("");
+                    } else if (this.scormVersion === '2004') {
+                        this.api.Commit("");
+                        this.api.Terminate("");
+                    }
+                    this.isInitialized = false;
+                } catch (e) {}
+            }
+        }
+
+        function setupMoodleFullscreen(buttonId = 'btn-moodle-fullscreen') {
+            const btn = document.getElementById(buttonId);
+            if (!btn) return;
+            const updateIcon = () => {
+                const isFull = !!document.fullscreenElement;
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = isFull ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                }
+                btn.title = isFull ? 'Salir de Pantalla Completa' : 'Pantalla Completa (Moodle)';
+            };
+            btn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    const docEl = document.documentElement;
+                    if (docEl.requestFullscreen) docEl.requestFullscreen().catch(() => {});
+                    else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+                    else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                }
+            });
+            document.addEventListener('fullscreenchange', updateIcon);
+            document.addEventListener('webkitfullscreenchange', updateIcon);
+        }
+
+        /**
          * 3.b MOTOR DE EFECTOS (Canvas 2D): confeti de victoria, humo de hollín y chispas.
          * Solo corre el bucle de animación mientras existan partículas vivas.
          */
@@ -1638,21 +2041,28 @@
             constructor(canvas, host) {
                 this.canvas = canvas;
                 this.host = host;
-                this.ctx = canvas.getContext('2d');
                 this.particles = [];
                 this.running = false;
                 this.lastTime = 0;
+                if (!canvas || !host || typeof canvas.getContext !== 'function') {
+                    this.enabled = false;
+                    return;
+                }
+                this.enabled = true;
+                this.ctx = canvas.getContext('2d');
                 this.resize();
                 window.addEventListener('resize', () => this.resize());
             }
 
             resize() {
+                if (!this.enabled || !this.canvas || !this.host) return;
                 this.canvas.width = this.host.clientWidth;
                 this.canvas.height = this.host.clientHeight;
             }
 
             /** Explosión de confeti con la paleta Bolívar. */
             confetti(x, y, count = 40) {
+                if (!this.enabled) return;
                 const palette = ['#FFC72C', '#10B981', '#008244', '#ffffff', '#EF4444', '#38bdf8'];
                 for (let i = 0; i < count; i++) {
                     const angle = Math.random() * Math.PI * 2;
@@ -1675,6 +2085,7 @@
 
             /** Lluvia de confeti desde la parte superior (pantalla final). */
             rain(count = 80) {
+                if (!this.enabled) return;
                 const palette = ['#FFC72C', '#10B981', '#008244', '#ffffff', '#EF4444'];
                 for (let i = 0; i < count; i++) {
                     this.particles.push({
@@ -1697,6 +2108,7 @@
 
             /** Nube de humo oscuro (cara tiznada tras una explosión). */
             smoke(x, y, count = 14) {
+                if (!this.enabled) return;
                 for (let i = 0; i < count; i++) {
                     this.particles.push({
                         type: 'smoke', x: x + (Math.random() - 0.5) * 30, y,
@@ -1716,6 +2128,7 @@
 
             /** Chispas naranjas de la reacción química fallida. */
             sparks(x, y, count = 18) {
+                if (!this.enabled) return;
                 for (let i = 0; i < count; i++) {
                     const angle = Math.random() * Math.PI * 2;
                     const speed = 150 + Math.random() * 260;
@@ -1735,13 +2148,14 @@
             }
 
             start() {
-                if (this.running) return;
+                if (!this.enabled || this.running) return;
                 this.running = true;
                 this.lastTime = performance.now();
                 requestAnimationFrame((t) => this.loop(t));
             }
 
             loop(time) {
+                if (!this.enabled) return;
                 const dt = Math.min(0.05, (time - this.lastTime) / 1000);
                 this.lastTime = time;
                 const ctx = this.ctx;
@@ -1855,6 +2269,8 @@
                     fdsSec2Warning: document.getElementById('fds-sec2-warning'),
                     fdsSec2Code: document.getElementById('fds-sec2-code'),
                     fdsSec8Text: document.getElementById('fds-sec8-text'),
+                    errorFeedbackTitle: document.getElementById('error-feedback-title'),
+                    errorFeedbackSubtitle: document.getElementById('error-feedback-subtitle'),
                     errorFeedbackContent: document.getElementById('error-feedback-content'),
 
                     // FX / Mascota
@@ -1867,15 +2283,41 @@
                 this.streak = 0;
                 this.maxStreak = 0;
                 this.chemAttempts = {};
+                this.isErrorFeedbackTutorial = false;
 
                 this.fx = new FxEngine(this.dom.fxCanvas, this.dom.viewport);
                 this.luchoResetTimer = null;
+
+                // Integración Moodle LMS & SCORM
+                this.lmsBridge = new BolivarLmsBridge('juego1_sga', 80);
+                setupMoodleFullscreen('btn-moodle-fullscreen');
 
                 this.bindEvents();
                 this.initTutorial();
             }
 
             bindEvents() {
+                // Briefing Modal de Contexto Inicial
+                const briefingOverlay = document.getElementById('modal-briefing-overlay');
+                const btnStartBriefing = document.getElementById('btn-start-briefing');
+                const closeBriefing = () => {
+                    if (briefingOverlay && !briefingOverlay.classList.contains('hidden')) {
+                        sound.tap();
+                        briefingOverlay.classList.add('hidden');
+                        briefingOverlay.style.display = 'none';
+                    }
+                };
+                if (btnStartBriefing) {
+                    btnStartBriefing.addEventListener('click', closeBriefing);
+                }
+                if (briefingOverlay) {
+                    briefingOverlay.addEventListener('click', (e) => {
+                        if (e.target === briefingOverlay) {
+                            closeBriefing();
+                        }
+                    });
+                }
+
                 // Sound toggle
                 this.dom.btnSoundToggle.addEventListener('click', () => {
                     sound.enabled = !sound.enabled;
@@ -1940,28 +2382,35 @@
                 });
                 this.dom.modalError.addEventListener('click', (e) => {
                     if (e.target === this.dom.modalError) {
-                        sound.tap();
-                        this.dom.modalError.classList.add('hidden');
-                        this.advanceExam();
+                        this.dismissErrorFeedback();
                     }
                 });
 
-                // Cierre de modales con tecla Escape
+                // Cierre de modales con tecla Escape / Enter
                 window.addEventListener('keydown', (e) => {
+                    if (briefingOverlay && !briefingOverlay.classList.contains('hidden') && briefingOverlay.style.display !== 'none') {
+                        if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            closeBriefing();
+                            return;
+                        }
+                    }
+                    if (e.key === 'Escape' || e.key === 'Enter') {
+                        if (this.dom.modalError && !this.dom.modalError.classList.contains('hidden')) {
+                            e.preventDefault();
+                            this.dismissErrorFeedback();
+                            return;
+                        }
+                    }
                     if (e.key === 'Escape') {
                         if (!this.dom.modalFds.classList.contains('hidden')) {
                             this.closeFds();
-                        } else if (!this.dom.modalError.classList.contains('hidden')) {
-                            this.dom.modalError.classList.add('hidden');
-                            this.advanceExam();
                         }
                     }
                 });
 
                 this.dom.btnDismissError.addEventListener('click', () => {
-                    sound.tap();
-                    this.dom.modalError.classList.add('hidden');
-                    this.advanceExam();
+                    this.dismissErrorFeedback();
                 });
 
                 // Retry Button
@@ -2006,38 +2455,27 @@
             }
 
             handleTutorialSelection(selectedKey) {
-                if (this.tutorialStep === 1) {
-                    sound.tap();
-                    this.openFds(TUTORIAL_CHEMICAL);
-                    this.tutorialStep = 2;
-                    this.dom.tutStepIndicator.textContent = 'Paso 2 de 3: Identifica y Presiona el Pictograma SGA';
-                    this.dom.botDialog.innerHTML = '¡Revisemos la FDS! En la <strong>Sección 2</strong> se especifica el peligro <em>H314: Provoca quemaduras</em>. Cierra la FDS y selecciona el pictograma <strong>Corrosivo</strong>.';
-                    return;
-                }
-
                 const tileEl = this.dom.tutGrid.querySelector(`[data-sga-id="${selectedKey}"]`);
 
                 if (selectedKey === TUTORIAL_CHEMICAL.correctSga) {
                     sound.success();
                     this.celebrateTutorial(tileEl, true);
                     this.tutorialStep = 3;
-                    this.dom.tutStepIndicator.textContent = 'Paso 3 de 3: ¡Listo para la Evaluación!';
-                    this.dom.botDialog.innerHTML = '<strong>¡Correcto!</strong> El pictograma de Corrosión advierte quemaduras a la piel y metales. Ya aprendiste la dinámica técnica.';
-                    this.dom.btnStartExam.disabled = false;
-                    this.dom.btnStartExam.removeAttribute('style');
-                    this.dom.btnStartExam.className = 'btn btn-primary w-full pulse-selected';
-                    this.dom.btnStartExam.style.padding = '14px 20px';
-                    this.dom.btnStartExam.style.fontSize = 'var(--font-base)';
-                    this.dom.btnStartExam.style.cursor = 'pointer';
-                    this.dom.btnStartExam.innerHTML = `
-                        <span>¡Iniciar Examen Técnico (75 Segundos)!</span>
-                        <i class="fa-solid fa-play"></i>
-                    `;
+                    this.dom.tutStepIndicator.textContent = '¡Tutorial Completado!';
+                    this.dom.botDialog.innerHTML = '<strong>¡Correcto!</strong> Pictograma Corrosivo asignado con éxito. ¡Iniciando examen!';
+                    
+                    // Transición directa e inmediata al examen técnico
+                    setTimeout(() => {
+                        this.startExamPhase();
+                    }, 400);
                 } else {
                     sound.error();
                     this.triggerScreenShake();
                     this.celebrateTutorial(tileEl, false);
-                    this.dom.botDialog.innerHTML = '<span class="text-danger" style="font-weight: 800;">¡Incorrecto!</span> Ese pictograma no coincide con la Sección 2 de la FDS. Vuelve a inspeccionar.';
+                    this.dom.botDialog.innerHTML = '<span class="text-danger" style="font-weight: 800;">¡Incorrecto!</span> Ese pictograma no coincide con el producto. Selecciona el pictograma <strong>Corrosivo</strong>.';
+                    setTimeout(() => {
+                        this.showErrorFeedback(TUTORIAL_CHEMICAL, selectedKey, true);
+                    }, 400);
                 }
             }
 
@@ -2102,6 +2540,19 @@
                 }, 1000);
             }
 
+            pauseTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            }
+
+            resumeTimer() {
+                if (this.phase === 'exam' && this.timeLeft > 0 && !this.timerInterval) {
+                    this.startTimer();
+                }
+            }
+
             updateTimerDisplay() {
                 const mins = Math.floor(this.timeLeft / 60);
                 const secs = this.timeLeft % 60;
@@ -2156,6 +2607,9 @@
                 let currentHoverZone = null;
                 let hasMoved = false;
 
+                // Anular completamente el arrastre nativo del navegador sobre imágenes o texto
+                cardEl.addEventListener('dragstart', (e) => e.preventDefault());
+
                 const onPointerMove = (e) => {
                     if (!isDragging) return;
 
@@ -2170,6 +2624,9 @@
                     }
 
                     if (hasMoved) {
+                        // Impedir gestos de desplazamiento o selección nativa mientras se arrastra
+                        if (e.cancelable) e.preventDefault();
+
                         // Inclinación dinámica según la velocidad y dirección del arrastre
                         const rot = Math.max(-10, Math.min(10, dx * 0.04));
                         cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(0.96) rotate(${rot}deg)`;
@@ -2194,6 +2651,12 @@
                 const onPointerUp = (e) => {
                     if (!isDragging) return;
                     isDragging = false;
+
+                    try {
+                        if (typeof cardEl.releasePointerCapture === 'function' && e && e.pointerId !== undefined) {
+                            cardEl.releasePointerCapture(e.pointerId);
+                        }
+                    } catch (_) {}
 
                     window.removeEventListener('pointermove', onPointerMove);
                     window.removeEventListener('pointerup', onPointerUp);
@@ -2247,7 +2710,14 @@
                         el.classList.add('drop-target-active');
                     });
 
-                    window.addEventListener('pointermove', onPointerMove);
+                    // Capturar el puntero para garantizar seguimiento en cualquier posición
+                    try {
+                        if (typeof cardEl.setPointerCapture === 'function' && e.pointerId !== undefined) {
+                            cardEl.setPointerCapture(e.pointerId);
+                        }
+                    } catch (_) {}
+
+                    window.addEventListener('pointermove', onPointerMove, { passive: false });
                     window.addEventListener('pointerup', onPointerUp);
                     window.addEventListener('pointercancel', onPointerUp);
                 };
@@ -2417,8 +2887,10 @@
                     this.punishWrong(tileEl);
                     this.showComicBubble('-10s ¡ERROR SGA!', 'bad', this.getCenterInViewport(cardEl));
 
-                    // Reacción arcade directa sin interrumpir el flujo del juego
-                    this.advanceExam();
+                    // Micro-pausa antes de abrir el modal pedagógico "Hora de aprender"
+                    setTimeout(() => {
+                        this.showErrorFeedback(currentChem, chosenSgaKey, false);
+                    }, 450);
                 }
             }
 
@@ -2571,26 +3043,86 @@
                 }, 40);
             }
 
-            showErrorFeedback(chem, chosenSgaKey) {
-                const chosen = SGA_PICTOGRAMS[chosenSgaKey];
-                const correct = SGA_PICTOGRAMS[chem.correctSga];
+            /**
+             * Muestra el modal pedagógico "Hora de aprender" con la explicación concisa
+             * de por qué falló la selección y cómo funciona la regla química del SGA.
+             * @param {Object} chem Químico evaluado.
+             * @param {string} chosenSgaKey Clave del pictograma erróneo elegido.
+             * @param {boolean} isTutorial Indica si el error ocurrió durante la fase de tutorial.
+             */
+            showErrorFeedback(chem, chosenSgaKey, isTutorial = false) {
+                if (!this.dom.modalError) return;
+                this.isErrorFeedbackTutorial = isTutorial;
+                this.currentErrorChem = chem;
+
+                if (this.phase === 'exam') {
+                    this.pauseTimer();
+                }
+
+                const chosen = SGA_PICTOGRAMS[chosenSgaKey] || { name: 'Desconocido', desc: 'No especificado', svg: '' };
+                const correct = SGA_PICTOGRAMS[chem.correctSga] || { name: 'Desconocido', desc: 'No especificado', svg: '' };
+                const guide = LEARNING_GUIDES[chem.id] || {
+                    whyFailed: `Seleccionaste "${chosen.name}", pero el peligro principal del producto no coincide con esta clasificación.`,
+                    howItWorks: `La FDS Oficial exige el pictograma "${correct.name}" (${chem.fds ? chem.fds.code : ''}).`
+                };
+
+                if (this.dom.errorFeedbackTitle) {
+                    this.dom.errorFeedbackTitle.textContent = chem.name;
+                }
 
                 this.dom.errorFeedbackContent.innerHTML = `
-                    <div style="margin-bottom: 8px; font-size: var(--font-sm);">
-                        <span style="color: var(--text-subtle);">Seleccionaste:</span> 
-                        <strong style="color: var(--hazard-red); text-transform: uppercase;">${chosen.name}</strong>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Bloque 1: ¿Por qué falló? -->
+                        <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.28); border-left: 4px solid #ef4444; border-radius: var(--radius-sm); padding: 10px 12px; display: flex; gap: 10px; align-items: flex-start;">
+                            <div style="width: 38px; height: 38px; flex-shrink: 0; background: rgba(15, 23, 42, 0.75); border-radius: var(--radius-sm); border: 1px solid rgba(239, 68, 68, 0.35); padding: 3px; display: flex; align-items: center; justify-content: center;">
+                                ${chosen.svg}
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; flex-wrap: wrap; gap: 4px;">
+                                    <span style="font-weight: 800; color: #f87171; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em;">
+                                        <i class="fa-solid fa-circle-xmark"></i> ¿Por qué falló?
+                                    </span>
+                                    <span style="font-size: 10px; background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 1px 6px; border-radius: 4px; font-weight: 700;">Elegiste: ${chosen.name}</span>
+                                </div>
+                                <p style="margin: 0; font-size: 11.5px; color: #e2e8f0; line-height: 1.4;">${guide.whyFailed}</p>
+                            </div>
+                        </div>
+
+                        <!-- Bloque 2: ¿Cómo funciona la regla? -->
+                        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.28); border-left: 4px solid #10b981; border-radius: var(--radius-sm); padding: 10px 12px; display: flex; gap: 10px; align-items: flex-start;">
+                            <div style="width: 38px; height: 38px; flex-shrink: 0; background: rgba(15, 23, 42, 0.75); border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.35); padding: 3px; display: flex; align-items: center; justify-content: center;">
+                                ${correct.svg}
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; flex-wrap: wrap; gap: 4px;">
+                                    <span style="font-weight: 800; color: #34d399; font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em;">
+                                        <i class="fa-solid fa-circle-check"></i> ¿Cómo funciona la regla SGA?
+                                    </span>
+                                    <span style="font-size: 10px; background: rgba(16, 185, 129, 0.2); color: #6ee7b7; padding: 1px 6px; border-radius: 4px; font-weight: 700;">Correcto: ${correct.name}</span>
+                                </div>
+                                <p style="margin: 0; font-size: 11.5px; color: #e2e8f0; line-height: 1.4;">${guide.howItWorks}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div style="margin-bottom: 8px; font-size: var(--font-sm);">
-                        <span style="color: var(--text-subtle);">Pictograma Legal Exigido:</span> 
-                        <strong style="color: var(--bolivar-green-glow); text-transform: uppercase;">${correct.name}</strong>
-                    </div>
-                    <div style="padding: 10px; background: rgba(11, 17, 32, 0.85); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); margin: 8px 0;">
-                        <div style="font-size: var(--font-xs); font-family: var(--font-mono); color: var(--bolivar-yellow); font-weight: 900; margin-bottom: 4px;">EVIDENCIA FDS (SECCIÓN 2):</div>
-                        <p style="font-size: var(--font-sm); color: #e2e8f0; line-height: 1.45;">${chem.fds.sec2}</p>
-                    </div>
-                    <p style="font-size: var(--font-xs); color: var(--text-muted); margin-top: 6px; font-style: italic;">${chem.normaExplain}</p>
                 `;
+
                 this.dom.modalError.classList.remove('hidden');
+            }
+
+            /**
+             * Cierra el modal "Hora de aprender" y reanuda el flujo del juego.
+             */
+            dismissErrorFeedback() {
+                if (!this.dom.modalError || this.dom.modalError.classList.contains('hidden')) return;
+                sound.tap();
+                this.dom.modalError.classList.add('hidden');
+
+                if (this.isErrorFeedbackTutorial) {
+                    this.isErrorFeedbackTutorial = false;
+                } else {
+                    this.resumeTimer();
+                    this.advanceExam();
+                }
             }
 
             /**
@@ -2644,6 +3176,15 @@
                     this.dom.resultsSubtitle.textContent = timeExpired ? 'Se agotó el tiempo límite de 120 segundos. Debes reforzar la lectura ágil de FDS.' : 'Porcentaje insuficiente. Revisa detalladamente la Sección 2 de cada químico.';
                 }
                 this.playAnimation(this.dom.resultsPercent.parentElement, percent >= 50 ? 'pop-comic' : 'dazed-wobble', 600);
+
+                // Reporte Automático a Moodle LMS (SCORM 1.2 / 2004 y iFrame postMessage)
+                if (this.lmsBridge) {
+                    this.lmsBridge.reportCompletion(percent, {
+                        correctCount: this.score,
+                        totalCount: total,
+                        timeExpired: timeExpired
+                    });
+                }
 
                 // Render Review List
                 this.dom.resultsList.innerHTML = '';

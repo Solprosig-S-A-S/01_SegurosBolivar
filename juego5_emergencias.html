@@ -9,16 +9,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <!-- FontAwesome v6 CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Outfit -->
+    <!-- Google Fonts: Outfit & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
 
     <style>
         /* ==========================================================================
            1. TOKENS Y ESTILOS BASE (CSS3 NATIVO - ENTORNO 3D CUADRADO EN 1ª PERSONA)
            ========================================================================== */
         :root {
+            --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
             --verde-bolivar: #006738;
             --verde-bolivar-light: #008244;
             --verde-bolivar-glow: #10B981;
@@ -27,20 +29,31 @@
             --bg-dark: #070B14;
             --bg-darker: #03060A;
             --alerta-rojo: #EF4444;
-            --alerta-rojo-glow: rgba(239, 68, 68, 0.6);
+            --alerta-rojo-glow: rgba(239, 68, 68, 0.4);
             --exito-verde: #10B981;
-            --exito-verde-glow: rgba(16, 185, 129, 0.5);
-            --peligro-quimico: #00FF88;
-            --peligro-quimico-glow: rgba(0, 255, 136, 0.5);
+            --exito-verde-glow: rgba(16, 185, 129, 0.4);
+            --peligro-quimico: #10B981;
+            --peligro-quimico-glow: rgba(16, 185, 129, 0.3);
             --text-main: #FFFFFF;
             --text-muted: #94A3B8;
-            --border-subtle: rgba(148, 163, 184, 0.25);
-            --shadow-hud: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 255, 136, 0.15);
+            --text-subtle: #64748B;
+            --border-subtle: rgba(148, 163, 184, 0.18);
+            --border-strong: rgba(148, 163, 184, 0.32);
+            --shadow-hud: 0 4px 16px rgba(0, 0, 0, 0.6);
+
+            /* Escala Tipográfica Ergonómica (Estandarizada) */
+            --font-xs: 0.75rem;     /* 12px */
+            --font-sm: 0.875rem;    /* 14px */
+            --font-base: 0.9375rem; /* 15px */
+            --font-lg: 1.125rem;    /* 18px */
+            --font-xl: 1.375rem;    /* 22px */
+            --font-2xl: 1.625rem;   /* 26px */
             
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 18px;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
             --radius-full: 9999px;
+            --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.4);
         }
 
         * {
@@ -1042,13 +1055,13 @@
             transform: translateY(-40px) translateX(-30px) rotate(-15deg);
         }
 
-        /* Modal de Certificación Final */
+        /* Modales Tácticos (Briefing Previo y Certificación Final) */
         .fps-modal-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(3, 6, 10, 0.92);
-            backdrop-filter: blur(8px);
-            z-index: 100;
+            background: rgba(3, 6, 10, 0.94);
+            backdrop-filter: blur(12px);
+            z-index: 120;
             display: none;
             align-items: center;
             justify-content: center;
@@ -1059,12 +1072,15 @@
 
         .fps-modal-dialog {
             background: #0f172a;
-            border: 2px solid var(--amarillo-bolivar);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-left: 4px solid var(--amarillo-bolivar);
             border-radius: var(--radius-lg);
             width: 100%;
             max-width: 600px;
+            max-height: 92vh;
+            overflow-y: auto;
             padding: 24px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -1072,15 +1088,145 @@
 
         .modal-action-btn {
             background: linear-gradient(135deg, var(--verde-bolivar), var(--verde-bolivar-light));
-            border: none;
+            border: 1px solid rgba(16, 185, 129, 0.3);
             color: #fff;
             padding: 12px 20px;
             border-radius: var(--radius-sm);
-            font-size: 1rem;
+            font-size: var(--font-base);
             font-weight: 800;
             cursor: pointer;
             align-self: flex-end;
             transition: all 0.2s ease;
+        }
+
+        /* ===== Modal de Misión Star Wars Simplificado ===== */
+        .fps-briefing-dialog {
+            max-width: 520px;
+            background: #060a14;
+            border: 1px solid rgba(255, 199, 44, 0.4);
+            border-left: 4px solid var(--amarillo-bolivar);
+            border-radius: 0;
+            clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
+            box-shadow: 0 0 35px rgba(0, 0, 0, 0.9);
+            padding: 24px 28px;
+            gap: 16px;
+            font-family: var(--font-mono);
+        }
+
+        .briefing-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .briefing-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--amarillo-bolivar);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .briefing-subtitle {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .briefing-steps-clean {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            padding: 12px 14px;
+        }
+
+        .step-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            line-height: 1.3;
+        }
+
+        .step-row strong {
+            color: #ffffff;
+        }
+
+        .step-num {
+            min-width: 22px;
+            height: 22px;
+            background: rgba(255, 199, 44, 0.15);
+            border: 1px solid var(--amarillo-bolivar);
+            color: var(--amarillo-bolivar);
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .briefing-controls-clean {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            padding: 6px 10px;
+            background: rgba(8, 14, 26, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .briefing-controls-clean strong {
+            color: var(--amarillo-bolivar);
+        }
+
+        .btn-start-emergency-mission {
+            background: linear-gradient(135deg, #FFC72C 0%, #F59E0B 100%);
+            border: 1px solid #FFE81F;
+            color: #050811;
+            padding: 12px 20px;
+            border-radius: 0;
+            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 199, 44, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .btn-start-emergency-mission:hover {
+            background: linear-gradient(135deg, #FFE81F 0%, #FFC72C 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 0 28px rgba(255, 232, 31, 0.6);
+            color: #000000;
+        }
+
+        @media (max-width: 640px) {
+            .fps-briefing-dialog {
+                padding: 16px;
+                gap: 12px;
+                max-width: 95%;
+            }
+            .briefing-controls-clean {
+                flex-wrap: wrap;
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
@@ -1273,11 +1419,19 @@
                         <div class="radar-vision-cone" id="radar-vision-cone"></div>
                     </div>
 
-                    <div class="hud-timer-card">
-                        <i class="fa-solid fa-stopwatch" style="color: #ef4444;"></i>
-                        <div>
-                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 800;">CRONÓMETRO</div>
-                            <div class="timer-digits" id="timer-digits">02:00</div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <button id="btn-moodle-fullscreen" style="background: rgba(11, 19, 38, 0.85); border: 1px solid rgba(255, 199, 44, 0.5); color: #FFC72C; padding: 6px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Pantalla Completa (Moodle)">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                        <button id="btn-sound-toggle" style="background: rgba(11, 19, 38, 0.85); border: 1px solid rgba(255, 199, 44, 0.5); color: #FFC72C; padding: 6px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Activar/Silenciar Audio" aria-label="Audio">
+                            <i class="fa-solid fa-volume-high" id="sound-icon"></i>
+                        </button>
+                        <div class="hud-timer-card">
+                            <i class="fa-solid fa-stopwatch" style="color: #ef4444;"></i>
+                            <div>
+                                <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 800;">CRONÓMETRO</div>
+                                <div class="timer-digits" id="timer-digits">02:00</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1340,7 +1494,63 @@
         </div>
 
         <!-- ==============================================================
-             4. MODAL DE CERTIFICACIÓN FINAL
+             4. MODAL TÁCTICO DE CONTEXTO Y BRIEFING DE EMERGENCIA
+             ============================================================== -->
+        <div class="fps-modal-overlay open" id="modal-briefing-overlay">
+            <div class="fps-modal-dialog fps-briefing-dialog">
+                <!-- Título simple -->
+                <div class="briefing-header">
+                    <h2 class="briefing-title">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        MISIÓN: EMERGENCIA QUÍMICA
+                    </h2>
+                    <p class="briefing-subtitle">
+                        Fuga de ácido en planta. Tienes 120 segundos para controlarla en 5 pasos:
+                    </p>
+                </div>
+
+                <!-- Lista limpia de 5 pasos en un solo tamaño de texto -->
+                <div class="briefing-steps-clean">
+                    <div class="step-row">
+                        <span class="step-num">1</span>
+                        <span><strong>Caseta EPP:</strong> Equípate con guantes y máscara.</span>
+                    </div>
+                    <div class="step-row">
+                        <span class="step-num">2</span>
+                        <span><strong>Válvula:</strong> Ciérrala para frenar la fuga.</span>
+                    </div>
+                    <div class="step-row">
+                        <span class="step-num">3</span>
+                        <span><strong>Lavaojos:</strong> Atiende al compañero afectado.</span>
+                    </div>
+                    <div class="step-row">
+                        <span class="step-num">4</span>
+                        <span><strong>Derrame:</strong> Contén el charco con cordón y paños.</span>
+                    </div>
+                    <div class="step-row">
+                        <span class="step-num">5</span>
+                        <span><strong>RESPEL:</strong> Desecha los paños en la caneca roja.</span>
+                    </div>
+                </div>
+
+                <!-- Controles en una línea directa -->
+                <div class="briefing-controls-clean">
+                    <span><strong>WASD:</strong> Caminar</span>
+                    <span>•</span>
+                    <span><strong>Ratón:</strong> Mirar</span>
+                    <span>•</span>
+                    <span><strong>[E] / Clic:</strong> Interactuar</span>
+                </div>
+
+                <!-- Botón directo -->
+                <button id="btn-start-emergency" class="btn-start-emergency-mission">
+                    INICIAR MISIÓN (120s)
+                </button>
+            </div>
+        </div>
+
+        <!-- ==============================================================
+             5. MODAL DE CERTIFICACIÓN FINAL
              ============================================================== -->
         <div class="fps-modal-overlay" id="modal-audit-overlay">
             <div class="fps-modal-dialog">
@@ -1394,6 +1604,7 @@
         class ProceduralAudioEngine {
             constructor() {
                 this.ctx = null;
+                this.isMuted = false;
             }
 
             init() {
@@ -1404,7 +1615,13 @@
                 if (this.ctx.state === 'suspended') this.ctx.resume();
             }
 
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                return this.isMuted;
+            }
+
             playTone(freq = 440, type = 'sine', duration = 0.15, gainVal = 0.1) {
+                if (this.isMuted) return;
                 this.init();
                 try {
                     const osc = this.ctx.createOscillator();
@@ -1430,6 +1647,7 @@
             }
 
             playWaterRush() {
+                if (this.isMuted) return;
                 this.init();
                 try {
                     const bufferSize = this.ctx.sampleRate * 0.5;
@@ -1457,6 +1675,7 @@
             }
 
             playAlarm() {
+                if (this.isMuted) return;
                 this.init();
                 try {
                     const osc = this.ctx.createOscillator();
@@ -1472,6 +1691,160 @@
                     osc.stop(this.ctx.currentTime + 0.25);
                 } catch(e) {}
             }
+        }
+
+        /**
+         * =========================================================================
+         * INTEGRACIÓN MOODLE LMS & SCORM UNIVERSAL (SCORM 1.2 / 2004 / IFRAME)
+         * =========================================================================
+         */
+        class BolivarLmsBridge {
+            constructor(gameId, passingScore = 80) {
+                this.gameId = gameId;
+                this.passingScore = passingScore;
+                this.scormVersion = null;
+                this.api = null;
+                this.isInitialized = false;
+                this.studentName = '';
+                this.init();
+            }
+
+            findScormAPI(win) {
+                let attempts = 0;
+                let currentWin = win;
+                while (currentWin && attempts < 10) {
+                    try {
+                        if (currentWin.API) {
+                            this.scormVersion = '1.2';
+                            return currentWin.API;
+                        }
+                        if (currentWin.API_1484_11) {
+                            this.scormVersion = '2004';
+                            return currentWin.API_1484_11;
+                        }
+                    } catch (e) {
+                        break;
+                    }
+                    if (currentWin.parent && currentWin.parent !== currentWin) {
+                        currentWin = currentWin.parent;
+                    } else if (currentWin.opener) {
+                        currentWin = currentWin.opener;
+                    } else {
+                        break;
+                    }
+                    attempts++;
+                }
+                return null;
+            }
+
+            init() {
+                try {
+                    this.api = this.findScormAPI(window);
+                    if (this.api) {
+                        if (this.scormVersion === '1.2') {
+                            const res = this.api.LMSInitialize("");
+                            if (res === "true" || res === true) {
+                                this.isInitialized = true;
+                                this.api.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                                this.api.LMSSetValue("cmi.core.score.min", "0");
+                                this.api.LMSSetValue("cmi.core.score.max", "100");
+                                this.studentName = this.api.LMSGetValue("cmi.core.student_name") || '';
+                                this.api.LMSCommit("");
+                            }
+                        } else if (this.scormVersion === '2004') {
+                            const res = this.api.Initialize("");
+                            if (res === "true" || res === true) {
+                                this.isInitialized = true;
+                                this.api.SetValue("cmi.completion_status", "incomplete");
+                                this.api.SetValue("cmi.score.min", "0");
+                                this.api.SetValue("cmi.score.max", "100");
+                                this.studentName = this.api.GetValue("cmi.learner_name") || '';
+                                this.api.Commit("");
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.info('[LMS Bridge] Operando en modo standalone o iFrame web:', e);
+                }
+
+                window.addEventListener('beforeunload', () => this.terminate());
+            }
+
+            reportCompletion(score, details = {}) {
+                const passed = score >= this.passingScore;
+                const normalizedScore = Math.min(100, Math.max(0, Math.round(score)));
+
+                if (this.api && this.isInitialized) {
+                    try {
+                        if (this.scormVersion === '1.2') {
+                            this.api.LMSSetValue("cmi.core.score.raw", normalizedScore.toString());
+                            this.api.LMSSetValue("cmi.core.lesson_status", passed ? "passed" : "failed");
+                            this.api.LMSCommit("");
+                        } else if (this.scormVersion === '2004') {
+                            this.api.SetValue("cmi.score.raw", normalizedScore.toString());
+                            this.api.SetValue("cmi.score.scaled", (normalizedScore / 100).toFixed(2));
+                            this.api.SetValue("cmi.success_status", passed ? "passed" : "failed");
+                            this.api.SetValue("cmi.completion_status", "completed");
+                            this.api.Commit("");
+                        }
+                    } catch (e) {
+                        console.warn('[LMS Bridge] Error al reportar a SCORM:', e);
+                    }
+                }
+
+                try {
+                    if (window.parent && window.parent !== window) {
+                        window.parent.postMessage({
+                            type: 'MOODLE_GAME_REPORT',
+                            gameId: this.gameId,
+                            score: normalizedScore,
+                            passed: passed,
+                            details: details,
+                            timestamp: new Date().toISOString()
+                        }, '*');
+                    }
+                } catch (e) {}
+            }
+
+            terminate() {
+                if (!this.api || !this.isInitialized) return;
+                try {
+                    if (this.scormVersion === '1.2') {
+                        this.api.LMSCommit("");
+                        this.api.LMSFinish("");
+                    } else if (this.scormVersion === '2004') {
+                        this.api.Commit("");
+                        this.api.Terminate("");
+                    }
+                    this.isInitialized = false;
+                } catch (e) {}
+            }
+        }
+
+        function setupMoodleFullscreen(buttonId = 'btn-moodle-fullscreen') {
+            const btn = document.getElementById(buttonId);
+            if (!btn) return;
+            const updateIcon = () => {
+                const isFull = !!document.fullscreenElement;
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = isFull ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                }
+                btn.title = isFull ? 'Salir de Pantalla Completa' : 'Pantalla Completa (Moodle)';
+            };
+            btn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    const docEl = document.documentElement;
+                    if (docEl.requestFullscreen) docEl.requestFullscreen().catch(() => {});
+                    else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+                    else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                }
+            });
+            document.addEventListener('fullscreenchange', updateIcon);
+            document.addEventListener('webkitfullscreenchange', updateIcon);
         }
 
         class FirstPerson3DRoomSimulator {
@@ -1504,6 +1877,7 @@
                     spillProgress: 15,
                     timeLeft: 120,
                     isGameOver: false,
+                    hasStarted: false,
                     activeStation: null // Estación en rango actual
                 };
 
@@ -1540,21 +1914,56 @@
                     padsLayer: document.getElementById('pads-layer'),
                     chemicalPuddle: document.getElementById('chemical-puddle'),
                     eyewashLever: document.getElementById('eyewash-lever'),
-                    modalOverlay: document.getElementById('modal-audit-overlay')
+                    modalOverlay: document.getElementById('modal-audit-overlay'),
+                    briefingOverlay: document.getElementById('modal-briefing-overlay'),
+                    btnStartEmergency: document.getElementById('btn-start-emergency'),
+                    btnSoundToggle: document.getElementById('btn-sound-toggle') || document.getElementById('btn-toggle-sound'),
+                    soundIcon: document.getElementById('sound-icon')
                 };
+
+                // Integración Moodle LMS & SCORM
+                this.lmsBridge = new BolivarLmsBridge('juego5_emergencias', 80);
+                setupMoodleFullscreen('btn-moodle-fullscreen');
 
                 this.init();
             }
 
             init() {
+                if (this.dom.btnSoundToggle) {
+                    this.dom.btnSoundToggle.addEventListener('click', () => {
+                        const isMuted = this.audio.toggleMute();
+                        if (this.dom.soundIcon) {
+                            this.dom.soundIcon.className = isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+                        }
+                    });
+                }
                 this.bindKeyboardControls();
                 this.bindMouseLook();
                 this.bindTouchControls();
                 this.bindStationDirectClicks();
                 this.bindAuditHazards();
+                this.bindBriefingModal();
                 this.startPhysicsLoop();
-                this.startCrisisLoop();
                 this.updateCamera();
+            }
+
+            /**
+             * Conexión del Cuadro de Contexto Previo (Briefing de Misión Táctica)
+             */
+            bindBriefingModal() {
+                if (this.dom.btnStartEmergency && this.dom.briefingOverlay) {
+                    this.dom.btnStartEmergency.addEventListener('click', () => {
+                        this.audio.playAlarm();
+                        this.dom.briefingOverlay.classList.remove('open');
+                        this.dom.briefingOverlay.style.display = 'none';
+                        this.gameState.hasStarted = true;
+                        this.startCrisisLoop();
+                        this.setBotMessage('¡Mando asumido! Corre a la Caseta EPP (Oeste) para equiparte antes de que suban los vapores.');
+                    });
+                } else {
+                    this.gameState.hasStarted = true;
+                    this.startCrisisLoop();
+                }
             }
 
             /**
@@ -1717,7 +2126,10 @@
              */
             startPhysicsLoop() {
                 const update = () => {
-                    if (this.gameState.isGameOver) return;
+                    if (this.gameState.isGameOver || !this.gameState.hasStarted) {
+                        requestAnimationFrame(update);
+                        return;
+                    }
 
                     const isRunning = this.keysPressed['ShiftLeft'] || this.keysPressed['ShiftRight'];
                     const moveSpeed = isRunning ? 13 : 8.5;
@@ -1949,7 +2361,11 @@
                             return;
                         }
                         this.gameState.valveClosed = true;
-                        gsap.to(this.dom.valveWheel, { rotation: 360, duration: 0.8 });
+                        if (window.gsap) {
+                            gsap.to(this.dom.valveWheel, { rotation: 360, duration: 0.8 });
+                        } else {
+                            this.dom.valveWheel.style.transform = 'rotate(360deg)';
+                        }
                         this.dom.valveSteam.style.display = 'none';
                         this.audio.playValveClank();
                         document.getElementById('badge-valve').classList.add('completed');
@@ -2014,7 +2430,11 @@
                         if (!this.gameState.padsPlaced) {
                             this.gameState.padsPlaced = true;
                             this.dom.padsLayer.classList.add('deployed');
-                            gsap.to(this.dom.chemicalPuddle, { scale: 0.85, opacity: 0.65, duration: 0.8 });
+                            if (window.gsap) {
+                                gsap.to(this.dom.chemicalPuddle, { scale: 0.85, opacity: 0.65, duration: 0.8 });
+                            } else {
+                                this.dom.chemicalPuddle.style.opacity = '0.65';
+                            }
                             const bSpill = document.getElementById('badge-spill');
                             if (bSpill) {
                                 bSpill.classList.add('completed');
@@ -2132,7 +2552,11 @@
 
             setBotMessage(text, icon = '🤖') {
                 this.dom.botText.innerHTML = text;
-                gsap.fromTo(this.dom.botText, { opacity: 0.3, y: 4 }, { opacity: 1, y: 0, duration: 0.3 });
+                if (window.gsap) {
+                    gsap.fromTo(this.dom.botText, { opacity: 0.3, y: 4 }, { opacity: 1, y: 0, duration: 0.3 });
+                } else {
+                    this.dom.botText.style.opacity = '1';
+                }
             }
 
             checkVictory() {
@@ -2181,9 +2605,23 @@
                     const elHazards = document.getElementById('stat-breakdown-hazards');
                     if (elHazards) elHazards.textContent = `${hazardsCount}/4 pines (+${hazardsBonus} pts)`;
 
+                    // Reporte Automático a Moodle LMS (SCORM 1.2 / 2004 y iFrame postMessage)
+                    if (this.lmsBridge) {
+                        this.lmsBridge.reportCompletion(finalScore, {
+                            healthO2: this.gameState.healthO2,
+                            hazardsDiscovered: hazardsCount,
+                            elapsedSeconds: elapsed
+                        });
+                    }
+
                     this.dom.modalOverlay.classList.add('open');
                 } else {
                     this.audio.playAlarm();
+                    if (this.lmsBridge) {
+                        this.lmsBridge.reportCompletion(0, {
+                            failureReason: failureReason
+                        });
+                    }
                     alert(`🚨 EMERGENCIA NO SUPERADA: ${failureReason}\n\nReinicia el simulador y aplica el protocolo paso a paso.`);
                     window.location.reload();
                 }

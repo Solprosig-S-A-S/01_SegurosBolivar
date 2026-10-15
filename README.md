@@ -67,6 +67,7 @@ Plataforma interactiva de micro-juegos de entrenamiento técnico y prevención d
 
 ## 🚀 Instrucciones de Uso
 
+### Modo Web Local / Standalone
 Abra cualquiera de los archivos `.html` directamente en Google Chrome, Microsoft Edge, Mozilla Firefox o Safari:
 - `juego1_sga.html`
 - `juego2_bodega.html`
@@ -74,4 +75,13 @@ Abra cualquiera de los archivos `.html` directamente en Google Chrome, Microsoft
 - `juego4_taller.html`
 - `juego5_emergencias.html`
 
-No requiere conexión a Internet (salvo fuentes web y librerías CDN para GSAP y FontAwesome).
+### Modo Moodle LMS (Paquetes SCORM 1.2)
+> 📄 **Guía Paso a Paso para Administradores de Moodle**: [`docs/GUIA_INTEGRACION_MOODLE.md`](docs/GUIA_INTEGRACION_MOODLE.md)
+Toda la suite incluye integración nativa con Moodle a través de **`BolivarLmsBridge`** y paquetes SCORM 1.2 listos para subir:
+1. Suba los archivos `.zip` ubicados en `scorm_packages/` como actividades de tipo **Paquete SCORM** en su curso de Moodle.
+2. Moodle registrará automáticamente las calificaciones en el **Libro de Calificaciones (Gradebook)**.
+3. Para regenerar los paquetes tras cualquier cambio en el código, ejecute:
+```powershell
+python build_scorm.py
+```
+

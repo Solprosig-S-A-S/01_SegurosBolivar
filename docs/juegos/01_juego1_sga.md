@@ -67,13 +67,24 @@ El simulador incorpora vectores SVG nativos con rombos de borde rojo y fondo bla
 
 ```mermaid
 flowchart TD
-    A[Inicio: Cabina Digital High-Tech] --> B[Fase 1: Tutorial Bolívar Safety Bot]
-    B -->|Aprender lectura FDS e interactuar con reactivo demo| C[Fase 2: Desafío Cronometrado 120s]
+    Z[Apertura: Briefing Situacional de Obra] -->|Botón Iniciar Despliegue| A[Cabina Digital High-Tech]
+    A --> B[Fase 1: Tutorial Bolívar Safety Bot]
+    B -->|Aprender lectura FDS e interactuar con reactivo demo| C[Fase 2: Desafío Cronometrado 75s]
     C -->|Clasificar 6 reactivos con drag & drop o tap| D[Fase 3: Auditoría y Resultados SST]
     D --> E{Puntaje Obtenido}
     E -->|>= 80%| F[Certificado de Inspector SGA Aprobado]
     E -->|< 80%| G[Modo Re-inspección Pedagógica de Errores]
 ```
+
+### Pantalla Previa de Contexto Situacional (Briefing Táctico Datapad)
+- **Overlay Previo (`#modal-briefing-overlay`)**: Antes de que inicie la partida o corra cualquier cronómetro, se presenta una pantalla estilo Datapad de Star Wars simplificada y limpia.
+- **Situación Operativa**: Explica el contexto real de obra: *"Acaba de llegar un cargamento químico al frente de obra. Como inspector SST debes verificar cada insumo con su FDS oficial y asignar el pictograma reglamentario antes de dar aval de ingreso a almacén."*
+- **Directiva Operativa en 3 Pasos**:
+  1. *FDS Sección 2*: Consulta indicaciones de peligro y frases H de la sustancia.
+  2. *Asignación SGA*: Arrastra o toca el pictograma oficial de peligro.
+  3. *Tolerancia Cero*: Clasifica los 6 productos en 75s; cada fallo resta 10s.
+- **Instrucciones Directas de Control**: Indica claramente cómo operar en PC (`Ratón / Clic: Arrastrar o tocar`) y en Móvil (`Táctil: Tocar o arrastrar`).
+- **Botón de Despliegue (`btn-start-briefing`)**: Inicia la cabina y activa la interacción del usuario.
 
 ### Fase 1: Inducción Interactiva (Bolívar Safety Bot)
 - Diálogo pedagógico asistido por el avatar institucional *Bolívar Safety Bot*.

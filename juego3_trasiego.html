@@ -39,20 +39,20 @@
             --border-subtle: rgba(148, 163, 184, 0.2);
             --border-highlight: rgba(255, 199, 44, 0.4);
 
-            /* Escala Tipográfica Ergonómica */
-            --font-xs: 0.8125rem;   /* 13px */
-            --font-sm: 0.9375rem;   /* 15px */
-            --font-base: 1.0625rem; /* 17px */
-            --font-lg: 1.25rem;     /* 20px */
-            --font-xl: 1.5rem;      /* 24px */
-            --font-2xl: 1.875rem;   /* 30px */
+            /* Escala Tipográfica Ergonómica (Estandarizada) */
+            --font-xs: 0.75rem;     /* 12px */
+            --font-sm: 0.875rem;    /* 14px */
+            --font-base: 0.9375rem; /* 15px */
+            --font-lg: 1.125rem;    /* 18px */
+            --font-xl: 1.375rem;    /* 22px */
+            --font-2xl: 1.625rem;   /* 26px */
 
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 18px;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
             --radius-full: 9999px;
-            --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
-            --shadow-glow: 0 0 20px rgba(0, 103, 56, 0.35);
+            --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 12px rgba(0, 103, 56, 0.25);
         }
 
         * {
@@ -91,10 +91,10 @@
         .app-viewport {
             width: 100%;
             max-width: 1020px;
-            background: rgba(15, 23, 42, 0.94);
-            border: 2px solid var(--border-subtle);
+            background: rgba(15, 23, 42, 0.96);
+            border: 1px solid rgba(148, 163, 184, 0.2);
             border-radius: var(--radius-lg);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), var(--shadow-glow);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(12px);
             display: flex;
             flex-direction: column;
@@ -333,11 +333,18 @@
             color: #FFFFFF;
         }
 
-        /* Toast Técnico Normativo de Confirmación */
+        /* Toast Técnico Normativo de Confirmación Flotante (Sin alterar layout) */
         .tech-feedback-toast {
-            margin: 8px 16px 0 16px;
-            background: rgba(6, 78, 59, 0.95);
-            border: 2px solid var(--exito-verde);
+            position: absolute;
+            top: 68px;
+            left: 16px;
+            right: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+            z-index: 50;
+            background: rgba(15, 23, 42, 0.96);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-left: 4px solid var(--exito-verde);
             border-radius: var(--radius-md);
             padding: 10px 14px;
             display: flex;
@@ -345,11 +352,11 @@
             gap: 12px;
             font-size: var(--font-xs);
             color: #d1fae5;
-            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.25);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(8px);
             opacity: 0;
             transform: translateY(-8px);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: opacity 0.25s ease, transform 0.25s ease;
             pointer-events: none;
         }
 
@@ -360,10 +367,11 @@
         }
 
         .tech-feedback-toast.error-toast {
-            background: rgba(127, 29, 29, 0.95);
-            border-color: var(--alerta-rojo);
+            background: rgba(15, 23, 42, 0.96);
+            border-color: rgba(148, 163, 184, 0.2);
+            border-left: 4px solid var(--alerta-rojo);
             color: #fee2e2;
-            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
         }
 
         .tech-toast-icon {
@@ -454,10 +462,115 @@
             touch-action: none;
         }
 
+        /* Roadmap Guiado de Procedimiento de Trasiego (Dec. 1079/2015 & NFPA 77) */
+        .trasiego-roadmap-guide {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background: rgba(15, 23, 42, 0.98);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 8px 14px;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            white-space: nowrap;
+            z-index: 15;
+            position: relative;
+        }
+        .trasiego-roadmap-guide::-webkit-scrollbar { display: none; }
+
+        .roadmap-step-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 9px;
+            border-radius: var(--radius-sm);
+            background: rgba(30, 41, 59, 0.65);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: all 0.25s ease;
+            cursor: default;
+            flex-shrink: 0;
+            user-select: none;
+        }
+        .roadmap-step-pill.step-completed {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--exito-verde);
+            color: var(--exito-verde);
+        }
+        .roadmap-step-pill.step-active {
+            background: rgba(255, 199, 44, 0.15);
+            border-color: var(--amarillo-bolivar);
+            color: #FFFFFF;
+            box-shadow: 0 0 12px rgba(255, 199, 44, 0.35);
+            animation: activePillPulse 1.4s infinite ease-in-out;
+        }
+        @keyframes activePillPulse {
+            0%, 100% { border-color: var(--amarillo-bolivar); box-shadow: 0 0 6px rgba(255, 199, 44, 0.2); }
+            50% { border-color: #FDE047; box-shadow: 0 0 14px rgba(255, 199, 44, 0.55); }
+        }
+        .roadmap-step-pill.step-locked {
+            opacity: 0.45;
+            background: rgba(15, 23, 42, 0.5);
+            border-color: rgba(148, 163, 184, 0.12);
+        }
+        .roadmap-step-pill .step-badge {
+            width: 18px;
+            height: 18px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 900;
+            background: #334155;
+            color: #FFFFFF;
+            flex-shrink: 0;
+        }
+        .roadmap-step-pill.step-completed .step-badge {
+            background: var(--exito-verde);
+            color: #0F172A;
+        }
+        .roadmap-step-pill.step-active .step-badge {
+            background: var(--amarillo-bolivar);
+            color: #0F172A;
+        }
+        .roadmap-step-arrow {
+            color: var(--text-subtle);
+            font-size: 0.65rem;
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+
         /* Hotspots de Inspección (Puntos en Rojo parpadeante) */
         .hotspot-target {
             cursor: pointer;
             transition: all 0.3s ease;
+        }
+
+        /* Estados de Hotspot Paso a Paso */
+        .hotspot-target.is-step-active .pulse-hazard {
+            animation: stepActivePulse 0.9s infinite alternate ease-in-out;
+            stroke: var(--amarillo-bolivar) !important;
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 16px var(--amarillo-bolivar)) !important;
+        }
+        @keyframes stepActivePulse {
+            from { r: 24px; opacity: 0.85; }
+            to { r: 36px; opacity: 1; }
+        }
+
+        .hotspot-target.is-step-locked {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+        .hotspot-target.is-step-locked .pulse-hazard {
+            animation: none;
+            stroke: #64748B;
+            stroke-width: 2px;
+            filter: none;
         }
 
         .pulse-hazard {
@@ -485,6 +598,10 @@
             stroke: var(--amarillo-bolivar) !important;
         }
 
+        .hotspot-target.is-certified {
+            opacity: 1 !important;
+            cursor: default;
+        }
         .hotspot-target.is-certified .pulse-hazard {
             animation: none;
             stroke: var(--exito-verde);
@@ -516,7 +633,7 @@
 
         .tray-cards-grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 8px;
             width: 100%;
             padding: 2px 0 4px 0;
@@ -685,7 +802,8 @@
 
         .modal-dialog {
             background: #0f172a;
-            border: 2px solid var(--border-subtle);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-left: 4px solid var(--amarillo-bolivar);
             border-radius: var(--radius-lg);
             width: 100%;
             max-width: 620px;
@@ -693,9 +811,9 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
-            transform: scale(0.92);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
+            transform: scale(0.96);
+            transition: transform 0.25s ease;
         }
 
         .modal-overlay.open .modal-dialog {
@@ -703,13 +821,13 @@
         }
 
         .modal-header-audit {
-            background: linear-gradient(135deg, #065f46, var(--verde-bolivar));
+            background: rgba(15, 23, 42, 0.95);
             padding: 16px 20px;
             color: #fff;
             display: flex;
             align-items: center;
             gap: 14px;
-            border-bottom: 2px solid var(--amarillo-bolivar);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
         }
 
         .modal-body {
@@ -824,11 +942,11 @@
             40%, 60% { transform: translate3d(8px, 6px, 0); }
         }
 
-        /* Responsive para Tablets y Desktops compactos: 2 filas exactas de 4 columnas */
+        /* Responsive para Tablets y Desktops compactos: 3 filas de 3 columnas */
         @media (max-width: 960px) {
             .tray-cards-grid {
                 display: grid;
-                grid-template-columns: repeat(4, minmax(0, 1fr));
+                grid-template-columns: repeat(3, minmax(0, 1fr));
                 gap: 6px;
                 width: 100%;
                 overflow: visible;
@@ -1057,7 +1175,10 @@
                 padding: 5px 10px;
             }
             .tech-feedback-toast {
-                margin: 4px 8px 0 8px;
+                left: 8px;
+                right: 8px;
+                top: 60px;
+                margin: 0 auto;
                 padding: 8px 10px;
                 font-size: 0.75rem;
             }
@@ -1086,6 +1207,143 @@
             .action-card-sub {
                 font-size: 0.6rem;
             }
+        }
+
+        /* Situational Mission Briefing (Star Wars Datapad clean style) */
+        .briefing-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 8, 16, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .briefing-backdrop.hidden {
+            display: none !important;
+        }
+        .briefing-dialog {
+            background: #0b1220;
+            border: 1px solid rgba(255, 199, 44, 0.4);
+            border-left: 4px solid var(--amarillo-bolivar, #FFC72C);
+            border-radius: 4px;
+            max-width: 520px;
+            width: 100%;
+            padding: 22px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 199, 44, 0.15);
+            animation: briefingPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes briefingPop {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .briefing-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .briefing-tag {
+            font-size: 0.68rem;
+            color: var(--amarillo-bolivar, #FFC72C);
+            font-family: var(--font-mono, monospace);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+        .briefing-title {
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.02em;
+        }
+        .briefing-subtitle {
+            font-size: 0.82rem;
+            color: #cbd5e1;
+            line-height: 1.45;
+            margin: 0;
+        }
+        .briefing-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 4px;
+            padding: 10px 12px;
+        }
+        .briefing-step-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            line-height: 1.35;
+        }
+        .briefing-step-row strong {
+            color: #ffffff;
+        }
+        .briefing-step-num {
+            min-width: 22px;
+            height: 22px;
+            background: rgba(255, 199, 44, 0.15);
+            border: 1px solid var(--amarillo-bolivar, #FFC72C);
+            color: var(--amarillo-bolivar, #FFC72C);
+            font-size: 0.72rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        .briefing-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.74rem;
+            color: #94a3b8;
+            padding: 7px 10px;
+            background: rgba(8, 14, 26, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 4px;
+            flex-wrap: wrap;
+        }
+        .briefing-controls strong {
+            color: var(--amarillo-bolivar, #FFC72C);
+        }
+        .btn-start-briefing {
+            background: linear-gradient(135deg, #FFC72C 0%, #F59E0B 100%);
+            border: 1px solid #FFE81F;
+            color: #070b14;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 199, 44, 0.35);
+            transition: all 0.2s ease;
+        }
+        .btn-start-briefing:hover {
+            background: linear-gradient(135deg, #FFE81F 0%, #FFC72C 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 0 28px rgba(255, 232, 31, 0.6);
         }
     </style>
 </head>
@@ -1128,7 +1386,10 @@
                     <i class="fa-solid fa-shield-halved"></i>
                     <span>Puntos: <strong id="stat-score-display" style="color: var(--exito-verde);">0</strong></span>
                 </div>
-                <button class="btn-icon" id="btn-toggle-sound" title="Activar/Silenciar Audio" aria-label="Audio">
+                <button class="btn-icon" id="btn-moodle-fullscreen" title="Pantalla Completa (Moodle)" aria-label="Pantalla Completa">
+                    <i class="fa-solid fa-expand" style="color: var(--amarillo-bolivar);"></i>
+                </button>
+                <button class="btn-icon" id="btn-sound-toggle" title="Activar/Silenciar Audio" aria-label="Audio">
                     <i class="fa-solid fa-volume-high" id="sound-icon"></i>
                 </button>
             </div>
@@ -1165,6 +1426,39 @@
                         </span>
                     </div>
                     <span class="stage-badge-live" id="equipment-name-badge">EXCAVADORA CAT 320D (MOTOR DIESEL)</span>
+                </div>
+
+                <!-- Barra de Procedimiento Paso a Paso (Dec. 1079/2015 & NFPA 77) -->
+                <div class="trasiego-roadmap-guide" id="trasiego-roadmap-guide" aria-label="Ruta secuencial del procedimiento de trasiego">
+                    <div class="roadmap-step-pill step-active" data-step="1">
+                        <span class="step-badge">1</span>
+                        <span class="step-label">1. Cuñas</span>
+                    </div>
+                    <span class="roadmap-step-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                    <div class="roadmap-step-pill step-locked" data-step="2">
+                        <span class="step-badge">2</span>
+                        <span class="step-label">2. Motor/Cabina</span>
+                    </div>
+                    <span class="roadmap-step-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                    <div class="roadmap-step-pill step-locked" data-step="3">
+                        <span class="step-badge">3</span>
+                        <span class="step-label">3. Polo a Tierra</span>
+                    </div>
+                    <span class="roadmap-step-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                    <div class="roadmap-step-pill step-locked" data-step="4">
+                        <span class="step-badge">4</span>
+                        <span class="step-label">4. Bandeja Goteo</span>
+                    </div>
+                    <span class="roadmap-step-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                    <div class="roadmap-step-pill step-locked" data-step="5">
+                        <span class="step-badge">5</span>
+                        <span class="step-label">5. Kit Derrames</span>
+                    </div>
+                    <span class="roadmap-step-arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                    <div class="roadmap-step-pill step-locked" data-step="6">
+                        <span class="step-badge">6</span>
+                        <span class="step-label">6. Extintor ABC</span>
+                    </div>
                 </div>
 
                 <div class="svg-canvas-wrap" id="svg-stage-container">
@@ -1513,6 +1807,17 @@
                             <p class="action-card-sub" id="trap2-card-sub">Agua presurizada para sofocar fuego en boquilla.</p>
                         </div>
                     </div>
+
+                    <!-- Tarjeta 9: Trampa Dinámica 3 -->
+                    <div class="action-card trap-card" id="card-action-trap3" data-card="trap3">
+                        <div class="action-card-icon-box">
+                            <i class="fa-solid fa-triangle-exclamation" id="trap3-card-icon"></i>
+                        </div>
+                        <div class="action-card-text">
+                            <h3 class="action-card-title" id="trap3-card-title">Arena Común de Excavación</h3>
+                            <p class="action-card-sub" id="trap3-card-sub">Cubrir derrame de diésel con tierra y arena extraída del frente de obra.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
@@ -1576,6 +1881,49 @@
     </div>
 
     <!-- ==========================================================
+         MODAL DE CONTEXTO Y SITUACIÓN DE OBRA (BRIEFING)
+         ========================================================== -->
+    <div id="modal-briefing-overlay" class="briefing-backdrop">
+        <div class="briefing-dialog">
+            <div class="briefing-header">
+                <span class="briefing-tag">// REPORTE DE SITUACIÓN EN OBRA //</span>
+                <h2 class="briefing-title">
+                    <i class="fa-solid fa-truck-droplet" style="color: var(--amarillo-bolivar, #FFC72C);"></i>
+                    MISIÓN: TRASIEGO SEGURO DE COMBUSTIBLE
+                </h2>
+                <p class="briefing-subtitle">
+                    Un camión cisterna ha llegado al frente de obra para abastecer de ACPM a la maquinaria pesada en operación. El trasiego de hidrocarburos presenta alto riesgo de incendio por electricidad estática y derrame de combustible. Como supervisor SST, debes ejecutar el procedimiento paso a paso (Decreto 1079 de 2015 / NFPA 77) asegurando cada control antes de operar mangueras.
+                </p>
+            </div>
+
+            <div class="briefing-steps">
+                <div class="briefing-step-row">
+                    <span class="briefing-step-num">1</span>
+                    <span><strong>Inmovilización Mecánica:</strong> Coloca cuñas y apaga el motor antes de intervenir.</span>
+                </div>
+                <div class="briefing-step-row">
+                    <span class="briefing-step-num">2</span>
+                    <span><strong>Polo a Tierra:</strong> Conecta la pinza a tierra al chasis para disipar estática (&lt;10 Ω).</span>
+                </div>
+                <div class="briefing-step-row">
+                    <span class="briefing-step-num">3</span>
+                    <span><strong>Contención y Extintor:</strong> Ubica la bandeja de goteo, kit de derrames y extintor a 5m.</span>
+                </div>
+            </div>
+
+            <div class="briefing-controls">
+                <span><i class="fa-solid fa-computer-mouse"></i> <strong>PC:</strong> Arrastra o Clic en tarjeta y punto</span>
+                <span>•</span>
+                <span><i class="fa-solid fa-mobile-screen"></i> <strong>Celular:</strong> Toca tarjeta y toca punto</span>
+            </div>
+
+            <button id="btn-start-briefing" class="btn-start-briefing">
+                <i class="fa-solid fa-play"></i> INICIAR PROCEDIMIENTO DE TRASIEGO
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================================
          MOTOR DE AUDIO, FÍSICA DE CONFETI Y LÓGICA DE JUEGO (ES6)
          ========================================================== -->
     <script>
@@ -1606,6 +1954,10 @@
             toggleMute() {
                 this.isMuted = !this.isMuted;
                 return this.isMuted;
+            }
+
+            playTap() {
+                this.playTone(600, 'sine', 0.05, 0.08);
             }
 
             playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.1) {
@@ -1683,6 +2035,160 @@
 
         /**
          * =========================================================================
+         * INTEGRACIÓN MOODLE LMS & SCORM UNIVERSAL (SCORM 1.2 / 2004 / IFRAME)
+         * =========================================================================
+         */
+        class BolivarLmsBridge {
+            constructor(gameId, passingScore = 80) {
+                this.gameId = gameId;
+                this.passingScore = passingScore;
+                this.scormVersion = null;
+                this.api = null;
+                this.isInitialized = false;
+                this.studentName = '';
+                this.init();
+            }
+
+            findScormAPI(win) {
+                let attempts = 0;
+                let currentWin = win;
+                while (currentWin && attempts < 10) {
+                    try {
+                        if (currentWin.API) {
+                            this.scormVersion = '1.2';
+                            return currentWin.API;
+                        }
+                        if (currentWin.API_1484_11) {
+                            this.scormVersion = '2004';
+                            return currentWin.API_1484_11;
+                        }
+                    } catch (e) {
+                        break;
+                    }
+                    if (currentWin.parent && currentWin.parent !== currentWin) {
+                        currentWin = currentWin.parent;
+                    } else if (currentWin.opener) {
+                        currentWin = currentWin.opener;
+                    } else {
+                        break;
+                    }
+                    attempts++;
+                }
+                return null;
+            }
+
+            init() {
+                try {
+                    this.api = this.findScormAPI(window);
+                    if (this.api) {
+                        if (this.scormVersion === '1.2') {
+                            const res = this.api.LMSInitialize("");
+                            if (res === "true" || res === true) {
+                                this.isInitialized = true;
+                                this.api.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                                this.api.LMSSetValue("cmi.core.score.min", "0");
+                                this.api.LMSSetValue("cmi.core.score.max", "100");
+                                this.studentName = this.api.LMSGetValue("cmi.core.student_name") || '';
+                                this.api.LMSCommit("");
+                            }
+                        } else if (this.scormVersion === '2004') {
+                            const res = this.api.Initialize("");
+                            if (res === "true" || res === true) {
+                                this.isInitialized = true;
+                                this.api.SetValue("cmi.completion_status", "incomplete");
+                                this.api.SetValue("cmi.score.min", "0");
+                                this.api.SetValue("cmi.score.max", "100");
+                                this.studentName = this.api.GetValue("cmi.learner_name") || '';
+                                this.api.Commit("");
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.info('[LMS Bridge] Operando en modo standalone o iFrame web:', e);
+                }
+
+                window.addEventListener('beforeunload', () => this.terminate());
+            }
+
+            reportCompletion(score, details = {}) {
+                const passed = score >= this.passingScore;
+                const normalizedScore = Math.min(100, Math.max(0, Math.round(score)));
+
+                if (this.api && this.isInitialized) {
+                    try {
+                        if (this.scormVersion === '1.2') {
+                            this.api.LMSSetValue("cmi.core.score.raw", normalizedScore.toString());
+                            this.api.LMSSetValue("cmi.core.lesson_status", passed ? "passed" : "failed");
+                            this.api.LMSCommit("");
+                        } else if (this.scormVersion === '2004') {
+                            this.api.SetValue("cmi.score.raw", normalizedScore.toString());
+                            this.api.SetValue("cmi.score.scaled", (normalizedScore / 100).toFixed(2));
+                            this.api.SetValue("cmi.success_status", passed ? "passed" : "failed");
+                            this.api.SetValue("cmi.completion_status", "completed");
+                            this.api.Commit("");
+                        }
+                    } catch (e) {
+                        console.warn('[LMS Bridge] Error al reportar a SCORM:', e);
+                    }
+                }
+
+                try {
+                    if (window.parent && window.parent !== window) {
+                        window.parent.postMessage({
+                            type: 'MOODLE_GAME_REPORT',
+                            gameId: this.gameId,
+                            score: normalizedScore,
+                            passed: passed,
+                            details: details,
+                            timestamp: new Date().toISOString()
+                        }, '*');
+                    }
+                } catch (e) {}
+            }
+
+            terminate() {
+                if (!this.api || !this.isInitialized) return;
+                try {
+                    if (this.scormVersion === '1.2') {
+                        this.api.LMSCommit("");
+                        this.api.LMSFinish("");
+                    } else if (this.scormVersion === '2004') {
+                        this.api.Commit("");
+                        this.api.Terminate("");
+                    }
+                    this.isInitialized = false;
+                } catch (e) {}
+            }
+        }
+
+        function setupMoodleFullscreen(buttonId = 'btn-moodle-fullscreen') {
+            const btn = document.getElementById(buttonId);
+            if (!btn) return;
+            const updateIcon = () => {
+                const isFull = !!document.fullscreenElement;
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = isFull ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                }
+                btn.title = isFull ? 'Salir de Pantalla Completa' : 'Pantalla Completa (Moodle)';
+            };
+            btn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    const docEl = document.documentElement;
+                    if (docEl.requestFullscreen) docEl.requestFullscreen().catch(() => {});
+                    else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+                    else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                }
+            });
+            document.addEventListener('fullscreenchange', updateIcon);
+            document.addEventListener('webkitfullscreenchange', updateIcon);
+        }
+
+        /**
+         * =========================================================================
          * MOTOR DE PARTÍCULAS CANVAS (CONFETI & ESTRELLAS ARCADE)
          * =========================================================================
          */
@@ -1749,6 +2255,170 @@
                 requestAnimationFrame(() => this.loop());
             }
         }
+
+        /**
+         * =========================================================================
+         * COORDENADAS ADAPTATIVAS Y CONFIGURACIÓN ANATÓMICA POR VEHÍCULO (DESKTOP / MÓVIL)
+         * =========================================================================
+         */
+        const VEHICLE_CONFIGS = [
+            // 0: EXCAVADORA CAT 320D (MOTOR DIESEL)
+            {
+                desktop: {
+                    machineTransform: 'translate(540, 85)',
+                    hose: 'M 220,225 Q 400,265 610,210',
+                    groundCable: 'M 185,235 Q 450,335 755,245',
+                    clamp: 'translate(755, 245)',
+                    dripTray: 'translate(550, 250)',
+                    extinguisher: 'translate(350, 225)',
+                    wheelChocks: 'translate(195, 255)',
+                    spillKit: 'translate(460, 240)',
+                    hotspots: {
+                        1: 'translate(665, 135)',
+                        2: 'translate(755, 245)',
+                        3: 'translate(585, 255)',
+                        4: 'translate(365, 250)',
+                        5: 'translate(210, 275)',
+                        6: 'translate(480, 275)'
+                    }
+                },
+                mobile: {
+                    machineTransform: 'translate(250, 25)',
+                    hose: 'M 170,165 Q 240,195 320,150',
+                    groundCable: 'M 135,175 Q 280,240 455,205',
+                    clamp: 'translate(455, 205)',
+                    dripTray: 'translate(280, 165)',
+                    extinguisher: 'translate(160, 135)',
+                    wheelChocks: 'translate(80, 185)',
+                    spillKit: 'translate(230, 175)',
+                    hotspots: {
+                        1: 'translate(375, 95)',
+                        2: 'translate(455, 205)',
+                        3: 'translate(315, 170)',
+                        4: 'translate(175, 160)',
+                        5: 'translate(95, 205)',
+                        6: 'translate(245, 205)'
+                    }
+                }
+            },
+            // 1: VOLQUETA DOBLETROQUE KENWORTH T800
+            {
+                desktop: {
+                    machineTransform: 'translate(540, 85)',
+                    hose: 'M 220,225 Q 440,270 695,218',
+                    groundCable: 'M 185,235 Q 480,335 785,245',
+                    clamp: 'translate(785, 245)',
+                    dripTray: 'translate(635, 250)',
+                    extinguisher: 'translate(350, 225)',
+                    wheelChocks: 'translate(195, 255)',
+                    spillKit: 'translate(470, 240)',
+                    hotspots: {
+                        1: 'translate(640, 140)',
+                        2: 'translate(785, 245)',
+                        3: 'translate(670, 255)',
+                        4: 'translate(365, 250)',
+                        5: 'translate(210, 275)',
+                        6: 'translate(480, 275)'
+                    }
+                },
+                mobile: {
+                    machineTransform: 'translate(250, 25)',
+                    hose: 'M 170,165 Q 260,200 375,155',
+                    groundCable: 'M 135,175 Q 300,240 475,205',
+                    clamp: 'translate(475, 205)',
+                    dripTray: 'translate(335, 168)',
+                    extinguisher: 'translate(160, 135)',
+                    wheelChocks: 'translate(80, 185)',
+                    spillKit: 'translate(230, 175)',
+                    hotspots: {
+                        1: 'translate(345, 98)',
+                        2: 'translate(475, 205)',
+                        3: 'translate(365, 172)',
+                        4: 'translate(175, 160)',
+                        5: 'translate(95, 205)',
+                        6: 'translate(245, 205)'
+                    }
+                }
+            },
+            // 2: BULLDOZER CAT D6T (CADENAS HIGH-DRIVE)
+            {
+                desktop: {
+                    machineTransform: 'translate(540, 85)',
+                    hose: 'M 220,225 Q 400,265 610,205',
+                    groundCable: 'M 185,235 Q 460,335 770,245',
+                    clamp: 'translate(770, 245)',
+                    dripTray: 'translate(555, 250)',
+                    extinguisher: 'translate(350, 225)',
+                    wheelChocks: 'translate(195, 255)',
+                    spillKit: 'translate(460, 240)',
+                    hotspots: {
+                        1: 'translate(670, 130)',
+                        2: 'translate(770, 245)',
+                        3: 'translate(585, 255)',
+                        4: 'translate(365, 250)',
+                        5: 'translate(210, 275)',
+                        6: 'translate(480, 275)'
+                    }
+                },
+                mobile: {
+                    machineTransform: 'translate(250, 25)',
+                    hose: 'M 170,165 Q 240,195 320,148',
+                    groundCable: 'M 135,175 Q 290,240 465,205',
+                    clamp: 'translate(465, 205)',
+                    dripTray: 'translate(285, 165)',
+                    extinguisher: 'translate(160, 135)',
+                    wheelChocks: 'translate(80, 185)',
+                    spillKit: 'translate(230, 175)',
+                    hotspots: {
+                        1: 'translate(380, 92)',
+                        2: 'translate(465, 205)',
+                        3: 'translate(315, 170)',
+                        4: 'translate(175, 160)',
+                        5: 'translate(95, 205)',
+                        6: 'translate(245, 205)'
+                    }
+                }
+            },
+            // 3: GENERADOR INDUSTRIAL CATERPILLAR 250kVA
+            {
+                desktop: {
+                    machineTransform: 'translate(540, 85)',
+                    hose: 'M 220,225 Q 410,265 615,215',
+                    groundCable: 'M 185,235 Q 470,335 795,245',
+                    clamp: 'translate(795, 245)',
+                    dripTray: 'translate(560, 250)',
+                    extinguisher: 'translate(350, 225)',
+                    wheelChocks: 'translate(195, 255)',
+                    spillKit: 'translate(460, 240)',
+                    hotspots: {
+                        1: 'translate(745, 145)',
+                        2: 'translate(795, 245)',
+                        3: 'translate(595, 255)',
+                        4: 'translate(365, 250)',
+                        5: 'translate(210, 275)',
+                        6: 'translate(480, 275)'
+                    }
+                },
+                mobile: {
+                    machineTransform: 'translate(250, 25)',
+                    hose: 'M 170,165 Q 245,195 325,152',
+                    groundCable: 'M 135,175 Q 310,240 490,205',
+                    clamp: 'translate(490, 205)',
+                    dripTray: 'translate(290, 168)',
+                    extinguisher: 'translate(160, 135)',
+                    wheelChocks: 'translate(80, 185)',
+                    spillKit: 'translate(230, 175)',
+                    hotspots: {
+                        1: 'translate(440, 100)',
+                        2: 'translate(490, 205)',
+                        3: 'translate(325, 172)',
+                        4: 'translate(175, 160)',
+                        5: 'translate(95, 205)',
+                        6: 'translate(245, 205)'
+                    }
+                }
+            }
+        ];
 
         /**
          * =========================================================================
@@ -1922,6 +2592,16 @@
                     }
                 };
 
+                // Secuencia Canónica Obligatoria del Procedimiento de Trasiego (Dec. 1079/2015 & NFPA 77)
+                this.PROCEDURE_STEPS = [
+                    { targetId: 5, step: 1, name: "1. Cuñas", fullName: "Cuñas en Llantas", norm: "Dec. 1079/2015 Art. 2.2.1.7.7", icon: "fa-stop", prompt: "Paso 1 del Procedimiento: Inmovilice el carrotanque colocando las CUÑAS en las llantas antes de cualquier maniobra." },
+                    { targetId: 1, step: 2, name: "2. Motor/Cabina", fullName: "Apagado de Motor y Celular", norm: "Ley 55/1993 y Res. 773/2021", icon: "fa-power-off", prompt: "Paso 2: Neutralice fuentes de ignición apagando el MOTOR y aislando celulares con baterías de litio (temperatura >450°C)." },
+                    { targetId: 2, step: 3, name: "3. Polo a Tierra", fullName: "Conexión Polo a Tierra", norm: "NFPA 77 & Dec. 1079/2015", icon: "fa-bolt", prompt: "Paso 3: Conecte el cable de POLO A TIERRA (<10 Ω) al chasis para drenar la estática acumulada por la fricción." },
+                    { targetId: 3, step: 4, name: "4. Bandeja Goteo", fullName: "Bandeja Antiderrame al 110%", norm: "Dec. 4741/2005", icon: "fa-shield", prompt: "Paso 4: Posicione la BANDEJA ANTIDERRAME al 110% bajo el acople antes de acoplar la manguera y abrir el flujo." },
+                    { targetId: 6, step: 5, name: "5. Kit Derrames", fullName: "Alistamiento Kit Antiderrame", norm: "Dec. 321/1999 PNC", icon: "fa-toolbox", prompt: "Paso 5: Aliste el KIT ANTIDERRAME de respuesta rápida con material absorbente oleofílico in situ." },
+                    { targetId: 4, step: 6, name: "6. Extintor ABC", fullName: "Extintor Satélite ABC 150 lbs", norm: "NFPA 10", icon: "fa-fire-extinguisher", prompt: "Paso 6: Disponga el EXTINTOR SATÉLITE ABC 150 lbs a 5 metros contra el viento para certificar el frente de trasiego." }
+                ];
+
                 this.cacheDom();
                 this.bindEvents();
                 this.applySvgResponsiveLayout();
@@ -1932,7 +2612,7 @@
             cacheDom() {
                 this.dom = {
                     viewport: document.getElementById('app-viewport'),
-                    btnToggleSound: document.getElementById('btn-toggle-sound'),
+                    btnToggleSound: document.getElementById('btn-sound-toggle') || document.getElementById('btn-toggle-sound'),
                     soundIcon: document.getElementById('sound-icon'),
                     statVehicle: document.getElementById('stat-vehicle-current'),
                     statTimer: document.getElementById('stat-timer-display'),
@@ -1944,6 +2624,7 @@
                     trayCounter: document.getElementById('tray-counter-label'),
                     comboBadge: document.getElementById('combo-badge'),
                     comboDisplay: document.getElementById('combo-multiplier-display'),
+                    roadmapGuide: document.getElementById('trasiego-roadmap-guide'),
 
                     // Toast Feedback
                     toast: document.getElementById('tech-feedback-toast'),
@@ -1987,12 +2668,22 @@
                     finalStatPoints: document.getElementById('final-stat-points'),
                     btnAuditRestart: document.getElementById('btn-audit-restart')
                 };
+
+                // Integración Moodle LMS & SCORM
+                this.lmsBridge = new BolivarLmsBridge('juego3_trasiego', 80);
+                setupMoodleFullscreen('btn-moodle-fullscreen');
             }
 
             applySvgResponsiveLayout() {
                 const isMobile = window.innerWidth <= 640;
                 const svg = document.getElementById('field-svg');
                 if (!svg) return;
+
+                const vehIndex = (typeof this.currentVehicleIndex === 'number' && this.currentVehicleIndex >= 0 && this.currentVehicleIndex < VEHICLE_CONFIGS.length)
+                    ? this.currentVehicleIndex
+                    : 0;
+                const vehCfg = VEHICLE_CONFIGS[vehIndex];
+                const activeCfg = isMobile ? vehCfg.mobile : vehCfg.desktop;
 
                 if (isMobile) {
                     svg.setAttribute('viewBox', '0 0 540 280');
@@ -2007,43 +2698,10 @@
                         groundLine.setAttribute('y2', '210');
                     }
 
-                    // Camión cisterna y maquinaria pesada cercanos (sin vacío central)
                     const tanker = document.getElementById('tanker-truck');
                     const machine = document.getElementById('machinery-truck');
                     if (tanker) tanker.setAttribute('transform', 'translate(15, 35)');
-                    if (machine) machine.setAttribute('transform', 'translate(250, 25)');
-
-                    // Manguera y conexiones dinámicas adaptadas al nuevo ancho
-                    const hose = document.getElementById('svg-fuel-hose');
-                    const groundCable = document.getElementById('svg-ground-cable');
-                    const clamp = document.getElementById('svg-clamp-attached');
-                    const tray = document.getElementById('svg-drip-tray');
-                    const ext = document.getElementById('svg-extinguisher');
-                    const chocks = document.getElementById('svg-wheel-chocks');
-                    const spill = document.getElementById('svg-spill-kit');
-
-                    if (hose) hose.setAttribute('d', 'M 170,165 Q 240,195 320,150');
-                    if (groundCable) groundCable.setAttribute('d', 'M 135,175 Q 280,240 455,205');
-                    if (clamp) clamp.setAttribute('transform', 'translate(455, 205)');
-                    if (tray) tray.setAttribute('transform', 'translate(280, 165)');
-                    if (ext) ext.setAttribute('transform', 'translate(160, 135)');
-                    if (chocks) chocks.setAttribute('transform', 'translate(80, 185)');
-                    if (spill) spill.setAttribute('transform', 'translate(230, 175)');
-
-                    // Hotspots organizados con ergonomía táctil y cero colisión en móviles
-                    const h1 = document.getElementById('hotspot-1');
-                    const h2 = document.getElementById('hotspot-2');
-                    const h3 = document.getElementById('hotspot-3');
-                    const h4 = document.getElementById('hotspot-4');
-                    const h5 = document.getElementById('hotspot-5');
-                    const h6 = document.getElementById('hotspot-6');
-
-                    if (h1) h1.setAttribute('transform', 'translate(375, 95)');
-                    if (h2) h2.setAttribute('transform', 'translate(455, 205)');
-                    if (h3) h3.setAttribute('transform', 'translate(315, 170)');
-                    if (h4) h4.setAttribute('transform', 'translate(175, 160)');
-                    if (h5) h5.setAttribute('transform', 'translate(95, 205)');
-                    if (h6) h6.setAttribute('transform', 'translate(245, 205)');
+                    if (machine) machine.setAttribute('transform', activeCfg.machineTransform);
                 } else {
                     svg.setAttribute('viewBox', '0 70 940 260');
 
@@ -2057,47 +2715,58 @@
                         groundLine.setAttribute('y2', '270');
                     }
 
-                    // Camión cisterna y maquinaria en panorámica desktop
                     const tanker = document.getElementById('tanker-truck');
                     const machine = document.getElementById('machinery-truck');
                     if (tanker) tanker.setAttribute('transform', 'translate(40, 95)');
-                    if (machine) machine.setAttribute('transform', 'translate(540, 85)');
+                    if (machine) machine.setAttribute('transform', activeCfg.machineTransform);
+                }
 
-                    // Manguera y conexiones desktop
-                    const hose = document.getElementById('svg-fuel-hose');
-                    const groundCable = document.getElementById('svg-ground-cable');
-                    const clamp = document.getElementById('svg-clamp-attached');
-                    const tray = document.getElementById('svg-drip-tray');
-                    const ext = document.getElementById('svg-extinguisher');
-                    const chocks = document.getElementById('svg-wheel-chocks');
-                    const spill = document.getElementById('svg-spill-kit');
+                // Manguera y conexiones dinámicas según anatomía del equipo receptor activo
+                const hose = document.getElementById('svg-fuel-hose');
+                const groundCable = document.getElementById('svg-ground-cable');
+                const clamp = document.getElementById('svg-clamp-attached');
+                const tray = document.getElementById('svg-drip-tray');
+                const ext = document.getElementById('svg-extinguisher');
+                const chocks = document.getElementById('svg-wheel-chocks');
+                const spill = document.getElementById('svg-spill-kit');
 
-                    if (hose) hose.setAttribute('d', 'M 220,225 Q 400,265 610,210');
-                    if (groundCable) groundCable.setAttribute('d', 'M 185,235 Q 450,335 755,245');
-                    if (clamp) clamp.setAttribute('transform', 'translate(755, 245)');
-                    if (tray) tray.setAttribute('transform', 'translate(550, 250)');
-                    if (ext) ext.setAttribute('transform', 'translate(350, 225)');
-                    if (chocks) chocks.setAttribute('transform', 'translate(195, 255)');
-                    if (spill) spill.setAttribute('transform', 'translate(460, 240)');
+                if (hose) hose.setAttribute('d', activeCfg.hose);
+                if (groundCable) groundCable.setAttribute('d', activeCfg.groundCable);
+                if (clamp) clamp.setAttribute('transform', activeCfg.clamp);
+                if (tray) tray.setAttribute('transform', activeCfg.dripTray);
+                if (ext) ext.setAttribute('transform', activeCfg.extinguisher);
+                if (chocks) chocks.setAttribute('transform', activeCfg.wheelChocks);
+                if (spill) spill.setAttribute('transform', activeCfg.spillKit);
 
-                    // Hotspots desktop con espaciado amplio y alternancia arriba/abajo
-                    const h1 = document.getElementById('hotspot-1');
-                    const h2 = document.getElementById('hotspot-2');
-                    const h3 = document.getElementById('hotspot-3');
-                    const h4 = document.getElementById('hotspot-4');
-                    const h5 = document.getElementById('hotspot-5');
-                    const h6 = document.getElementById('hotspot-6');
-
-                    if (h1) h1.setAttribute('transform', 'translate(665, 135)');
-                    if (h2) h2.setAttribute('transform', 'translate(755, 245)');
-                    if (h3) h3.setAttribute('transform', 'translate(585, 255)');
-                    if (h4) h4.setAttribute('transform', 'translate(365, 250)');
-                    if (h5) h5.setAttribute('transform', 'translate(210, 275)');
-                    if (h6) h6.setAttribute('transform', 'translate(480, 275)');
+                // Hotspots 1 a 6 adaptados anatómicamente
+                for (let i = 1; i <= 6; i++) {
+                    const hs = document.getElementById(`hotspot-${i}`);
+                    if (hs && activeCfg.hotspots[i]) {
+                        hs.setAttribute('transform', activeCfg.hotspots[i]);
+                    }
                 }
             }
 
             bindEvents() {
+                // Briefing Modal de Contexto Inicial
+                const briefingOverlay = document.getElementById('modal-briefing-overlay');
+                const btnStartBriefing = document.getElementById('btn-start-briefing');
+                if (btnStartBriefing && briefingOverlay) {
+                    btnStartBriefing.addEventListener('click', () => {
+                        try {
+                            if (this.audio && typeof this.audio.playTap === 'function') {
+                                this.audio.playTap();
+                            }
+                        } catch (e) {
+                            console.warn("Audio playTap fallback:", e);
+                        }
+                        briefingOverlay.classList.add('hidden');
+                        this.isGameActive = true;
+                        this.startTimer();
+                        this.updateRoadmapStepVisuals();
+                    });
+                }
+
                 // Resize listener para alternar automáticamente entre vistas desktop y móvil
                 window.addEventListener('resize', () => {
                     this.applySvgResponsiveLayout();
@@ -2296,8 +2965,130 @@
                 }
             }
 
+            /**
+             * =========================================================================
+             * ACTUALIZACIÓN VISUAL DEL PROCEDIMIENTO PASO A PASO (ROADMAP Y HOTSPOTS)
+             * =========================================================================
+             */
+            updateRoadmapStepVisuals() {
+                // Localizar el paso activo (el primer paso aún no resuelto)
+                let activeStepObj = null;
+                for (let i = 0; i < this.PROCEDURE_STEPS.length; i++) {
+                    if (!this.resolvedHotspots.has(this.PROCEDURE_STEPS[i].targetId)) {
+                        activeStepObj = this.PROCEDURE_STEPS[i];
+                        break;
+                    }
+                }
+
+                // 1. Actualizar las píldoras de la barra superior del Roadmap
+                if (this.dom.roadmapGuide) {
+                    let roadmapHtml = '';
+                    this.PROCEDURE_STEPS.forEach((step, idx) => {
+                        const isResolved = this.resolvedHotspots.has(step.targetId);
+                        const isActive = (activeStepObj && step.targetId === activeStepObj.targetId);
+                        let statusClass = 'step-locked';
+                        let badgeContent = `${step.step}`;
+
+                        if (isResolved) {
+                            statusClass = 'step-completed';
+                            badgeContent = '✓';
+                        } else if (isActive) {
+                            statusClass = 'step-active';
+                            badgeContent = `${step.step}`;
+                        }
+
+                        roadmapHtml += `
+                            <div class="roadmap-step-pill ${statusClass}" title="${step.fullName} (${step.norm})">
+                                <span class="step-badge">${badgeContent}</span>
+                                <span class="step-label">${step.name}</span>
+                            </div>
+                        `;
+                        if (idx < this.PROCEDURE_STEPS.length - 1) {
+                            roadmapHtml += `<span class="roadmap-step-arrow"><i class="fa-solid fa-chevron-right"></i></span>`;
+                        }
+                    });
+                    this.dom.roadmapGuide.innerHTML = roadmapHtml;
+                }
+
+                // 2. Actualizar el estado visual de los 6 Hotspots en el SVG
+                this.dom.hotspots.forEach(h => {
+                    const targetId = parseInt(h.dataset.target, 10);
+                    const isResolved = this.resolvedHotspots.has(targetId);
+                    const isActive = (activeStepObj && stepItemMatch(activeStepObj, targetId));
+
+                    function stepItemMatch(sObj, tid) {
+                        return sObj.targetId === tid;
+                    }
+
+                    h.classList.remove('is-step-active', 'is-step-locked');
+
+                    const tagElem = document.getElementById(`hotspot-tag-${targetId}`);
+                    const tagBgElem = document.getElementById(`hotspot-tag-bg-${targetId}`);
+                    const dotElem = document.getElementById(`hotspot-dot-${targetId}`);
+                    const numElem = document.getElementById(`hotspot-num-${targetId}`);
+
+                    if (isResolved) {
+                        h.classList.add('is-certified');
+                        if (dotElem) dotElem.setAttribute('fill', '#10B981');
+                        if (numElem) numElem.textContent = '✓';
+                        if (tagBgElem) {
+                            tagBgElem.setAttribute('stroke', '#10B981');
+                            tagBgElem.setAttribute('fill', '#064e3b');
+                        }
+                        if (tagElem) {
+                            tagElem.setAttribute('fill', '#A7F3D0');
+                            tagElem.textContent = 'CORREGIDO ✓';
+                        }
+                    } else if (isActive) {
+                        h.classList.add('is-step-active');
+                        if (dotElem) dotElem.setAttribute('fill', '#FFC72C');
+                        if (numElem) numElem.textContent = `${activeStepObj.step}`;
+                        if (tagBgElem) {
+                            tagBgElem.setAttribute('stroke', '#FFC72C');
+                            tagBgElem.setAttribute('fill', 'rgba(15, 23, 42, 0.95)');
+                        }
+                        if (tagElem) {
+                            tagElem.setAttribute('fill', '#FFC72C');
+                            const shortTitle = activeStepObj.name.replace(/^\d+\.\s*/, '').toUpperCase();
+                            tagElem.textContent = `PASO ${activeStepObj.step}: ${shortTitle}`;
+                        }
+                    } else {
+                        h.classList.add('is-step-locked');
+                        const sIdx = this.PROCEDURE_STEPS.findIndex(s => s.targetId === targetId);
+                        const sNum = sIdx >= 0 ? this.PROCEDURE_STEPS[sIdx].step : '!';
+                        if (dotElem) dotElem.setAttribute('fill', '#475569');
+                        if (numElem) numElem.textContent = `${sNum}`;
+                        if (tagBgElem) {
+                            tagBgElem.setAttribute('stroke', '#64748B');
+                            tagBgElem.setAttribute('fill', 'rgba(15, 23, 42, 0.8)');
+                        }
+                        if (tagElem) {
+                            tagElem.setAttribute('fill', '#94A3B8');
+                            tagElem.textContent = `🔒 ESPERA PASO ${sNum}`;
+                        }
+                    }
+                });
+
+                // 3. Notificar diálogo contextual de Bolívar Safety Bot
+                if (activeStepObj) {
+                    this.setBotMessage(activeStepObj.prompt, '👨‍🔧');
+                }
+            }
+
             handleHotspotClickSelect(targetId, hotspotElem) {
                 if (this.resolvedHotspots.has(targetId)) return;
+
+                // Validación de Secuencia en Modo Táctil (Bloquea clics en pasos adelantados)
+                const activeStepObj = this.PROCEDURE_STEPS.find(s => !this.resolvedHotspots.has(s.targetId));
+                if (activeStepObj && targetId !== activeStepObj.targetId) {
+                    this.audio.playTone(220, 'sawtooth', 0.12);
+                    this.setBotMessage(`Punto bloqueado. El procedimiento de trasiego exige completar primero el [Paso ${activeStepObj.step}: ${activeStepObj.fullName}].`, '🔒');
+                    const activeHotspot = document.querySelector(`.hotspot-target[data-target="${activeStepObj.targetId}"]`);
+                    if (window.gsap && activeHotspot) {
+                        gsap.fromTo(activeHotspot, { scale: 1.3 }, { scale: 1, duration: 0.35, yoyo: true, repeat: 1 });
+                    }
+                    return;
+                }
 
                 // Deseleccionar si toca el mismo punto (Toggle)
                 if (this.selectedHotspotId === targetId) {
@@ -2370,13 +3161,13 @@
 
                 const parsedCardId = parseInt(cardId, 10);
 
-                // REGLA ATS 1: Inmovilización Mecánica Obligatoria Primero (Dec. 1079/2015)
-                // El Punto 5 (Cuñas en Llantas) DEBE ser el primer peligro neutralizado del camión
-                if (targetId !== 5 && !this.resolvedHotspots.has(5)) {
+                // REGLA ATS OBLIGATORIA: Secuencia Canónica Paso a Paso (Dec. 1079/2015 & NFPA 77)
+                const activeStepObj = this.PROCEDURE_STEPS.find(s => !this.resolvedHotspots.has(s.targetId));
+                if (activeStepObj && targetId !== activeStepObj.targetId) {
                     this.audio.playWompWompError();
                     this.streak = 0;
                     this.updateStreakDisplay();
-                    this.addScore(-30);
+                    this.addScore(-25);
                     this.timeLeft = Math.max(2, this.timeLeft - 4);
 
                     this.dom.viewport.classList.add('shake-screen');
@@ -2386,42 +3177,18 @@
                         gsap.fromTo(cardElem, { x: -10 }, { x: 10, repeat: 3, yoyo: true, duration: 0.07 });
                     }
 
-                    this.showComicBubble("¡SECUENCIA ATS ROTA! 🚫 (-4s)", "bad", { x: centerX, y: centerY - 25 });
-                    this.showTechToast(
-                        "¡Violación de Secuencia ATS! (-4s / -30 pts)",
-                        "Dec. 1079/2015: Primero DEBE inmovilizar el carrotanque con CUÑAS EN LLANTAS (Punto 5) antes de intervenir fuentes eléctricas o acoples.",
-                        true
-                    );
-                    this.setBotMessage("¡Infracción de procedimiento! Calce las llantas con CUÑAS antes de cualquier otra maniobra.", '🚫');
-
-                    if (cardElem) cardElem.classList.remove('is-selected');
-                    this.selectedCardId = null;
-                    return;
-                }
-
-                // REGLA ATS 2: Desconexión de Ignición y Puesta a Tierra antes de abrir compartimentos de combustible
-                // Puntos 3 (Bandeja) y 6 (Kit) requieren tener apagado el motor (1) y conectado el polo a tierra (2)
-                if ((targetId === 3 || targetId === 6) && (!this.resolvedHotspots.has(1) || !this.resolvedHotspots.has(2))) {
-                    this.audio.playWompWompError();
-                    this.streak = 0;
-                    this.updateStreakDisplay();
-                    this.addScore(-30);
-                    this.timeLeft = Math.max(2, this.timeLeft - 4);
-
-                    this.dom.viewport.classList.add('shake-screen');
-                    setTimeout(() => this.dom.viewport.classList.remove('shake-screen'), 350);
-
-                    if (window.gsap && cardElem) {
-                        gsap.fromTo(cardElem, { x: -10 }, { x: 10, repeat: 3, yoyo: true, duration: 0.07 });
+                    const activeHotspotElem = document.querySelector(`.hotspot-target[data-target="${activeStepObj.targetId}"]`);
+                    if (window.gsap && activeHotspotElem) {
+                        gsap.fromTo(activeHotspotElem, { scale: 1.35 }, { scale: 1, duration: 0.35, yoyo: true, repeat: 2, ease: "back.out(2)" });
                     }
 
-                    this.showComicBubble("¡RIESGO DE IGNICIÓN! ⚡ (-4s)", "bad", { x: centerX, y: centerY - 25 });
+                    this.showComicBubble(`¡SIGA EL PASO ${activeStepObj.step}! 🚫 (-4s)`, "bad", { x: centerX, y: centerY - 25 });
                     this.showTechToast(
-                        "¡Violación de Seguridad Eléctrica! (-4s / -30 pts)",
-                        "Res. 773/2021: Prohibido manipular acoples o bandejas si el motor/celular sigue activo (Punto 1) o falta conectar el polo a tierra (Punto 2).",
+                        `¡Secuencia de Trasiego Fuera de Orden! (-4s / -25 pts)`,
+                        `Procedimiento obligatorio: Debe ejecutar primero el [Paso ${activeStepObj.step}: ${activeStepObj.fullName}] antes de esta maniobra (${activeStepObj.norm}).`,
                         true
                     );
-                    this.setBotMessage("¡Peligro de deflagración! Apague el motor y conecte la puesta a tierra antes de preparar la contención.", '⚡');
+                    this.setBotMessage(`¡Infracción de secuencia! El procedimiento paso a paso exige completar primero el [Paso ${activeStepObj.step}: ${activeStepObj.fullName}].`, '🚫');
 
                     if (cardElem) cardElem.classList.remove('is-selected');
                     this.selectedCardId = null;
@@ -2490,6 +3257,9 @@
                     }
 
                     this.dom.trayCounter.textContent = `${this.resolvedHotspots.size} de 6 Corregidos`;
+
+                    // Actualizar Roadmap Secuencial y Desbloquear Siguiente Paso
+                    this.updateRoadmapStepVisuals();
 
                     // Verificar si completó el vehículo actual
                     if (this.resolvedHotspots.size === 6) {
@@ -2649,11 +3419,22 @@
              * =========================================================================
              */
             startTutorialPhase() {
-                this.isGameActive = true;
                 this.hotspotFailCounts = {};
                 this.updateVehicleDisplay();
-                this.startTimer();
-                this.setBotMessage("¡Inspección de Campo SST! Audita los 4 frentes con 6 riesgos críticos cada uno. Analiza cada peligro (!) y aplica la medida reglamentaria. Cada vehículo completado suma tiempo extra.");
+                this.updateRoadmapStepVisuals();
+
+                const briefingOverlay = document.getElementById('modal-briefing-overlay');
+                const isBriefingActive = briefingOverlay && !briefingOverlay.classList.contains('hidden');
+
+                if (isBriefingActive) {
+                    this.isGameActive = false;
+                    clearInterval(this.timerInterval);
+                    this.timeLeft = 70;
+                    this.dom.statTimer.textContent = "01:10";
+                } else {
+                    this.isGameActive = true;
+                    this.startTimer();
+                }
             }
 
             startTimer() {
@@ -2713,6 +3494,10 @@
                 this.dom.stageEnvCondition.innerHTML = `<i class="fa-solid ${veh.envIcon}"></i> ${veh.env}`;
                 this.dom.trayCounter.textContent = `${this.resolvedHotspots.size} de 6 Corregidos`;
 
+                // Renderizado dinámico de la ilustración SVG anatómica y sincronización responsive
+                this.renderVehicleGraphic(this.currentVehicleIndex);
+                this.applySvgResponsiveLayout();
+
                 // Configurar Tarjetas Trampa de este equipo
                 if (veh.trap && this.dom.trapCardTitle && this.dom.trapCardSub) {
                     this.dom.trapCardTitle.textContent = veh.trap.title;
@@ -2738,6 +3523,287 @@
 
                 // Mezcla aleatoria de tarjetas para dificultad real (Anti-memorización)
                 this.shuffleCardsInTray();
+            }
+
+            /**
+             * Generador dinámico de SVG según el tipo de maquinaria receptora
+             */
+            renderVehicleGraphic(index) {
+                const machineGroup = document.getElementById('machinery-truck');
+                if (!machineGroup) return;
+
+                let svgContent = '';
+                switch (index) {
+                    case 0:
+                        svgContent = this.getExcavatorSvg();
+                        break;
+                    case 1:
+                        svgContent = this.getDumpTruckSvg();
+                        break;
+                    case 2:
+                        svgContent = this.getBulldozerSvg();
+                        break;
+                    case 3:
+                        svgContent = this.getGeneratorSvg();
+                        break;
+                    default:
+                        svgContent = this.getExcavatorSvg();
+                }
+
+                machineGroup.innerHTML = svgContent;
+
+                // Reenganchar referencias DOM a elementos interactivos del nuevo SVG
+                this.dom.svgMotorSafeSign = document.getElementById('svg-motor-safe-sign');
+                this.dom.exhaustSmoke = document.getElementById('exhaust-smoke');
+                this.dom.luchoAvatar = document.getElementById('lucho-cabin-avatar');
+
+                // Transición sutil de entrada si GSAP está cargado
+                if (window.gsap) {
+                    gsap.fromTo(machineGroup, 
+                        { opacity: 0.65, scale: 0.96 }, 
+                        { opacity: 1, scale: 1, duration: 0.45, ease: "power2.out" }
+                    );
+                }
+            }
+
+            getExcavatorSvg() {
+                return `
+                    <!-- Sombra -->
+                    <ellipse cx="170" cy="190" rx="140" ry="16" fill="rgba(0,0,0,0.5)"/>
+
+                    <!-- Orugas / Tren de Rodaje -->
+                    <rect x="50" y="160" width="220" height="38" rx="16" fill="#1e293b" stroke="#0f172a" stroke-width="4"/>
+                    <circle cx="80" cy="179" r="12" fill="#475569" stroke="#0f172a" stroke-width="2"/>
+                    <circle cx="120" cy="179" r="10" fill="#475569"/>
+                    <circle cx="160" cy="179" r="10" fill="#475569"/>
+                    <circle cx="200" cy="179" r="10" fill="#475569"/>
+                    <circle cx="240" cy="179" r="12" fill="#475569" stroke="#0f172a" stroke-width="2"/>
+
+                    <!-- Cuerpo y Contrapeso -->
+                    <rect x="80" y="90" width="170" height="75" rx="8" fill="url(#catYellowGrad)" stroke="#B45309" stroke-width="3"/>
+                    <line x1="200" y1="105" x2="235" y2="105" stroke="#78350f" stroke-width="2"/>
+                    <line x1="200" y1="115" x2="235" y2="115" stroke="#78350f" stroke-width="2"/>
+
+                    <!-- Pluma / Brazo Hidráulico estilizado -->
+                    <path d="M 230,118 L 290,75 L 305,85 L 245,135 Z" fill="#D99B00" stroke="#78350f" stroke-width="2"/>
+                    <line x1="240" y1="126" x2="280" y2="92" stroke="#e2e8f0" stroke-width="4" stroke-linecap="round"/>
+
+                    <!-- Cabina del Operador -->
+                    <rect x="90" y="45" width="75" height="75" rx="6" fill="#0f172a" stroke="#FFC72C" stroke-width="2.5"/>
+                    <path d="M 98,52 L 157,52 L 157,85 L 98,85 Z" fill="#38bdf8" opacity="0.8"/>
+                    <path d="M 98,90 L 125,90 L 125,112 L 98,112 Z" fill="#38bdf8" opacity="0.6"/>
+                    <!-- Operador Lucho en Cabina -->
+                    <g id="lucho-cabin-avatar">
+                        <circle cx="125" cy="70" r="10" fill="#fde047"/>
+                        <rect x="115" y="82" width="20" height="15" fill="#006738"/>
+                    </g>
+
+                    <!-- Humo de Escape Cómic -->
+                    <g id="exhaust-smoke" transform="translate(225, 40)">
+                        <circle id="smoke-c1" cx="0" cy="0" r="6" fill="#94a3b8" opacity="0.7"/>
+                        <circle id="smoke-c2" cx="4" cy="-12" r="9" fill="#94a3b8" opacity="0.5"/>
+                        <circle id="smoke-c3" cx="-2" cy="-26" r="13" fill="#cbd5e1" opacity="0.3"/>
+                    </g>
+
+                    <!-- Letrero 'Motor Apagado / No Celular' -->
+                    <g id="svg-motor-safe-sign" transform="translate(85, 20)" opacity="0">
+                        <rect x="0" y="0" width="85" height="20" rx="4" fill="#065f46" stroke="#10B981" stroke-width="1.5"/>
+                        <text x="42" y="14" fill="#FFFFFF" font-size="8" font-weight="900" text-anchor="middle">MOTOR APAGADO</text>
+                    </g>
+
+                    <!-- Boquilla Entrada de Combustible -->
+                    <circle cx="70" cy="125" r="10" fill="#0f172a" stroke="#FFC72C" stroke-width="2"/>
+                    <text x="70" y="145" fill="#FFC72C" font-size="8" font-weight="bold" text-anchor="middle">DIÉSEL</text>
+                `;
+            }
+
+            getDumpTruckSvg() {
+                return `
+                    <!-- Sombra -->
+                    <ellipse cx="165" cy="190" rx="145" ry="16" fill="rgba(0,0,0,0.5)"/>
+
+                    <!-- Chasis / Larguero de acero -->
+                    <rect x="45" y="152" width="245" height="12" rx="2" fill="#334155" stroke="#0f172a" stroke-width="2"/>
+
+                    <!-- Ruedas Volqueta (Eje Delantero + Doble Troque Trasero) -->
+                    <circle cx="85" cy="175" r="23" fill="#0f172a" stroke="#334155" stroke-width="5"/>
+                    <circle cx="85" cy="175" r="8" fill="#94a3b8"/>
+                    <circle cx="215" cy="175" r="23" fill="#0f172a" stroke="#334155" stroke-width="5"/>
+                    <circle cx="215" cy="175" r="8" fill="#94a3b8"/>
+                    <circle cx="265" cy="175" r="23" fill="#0f172a" stroke="#334155" stroke-width="5"/>
+                    <circle cx="265" cy="175" r="8" fill="#94a3b8"/>
+
+                    <!-- Tolva de Volteo (Volco pesado inclinado) -->
+                    <path d="M 125,72 L 285,55 L 290,148 L 135,148 Z" fill="url(#catYellowGrad)" stroke="#B45309" stroke-width="3"/>
+                    <line x1="170" y1="67" x2="175" y2="148" stroke="#78350f" stroke-width="2"/>
+                    <line x1="210" y1="63" x2="215" y2="148" stroke="#78350f" stroke-width="2"/>
+                    <line x1="250" y1="59" x2="255" y2="148" stroke="#78350f" stroke-width="2"/>
+                    <path d="M 125,72 L 85,58 L 95,72 Z" fill="#D99B00" stroke="#B45309" stroke-width="1.5"/>
+
+                    <!-- Cabina Trompuda Kenworth T800 -->
+                    <path d="M 45,115 L 88,115 L 88,80 L 52,80 Z" fill="#0369a1" stroke="#075985" stroke-width="2.5"/>
+                    <rect x="42" y="90" width="8" height="35" rx="2" fill="#cbd5e1" stroke="#475569" stroke-width="1.5"/>
+                    <rect x="88" y="65" width="45" height="85" rx="4" fill="#0369a1" stroke="#075985" stroke-width="2.5"/>
+                    <path d="M 88,78 L 118,78 L 118,108 L 88,108 Z" fill="#38bdf8" opacity="0.8"/>
+                    <rect x="85" y="74" width="36" height="4" fill="#e2e8f0"/>
+
+                    <!-- Operador Lucho en Cabina Kenworth -->
+                    <g id="lucho-cabin-avatar">
+                        <circle cx="102" cy="94" r="9" fill="#fde047"/>
+                        <rect x="94" y="104" width="16" height="12" fill="#006738"/>
+                    </g>
+
+                    <!-- Escape Vertical Cromado Kenworth -->
+                    <rect x="135" y="38" width="7" height="65" rx="2" fill="#cbd5e1" stroke="#475569" stroke-width="1.5"/>
+                    <path d="M 135,38 Q 142,28 148,32" fill="none" stroke="#94a3b8" stroke-width="6" stroke-linecap="round"/>
+
+                    <!-- Humo de Escape Cómic -->
+                    <g id="exhaust-smoke" transform="translate(148, 25)">
+                        <circle id="smoke-c1" cx="0" cy="0" r="6" fill="#94a3b8" opacity="0.7"/>
+                        <circle id="smoke-c2" cx="4" cy="-12" r="9" fill="#94a3b8" opacity="0.5"/>
+                        <circle id="smoke-c3" cx="-2" cy="-26" r="13" fill="#cbd5e1" opacity="0.3"/>
+                    </g>
+
+                    <!-- Letrero 'Motor Apagado / No Celular' -->
+                    <g id="svg-motor-safe-sign" transform="translate(65, 15)" opacity="0">
+                        <rect x="0" y="0" width="85" height="20" rx="4" fill="#065f46" stroke="#10B981" stroke-width="1.5"/>
+                        <text x="42" y="14" fill="#FFFFFF" font-size="8" font-weight="900" text-anchor="middle">MOTOR APAGADO</text>
+                    </g>
+
+                    <!-- Tanque Diésel Cilíndrico Lateral Kenworth (Aluminio) -->
+                    <rect x="140" y="125" width="60" height="26" rx="10" fill="#94a3b8" stroke="#475569" stroke-width="2"/>
+                    <line x1="152" y1="125" x2="152" y2="151" stroke="#334155" stroke-width="2"/>
+                    <line x1="188" y1="125" x2="188" y2="151" stroke="#334155" stroke-width="2"/>
+                    <circle cx="155" cy="133" r="7" fill="#0f172a" stroke="#FFC72C" stroke-width="2"/>
+                    <text x="172" y="142" fill="#0f172a" font-size="7" font-weight="900">DIÉSEL</text>
+                `;
+            }
+
+            getBulldozerSvg() {
+                return `
+                    <!-- Sombra -->
+                    <ellipse cx="165" cy="190" rx="140" ry="16" fill="rgba(0,0,0,0.5)"/>
+
+                    <!-- Tren de Rodaje Triangular High-Drive CAT -->
+                    <polygon points="50,188 230,188 220,152 140,118 65,152" fill="#1e293b" stroke="#0f172a" stroke-width="4"/>
+                    <circle cx="140" cy="128" r="14" fill="#475569" stroke="#0f172a" stroke-width="2.5"/>
+                    <circle cx="140" cy="128" r="5" fill="#94a3b8"/>
+                    <circle cx="75" cy="178" r="11" fill="#475569"/>
+                    <circle cx="110" cy="178" r="10" fill="#475569"/>
+                    <circle cx="145" cy="178" r="10" fill="#475569"/>
+                    <circle cx="180" cy="178" r="10" fill="#475569"/>
+                    <circle cx="212" cy="178" r="11" fill="#475569"/>
+
+                    <!-- Pala Topadora Delantera (Blade de corte) a la derecha -->
+                    <path d="M 245,108 Q 275,148 255,188 L 238,186 Q 255,148 232,112 Z" fill="#475569" stroke="#1e293b" stroke-width="3"/>
+                    <line x1="190" y1="160" x2="242" y2="150" stroke="#B45309" stroke-width="6" stroke-linecap="round"/>
+                    <line x1="190" y1="160" x2="242" y2="150" stroke="#FFC72C" stroke-width="3" stroke-linecap="round"/>
+
+                    <!-- Cuerpo del Tractor y Capó Amarillo CAT -->
+                    <rect x="85" y="92" width="135" height="58" rx="6" fill="url(#catYellowGrad)" stroke="#B45309" stroke-width="3"/>
+                    <line x1="165" y1="102" x2="205" y2="102" stroke="#78350f" stroke-width="2"/>
+                    <line x1="165" y1="110" x2="205" y2="110" stroke="#78350f" stroke-width="2"/>
+
+                    <!-- Cabina ROPS Blindada con Jaula Estructural -->
+                    <polygon points="90,48 160,48 170,95 80,95" fill="#0f172a" stroke="#FFC72C" stroke-width="2.5"/>
+                    <polygon points="96,55 154,55 162,90 88,90" fill="#38bdf8" opacity="0.8"/>
+                    <line x1="110" y1="55" x2="106" y2="90" stroke="#FFC72C" stroke-width="1.5"/>
+                    <line x1="140" y1="55" x2="144" y2="90" stroke="#FFC72C" stroke-width="1.5"/>
+
+                    <!-- Operador Lucho en Cabina Bulldozer -->
+                    <g id="lucho-cabin-avatar">
+                        <circle cx="125" cy="72" r="10" fill="#fde047"/>
+                        <rect x="115" y="83" width="20" height="12" fill="#006738"/>
+                    </g>
+
+                    <!-- Tubo de Escape Vertical Delantero -->
+                    <rect x="185" y="42" width="8" height="50" rx="2" fill="#334155" stroke="#1e293b" stroke-width="1.5"/>
+
+                    <!-- Humo de Escape Cómic -->
+                    <g id="exhaust-smoke" transform="translate(189, 30)">
+                        <circle id="smoke-c1" cx="0" cy="0" r="6" fill="#94a3b8" opacity="0.7"/>
+                        <circle id="smoke-c2" cx="4" cy="-12" r="9" fill="#94a3b8" opacity="0.5"/>
+                        <circle id="smoke-c3" cx="-2" cy="-26" r="13" fill="#cbd5e1" opacity="0.3"/>
+                    </g>
+
+                    <!-- Letrero 'Motor Apagado / No Celular' -->
+                    <g id="svg-motor-safe-sign" transform="translate(85, 20)" opacity="0">
+                        <rect x="0" y="0" width="85" height="20" rx="4" fill="#065f46" stroke="#10B981" stroke-width="1.5"/>
+                        <text x="42" y="14" fill="#FFFFFF" font-size="8" font-weight="900" text-anchor="middle">MOTOR APAGADO</text>
+                    </g>
+
+                    <!-- Tanque de Combustible Posterior y Boca de Llenado -->
+                    <rect x="55" y="105" width="30" height="30" rx="4" fill="#B45309"/>
+                    <circle cx="70" cy="120" r="9" fill="#0f172a" stroke="#FFC72C" stroke-width="2"/>
+                    <text x="70" y="140" fill="#FFC72C" font-size="7" font-weight="bold" text-anchor="middle">DIÉSEL</text>
+                `;
+            }
+
+            getGeneratorSvg() {
+                return `
+                    <!-- Sombra -->
+                    <ellipse cx="160" cy="190" rx="140" ry="14" fill="rgba(0,0,0,0.5)"/>
+
+                    <!-- Patín Estructural de Acero (Skid) -->
+                    <rect x="35" y="165" width="250" height="20" rx="3" fill="#1e293b" stroke="#0f172a" stroke-width="3"/>
+                    <circle cx="48" cy="175" r="5" fill="#475569" stroke="#FFC72C" stroke-width="1.5"/>
+                    <circle cx="272" cy="175" r="5" fill="#475569" stroke="#FFC72C" stroke-width="1.5"/>
+
+                    <!-- Cabina Acústica Insonorizada Modular CAT -->
+                    <rect x="45" y="65" width="230" height="102" rx="6" fill="url(#catYellowGrad)" stroke="#B45309" stroke-width="3"/>
+
+                    <!-- Argolla de Izaje Central en Techo -->
+                    <path d="M 150,65 L 160,52 L 170,65 Z" fill="#475569" stroke="#1e293b" stroke-width="2"/>
+
+                    <!-- Puertas de Mantenimiento con Lamas -->
+                    <rect x="58" y="78" width="80" height="82" rx="4" fill="#EAB308" stroke="#78350f" stroke-width="1.5"/>
+                    <rect x="68" y="88" width="60" height="32" rx="2" fill="#0f172a"/>
+                    <line x1="72" y1="94" x2="124" y2="94" stroke="#475569" stroke-width="2"/>
+                    <line x1="72" y1="100" x2="124" y2="100" stroke="#475569" stroke-width="2"/>
+                    <line x1="72" y1="106" x2="124" y2="106" stroke="#475569" stroke-width="2"/>
+                    <line x1="72" y1="112" x2="124" y2="112" stroke="#475569" stroke-width="2"/>
+                    <rect x="130" y="115" width="4" height="14" rx="1" fill="#0f172a"/>
+
+                    <!-- Panel de Control Digital PowerWizard / DeepSea -->
+                    <rect x="180" y="78" width="85" height="64" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+                    <rect x="190" y="88" width="45" height="22" rx="2" fill="#065f46" stroke="#10B981" stroke-width="1"/>
+                    <text x="212" y="102" fill="#A7F3D0" font-size="7" font-weight="bold" font-family="monospace" text-anchor="middle">250 kVA</text>
+                    <!-- Botón Rojo Parada de Emergencia tipo Hongo -->
+                    <circle cx="248" cy="98" r="8" fill="#EF4444" stroke="#991b1b" stroke-width="2"/>
+                    <circle cx="248" cy="98" r="4" fill="#dc2626"/>
+                    <text x="248" y="113" fill="#EF4444" font-size="6" font-weight="900" text-anchor="middle">STOP</text>
+                    <circle cx="192" cy="122" r="3" fill="#10B981"/>
+                    <circle cx="202" cy="122" r="3" fill="#FFC72C"/>
+                    <circle cx="212" cy="122" r="3" fill="#EF4444"/>
+
+                    <!-- Operador Lucho de Pie Inspeccionando Panel -->
+                    <g id="lucho-cabin-avatar" transform="translate(142, 68)">
+                        <circle cx="16" cy="18" r="10" fill="#fde047"/>
+                        <path d="M 6,16 Q 16,6 26,16 Z" fill="#FFC72C"/>
+                        <rect x="6" y="29" width="20" height="24" rx="3" fill="#006738"/>
+                        <line x1="6" y1="36" x2="26" y2="36" stroke="#FFC72C" stroke-width="2.5"/>
+                    </g>
+
+                    <!-- Silenciador y Tubo de Escape en Techo -->
+                    <rect x="145" y="38" width="12" height="27" rx="2" fill="#334155" stroke="#1e293b" stroke-width="1.5"/>
+
+                    <!-- Humo de Escape Cómic -->
+                    <g id="exhaust-smoke" transform="translate(151, 26)">
+                        <circle id="smoke-c1" cx="0" cy="0" r="6" fill="#94a3b8" opacity="0.7"/>
+                        <circle id="smoke-c2" cx="4" cy="-12" r="9" fill="#94a3b8" opacity="0.5"/>
+                        <circle id="smoke-c3" cx="-2" cy="-26" r="13" fill="#cbd5e1" opacity="0.3"/>
+                    </g>
+
+                    <!-- Letrero 'Motor Apagado / Parada de Emergencia' -->
+                    <g id="svg-motor-safe-sign" transform="translate(75, 18)" opacity="0">
+                        <rect x="0" y="0" width="95" height="20" rx="4" fill="#065f46" stroke="#10B981" stroke-width="1.5"/>
+                        <text x="47" y="14" fill="#FFFFFF" font-size="7.5" font-weight="900" text-anchor="middle">PARADA EMERGENCIA</text>
+                    </g>
+
+                    <!-- Boca de Llenado Diésel en Compartimento Lateral -->
+                    <circle cx="75" cy="138" r="10" fill="#0f172a" stroke="#FFC72C" stroke-width="2"/>
+                    <text x="75" y="157" fill="#0f172a" font-size="7.5" font-weight="bold" text-anchor="middle">DIÉSEL</text>
+                `;
             }
 
             shuffleCardsInTray() {
@@ -2801,7 +3867,7 @@
                     const tagElem = document.getElementById(`hotspot-tag-${targetId}`);
 
                     const tagLabels = { 
-                        1: "MOTOR / CELULAR", 
+                        1: (this.currentVehicleIndex === 3) ? "MOTOR / PANEL" : "MOTOR / CELULAR", 
                         2: "POLO A TIERRA", 
                         3: "BANDEJA GOTEO", 
                         4: "EXTINTOR ABC",
@@ -2835,6 +3901,9 @@
                     gsap.set(this.dom.svgWheelChocks, { opacity: 0, y: 0 });
                     gsap.set(this.dom.svgSpillKit, { opacity: 0, y: 0 });
                 }
+
+                // Reinicializar estados del Roadmap de Trasiego
+                this.updateRoadmapStepVisuals();
             }
 
             addScore(pts) {
@@ -2869,6 +3938,15 @@
                 this.dom.finalStatStreak.textContent = `x${this.maxStreak || 1} consecutivos`;
                 this.dom.finalStatTime.textContent = `${elMins.toString().padStart(2, '0')}:${elSecs.toString().padStart(2, '0')} min`;
                 this.dom.finalStatPoints.textContent = `${this.score} pts`;
+
+                // Reporte Automático a Moodle LMS (SCORM 1.2 / 2004 y iFrame postMessage)
+                if (this.lmsBridge) {
+                    this.lmsBridge.reportCompletion(ratio, {
+                        vehiclesCompleted: Math.min(this.currentVehicleIndex, 4),
+                        rawScore: this.score,
+                        maxStreak: this.maxStreak || 1
+                    });
+                }
 
                 this.dom.modalAuditFinal.classList.add('open');
             }
