@@ -457,13 +457,18 @@
             border: 4px solid #86efac;
             box-shadow: 0 0 50px var(--peligro-quimico-glow), inset 0 0 25px rgba(0,0,0,0.8);
             position: relative;
-            transition: all 0.5s ease;
-            animation: puddleSlosh 3s infinite ease-in-out;
+            transform-origin: center center;
+            transition: opacity 0.5s ease, border-radius 0.5s ease;
+            animation: puddleSlosh 4s infinite ease-in-out;
         }
 
         @keyframes puddleSlosh {
-            0%, 100% { border-radius: 50% 60% 40% 50% / 40% 50% 60% 50%; }
-            50% { border-radius: 55% 45% 55% 45% / 45% 55% 45% 55%; transform: scale(1.03); }
+            0%, 100% {
+                border-radius: 50% 60% 40% 50% / 40% 50% 60% 50%;
+            }
+            50% {
+                border-radius: 54% 46% 52% 48% / 46% 54% 48% 52%;
+            }
         }
 
         .spill-boom-3d {
@@ -889,9 +894,34 @@
             z-index: 26;
             animation: blanketDrop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes blanketDrop {
-            from { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
-            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        /* Caseta Dotación Brigadista: Traje Ignífugo Nomex + ERA (Pared Oeste) */
+        .fire-gear-locker-3d {
+            width: 170px;
+            height: 295px;
+            background: linear-gradient(180deg, #1c1917 0%, #292524 100%);
+            border: 3px solid #facc15;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.95), 0 0 25px rgba(250, 204, 21, 0.45);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 14px 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .fire-gear-locker-3d:hover {
+            transform: scale(1.05) translateY(-4px);
+            box-shadow: 0 0 35px rgba(250, 204, 21, 0.7);
+        }
+        .fps-hands-layer.fire-gear-equipped .hand-glove {
+            background: linear-gradient(180deg, #d97706, #b45309) !important;
+            border-color: #facc15 !important;
+            box-shadow: inset 0 -10px 20px rgba(0, 0, 0, 0.7), 0 0 16px rgba(250, 204, 21, 0.5) !important;
+        }
+        .fps-hands-layer.fire-gear-equipped .hand-sleeve {
+            background: linear-gradient(180deg, #78350f 0%, #451a03 100%) !important;
+            border-color: #facc15 !important;
         }
 
         /* Humo en Techo (Ceiling Smoke) */
@@ -2154,9 +2184,9 @@
                     <!-- 3. PARED NORTE (Z = -700px): VÁLVULA PRINCIPAL Y ALARMA GENERAL -->
                     <div class="wall-3d cube-wall-north">
                         <!-- Estación de Alarma de Incendio y Corte Eléctrico General (Nivel 2) -->
-                        <div class="station-3d-node" id="node-fire-alarm" style="left: 22%;" title="Alarma de Incendio y Corte Eléctrico General">
+                        <div class="station-3d-node" id="node-fire-alarm" style="display: none;" title="Alarma de Incendio y Corte Eléctrico General">
                             <div class="station-badge-3d" id="badge-fire-alarm">
-                                <i class="fa-solid fa-bell"></i> 1. ALARMA / CORTE ELÉCTRICO
+                                <i class="fa-solid fa-bell"></i> 2. ALARMA / CORTE ELÉCTRICO
                             </div>
                             <div class="station-fire-alarm-3d" id="prop-fire-alarm">
                                 <div style="font-size: 0.55rem; font-weight: 900; color: #fff; letter-spacing: 0.04em; text-align: center;">ALARMA INCENDIO</div>
@@ -2200,9 +2230,9 @@
                         </div>
 
                         <!-- Estación Manta Ignífuga / Prevención de Re-ignición (Nivel 2) -->
-                        <div class="station-3d-node" id="node-fire-blanket" style="left: 72%;" title="Manta Ignífuga y Arena para Prevención de Re-ignición">
+                        <div class="station-3d-node" id="node-fire-blanket" style="display: none;" title="Manta Ignífuga y Arena para Prevención de Re-ignición">
                             <div class="station-badge-3d" id="badge-fire-blanket">
-                                <i class="fa-solid fa-shield-halved"></i> 4. MANTA IGNÍFUGA
+                                <i class="fa-solid fa-shield-halved"></i> 5. MANTA IGNÍFUGA
                             </div>
                             <div class="station-fire-blanket-3d" id="prop-fire-blanket">
                                 <div style="font-size: 0.55rem; font-weight: 900; color: #fff; text-align: center;">MANTA IGNÍFUGA</div>
@@ -2227,9 +2257,9 @@
                         </div>
 
                         <!-- Estación de Extintores Portátiles (Nivel 2) -->
-                        <div class="station-3d-node" id="node-extinguisher" style="left: 50%; top: 52%;" title="Estación de Extintores Portátiles (NFPA 10)">
+                        <div class="station-3d-node" id="node-extinguisher" style="display: none;" title="Estación de Extintores Portátiles (NFPA 10)">
                             <div class="station-badge-3d" id="badge-extinguisher" style="margin-bottom: 8px;">
-                                <i class="fa-solid fa-fire-extinguisher"></i> 2. EXTINTORES NFPA 10 (TOCA PQS ABC)
+                                <i class="fa-solid fa-fire-extinguisher"></i> 3. EXTINTORES NFPA 10 (TOCA PQS ABC)
                             </div>
                             <div class="extinguisher-mount-3d">
                                 <!-- 1. Extintor PQS ABC (Correcto para Líquidos Inflamables Clase B) -->
@@ -2291,6 +2321,19 @@
                             <div class="respel-holding-3d">
                                 <i class="fa-solid fa-biohazard" style="font-size: 2.5rem; color: #ef4444;"></i>
                                 <div style="font-size: 0.72rem; color: #fca5a5; font-weight: 900;">DEC. 4741/2005</div>
+                            </div>
+                        </div>
+
+                        <!-- Caseta de Brigada de Incendio (Nivel 2): Traje Ignífugo Nomex + ERA -->
+                        <div class="station-3d-node" id="node-fire-gear" style="display: none;" title="Dotación Brigadista: Traje Ignífugo Nomex y ERA (NFPA 1971)">
+                            <div class="station-badge-3d" id="badge-fire-gear">
+                                <i class="fa-solid fa-fire-burner"></i> 1. TRAJE IGNÍFUGO NOMEX + ERA
+                            </div>
+                            <div class="fire-gear-locker-3d" id="prop-fire-gear">
+                                <i class="fa-solid fa-helmet-safety" style="font-size: 2.8rem; color: #facc15;"></i>
+                                <i class="fa-solid fa-vest" style="font-size: 3.2rem; color: #f59e0b;"></i>
+                                <div style="font-size: 0.72rem; font-weight: 900; color: #fff;">NFPA 1971 • NOMEX III</div>
+                                <div style="font-size: 0.58rem; color: #fde047; font-weight: 800;">PROTECCIÓN TÉRMICA</div>
                             </div>
                         </div>
 
@@ -2479,14 +2522,14 @@
                     <div class="step-row">
                         <span class="step-num" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #fca5a5;">2</span>
                         <div>
-                            <strong style="color: #f87171; font-size: 0.86rem;">Misión 2: Conato de Incendio Clase B (Protocolo Completo NFPA 10 / PASS - 90s)</strong>
+                            <strong style="color: #f87171; font-size: 0.86rem;">Misión 2: Conato de Incendio Clase B (Protocolo Completo de Brigada NFPA 10 / 600 - 90s)</strong>
                             <p style="margin: 3px 0 0; font-size: 0.73rem; color: #cbd5e1; line-height: 1.4;">
                                 Secuencia táctica obligatoria contra conatos de fuego:
-                                <br>• <strong>1. Alarma y Corte (Pared Norte):</strong> Activa la estación manual de alarma y corta el disyuntor eléctrico general.
-                                <br>• <strong>2. Selección Extintor (Pared Este):</strong> Toma <strong>PQS ABC</strong>. ¡Prohibido agua! (provoca boilover explosivo).
-                                <br>• <strong>3. Retirar Pasador (PASS / P):</strong> Retira el precinto y pasador de seguridad para habilitar la descarga.
-                                <br>• <strong>4. Descarga a la Base (PASS / A-S-S):</strong> Posiciónate a <strong>2-3 metros</strong> y barre en abanico sobre la base.
-                                <br>• <strong>5. Manta Ignífuga (Pared Sur):</strong> Cubre la superficie caliente para sofocar rescoldos y evitar la re-ignición.
+                                <br>• <strong>Paso 1 - Dotación Nomex (Pared Oeste):</strong> Equipar traje ignífugo y ERA para aislamiento térmico y respiratorio.
+                                <br>• <strong>Paso 2 - Alarma y Corte (Pared Norte):</strong> Activar sirena de evacuación y cortar el disyuntor eléctrico general.
+                                <br>• <strong>Paso 3 - Extintor PQS & Desprecinte (Pared Este):</strong> Tomar PQS ABC (¡prohibido agua por boilover!) y jalar el pasador (PASS / P).
+                                <br>• <strong>Paso 4 - Combate a la Base (Centro):</strong> Descargar a 2-3 metros en abanico (PASS / A-S-S) hasta abatir todas las llamas.
+                                <br>• <strong>Paso 5 - Manta Ignífuga (Pared Sur):</strong> Desplegar sobre el conato para sellar contra re-ignición de vapores residuales.
                             </p>
                         </div>
                     </div>
@@ -2869,6 +2912,7 @@
                 this.mission2Completed = false;
                 this.extinguisherEquipped = null; // 'pqs' | 'water'
                 this.fireIntensity = 100;
+                this.fireGearEquipped = false;
                 this.fireAlarmTripped = false;
                 this.pinPulled = false;
                 this.blanketEquipped = false;
@@ -2935,7 +2979,7 @@
                     eyewashLever: document.getElementById('eyewash-lever'),
                     radarBlips: document.getElementById('radar-blips-container'),
                     
-                    // Fire 3D Elements & M2 (Múltiples Fuegos y Extintores)
+                    // Fire 3D Elements & M2 (Múltiples Fuegos, Extintores y Caseta Nomex)
                     fireCluster: document.getElementById('fire-cluster-3d'),
                     fireBarrelLeft: document.getElementById('fire-barrel-left'),
                     firePoolRight: document.getElementById('fire-pool-right'),
@@ -2944,6 +2988,9 @@
                     fireSpotEast: document.getElementById('fire-spot-east'),
                     badgeFire: document.getElementById('badge-fire'),
                     pqsSprayStream: document.getElementById('pqs-spray-stream'),
+                    nodeFireGear: document.getElementById('node-fire-gear'),
+                    badgeFireGear: document.getElementById('badge-fire-gear'),
+                    propFireGear: document.getElementById('prop-fire-gear'),
                     nodeExtinguisher: document.getElementById('node-extinguisher'),
                     propPqs: document.getElementById('prop-pqs'),
                     propCo2: document.getElementById('prop-co2'),
@@ -3093,17 +3140,19 @@
                         </button>
                     `).join('');
                 } else {
-                    const s1 = this.fireAlarmTripped;
-                    const s2 = !!this.extinguisherEquipped;
-                    const s3 = this.fireIntensity <= 0;
-                    const s4 = this.reignitionSealed;
+                    const s1 = this.fireGearEquipped;
+                    const s2 = this.fireAlarmTripped;
+                    const s3 = !!this.extinguisherEquipped;
+                    const s4 = this.fireIntensity <= 0;
+                    const s5 = this.reignitionSealed;
 
                     const steps = [
-                        { id: 'fire_alarm', label: '1. Alarma Norte ⚡', done: s1, active: !s1 },
-                        { id: 'extinguisher', label: '2. Extintor PQS Este 🧯', done: s2, active: s1 && !s2 },
-                        { id: 'fire', label: `3. Apagar Fuego (${Math.round(this.fireIntensity)}%) 🔥`, done: s3, active: s2 && !s3 },
-                        { id: 'fire_blanket', label: '4. Manta Sur 🛡️', done: this.blanketEquipped || s4, active: s3 && !this.blanketEquipped && !s4 },
-                        { id: 'fire', label: '5. Sellar Conato ✅', done: s4, active: s3 && this.blanketEquipped && !s4 }
+                        { id: 'fire_gear', label: '1. Nomex Oeste 🦺', done: s1, active: !s1 },
+                        { id: 'fire_alarm', label: '2. Alarma Norte ⚡', done: s2, active: s1 && !s2 },
+                        { id: 'extinguisher', label: '3. Extintor PQS Este 🧯', done: s3, active: s2 && !s3 },
+                        { id: 'fire', label: `4. Apagar Fuego (${Math.round(this.fireIntensity)}%) 🔥`, done: s4, active: s3 && !s4 },
+                        { id: 'fire_blanket', label: '5. Manta Sur 🛡️', done: this.blanketEquipped || s5, active: s4 && !this.blanketEquipped && !s5 },
+                        { id: 'fire', label: '6. Sellar Conato ✅', done: s5, active: s4 && this.blanketEquipped && !s5 }
                     ];
 
                     this.dom.missionStepsBar.innerHTML = steps.map(s => `
@@ -3135,10 +3184,11 @@
                     `;
                 } else {
                     this.dom.radarBlips.innerHTML = `
-                        <div class="radar-station-blip" style="top: 10%; left: 22%; background: #ef4444;" title="Norte: Alarma / Corte"></div>
-                        <div class="radar-station-blip" style="top: 50%; left: 88%; background: #facc15;" title="Este: Extintores PQS"></div>
-                        <div class="radar-station-blip" style="top: 90%; left: 72%; background: #10b981;" title="Sur: Manta Ignífuga"></div>
-                        <div class="radar-station-blip" style="top: 52%; left: 50%; background: #dc2626;" title="Centro: Conato Incendio"></div>
+                        <div class="radar-station-blip" style="top: 50%; left: 8%; background: #facc15;" title="Oeste: Traje Nomex"></div>
+                        <div class="radar-station-blip" style="top: 8%; left: 50%; background: #ef4444;" title="Norte: Alarma / Corte"></div>
+                        <div class="radar-station-blip" style="top: 50%; left: 92%; background: #f59e0b;" title="Este: Extintor PQS"></div>
+                        <div class="radar-station-blip" style="top: 92%; left: 50%; background: #10b981;" title="Sur: Manta Ignífuga"></div>
+                        <div class="radar-station-blip" style="top: 50%; left: 50%; background: #dc2626;" title="Centro: Conato Incendio"></div>
                     `;
                 }
             }
@@ -3200,6 +3250,7 @@
 
                     // 1. OCULTAR COMPLETAMENTE ELEMENTOS DE MISIÓN 2 (Incendio)
                     if (this.dom.floorFireZone) this.dom.floorFireZone.style.display = 'none';
+                    if (this.dom.nodeFireGear) this.dom.nodeFireGear.style.display = 'none';
                     if (this.dom.nodeFireAlarm) this.dom.nodeFireAlarm.style.display = 'none';
                     if (this.dom.nodeExtinguisher) this.dom.nodeExtinguisher.style.display = 'none';
                     if (this.dom.nodeFireBlanket) this.dom.nodeFireBlanket.style.display = 'none';
@@ -3215,17 +3266,17 @@
 
                     // 2. MOSTRAR Y RECONSTRUIR ELEMENTOS EXCLUSIVOS DE MISIÓN 1
                     if (this.dom.floorSpillZone) this.dom.floorSpillZone.style.display = 'block';
-                    if (this.dom.nodeValve) this.dom.nodeValve.style.display = 'block';
-                    if (this.dom.nodeEyewash) this.dom.nodeEyewash.style.display = 'block';
-                    if (this.dom.nodeKit) this.dom.nodeKit.style.display = 'block';
-                    if (this.dom.nodeEpp) this.dom.nodeEpp.style.display = 'block';
-                    if (this.dom.nodeRespel) this.dom.nodeRespel.style.display = 'block';
-                    if (this.dom.badgeSpill) this.dom.badgeSpill.style.display = 'block';
+                    if (this.dom.nodeValve) this.dom.nodeValve.style.display = 'flex';
+                    if (this.dom.nodeEyewash) this.dom.nodeEyewash.style.display = 'flex';
+                    if (this.dom.nodeKit) this.dom.nodeKit.style.display = 'flex';
+                    if (this.dom.nodeEpp) this.dom.nodeEpp.style.display = 'flex';
+                    if (this.dom.nodeRespel) this.dom.nodeRespel.style.display = 'flex';
+                    if (this.dom.badgeSpill) this.dom.badgeSpill.style.display = 'flex';
                     if (this.dom.floorDrain) this.dom.floorDrain.style.display = 'block';
                     if (this.dom.chemicalPuddle) {
                         this.dom.chemicalPuddle.style.display = 'block';
                         this.dom.chemicalPuddle.style.opacity = '1';
-                        this.dom.chemicalPuddle.style.transform = 'translate(-50%, -50%) scale(1)';
+                        this.dom.chemicalPuddle.style.transform = 'scale(1)';
                     }
                     if (this.dom.spillBoom) this.dom.spillBoom.classList.remove('deployed');
                     if (this.dom.padsLayer) this.dom.padsLayer.classList.remove('deployed');
@@ -3243,6 +3294,7 @@
                     if (this.dom.handsLayer) {
                         this.dom.handsLayer.classList.remove('gloves-equipped');
                         this.dom.handsLayer.classList.remove('holding-extinguisher');
+                        this.dom.handsLayer.classList.remove('fire-gear-equipped');
                     }
                     if (this.dom.visor) this.dom.visor.classList.remove('fullface-active');
 
@@ -3285,6 +3337,7 @@
                     // ==============================================================
                     this.gameState.timeLeft = 90;
                     this.fireIntensity = 100;
+                    this.fireGearEquipped = false;
                     this.extinguisherEquipped = null;
                     this.fireAlarmTripped = false;
                     this.pinPulled = false;
@@ -3316,14 +3369,16 @@
                     if (this.dom.handsLayer) {
                         this.dom.handsLayer.classList.remove('gloves-equipped');
                         this.dom.handsLayer.classList.remove('holding-extinguisher');
+                        this.dom.handsLayer.classList.remove('fire-gear-equipped');
                     }
                     if (this.dom.visor) this.dom.visor.classList.remove('fullface-active');
 
-                    // 2. CREAR Y MOSTRAR EL ESCENARIO 2 A SU PROPIA MANERA (FUEGO 3D VERTICAL POR TODOS LADOS)
+                    // 2. CREAR Y MOSTRAR EL ESCENARIO 2 CON SU PROTOCOLO COMPLETO DE BRIGADA
                     if (this.dom.floorFireZone) this.dom.floorFireZone.style.display = 'block';
-                    if (this.dom.nodeFireAlarm) this.dom.nodeFireAlarm.style.display = 'block';
-                    if (this.dom.nodeExtinguisher) this.dom.nodeExtinguisher.style.display = 'block';
-                    if (this.dom.nodeFireBlanket) this.dom.nodeFireBlanket.style.display = 'block';
+                    if (this.dom.nodeFireGear) this.dom.nodeFireGear.style.display = 'flex';
+                    if (this.dom.nodeFireAlarm) this.dom.nodeFireAlarm.style.display = 'flex';
+                    if (this.dom.nodeExtinguisher) this.dom.nodeExtinguisher.style.display = 'flex';
+                    if (this.dom.nodeFireBlanket) this.dom.nodeFireBlanket.style.display = 'flex';
 
                     if (this.dom.fireCluster) this.dom.fireCluster.style.display = 'block';
                     if (this.dom.fireBarrelLeft) {
@@ -3355,36 +3410,41 @@
                     if (this.dom.alarmPullHandle) this.dom.alarmPullHandle.classList.remove('pulled');
                     document.querySelectorAll('.extinguisher-prop').forEach(el => el.classList.remove('equipped-glow'));
 
+                    if (this.dom.badgeFireGear) {
+                        this.dom.badgeFireGear.classList.remove('completed');
+                        this.dom.badgeFireGear.innerHTML = '<i class="fa-solid fa-fire-burner"></i> 1. TRAJE NOMEX + ERA';
+                    }
+                    if (this.dom.badgeFireAlarm) {
+                        this.dom.badgeFireAlarm.classList.remove('completed');
+                        this.dom.badgeFireAlarm.innerHTML = '<i class="fa-solid fa-bell"></i> 2. ALARMA / CORTE ELÉCTRICO';
+                    }
+                    const bExt = document.getElementById('badge-extinguisher');
+                    if (bExt) {
+                        bExt.classList.remove('completed');
+                        bExt.innerHTML = '<i class="fa-solid fa-fire-extinguisher"></i> 3. EXTINTORES NFPA 10 (PQS ABC)';
+                    }
                     if (this.dom.badgeFire) {
                         this.dom.badgeFire.className = 'station-badge-3d';
                         this.dom.badgeFire.style.background = '#dc2626';
                         this.dom.badgeFire.style.borderColor = '#f87171';
                         this.dom.badgeFire.innerHTML = '<i class="fa-solid fa-fire"></i> FUEGO CLASE B (100%)';
                     }
-                    if (this.dom.badgeFireAlarm) {
-                        this.dom.badgeFireAlarm.classList.remove('completed');
-                        this.dom.badgeFireAlarm.innerHTML = '<i class="fa-solid fa-bell"></i> 1. ALARMA / CORTE ELÉCTRICO';
-                    }
-                    const bExt = document.getElementById('badge-extinguisher');
-                    if (bExt) {
-                        bExt.classList.remove('completed');
-                        bExt.innerHTML = '<i class="fa-solid fa-fire-extinguisher"></i> 2. EXTINTORES NFPA 10 (TOCA PQS ABC)';
-                    }
                     if (this.dom.badgeFireBlanket) {
                         this.dom.badgeFireBlanket.classList.remove('completed');
-                        this.dom.badgeFireBlanket.innerHTML = '<i class="fa-solid fa-shield-halved"></i> 4. MANTA IGNÍFUGA';
+                        this.dom.badgeFireBlanket.innerHTML = '<i class="fa-solid fa-shield-halved"></i> 5. MANTA IGNÍFUGA';
                     }
 
                     this.stations = [
-                        { id: 'fire_alarm', name: 'Alarma y Corte Eléctrico', x: -250, z: -580, range: 520 },
+                        { id: 'fire_gear', name: 'Caseta Brigadista: Traje Nomex y ERA', x: -580, z: 0, range: 480 },
+                        { id: 'fire_alarm', name: 'Alarma de Evacuación y Corte Eléctrico', x: 0, z: -580, range: 520 },
                         { id: 'extinguisher', name: 'Estación de Extintores NFPA 10', x: 580, z: 0, range: 560 },
                         { id: 'fire', name: 'Conato de Incendio', x: 0, z: 70, range: 680 },
-                        { id: 'fire_blanket', name: 'Manta Ignífuga Anti Re-ignición', x: 250, z: 580, range: 520 }
+                        { id: 'fire_blanket', name: 'Manta Ignífuga Anti Re-ignición', x: 0, z: 580, range: 520 }
                     ];
 
                     this.renderRadarBlips(2);
                     this.updateMissionStepsBar();
-                    this.setBotMessage('¡Misión 2: Conato de Incendio Clase B! 1. Activa Alarma (Norte), 2. Toma Extintor PQS (Este), 3. Dispara a las llamas y 4. Sella con Manta (Sur).', '🚨');
+                    this.setBotMessage('¡Misión 2: Conato de Incendio Clase B! Secuencia de Brigada: 1. Caseta Nomex (Oeste) para protección térmica/ERA, 2. Alarma/Corte (Norte), 3. Extintor PQS (Este), 4. Sofocar Fuego y 5. Manta Ignífuga (Sur).', '🚨');
                 }
 
                 this.updateCamera();
@@ -3582,6 +3642,8 @@
                     { id: 'node-kit', stId: 'kit' },
                     { id: 'node-extinguisher', stId: 'extinguisher' },
                     { id: 'node-respel', stId: 'respel' },
+                    { id: 'node-fire-gear', stId: 'fire_gear' },
+                    { id: 'prop-fire-gear', stId: 'fire_gear' },
                     { id: 'node-fire-alarm', stId: 'fire_alarm' },
                     { id: 'prop-fire-alarm', stId: 'fire_alarm' },
                     { id: 'node-fire-blanket', stId: 'fire_blanket' },
@@ -3732,12 +3794,16 @@
 
                     let actionName = bestStation.name.toUpperCase();
                     if (this.currentMission === 2) {
-                        if (bestStation.id === 'fire_alarm') {
+                        if (bestStation.id === 'fire_gear') {
+                            actionName = !this.fireGearEquipped ? "EQUIPAR NOMEX Y ERA [E]" : "NOMEX Y ERA LISTOS [OK]";
+                        } else if (bestStation.id === 'fire_alarm') {
                             actionName = !this.fireAlarmTripped ? "ACTIVAR ALARMA Y CORTE [E]" : "ALARMA Y ENERGÍA AISLADA [OK]";
                         } else if (bestStation.id === 'extinguisher') {
                             actionName = !this.extinguisherEquipped ? "TOMAR EXTINTOR PQS ABC [E]" : `EXTINTOR LISTO (${this.extinguisherCharge}%)`;
                         } else if (bestStation.id === 'fire') {
-                            if (this.fireIntensity > 0) {
+                            if (!this.fireGearEquipped) {
+                                actionName = "PELIGRO TÉRMICO: EQUIPA NOMEX EN OESTE";
+                            } else if (this.fireIntensity > 0) {
                                 actionName = !this.extinguisherEquipped ? "EQUIPAR PQS Y DISPARAR [E]" : `DESCARGAR PQS (${Math.round(this.fireIntensity)}%) [E]`;
                             } else if (!this.reignitionSealed) {
                                 actionName = !this.blanketEquipped ? "TOMAR MANTA EN PARED SUR [E]" : "DESPLEGAR MANTA IGNÍFUGA [E]";
@@ -3788,7 +3854,9 @@
                         const temp = Math.max(32, Math.round((280 - distToCenter * 0.45) * (this.fireIntensity / 100)));
                         this.dom.gasReading.textContent = `${temp} °C`;
                         if (distToCenter < 95) {
-                            this.damageHealth(1, "¡Radiación térmica extrema! Retrocede un paso.");
+                            this.damageHealth(1, "¡Radiación térmica extrema! Retrocede a distancia táctica (2-3m).");
+                        } else if (distToCenter < 280 && !this.fireGearEquipped) {
+                            this.damageHealth(1.5, "¡Calor radiante sin equipo ignífugo! Ve a la Caseta de Brigada en Pared Oeste.");
                         }
                     } else {
                         this.dom.gasReading.textContent = "42 °C (Rescoldos)";
@@ -3857,6 +3925,27 @@
 
                 // Nivel 2: Misión de Incendio (Protocolo NFPA 10 / NFPA 600)
                 if (this.currentMission === 2) {
+                    if (st.id === 'fire_gear') {
+                        if (!this.fireGearEquipped) {
+                            this.fireGearEquipped = true;
+                            this.audio.playTone(380, 'triangle', 0.2);
+                            setTimeout(() => this.audio.playTone(560, 'sine', 0.25), 100);
+                            if (this.dom.handsLayer) {
+                                this.dom.handsLayer.classList.add('fire-gear-equipped');
+                            }
+                            if (this.dom.badgeFireGear) {
+                                this.dom.badgeFireGear.classList.add('completed');
+                                this.dom.badgeFireGear.innerHTML = '<i class="fa-solid fa-check"></i> 1. NOMEX + ERA EQUIPADOS';
+                            }
+                            this.updateMissionStepsBar();
+                            this.setBotMessage('¡Dotación de Brigada equipada: Traje Nomex III ignífugo y ERA activos! Paso 2: Dirígete a la Pared Norte a activar la sirena y cortar la corriente eléctrica general.', '🦺');
+                            this.checkProximity();
+                        } else {
+                            this.setBotMessage('Tu traje ignífugo Nomex y ERA ya están colocados. Ve a la Pared Norte por la Alarma y Corte Eléctrico.', 'ℹ️');
+                        }
+                        return;
+                    }
+
                     if (st.id === 'fire_alarm') {
                         if (!this.fireAlarmTripped) {
                             this.fireAlarmTripped = true;
@@ -3865,10 +3954,10 @@
                             if (this.dom.alarmPullHandle) this.dom.alarmPullHandle.classList.add('pulled');
                             if (this.dom.badgeFireAlarm) {
                                 this.dom.badgeFireAlarm.classList.add('completed');
-                                this.dom.badgeFireAlarm.innerHTML = '<i class="fa-solid fa-check"></i> ALARMA ACTIVA / CORTE OK';
+                                this.dom.badgeFireAlarm.innerHTML = '<i class="fa-solid fa-check"></i> 2. ALARMA ACTIVA / CORTE OK';
                             }
                             this.updateMissionStepsBar();
-                            this.setBotMessage('¡Alarma general activada y corte eléctrico efectuado! Toca "2. Extintor PQS Este" arriba o gira a la Pared Este para tomar el extintor.', '⚡');
+                            this.setBotMessage('¡Alarma general activada y corte eléctrico efectuado! Paso 3: Ve a la Pared Este y toma el extintor PQS ABC.', '⚡');
                             this.checkProximity();
                         } else {
                             this.setBotMessage('La alarma y el corte eléctrico ya están activos. Ve a la Pared Este por el extintor PQS ABC.', 'ℹ️');
@@ -3882,6 +3971,11 @@
                     }
 
                     if (st.id === 'fire') {
+                        if (!this.fireGearEquipped) {
+                            this.damageHealth(8, "¡ALERTA TÉRMICA! No puedes aproximarte al fuego sin tu dotación Nomex III y ERA. Equípate primero en la Caseta de Brigada (Pared Oeste).");
+                            return;
+                        }
+
                         if (!this.extinguisherEquipped) {
                             this.equipExtinguisher('pqs');
                         }

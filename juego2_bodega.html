@@ -1901,7 +1901,6 @@
         }
         .is-dragging,
         .is-dragging * {
-            pointer-events: none !important;
             animation: none !important;
         }
         .is-dragging:not(.iso-sprite) {
@@ -1913,7 +1912,7 @@
             border-radius: var(--radius-md) !important;
             background: #0f172a !important;
             transform-origin: center center !important;
-            pointer-events: none !important;
+            touch-action: none !important;
             transition: none !important;
             animation: none !important;
         }
@@ -2256,6 +2255,35 @@
             animation: bottleWobble 2.2s ease-in-out infinite;
         }
 
+        /* Tactical Lower Dock (Zona de Rechazo + Semáforo Matriz NTC 4435) */
+        .tactical-lower-dock {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            width: 100%;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            margin: 4px 0;
+        }
+        .tactical-lower-dock .reject-zone-card {
+            flex: 1 1 280px;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+            margin: 0;
+        }
+        .tactical-lower-dock .matrix-quick-legend-bar {
+            flex: 1 1 280px;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
         /* Barra de Guía Rápida de Matriz de Compatibilidad (NTC 4435 / Res. 773/2021) */
         .matrix-quick-legend-bar {
             display: flex;
@@ -2550,6 +2578,35 @@
                 max-height: 90dvh !important;
                 overflow-y: auto !important;
                 -webkit-overflow-scrolling: touch;
+            }
+            .tactical-lower-dock {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 6px !important;
+                margin: 4px 0 !important;
+            }
+            .tactical-lower-dock .reject-zone-card,
+            .tactical-lower-dock .matrix-quick-legend-bar {
+                width: 100% !important;
+                flex: none !important;
+                min-height: 38px !important;
+                padding: 5px 8px !important;
+                box-sizing: border-box !important;
+            }
+            .tactical-lower-dock .matrix-quick-legend-bar {
+                justify-content: space-between !important;
+                flex-wrap: nowrap !important;
+                gap: 4px !important;
+            }
+            .matrix-legend-chip {
+                padding: 2px 6px !important;
+                font-size: 0.68rem !important;
+                gap: 4px !important;
+            }
+            .btn-matrix-shortcut {
+                padding: 3px 7px !important;
+                font-size: 0.68rem !important;
+                flex-shrink: 0 !important;
             }
         }
     </style>
@@ -3003,9 +3060,9 @@
                 </div>
 
                 <!-- TACTICAL LOWER DOCK: ZONA DE RECHAZO + SEMÁFORO MATRIZ (Side-by-Side Compacto) -->
-                <div class="flex items-center justify-between gap-2 w-full flex-wrap" style="flex-shrink: 0; margin: 4px 0;">
+                <div class="tactical-lower-dock" id="tactical-lower-dock">
                     <!-- Compact Reject Zone -->
-                    <div class="reject-zone-card flex-1 flex items-center justify-between gap-2" id="zone-reject" style="padding: 6px 12px; margin: 0; min-height: 42px;" title="Zona de Rechazo RESPEL (Art. 20 Res. 773/2021)">
+                    <div class="reject-zone-card flex items-center justify-between gap-2" id="zone-reject" style="padding: 6px 12px; margin: 0; min-height: 42px;" title="Zona de Rechazo RESPEL (Art. 20 Res. 773/2021)">
                         <div class="flex items-center gap-2 truncate">
                             <span style="font-size: 1.15rem; flex-shrink: 0;">🚫🥤</span>
                             <div class="truncate">
@@ -3020,8 +3077,8 @@
                     </div>
 
                     <!-- Compact Matrix Quick Legend -->
-                    <div class="matrix-quick-legend-bar flex items-center justify-end gap-1.5 flex-1" id="matrix-quick-legend-bar" style="margin: 0; padding: 5px 10px; min-height: 42px;" aria-label="Semáforo de compatibilidad química">
-                        <div class="flex items-center gap-1.5 flex-wrap">
+                    <div class="matrix-quick-legend-bar flex items-center justify-between gap-1.5" id="matrix-quick-legend-bar" style="margin: 0; padding: 5px 10px; min-height: 42px;" aria-label="Semáforo de compatibilidad química">
+                        <div class="flex items-center gap-1.5 flex-nowrap" style="flex-shrink: 0;">
                             <span class="matrix-legend-chip legend-chip-green" style="font-size: 0.7rem; padding: 2px 7px;" title="Compatible"><span class="chip-dot dot-green"></span>Verde</span>
                             <span class="matrix-legend-chip legend-chip-yellow" style="font-size: 0.7rem; padding: 2px 7px;" title="Separar"><span class="chip-dot dot-yellow"></span>Amarillo</span>
                             <span class="matrix-legend-chip legend-chip-red" style="font-size: 0.7rem; padding: 2px 7px;" title="Incompatible"><span class="chip-dot dot-red"></span>Rojo</span>
@@ -5749,6 +5806,10 @@
                     if (!isDragging) return;
                     isDragging = false;
 
+                    if (cardEl.releasePointerCapture && e.pointerId !== undefined) {
+                        try { cardEl.releasePointerCapture(e.pointerId); } catch(err) {}
+                    }
+
                     window.removeEventListener('pointermove', onPointerMove);
                     window.removeEventListener('pointerup', onPointerUp);
                     window.removeEventListener('pointercancel', onPointerUp);
@@ -5801,7 +5862,7 @@
                 };
 
                 const onPointerDown = (e) => {
-                    if (e.button !== undefined && e.button !== 0) return;
+                    if (e.pointerType === 'mouse' && e.button !== 0) return;
                     if (canDragCondition && !canDragCondition()) return;
 
                     this.wasDragged = false;
@@ -5812,6 +5873,11 @@
                     currentHoverZone = null;
 
                     cardEl.style.transition = 'none';
+                    cardEl.style.touchAction = 'none';
+
+                    if (cardEl.setPointerCapture && e.pointerId !== undefined) {
+                        try { cardEl.setPointerCapture(e.pointerId); } catch(err) {}
+                    }
 
                     document.querySelectorAll(dropZoneSelector).forEach(el => {
                         el.classList.add('drop-target-active');

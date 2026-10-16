@@ -936,17 +936,21 @@
             transition: none !important;
         }
 
-        /* Screen Shake Animation */
-        .shake-screen {
-            animation: gsShakeScreen 0.45s cubic-bezier(.36,.07,.19,.97) both;
+        /* Card Error Feedback (Sin temblor de pantalla ni desalineación de tarjetas) */
+        @keyframes cardErrorFlash {
+            0%, 100% {
+                border-color: rgba(239, 68, 68, 0.4);
+                box-shadow: none;
+            }
+            50% {
+                border-color: #ef4444;
+                box-shadow: 0 0 16px rgba(239, 68, 68, 0.6);
+                background-color: rgba(239, 68, 68, 0.2);
+            }
         }
-
-        @keyframes gsShakeScreen {
-            0%, 100% { transform: translate3d(0, 0, 0); }
-            10%, 90% { transform: translate3d(-6px, -4px, 0); }
-            20%, 80% { transform: translate3d(8px, 6px, 0); }
-            30%, 50%, 70% { transform: translate3d(-8px, -6px, 0); }
-            40%, 60% { transform: translate3d(8px, 6px, 0); }
+        .card-error-flash {
+            animation: cardErrorFlash 0.38s ease-in-out;
+            border-color: #ef4444 !important;
         }
 
         /* Responsive para Tablets y Desktops compactos: 3 filas de 3 columnas */
@@ -3222,12 +3226,11 @@
                     this.addScore(-100);
                     this.timeLeft = Math.max(2, this.timeLeft - 10); // Penaliza 10s de tiempo
 
-                    // Screen Shake
-                    this.dom.viewport.classList.add('shake-screen');
-                    setTimeout(() => this.dom.viewport.classList.remove('shake-screen'), 450);
-
-                    if (window.gsap && cardElem) {
-                        gsap.fromTo(cardElem, { x: -14 }, { x: 14, repeat: 4, yoyo: true, duration: 0.06 });
+                    // Feedback de error visual limpio en la tarjeta (sin temblor de pantalla ni deformación física)
+                    if (cardElem) {
+                        cardElem.classList.remove('is-selected');
+                        cardElem.classList.add('card-error-flash');
+                        setTimeout(() => cardElem.classList.remove('card-error-flash'), 400);
                     }
 
                     const currentVeh = this.vehicles[this.currentVehicleIndex];
@@ -3236,7 +3239,6 @@
                     this.showTechToast("¡Acción Prohibida Aplicada! (-10s / -100 pts)", trapData.errorToast, true);
                     this.setBotMessage("¡Alerta roja! Cayó en una trampa de seguridad. Pierde 10s y 100 puntos.", '⚠️');
                     
-                    if (cardElem) cardElem.classList.remove('is-selected');
                     this.selectedCardId = null;
                     return;
                 }
@@ -3252,11 +3254,11 @@
                     this.addScore(-25);
                     this.timeLeft = Math.max(2, this.timeLeft - 4);
 
-                    this.dom.viewport.classList.add('shake-screen');
-                    setTimeout(() => this.dom.viewport.classList.remove('shake-screen'), 350);
-
-                    if (window.gsap && cardElem) {
-                        gsap.fromTo(cardElem, { x: -10 }, { x: 10, repeat: 3, yoyo: true, duration: 0.07 });
+                    // Feedback de error visual limpio en la tarjeta (sin temblor de pantalla)
+                    if (cardElem) {
+                        cardElem.classList.remove('is-selected');
+                        cardElem.classList.add('card-error-flash');
+                        setTimeout(() => cardElem.classList.remove('card-error-flash'), 400);
                     }
 
                     const activeHotspotElem = document.querySelector(`.hotspot-target[data-target="${activeStepObj.targetId}"]`);
@@ -3272,7 +3274,6 @@
                     );
                     this.setBotMessage(`¡Infracción de secuencia! El procedimiento paso a paso exige completar primero el [Paso ${activeStepObj.step}: ${activeStepObj.fullName}].`, '🚫');
 
-                    if (cardElem) cardElem.classList.remove('is-selected');
                     this.selectedCardId = null;
                     return;
                 }
@@ -3355,11 +3356,11 @@
                     this.addScore(-30);
                     this.timeLeft = Math.max(2, this.timeLeft - 3);
 
-                    this.dom.viewport.classList.add('shake-screen');
-                    setTimeout(() => this.dom.viewport.classList.remove('shake-screen'), 300);
-
-                    if (window.gsap && cardElem) {
-                        gsap.fromTo(cardElem, { x: -10 }, { x: 10, repeat: 4, yoyo: true, duration: 0.06 });
+                    // Feedback de error visual limpio en la tarjeta (sin temblor de pantalla)
+                    if (cardElem) {
+                        cardElem.classList.remove('is-selected');
+                        cardElem.classList.add('card-error-flash');
+                        setTimeout(() => cardElem.classList.remove('card-error-flash'), 400);
                     }
 
                     const tagElem = document.getElementById(`hotspot-tag-${targetId}`);
