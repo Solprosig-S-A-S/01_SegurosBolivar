@@ -558,6 +558,8 @@
             box-sizing: border-box;
             margin: auto 0;
             padding: 2px 0;
+            overflow: visible !important;
+            touch-action: none;
         }
         .exam-card {
             position: relative;
@@ -566,15 +568,18 @@
             padding: 8px 10px;
             border: 1px solid rgba(148, 163, 184, 0.2);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-            user-select: none;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-user-drag: none !important;
+            touch-action: none !important;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             gap: 6px;
             min-width: 0;
-            overflow: hidden;
+            overflow: visible;
             box-sizing: border-box;
-            transition: all 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .card-selected {
             border-color: var(--bolivar-yellow) !important;
@@ -930,11 +935,14 @@
             cursor: pointer;
         }
         .is-dragging {
-            opacity: 0.92;
-            z-index: 50 !important;
+            animation: none !important;
+            transition: none !important;
+            opacity: 0.95 !important;
+            z-index: 1000 !important;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 199, 44, 0.6) !important;
             border-color: #FFC72C !important;
             pointer-events: none !important;
+            touch-action: none !important;
         }
         .drop-target-hover {
             border-color: #FFC72C !important;
@@ -954,7 +962,7 @@
             100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
         .pop-comic {
-            animation: popComic 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: popComic 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes happyJiggle {
@@ -2021,7 +2029,7 @@
             <!-- ============================================================== -->
             <!-- NIVEL 3: HERRAMIENTAS DE COMUNICACIÓN Y NAVEGACIÓN FDS (1.3) -->
             <!-- ============================================================== -->
-            <section id="phase-level3" class="hidden flex-1 flex flex-col justify-between overflow-hidden" style="padding: 12px 14px;">
+            <section id="phase-level3" class="hidden flex-1 flex flex-col justify-between" style="padding: 12px 14px; overflow: visible;">
                 <!-- Sub-Tabs: 3A Etiqueta SGA / 3B FDS 16 Secciones -->
                 <div style="display: flex; gap: 6px; margin-bottom: 6px;">
                     <button id="tab-btn-label" class="btn flex-1" style="padding: 6px 8px; font-size: 0.72rem; font-weight: 800; background: rgba(0, 103, 56, 0.4); border: 1px solid var(--bolivar-green-glow); color: #fff;">
@@ -2033,7 +2041,7 @@
                 </div>
 
                 <!-- Sub-Fase 3A: Etiqueta y Pictogramas SGA -->
-                <div id="subphase-3a" class="flex-1 flex flex-col justify-between overflow-hidden">
+                <div id="subphase-3a" class="flex-1 flex flex-col justify-between" style="overflow: visible;">
                     <div class="exam-status-bar" style="margin-bottom: 6px;">
                         <span id="exam-item-counter" style="font-size: var(--font-xs); font-family: var(--font-mono);">1 de 6</span>
                         <div id="lucho-widget" class="lucho-widget">
@@ -2043,11 +2051,11 @@
                         <span style="font-size: var(--font-xs);">Puntos: <strong id="exam-score-display" class="text-bolivar-yellow">0</strong>/6</span>
                     </div>
 
-                    <div class="flex-1 flex flex-col justify-center" style="padding: 2px 0;">
+                    <div class="flex-1 flex flex-col justify-center" style="padding: 2px 0; overflow: visible;">
                         <div id="exam-cards-tray" class="exam-cards-tray"></div>
                     </div>
 
-                    <div class="pictogram-grid" id="exam-pictogram-grid" style="padding-top: 4px;"></div>
+                    <div class="pictogram-grid" id="exam-pictogram-grid" style="padding-top: 4px; overflow: visible;"></div>
                 </div>
 
                 <!-- Sub-Fase 3B: Búsqueda Situacional FDS 16 Secciones -->
@@ -3365,6 +3373,7 @@
                 this.fdsIndex = 0;
                 this.fdsScore = 0;
                 this.fdsAnswersLog = [];
+                window.sgaGame = this;
 
                 this.dom = {
                     viewport: document.getElementById('app-viewport'),
@@ -4052,23 +4061,30 @@
                 let currentHoverZone = null;
                 let hasMoved = false;
 
+                // Prevenir arrastre nativo HTML5 (fantasma de texto o imagen)
+                cardEl.setAttribute('draggable', 'false');
+                cardEl.addEventListener('dragstart', (e) => e.preventDefault());
+
                 const onPointerMove = (e) => {
                     if (!isDragging) return;
 
                     const dx = e.clientX - startX;
                     const dy = e.clientY - startY;
 
-                    // Umbral de 6px para diferenciar toque simple de arrastre intencional
-                    if (!hasMoved && Math.hypot(dx, dy) > 6) {
+                    // Umbral de 5px para diferenciar toque/clic simple de arrastre intencional
+                    if (!hasMoved && Math.hypot(dx, dy) > 5) {
                         hasMoved = true;
                         this.wasDragged = true;
+                        cardEl.style.animation = 'none';
+                        cardEl.classList.remove('pop-comic');
                         cardEl.classList.add('is-dragging');
                     }
 
                     if (hasMoved) {
+                        if (e.cancelable) e.preventDefault();
                         const rot = Math.max(-10, Math.min(10, dx * 0.04));
                         cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(0.96) rotate(${rot}deg)`;
-                        cardEl.style.zIndex = '100';
+                        cardEl.style.zIndex = '1000';
 
                         if (e.clientY < 75) {
                             window.scrollBy(0, -10);
@@ -4093,15 +4109,18 @@
                     }
                 };
 
+                const cleanupListeners = () => {
+                    window.removeEventListener('pointermove', onPointerMove, true);
+                    window.removeEventListener('pointerup', onPointerUp, true);
+                    window.removeEventListener('pointercancel', onPointerCancel, true);
+                };
+
                 const onPointerUp = (e) => {
                     if (!isDragging) return;
                     isDragging = false;
+                    cleanupListeners();
 
-                    window.removeEventListener('pointermove', onPointerMove);
-                    window.removeEventListener('pointerup', onPointerUp);
-                    window.removeEventListener('pointercancel', onPointerUp);
-
-                    // Limpiar clases de las zonas destino
+                    // Limpiar clases de las zonas destino siempre
                     document.querySelectorAll(dropZoneSelector).forEach(el => {
                         el.classList.remove('drop-target-active', 'drop-target-hover');
                     });
@@ -4127,13 +4146,33 @@
                             }, 300);
                         }
                     } else {
+                        cardEl.classList.remove('is-dragging');
                         cardEl.style.zIndex = '';
+                        cardEl.style.transform = '';
                     }
                 };
 
-                const onPointerDown = (e) => {
-                    if (e.target && e.target.closest && e.target.closest('button')) return;
+                const onPointerCancel = (e) => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    cleanupListeners();
 
+                    document.querySelectorAll(dropZoneSelector).forEach(el => {
+                        el.classList.remove('drop-target-active', 'drop-target-hover');
+                    });
+
+                    cardEl.classList.remove('is-dragging');
+                    currentHoverZone = null;
+                    cardEl.style.transition = 'transform 0.2s ease';
+                    cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+                    setTimeout(() => {
+                        cardEl.style.transition = '';
+                        cardEl.style.zIndex = '';
+                    }, 250);
+                };
+
+                const onPointerDown = (e) => {
+                    if (e.button !== undefined && e.button !== 0) return;
                     if (canDragCondition && !canDragCondition()) return;
 
                     this.wasDragged = false;
@@ -4141,15 +4180,19 @@
                     hasMoved = false;
                     startX = e.clientX;
                     startY = e.clientY;
+                    currentHoverZone = null;
+
+                    cardEl.style.animation = 'none';
+                    cardEl.classList.remove('pop-comic');
                     cardEl.style.transition = 'none';
 
                     document.querySelectorAll(dropZoneSelector).forEach(el => {
                         el.classList.add('drop-target-active');
                     });
 
-                    window.addEventListener('pointermove', onPointerMove);
-                    window.addEventListener('pointerup', onPointerUp);
-                    window.addEventListener('pointercancel', onPointerUp);
+                    window.addEventListener('pointermove', onPointerMove, { passive: false, capture: true });
+                    window.addEventListener('pointerup', onPointerUp, { capture: true });
+                    window.addEventListener('pointercancel', onPointerCancel, { capture: true });
                 };
 
                 cardEl.addEventListener('pointerdown', onPointerDown);
@@ -4222,7 +4265,7 @@
 
                 if (this.dom.l2CardContainer) {
                     this.dom.l2CardContainer.innerHTML = `
-                        <div class="level2-classified-card draggable-card pop-comic" id="level2-active-chem-card">
+                        <div class="level2-classified-card draggable-card" id="level2-active-chem-card">
                             <div class="level2-chem-visual">
                                 ${item.svgIllustration || ''}
                                 <span class="level2-chem-badge-pill">SUSTANCIA</span>
@@ -4243,6 +4286,7 @@
 
                     const cardEl = document.getElementById('level2-active-chem-card');
                     if (cardEl) {
+                        this.playAnimation(cardEl, 'pop-comic', 450);
                         this.setupDragAndDrop(cardEl, '.hazard-bucket', (family) => {
                             if (family) {
                                 this.classifyLevel2Item(family);
@@ -4374,7 +4418,7 @@
 
                 EXAM_CHEMICALS.forEach(chem => {
                     const card = document.createElement('div');
-                    card.className = 'exam-card draggable-card pop-comic';
+                    card.className = 'exam-card draggable-card';
                     card.dataset.chemId = chem.id;
                     card.innerHTML = `
                         <div class="flex items-center gap-2 pointer-events-none" style="min-width: 0; width: 100%;">
@@ -4395,6 +4439,7 @@
 
                     card.querySelector('.btn-card-fds').addEventListener('click', (e) => {
                         e.stopPropagation();
+                        if (this.wasDragged) return;
                         sound.tap();
                         this.openFds(chem);
                     });
@@ -4413,6 +4458,7 @@
                     }, () => this.currentLevel === 3 && card.dataset.state !== 'done');
 
                     this.dom.examCardsTray.appendChild(card);
+                    this.playAnimation(card, 'pop-comic', 450);
                 });
             }
 

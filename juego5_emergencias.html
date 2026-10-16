@@ -898,23 +898,24 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 20px;
+            padding: 4px 10px;
             pointer-events: all;
+            gap: 6px;
         }
 
         .hud-detector-card {
-            background: rgba(15, 23, 42, 0.92);
-            border: 2px solid var(--border-subtle);
+            background: rgba(15, 23, 42, 0.90);
+            border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
-            padding: 6px 14px;
+            padding: 3px 8px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             box-shadow: var(--shadow-hud);
         }
 
         .gas-reading {
-            font-size: 1.35rem;
+            font-size: 0.95rem;
             font-weight: 900;
             color: #4ade80;
             font-family: monospace;
@@ -934,10 +935,10 @@
         /* Minimapa / Radar 2D de la Habitación 3D Cuadrada */
         .hud-minimap-radar {
             position: relative;
-            width: 105px;
-            height: 105px;
+            width: 54px;
+            height: 54px;
             background: rgba(15, 23, 42, 0.92);
-            border: 2px solid var(--amarillo-bolivar);
+            border: 1.5px solid var(--amarillo-bolivar);
             border-radius: var(--radius-sm);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
             overflow: hidden;
@@ -954,15 +955,15 @@
 
         .radar-player-dot {
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 8px;
+            height: 8px;
             background: #22c55e;
-            border: 2px solid #fff;
+            border: 1.5px solid #fff;
             border-radius: 50%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px #22c55e;
+            box-shadow: 0 0 8px #22c55e;
             transition: all 0.05s linear;
         }
 
@@ -972,17 +973,17 @@
             left: 50%;
             width: 0;
             height: 0;
-            border-left: 14px solid transparent;
-            border-right: 14px solid transparent;
-            border-top: 26px solid rgba(34, 197, 94, 0.35);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 16px solid rgba(34, 197, 94, 0.35);
             transform-origin: 50% 0%;
             transform: translate(-50%, 0) rotate(0deg);
         }
 
         .radar-station-blip {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             transform: translate(-50%, -50%);
         }
@@ -990,17 +991,17 @@
         /* Cronómetro de Crisis */
         .hud-timer-card {
             background: rgba(15, 23, 42, 0.92);
-            border: 2px solid var(--alerta-rojo);
+            border: 1.5px solid var(--alerta-rojo);
             border-radius: var(--radius-sm);
-            padding: 6px 14px;
+            padding: 3px 8px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 0 18px var(--alerta-rojo-glow);
+            gap: 6px;
+            box-shadow: 0 0 12px var(--alerta-rojo-glow);
         }
 
         .timer-digits {
-            font-size: 1.35rem;
+            font-size: 0.95rem;
             font-weight: 900;
             color: #ef4444;
             font-family: monospace;
@@ -1009,35 +1010,35 @@
         /* Medidores Laterales y Protocolo de Tareas */
         .hud-left-stats {
             position: absolute;
-            left: 20px;
-            top: 105px;
+            left: 10px;
+            top: 56px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 4px;
             pointer-events: all;
         }
 
         .stat-card-hud {
-            background: rgba(15, 23, 42, 0.92);
-            border: 1.5px solid var(--border-subtle);
+            background: rgba(15, 23, 42, 0.90);
+            border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
-            padding: 6px 12px;
-            width: 175px;
+            padding: 3px 6px;
+            width: 100px;
             box-shadow: var(--shadow-hud);
         }
 
         .stat-title {
             display: flex;
             justify-content: space-between;
-            font-size: 0.72rem;
+            font-size: 0.58rem;
             font-weight: 800;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .stat-bar-track {
             width: 100%;
-            height: 8px;
+            height: 4px;
             background: #1e293b;
             border-radius: var(--radius-full);
             overflow: hidden;
@@ -1057,68 +1058,94 @@
             transition: width 0.3s ease;
         }
 
-        /* Diálogo del Bolívar Safety Bot */
+        /* Diálogo del Bolívar Safety Bot - Barra Compacta No Intrusiva */
         .hud-bot-dialog {
             position: absolute;
-            bottom: 115px;
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            max-width: 620px;
-            background: rgba(15, 23, 42, 0.96);
-            border: 2px solid var(--amarillo-bolivar);
-            border-radius: var(--radius-md);
-            padding: 10px 16px;
+            width: auto;
+            max-width: 440px;
+            min-width: 200px;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 199, 44, 0.7);
+            border-radius: 20px;
+            padding: 4px 10px;
             display: flex;
             align-items: center;
-            gap: 14px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.85), 0 0 20px rgba(255, 199, 44, 0.35);
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 199, 44, 0.2);
             pointer-events: all;
             z-index: 60;
+            transition: all 0.25s ease;
+        }
+
+        .hud-bot-dialog.minimized {
+            display: none !important;
         }
 
         .bot-avatar-face {
-            width: 44px;
-            height: 44px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             background: var(--verde-bolivar);
-            border: 2px solid var(--amarillo-bolivar);
+            border: 1.5px solid var(--amarillo-bolivar);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
+            font-size: 0.75rem;
             color: #fff;
             flex-shrink: 0;
-            box-shadow: 0 0 12px var(--amarillo-bolivar);
+            box-shadow: 0 0 6px var(--amarillo-bolivar);
         }
 
         .bot-message-text {
-            font-size: 0.88rem;
+            font-size: 0.72rem;
             font-weight: 600;
             color: #f8fafc;
-            line-height: 1.35;
+            line-height: 1.25;
+            white-space: normal;
+        }
+
+        .bot-close-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.15rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 0 0 6px;
+            margin-left: auto;
+            flex-shrink: 0;
+            transition: color 0.2s;
+        }
+
+        .bot-close-btn:hover {
+            color: #fff;
         }
 
         /* Indicador de Control de Ratón (Pointer Lock) */
         .mouse-look-hint {
             position: absolute;
-            top: 75px;
+            top: 46px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.88);
-            border: 1px solid rgba(255, 199, 44, 0.5);
-            color: #f1f5f9;
-            font-size: 0.72rem;
+            background: rgba(15, 23, 42, 0.80);
+            border: 1px solid rgba(255, 199, 44, 0.4);
+            color: #cbd5e1;
+            font-size: 0.62rem;
             font-weight: 700;
-            padding: 5px 14px;
+            padding: 2px 10px;
             border-radius: var(--radius-full);
             pointer-events: none;
             display: flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
             transition: all 0.3s ease;
             z-index: 55;
+            opacity: 0.85;
         }
 
         .mouse-look-hint i {
@@ -1523,112 +1550,92 @@
 
         @media (max-width: 768px) {
             .fps-visor-hud {
-                border-top-width: 6px !important;
-                border-bottom-width: 6px !important;
-                border-left-width: 4px !important;
-                border-right-width: 4px !important;
+                border-top-width: 4px !important;
+                border-bottom-width: 4px !important;
+                border-left-width: 3px !important;
+                border-right-width: 3px !important;
             }
             .hud-header {
-                padding: 6px 8px !important;
+                padding: 4px 6px !important;
                 gap: 4px !important;
-                flex-wrap: wrap;
             }
-            .hud-brand-pill {
-                padding: 4px 8px !important;
-                gap: 6px !important;
-            }
-            .hud-brand-icon {
-                width: 24px !important;
-                height: 24px !important;
-                font-size: 0.75rem !important;
-            }
-            .hud-brand-text h1 {
-                font-size: 0.7rem !important;
-            }
-            .hud-brand-text span {
-                font-size: 0.58rem !important;
-            }
-            .hud-center-gauges {
-                gap: 5px !important;
+            .hud-detector-card, .hud-timer-card {
+                padding: 2px 6px !important;
+                gap: 4px !important;
             }
             .hud-minimap-radar {
-                width: 56px !important;
-                height: 56px !important;
-                padding: 3px !important;
-            }
-            .hud-gas-monitor, .hud-timer-box {
-                padding: 3px 7px !important;
-            }
-            .gas-label {
-                font-size: 0.52rem !important;
+                width: 44px !important;
+                height: 44px !important;
             }
             .gas-reading, .timer-digits {
-                font-size: 0.85rem !important;
+                font-size: 0.8rem !important;
+            }
+            .mission-pill-btn {
+                padding: 2px 6px !important;
+                font-size: 0.6rem !important;
             }
             .hud-left-stats {
-                top: 66px !important;
+                top: 48px !important;
                 left: 6px !important;
-                gap: 4px !important;
+                gap: 3px !important;
             }
-            .hud-stat-card, .hud-checklist-card {
-                width: 130px !important;
-                padding: 5px 7px !important;
+            .stat-card-hud {
+                width: 85px !important;
+                padding: 2px 4px !important;
             }
-            .stat-card-label {
-                font-size: 0.55rem !important;
+            .stat-title {
+                font-size: 0.52rem !important;
+                margin-bottom: 1px !important;
             }
-            .stat-card-val {
-                font-size: 0.78rem !important;
-            }
-            .check-item {
-                font-size: 0.6rem !important;
-                gap: 4px !important;
+            .stat-bar-track {
+                height: 3px !important;
             }
             .mouse-look-hint {
                 display: none !important;
             }
             .hud-bot-dialog {
-                bottom: 146px !important;
-                width: 94% !important;
-                padding: 6px 10px !important;
-                gap: 8px !important;
+                bottom: 8px !important;
+                width: auto !important;
+                max-width: 360px !important;
+                padding: 3px 8px !important;
+                gap: 6px !important;
             }
-            .bot-avatar-ring {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 1rem !important;
+            .bot-avatar-face {
+                width: 18px !important;
+                height: 18px !important;
+                font-size: 0.65rem !important;
             }
-            .bot-meta {
-                font-size: 0.58rem !important;
-            }
-            .bot-text {
-                font-size: 0.7rem !important;
+            .bot-message-text {
+                font-size: 0.65rem !important;
                 line-height: 1.2 !important;
             }
             .hud-touch-dpad {
-                bottom: 12px !important;
-                left: 10px !important;
-                width: 124px !important;
-                height: 124px !important;
-                gap: 4px !important;
+                bottom: 8px !important;
+                left: 8px !important;
+                width: 104px !important;
+                height: 104px !important;
+                gap: 3px !important;
+                opacity: 0.82;
             }
             .dpad-btn {
-                border-radius: 10px !important;
-                font-size: 1.15rem !important;
+                border-radius: 8px !important;
+                font-size: 0.95rem !important;
             }
             .hud-action-btn-box {
-                bottom: 18px !important;
-                right: 10px !important;
+                bottom: 10px !important;
+                right: 8px !important;
             }
             .action-touch-btn {
-                width: 90px !important;
-                height: 90px !important;
+                width: 68px !important;
+                height: 68px !important;
+                padding: 4px !important;
+                opacity: 0.85;
             }
             .action-touch-btn i {
-                font-size: 1.4rem !important;
+                font-size: 1.15rem !important;
             }
             .action-touch-btn span {
-                font-size: 0.62rem !important;
+                font-size: 0.55rem !important;
             }
             .fps-modal-overlay {
                 padding: 8px !important;
@@ -1650,6 +1657,67 @@
             .briefing-controls-clean {
                 flex-wrap: wrap;
                 font-size: 0.68rem !important;
+            }
+        }
+
+        /* Regla específica para teléfonos en modo horizontal (Landscape < 550px) */
+        @media (max-height: 550px) {
+            .fps-visor-hud {
+                border-width: 3px !important;
+            }
+            .hud-header {
+                padding: 2px 8px !important;
+            }
+            .hud-minimap-radar {
+                width: 40px !important;
+                height: 40px !important;
+            }
+            .hud-detector-card, .hud-timer-card {
+                padding: 1px 5px !important;
+            }
+            .gas-reading, .timer-digits {
+                font-size: 0.75rem !important;
+            }
+            .hud-left-stats {
+                top: 40px !important;
+                left: 6px !important;
+                gap: 2px !important;
+            }
+            .stat-card-hud {
+                width: 80px !important;
+                padding: 1px 4px !important;
+            }
+            .hud-bot-dialog {
+                bottom: 4px !important;
+                max-width: 300px !important;
+                padding: 2px 6px !important;
+            }
+            .bot-avatar-face {
+                width: 16px !important;
+                height: 16px !important;
+                font-size: 0.58rem !important;
+            }
+            .bot-message-text {
+                font-size: 0.6rem !important;
+                line-height: 1.15 !important;
+            }
+            .mouse-look-hint {
+                display: none !important;
+            }
+            .hud-touch-dpad {
+                bottom: 4px !important;
+                left: 6px !important;
+                transform: scale(0.8);
+                transform-origin: bottom left;
+            }
+            .hud-action-btn-box {
+                bottom: 4px !important;
+                right: 6px !important;
+            }
+            .action-touch-btn {
+                width: 58px !important;
+                height: 58px !important;
+                padding: 2px !important;
             }
         }
     </style>
@@ -1909,13 +1977,8 @@
                     <!-- Minimapa Radar de la Habitación Cuadrada -->
                     <div class="hud-minimap-radar">
                         <div class="radar-grid"></div>
-                        <!-- Blips de Estaciones en Radar -->
-                        <div class="radar-station-blip" style="top: 10%; left: 50%; background: #ef4444;" title="Norte: Válvula"></div>
-                        <div class="radar-station-blip" style="top: 90%; left: 50%; background: #38bdf8;" title="Sur: Lavaojos"></div>
-                        <div class="radar-station-blip" style="top: 75%; left: 10%; background: #0284c7;" title="Oeste (Sur): Caseta EPP"></div>
-                        <div class="radar-station-blip" style="top: 25%; left: 10%; background: #dc2626;" title="Oeste (Norte): Acopio RESPEL"></div>
-                        <div class="radar-station-blip" style="top: 50%; left: 90%; background: #eab308;" title="Este: Kit / Extintores"></div>
-                        <div class="radar-station-blip" style="top: 55%; left: 50%; background: #22c55e;" title="Centro: Charco / Fuego"></div>
+                        <!-- Blips Dinámicos de Estaciones según Misión -->
+                        <div id="radar-blips-container"></div>
                         <!-- Jugador en Radar -->
                         <div class="radar-player-dot" id="radar-player-dot"></div>
                         <div class="radar-vision-cone" id="radar-vision-cone"></div>
@@ -1967,11 +2030,12 @@
                 </div>
 
                 <!-- Diálogo Central Bolívar Safety Bot -->
-                <div class="hud-bot-dialog">
+                <div class="hud-bot-dialog" id="hud-bot-dialog">
                     <div class="bot-avatar-face"><i class="fa-solid fa-robot"></i></div>
                     <div class="bot-message-text" id="bot-message-text">
-                        ¡Alerta en la planta! Camina con WASD (o D-Pad táctil) y presiona la tecla [E] para interactuar al acercarte. Ve primero a la Caseta EPP (Oeste).
+                        ¡Alerta en la planta! Camina con WASD (o D-Pad táctil) y presiona [E] para interactuar al acercarte. Ve primero a la Caseta EPP (Oeste).
                     </div>
+                    <button class="bot-close-btn" id="btn-close-bot-dialog" type="button" aria-label="Cerrar diálogo" title="Cerrar">×</button>
                 </div>
 
             </div>
@@ -2462,16 +2526,26 @@
                     textDrain: document.getElementById('drain-stat-text'),
                     crisisStatLabel: document.getElementById('crisis-stat-label'),
                     botText: document.getElementById('bot-message-text'),
+                    hudBotDialog: document.getElementById('hud-bot-dialog'),
+                    btnCloseBotDialog: document.getElementById('btn-close-bot-dialog'),
                     actionBtn: document.getElementById('btn-action-interact'),
                     actionBtnLabel: document.getElementById('action-btn-label'),
                     
-                    // 3D Props
+                    // 3D Props M1 (Derrame)
+                    nodeValve: document.getElementById('node-valve'),
+                    nodeEyewash: document.getElementById('node-eyewash'),
+                    nodeKit: document.getElementById('node-kit'),
+                    nodeEpp: document.getElementById('node-epp'),
+                    nodeRespel: document.getElementById('node-respel'),
+                    badgeSpill: document.getElementById('badge-spill'),
+                    floorDrain: document.querySelector('.floor-storm-drain'),
                     valveWheel: document.getElementById('valve-wheel'),
                     valveSteam: document.getElementById('valve-steam'),
                     spillBoom: document.getElementById('spill-boom'),
                     padsLayer: document.getElementById('pads-layer'),
                     chemicalPuddle: document.getElementById('chemical-puddle'),
                     eyewashLever: document.getElementById('eyewash-lever'),
+                    radarBlips: document.getElementById('radar-blips-container'),
                     
                     // Fire 3D Elements & M2
                     fireCluster: document.getElementById('fire-cluster-3d'),
@@ -2512,6 +2586,13 @@
             }
 
             init() {
+                if (this.dom.btnCloseBotDialog && this.dom.hudBotDialog) {
+                    this.dom.btnCloseBotDialog.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.dom.hudBotDialog.classList.add('minimized');
+                    });
+                }
+
                 if (this.dom.btnSoundToggle) {
                     this.dom.btnSoundToggle.addEventListener('click', () => {
                         const isMuted = this.audio.toggleMute();
@@ -2557,6 +2638,27 @@
                 this.switchMission(1);
             }
 
+            renderRadarBlips(missionNum) {
+                if (!this.dom.radarBlips) return;
+                if (missionNum === 1) {
+                    this.dom.radarBlips.innerHTML = `
+                        <div class="radar-station-blip" style="top: 10%; left: 50%; background: #ef4444;" title="Norte: Válvula"></div>
+                        <div class="radar-station-blip" style="top: 90%; left: 50%; background: #38bdf8;" title="Sur: Lavaojos"></div>
+                        <div class="radar-station-blip" style="top: 75%; left: 10%; background: #0284c7;" title="Oeste (Sur): Caseta EPP"></div>
+                        <div class="radar-station-blip" style="top: 25%; left: 10%; background: #dc2626;" title="Oeste (Norte): Acopio RESPEL"></div>
+                        <div class="radar-station-blip" style="top: 50%; left: 90%; background: #eab308;" title="Este: Kit Antiderrame"></div>
+                        <div class="radar-station-blip" style="top: 55%; left: 50%; background: #22c55e;" title="Centro: Charco Químico"></div>
+                    `;
+                } else {
+                    this.dom.radarBlips.innerHTML = `
+                        <div class="radar-station-blip" style="top: 10%; left: 20%; background: #ef4444;" title="Norte: Alarma / Corte"></div>
+                        <div class="radar-station-blip" style="top: 50%; left: 65%; background: #eab308;" title="Este: Extintores PQS"></div>
+                        <div class="radar-station-blip" style="top: 90%; left: 75%; background: #10b981;" title="Sur: Manta Ignífuga"></div>
+                        <div class="radar-station-blip" style="top: 55%; left: 50%; background: #dc2626;" title="Centro: Conato Incendio"></div>
+                    `;
+                }
+            }
+
             switchMission(missionNum) {
                 this.currentMission = missionNum;
 
@@ -2575,18 +2677,80 @@
                 this.dom.textO2.textContent = '100%';
 
                 if (missionNum === 1) {
-                    // Misión 1: Fuga y Derrame Químico
+                    // ==============================================================
+                    // MISIÓN 1: FUGA Y DERRAME QUÍMICO (Control Operativo)
+                    // ==============================================================
                     this.gameState.timeLeft = 120;
                     this.gameState.spillProgress = 15;
                     this.dom.crisisStatLabel.textContent = "AVANCE A DRENAJE";
                     this.dom.meterDrain.style.width = "15%";
                     this.dom.meterDrain.style.background = "#ef4444";
                     this.dom.textDrain.textContent = "15%";
+                    if (this.dom.gasReading) {
+                        this.dom.gasReading.textContent = "25 PPM";
+                        this.dom.gasReading.classList.remove('danger');
+                    }
 
+                    // 1. OCULTAR COMPLETAMENTE ELEMENTOS DE MISIÓN 2 (Incendio)
+                    if (this.dom.nodeFireAlarm) this.dom.nodeFireAlarm.style.display = 'none';
+                    if (this.dom.nodeExtinguisher) this.dom.nodeExtinguisher.style.display = 'none';
+                    if (this.dom.nodeFireBlanket) this.dom.nodeFireBlanket.style.display = 'none';
                     if (this.dom.fireCluster) this.dom.fireCluster.style.display = 'none';
-                    if (this.dom.chemicalPuddle) this.dom.chemicalPuddle.style.display = 'block';
-                    if (this.dom.ceilingSmoke) this.dom.ceilingSmoke.classList.remove('active');
                     if (this.dom.fireBlanketDeployed) this.dom.fireBlanketDeployed.style.display = 'none';
+                    if (this.dom.ceilingSmoke) this.dom.ceilingSmoke.classList.remove('active');
+
+                    // 2. MOSTRAR Y RECONSTRUIR ELEMENTOS EXCLUSIVOS DE MISIÓN 1
+                    if (this.dom.nodeValve) this.dom.nodeValve.style.display = 'block';
+                    if (this.dom.nodeEyewash) this.dom.nodeEyewash.style.display = 'block';
+                    if (this.dom.nodeKit) this.dom.nodeKit.style.display = 'block';
+                    if (this.dom.nodeEpp) this.dom.nodeEpp.style.display = 'block';
+                    if (this.dom.nodeRespel) this.dom.nodeRespel.style.display = 'block';
+                    if (this.dom.badgeSpill) this.dom.badgeSpill.style.display = 'block';
+                    if (this.dom.floorDrain) this.dom.floorDrain.style.display = 'block';
+                    if (this.dom.chemicalPuddle) {
+                        this.dom.chemicalPuddle.style.display = 'block';
+                        this.dom.chemicalPuddle.style.opacity = '1';
+                        this.dom.chemicalPuddle.style.transform = 'translate(-50%, -50%) scale(1)';
+                    }
+                    if (this.dom.spillBoom) this.dom.spillBoom.classList.remove('deployed');
+                    if (this.dom.padsLayer) this.dom.padsLayer.classList.remove('deployed');
+
+                    // Reset de estados e interacciones M1
+                    this.gameState.hasGloves = false;
+                    this.gameState.hasMask = false;
+                    this.gameState.valveClosed = false;
+                    this.gameState.eyewashActive = false;
+                    this.gameState.kitOpened = false;
+                    this.gameState.boomPlaced = false;
+                    this.gameState.padsPlaced = false;
+                    this.gameState.respelStored = false;
+
+                    if (this.dom.handsLayer) {
+                        this.dom.handsLayer.classList.remove('has-gloves');
+                        this.dom.handsLayer.classList.remove('holding-extinguisher');
+                    }
+                    if (this.dom.visor) this.dom.visor.classList.remove('fullface-active');
+
+                    const bValve = document.getElementById('badge-valve');
+                    if (bValve) {
+                        bValve.classList.remove('completed');
+                        bValve.innerHTML = '<i class="fa-solid fa-wrench"></i> 1. VÁLVULA DE CORTE';
+                    }
+                    const bEyewash = document.getElementById('badge-eyewash');
+                    if (bEyewash) {
+                        bEyewash.classList.remove('completed');
+                        bEyewash.innerHTML = '<i class="fa-solid fa-eye"></i> LAVAOJOS 15 MIN';
+                    }
+                    const bKit = document.getElementById('badge-kit');
+                    if (bKit) {
+                        bKit.classList.remove('completed');
+                        bKit.innerHTML = '<i class="fa-solid fa-box-archive"></i> KIT ANTIDERRAME';
+                    }
+                    const bSpill = document.getElementById('badge-spill');
+                    if (bSpill) {
+                        bSpill.classList.remove('completed');
+                        bSpill.innerHTML = '<i class="fa-solid fa-droplet-slash"></i> CHARCO QUÍMICO';
+                    }
 
                     this.stations = [
                         { id: 'valve', name: 'Válvula de Corte', x: 0, z: -620, range: 260 },
@@ -2597,9 +2761,12 @@
                         { id: 'spill', name: 'Zona de Derrame', x: 0, z: 70, range: 420 }
                     ];
 
+                    this.renderRadarBlips(1);
                     this.setBotMessage('¡Misión 1: Fuga de químico! Camina a la Caseta EPP (Oeste) para equipar máscara y guantes.');
                 } else {
-                    // Misión 2: Conato de Incendio Clase B (Protocolo NFPA 10 / NFPA 600)
+                    // ==============================================================
+                    // MISIÓN 2: CONATO DE INCENDIO CLASE B (Completamente Independiente)
+                    // ==============================================================
                     this.gameState.timeLeft = 90;
                     this.fireIntensity = 100;
                     this.extinguisherEquipped = null;
@@ -2614,8 +2781,34 @@
                     this.dom.meterDrain.style.width = "100%";
                     this.dom.meterDrain.style.background = "linear-gradient(90deg, #f59e0b, #ef4444)";
                     this.dom.textDrain.textContent = "100%";
+                    if (this.dom.gasReading) {
+                        this.dom.gasReading.textContent = "450 PPM CO";
+                        this.dom.gasReading.classList.add('danger');
+                    }
 
+                    // 1. BORRAR TOTALMENTE TODOS LOS RESTOS DEL JUEGO 1 (Derrame)
+                    if (this.dom.nodeValve) this.dom.nodeValve.style.display = 'none';
+                    if (this.dom.nodeEyewash) this.dom.nodeEyewash.style.display = 'none';
+                    if (this.dom.nodeKit) this.dom.nodeKit.style.display = 'none';
+                    if (this.dom.nodeEpp) this.dom.nodeEpp.style.display = 'none';
+                    if (this.dom.nodeRespel) this.dom.nodeRespel.style.display = 'none';
+                    if (this.dom.badgeSpill) this.dom.badgeSpill.style.display = 'none';
+                    if (this.dom.floorDrain) this.dom.floorDrain.style.display = 'none';
                     if (this.dom.chemicalPuddle) this.dom.chemicalPuddle.style.display = 'none';
+                    if (this.dom.spillBoom) this.dom.spillBoom.classList.remove('deployed');
+                    if (this.dom.padsLayer) this.dom.padsLayer.classList.remove('deployed');
+
+                    if (this.dom.handsLayer) {
+                        this.dom.handsLayer.classList.remove('has-gloves');
+                        this.dom.handsLayer.classList.remove('holding-extinguisher');
+                    }
+                    if (this.dom.visor) this.dom.visor.classList.remove('fullface-active');
+
+                    // 2. CREAR Y MOSTRAR EL ESCENARIO 2 A SU PROPIA MANERA (FUEGO CLASE B)
+                    if (this.dom.nodeFireAlarm) this.dom.nodeFireAlarm.style.display = 'block';
+                    if (this.dom.nodeExtinguisher) this.dom.nodeExtinguisher.style.display = 'block';
+                    if (this.dom.nodeFireBlanket) this.dom.nodeFireBlanket.style.display = 'block';
+
                     if (this.dom.fireCluster) {
                         this.dom.fireCluster.style.display = 'block';
                         this.dom.fireCluster.style.transform = 'translate(-50%, -50%) scale(1)';
@@ -2651,6 +2844,7 @@
                         { id: 'fire_blanket', name: 'Manta Ignífuga Anti Re-ignición', x: 350, z: 580, range: 340 }
                     ];
 
+                    this.renderRadarBlips(2);
                     this.setBotMessage('¡Misión 2: Conato de Incendio Clase B! Paso 1: Ve a la Pared Norte y pulsa la ALARMA GENERAL con CORTE ELÉCTRICO para aislar energía.', '🚨');
                 }
 
@@ -3456,9 +3650,12 @@
             }
 
             setBotMessage(text, icon = '🤖') {
-                this.dom.botText.innerHTML = text;
-                if (window.gsap) gsap.fromTo(this.dom.botText, { opacity: 0.3, y: 4 }, { opacity: 1, y: 0, duration: 0.3 });
-                else this.dom.botText.style.opacity = '1';
+                if (this.dom.botText) {
+                    this.dom.botText.innerHTML = text;
+                    if (this.dom.hudBotDialog) this.dom.hudBotDialog.classList.remove('minimized');
+                    if (window.gsap) gsap.fromTo(this.dom.botText, { opacity: 0.3, y: 4 }, { opacity: 1, y: 0, duration: 0.3 });
+                    else this.dom.botText.style.opacity = '1';
+                }
             }
 
             triggerGameOver(isSuccess, failureReason = "") {
