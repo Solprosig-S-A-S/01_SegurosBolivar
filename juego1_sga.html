@@ -73,14 +73,9 @@
         }
 
         html, body {
-            overflow: hidden !important;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-        ::-webkit-scrollbar {
-            display: none !important;
-            width: 0 !important;
-            height: 0 !important;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         body {
@@ -88,6 +83,7 @@
             background-color: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -156,7 +152,9 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             background-image: 
                 radial-gradient(circle at 50% 20%, rgba(0, 103, 56, 0.08) 0%, transparent 60%),
                 linear-gradient(rgba(36, 53, 82, 0.2) 1px, transparent 1px),
@@ -1724,6 +1722,101 @@
             padding: 1px 5px;
             font-family: var(--font-mono);
             flex-shrink: 0;
+        }
+
+        /* ==============================================================
+           OPTIMIZACIÓN MÓVIL INTEGRAL (TELÉFONOS <= 768px)
+           ============================================================== */
+        @media (max-width: 768px) {
+            html, body {
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+                height: auto !important;
+                min-height: 100dvh;
+                align-items: flex-start !important;
+                padding: 0 !important;
+            }
+            .app-viewport {
+                height: auto !important;
+                min-height: 100dvh !important;
+                max-height: none !important;
+                border-radius: 0 !important;
+                border: none !important;
+                overflow-x: hidden !important;
+                overflow-y: visible !important;
+            }
+            .app-viewport > div.flex-1 {
+                overflow: visible !important;
+                height: auto !important;
+            }
+            #phase-level1, #phase-level2, #phase-level3, #subphase-3a, #subphase-3b {
+                overflow: visible !important;
+                height: auto !important;
+                justify-content: flex-start !important;
+                gap: 8px;
+                padding: 10px 10px 24px 10px !important;
+            }
+            .patch-panel-container {
+                height: auto !important;
+                min-height: 320px;
+                overflow: visible !important;
+            }
+            .patch-columns-board {
+                gap: 18px !important;
+                padding: 8px 6px !important;
+                height: auto !important;
+            }
+            .patch-column {
+                gap: 8px !important;
+                height: auto !important;
+            }
+            .patch-card {
+                touch-action: pan-y !important;
+                min-height: 58px !important;
+                padding: 6px 6px !important;
+            }
+            .patch-jack-pin, .patch-socket-port {
+                touch-action: none !important;
+                width: 26px !important;
+                height: 26px !important;
+            }
+            .patch-title {
+                font-size: 0.72rem !important;
+                white-space: normal !important;
+            }
+            .patch-subtitle, .patch-text {
+                font-size: 0.65rem !important;
+                line-height: 1.2 !important;
+                -webkit-line-clamp: 3 !important;
+            }
+            .hazard-buckets-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 6px !important;
+                margin-top: 8px !important;
+            }
+            .hazard-bucket {
+                min-height: 98px !important;
+                padding: 6px 4px !important;
+            }
+            .exam-cards-tray {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 6px !important;
+            }
+            .pictogram-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 6px !important;
+            }
+            .fds-nav-grid {
+                max-height: 280px !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
+                touch-action: pan-y !important;
+            }
+            .modal-backdrop .modal-card {
+                max-height: 90dvh !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
+            }
         }
     </style>
 </head>
@@ -3583,6 +3676,10 @@
 
                     // Eventos de arrastre táctil / puntero y clic
                     card.addEventListener('pointerdown', (e) => this.handleWirePointerDown(e, card, item));
+                    card.addEventListener('click', () => {
+                        if (this.dragMoved) return;
+                        this.handleLevel1LawClick(card, item);
+                    });
                     this.dom.l1ColLaws.appendChild(card);
                 });
 
@@ -3611,9 +3708,9 @@
 
                 // Vincular eventos globales de arrastre de cable
                 if (!this.l1EventsBound && this.dom.l1PatchPanel) {
-                    this.dom.l1PatchPanel.addEventListener('pointermove', (e) => this.handleWirePointerMove(e));
+                    window.addEventListener('pointermove', (e) => this.handleWirePointerMove(e));
                     window.addEventListener('pointerup', (e) => this.handleWirePointerUp(e));
-                    window.addEventListener('pointercancel', (e) => this.handleWirePointerUp(e));
+                    window.addEventListener('pointercancel', (e) => this.handleWirePointerCancel(e));
                     window.addEventListener('resize', () => this.updateLevel1Wires());
                     const board = document.getElementById('level1-match-board');
                     if (board) board.addEventListener('scroll', () => this.updateLevel1Wires());
@@ -3670,6 +3767,20 @@
                 this.selectedLawKey = lawItem.key;
 
                 sound.tap();
+            }
+
+            handleWirePointerCancel() {
+                if (!this.isDraggingWire) return;
+                if (this.dom.l1ActiveWire) {
+                    this.dom.l1ActiveWire.style.display = 'none';
+                    this.dom.l1ActiveWire.setAttribute('d', '');
+                }
+                if (this.dom.l1ColConcepts) {
+                    this.dom.l1ColConcepts.querySelectorAll('.patch-card-target').forEach(tc => tc.classList.remove('target-hover'));
+                }
+                this.isDraggingWire = false;
+                this.dragStartPos = null;
+                this.dragMoved = false;
             }
 
             handleWirePointerMove(e) {
@@ -3958,6 +4069,12 @@
                         const rot = Math.max(-10, Math.min(10, dx * 0.04));
                         cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(0.96) rotate(${rot}deg)`;
                         cardEl.style.zIndex = '100';
+
+                        if (e.clientY < 75) {
+                            window.scrollBy(0, -10);
+                        } else if (e.clientY > window.innerHeight - 75) {
+                            window.scrollBy(0, 10);
+                        }
 
                         // Detección precisa de colisión bajo el puntero
                         const elemUnder = document.elementFromPoint(e.clientX, e.clientY);

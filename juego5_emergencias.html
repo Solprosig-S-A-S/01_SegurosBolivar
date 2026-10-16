@@ -68,13 +68,14 @@
             background-color: var(--bg-darker);
             color: var(--text-main);
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
             user-select: none;
             -webkit-user-select: none;
-            touch-action: none;
+            touch-action: manipulation;
         }
 
         /* Contenedor Maestro de Simulación */
@@ -82,6 +83,7 @@
             position: relative;
             width: 100vw;
             height: 100vh;
+            height: 100dvh;
             max-width: 1280px;
             max-height: 860px;
             background: #000;
@@ -96,6 +98,8 @@
             .fps-container {
                 width: 100vw;
                 height: 100vh;
+                height: 100dvh;
+                max-height: none;
                 border-radius: 0;
             }
         }
@@ -1351,6 +1355,9 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
         }
 
         .fps-modal-overlay.open { display: flex; }
@@ -1363,7 +1370,10 @@
             width: 100%;
             max-width: 600px;
             max-height: 92vh;
+            max-height: 92dvh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
             padding: 24px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
             display: flex;
@@ -1388,7 +1398,10 @@
         .fps-briefing-dialog {
             max-width: 590px;
             max-height: 92vh;
+            max-height: 92dvh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
             background: #060a14;
             border: 1px solid rgba(255, 199, 44, 0.4);
             border-left: 4px solid var(--amarillo-bolivar);
@@ -1504,15 +1517,139 @@
             color: #000000;
         }
 
-        @media (max-width: 640px) {
-            .fps-briefing-dialog {
-                padding: 16px;
-                gap: 12px;
-                max-width: 95%;
+        .fps-3d-viewport, .hud-touch-dpad {
+            touch-action: none;
+        }
+
+        @media (max-width: 768px) {
+            .fps-visor-hud {
+                border-top-width: 6px !important;
+                border-bottom-width: 6px !important;
+                border-left-width: 4px !important;
+                border-right-width: 4px !important;
+            }
+            .hud-header {
+                padding: 6px 8px !important;
+                gap: 4px !important;
+                flex-wrap: wrap;
+            }
+            .hud-brand-pill {
+                padding: 4px 8px !important;
+                gap: 6px !important;
+            }
+            .hud-brand-icon {
+                width: 24px !important;
+                height: 24px !important;
+                font-size: 0.75rem !important;
+            }
+            .hud-brand-text h1 {
+                font-size: 0.7rem !important;
+            }
+            .hud-brand-text span {
+                font-size: 0.58rem !important;
+            }
+            .hud-center-gauges {
+                gap: 5px !important;
+            }
+            .hud-minimap-radar {
+                width: 56px !important;
+                height: 56px !important;
+                padding: 3px !important;
+            }
+            .hud-gas-monitor, .hud-timer-box {
+                padding: 3px 7px !important;
+            }
+            .gas-label {
+                font-size: 0.52rem !important;
+            }
+            .gas-reading, .timer-digits {
+                font-size: 0.85rem !important;
+            }
+            .hud-left-stats {
+                top: 66px !important;
+                left: 6px !important;
+                gap: 4px !important;
+            }
+            .hud-stat-card, .hud-checklist-card {
+                width: 130px !important;
+                padding: 5px 7px !important;
+            }
+            .stat-card-label {
+                font-size: 0.55rem !important;
+            }
+            .stat-card-val {
+                font-size: 0.78rem !important;
+            }
+            .check-item {
+                font-size: 0.6rem !important;
+                gap: 4px !important;
+            }
+            .mouse-look-hint {
+                display: none !important;
+            }
+            .hud-bot-dialog {
+                bottom: 146px !important;
+                width: 94% !important;
+                padding: 6px 10px !important;
+                gap: 8px !important;
+            }
+            .bot-avatar-ring {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 1rem !important;
+            }
+            .bot-meta {
+                font-size: 0.58rem !important;
+            }
+            .bot-text {
+                font-size: 0.7rem !important;
+                line-height: 1.2 !important;
+            }
+            .hud-touch-dpad {
+                bottom: 12px !important;
+                left: 10px !important;
+                width: 124px !important;
+                height: 124px !important;
+                gap: 4px !important;
+            }
+            .dpad-btn {
+                border-radius: 10px !important;
+                font-size: 1.15rem !important;
+            }
+            .hud-action-btn-box {
+                bottom: 18px !important;
+                right: 10px !important;
+            }
+            .action-touch-btn {
+                width: 90px !important;
+                height: 90px !important;
+            }
+            .action-touch-btn i {
+                font-size: 1.4rem !important;
+            }
+            .action-touch-btn span {
+                font-size: 0.62rem !important;
+            }
+            .fps-modal-overlay {
+                padding: 8px !important;
+                align-items: flex-start !important;
+            }
+            .fps-briefing-dialog, .fps-modal-dialog {
+                padding: 14px !important;
+                gap: 10px !important;
+                max-width: 96% !important;
+                max-height: 92dvh !important;
+                margin: auto !important;
+            }
+            .briefing-title {
+                font-size: 0.95rem !important;
+            }
+            .briefing-subtitle, .step-row {
+                font-size: 0.74rem !important;
             }
             .briefing-controls-clean {
                 flex-wrap: wrap;
-                font-size: 0.7rem;
+                font-size: 0.68rem !important;
             }
         }
     </style>
@@ -2613,38 +2750,60 @@
             }
 
             bindTouchControls() {
+                let lookTouchId = null;
                 let touchStartX = 0;
                 let touchStartY = 0;
+
                 this.dom.viewport.addEventListener('touchstart', (e) => {
                     if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node, .extinguisher-prop')) return;
-                    if (e.touches.length === 1) {
-                        touchStartX = e.touches[0].clientX;
-                        touchStartY = e.touches[0].clientY;
+                    if (lookTouchId === null && e.changedTouches.length > 0) {
+                        const t = e.changedTouches[0];
+                        lookTouchId = t.identifier;
+                        touchStartX = t.clientX;
+                        touchStartY = t.clientY;
                     }
                 }, { passive: true });
 
                 this.dom.viewport.addEventListener('touchmove', (e) => {
-                    if (e.target.closest('.dpad-btn, .action-touch-btn, .fps-modal-dialog, button, .audit-marker-3d, .station-3d-node, .extinguisher-prop')) return;
-                    if (e.touches.length === 1) {
-                        const dx = e.touches[0].clientX - touchStartX;
-                        const dy = e.touches[0].clientY - touchStartY;
-                        touchStartX = e.touches[0].clientX;
-                        touchStartY = e.touches[0].clientY;
+                    if (lookTouchId === null) return;
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        const t = e.changedTouches[i];
+                        if (t.identifier === lookTouchId) {
+                            const dx = t.clientX - touchStartX;
+                            const dy = t.clientY - touchStartY;
+                            touchStartX = t.clientX;
+                            touchStartY = t.clientY;
 
-                        this.yaw = (this.yaw + dx * 0.45) % 360;
-                        if (this.yaw < 0) this.yaw += 360;
-                        this.pitch = Math.max(-45, Math.min(40, this.pitch - dy * 0.35));
-                        this.updateCamera();
+                            this.yaw = (this.yaw + dx * 0.45) % 360;
+                            if (this.yaw < 0) this.yaw += 360;
+                            this.pitch = Math.max(-45, Math.min(40, this.pitch - dy * 0.35));
+                            this.updateCamera();
+                            break;
+                        }
                     }
                 }, { passive: true });
+
+                const endLookTouch = (e) => {
+                    if (lookTouchId === null) return;
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        if (e.changedTouches[i].identifier === lookTouchId) {
+                            lookTouchId = null;
+                            break;
+                        }
+                    }
+                };
+                this.dom.viewport.addEventListener('touchend', endLookTouch, { passive: true });
+                this.dom.viewport.addEventListener('touchcancel', endLookTouch, { passive: true });
 
                 const bindDpad = (id, key) => {
                     const btn = document.getElementById(id);
                     if (!btn) return;
-                    btn.addEventListener('touchstart', (e) => { e.preventDefault(); this.keysPressed[key] = true; });
-                    btn.addEventListener('touchend', () => { this.keysPressed[key] = false; });
+                    btn.addEventListener('touchstart', (e) => { e.preventDefault(); this.keysPressed[key] = true; }, { passive: false });
+                    btn.addEventListener('touchend', (e) => { e.preventDefault(); this.keysPressed[key] = false; }, { passive: false });
+                    btn.addEventListener('touchcancel', () => { this.keysPressed[key] = false; });
                     btn.addEventListener('mousedown', () => { this.keysPressed[key] = true; });
                     btn.addEventListener('mouseup', () => { this.keysPressed[key] = false; });
+                    btn.addEventListener('mouseleave', () => { this.keysPressed[key] = false; });
                 };
 
                 bindDpad('btn-move-forward', 'KeyW');
@@ -2655,6 +2814,10 @@
                 this.dom.actionBtn.addEventListener('click', () => {
                     this.triggerActiveInteraction();
                 });
+                this.dom.actionBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.triggerActiveInteraction();
+                }, { passive: false });
             }
 
             bindStationDirectClicks() {

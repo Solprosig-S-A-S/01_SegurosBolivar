@@ -715,3 +715,22 @@ gba(148, 163, 184, 0.18)).
   3. **Sincronización Reactiva**: En `updateVehicleDisplay()` se invoca `this.renderVehicleGraphic(this.currentVehicleIndex)` y `this.applySvgResponsiveLayout()`, reenganchando las referencias a elementos animados (`#svg-motor-safe-sign`, `#exhaust-smoke`, `#lucho-cabin-avatar`).
   4. **Adaptación de Etiquetas**: En `resetHotspotsAndCards()`, la etiqueta del Punto 1 conmuta automáticamente entre `"MOTOR / PANEL"` para el Generador y `"MOTOR / CELULAR"` para los vehículos móviles.
   5. **Verificación y SCORM**: Comprobación de integridad sintáctica sin errores y reconstrucción exitosa de paquetes SCORM 1.2 vía `python build_scorm.py`.
+
+## Optimización y Corrección Integral para Teléfonos Móviles en los 5 Juegos (`<= 768px`)
+- **Diagnóstico de Causas Raíz en Móviles**:
+  1. **Scroll Bloqueado**: Reglas `html, body { overflow: hidden !important; }`, `.app-viewport { height: 98vh; overflow: hidden; }`, `.iso-viewport { touch-action: none; }` y `body { touch-action: none; }` impedían deslizar verticalmente la página o los modales en teléfonos.
+  2. **Movimientos e Interacciones Táctiles Interrumpidas**:
+     - En Juego 1, `pointercancel` al hacer scroll disparaba `handleWirePointerUp` en lugar de cancelar limpiamente el cable activo.
+     - En Juego 2, `setPointerCapture` en `pointerdown` interfería con la emisión del evento `click` táctil (`Tap-to-Select`).
+     - En Juegos 1, 2 y 3, arrastrar una tarjeta hacia un objetivo fuera del pliegue no hacía auto-scroll de la ventana.
+     - En Juego 5, `bindTouchControls` exigía `e.touches.length === 1`, impidiendo caminar con el D-Pad mientras se giraba la cámara con otro dedo (multitouch).
+  3. **Elementos Recortados o No Visibles**:
+     - En Juego 2, el estilo inline `width: 370px; height: 370px;` de `#warehouse-board` pisaba la media query y se desbordaba al rotarse a 45° (`523px` de diagonal en pantallas de `360px`).
+     - En Juego 4, `this.camState.scale = 1.0` sobrescribía inline `--scene-scale` sobre `.iso-world`, ocultando el casillero, la puerta, la mesa y el motor fuera del teléfono.
+     - En Juego 5, los bordes gruesos de `.fps-visor-hud` y las cajas del HUD colisionaban con el diálogo del bot y los controles táctiles.
+- **Soluciones Implementadas**:
+  - **Juego 1 (`juego1_sga.html`)**: Desbloqueo de `overflow-y: auto` en `html, body`, `.app-viewport` y fases 1/2/3 en `@media (max-width: 768px)`; `touch-action: pan-y` en `.patch-card` con `touch-action: none` en `.patch-jack-pin`; manejador `handleWirePointerCancel()` separado y auto-scroll en bordes durante `setupDragAndDrop`.
+  - **Juego 2 (`juego2_bodega.html`)**: Escala compacta del tablero isométrico `#warehouse-board` (`235x235px`) y `.iso-viewport` en `@media (max-width: 768px)`, eliminación de `setPointerCapture` para garantizar `Tap-to-Select` + `Drag-and-Drop`, y auto-scroll vertical al arrastrar cerca de los bordes.
+  - **Juego 3 (`juego3_trasiego.html`)**: Compactación de cabecera, barra de ruta deslizable horizontalmente, escenario SVG y grilla de 9 tarjetas en `@media (max-width: 768px)`, más auto-scroll de ventana al arrastrar o seleccionar tarjetas.
+  - **Juego 4 (`juego4_taller.html`)**: Cálculo dinámico `getResponsiveCameraDefaults()` según `window.innerWidth` (`scale: 0.56` en `<=420px`, `0.64` en `<=560px`, `0.78` en `<=820px`) aplicado en inicialización, `resize` y `restartGame()`; cambio de `.iso-viewport` a `touch-action: pan-y` para permitir scroll con 1 dedo, Tap-to-Move con 1 dedo y paneo/zoom con 2 dedos.
+  - **Juego 5 (`juego5_emergencias.html`)**: Desbloqueo de scroll táctil (`touch-action: pan-y; -webkit-overflow-scrolling: touch;`) en modales de Briefing y Auditoría; media query `@media (max-width: 768px)` para HUD compacto sin colisiones; soporte multitáctil por `touch.identifier` (`lookTouchId`) en `bindTouchControls()` para caminar con el D-Pad y rotar cámara simultáneamente.

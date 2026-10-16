@@ -84,7 +84,9 @@
             width: 100%;
             max-width: 100vw;
             overflow-x: hidden;
-            touch-action: pan-y;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: manipulation;
         }
 
         /* Contenedor Principal (Cockpit de Inspección) */
@@ -1012,51 +1014,68 @@
             }
         }
 
-        /* Responsive para Móviles (<= 640px) */
-        @media (max-width: 640px) {
+        /* Responsive para Móviles (<= 768px) */
+        @media (max-width: 768px) {
             body {
-                padding: 4px;
+                padding: 0;
                 align-items: flex-start;
+                min-height: 100dvh;
             }
             .app-viewport {
-                border-radius: var(--radius-md);
+                border-radius: 0;
+                border: none;
                 width: 100%;
+                min-height: 100dvh;
                 margin: 0 auto;
+                overflow-y: visible;
             }
             .stage-section {
                 margin: 4px 6px;
                 border-radius: var(--radius-md);
             }
             .stage-header {
-                padding: 5px 8px;
-                font-size: 0.68rem;
+                padding: 4px 8px;
+                font-size: 0.66rem;
                 gap: 4px;
             }
             .stage-condition-badge {
-                font-size: 0.65rem;
+                font-size: 0.62rem;
                 padding: 1px 6px;
             }
             .stage-badge-live {
-                font-size: 0.7rem;
+                font-size: 0.68rem;
+            }
+            .trasiego-roadmap-guide {
+                padding: 4px 6px !important;
+                gap: 3px !important;
+                overflow-x: auto !important;
+                flex-wrap: nowrap !important;
+                justify-content: flex-start !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            .roadmap-step-pill {
+                padding: 2px 6px !important;
+                font-size: 0.64rem !important;
+                flex-shrink: 0;
             }
             .svg-canvas-wrap {
-                aspect-ratio: 540 / 280;
-                min-height: 195px;
-                max-height: 250px;
+                aspect-ratio: 540 / 260;
+                min-height: 165px;
+                max-height: 210px;
             }
             .tray-section {
-                padding: 6px 8px 16px 8px;
+                padding: 4px 6px 18px 6px;
             }
             .tray-header {
-                font-size: 0.78rem;
+                font-size: 0.72rem;
                 margin-bottom: 4px;
                 padding: 0 4px;
             }
             .tray-title-desktop {
-                display: inline;
+                display: none;
             }
             .tray-title-mobile {
-                display: none;
+                display: inline;
             }
             .tray-swipe-cue {
                 display: none;
@@ -1064,7 +1083,7 @@
             .tray-cards-grid {
                 display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 7px;
+                gap: 6px;
                 width: 100%;
             }
             .action-card {
@@ -1072,10 +1091,10 @@
                 min-width: 0;
                 max-width: 100%;
                 flex: none;
-                padding: 8px 9px;
-                gap: 8px;
-                min-height: 58px;
-                border-radius: var(--radius-md);
+                padding: 6px 7px;
+                gap: 6px;
+                min-height: 48px;
+                border-radius: var(--radius-sm);
                 box-sizing: border-box;
                 overflow: hidden;
             }
@@ -1086,10 +1105,10 @@
                 flex: none;
             }
             .action-card-icon-box {
-                width: 32px;
-                height: 32px;
-                min-width: 32px;
-                font-size: 0.95rem;
+                width: 28px;
+                height: 28px;
+                min-width: 28px;
+                font-size: 0.85rem;
                 border-radius: var(--radius-sm);
             }
             .action-card-text {
@@ -1098,9 +1117,9 @@
                 overflow: hidden;
             }
             .action-card-title {
-                font-size: 0.76rem;
+                font-size: 0.72rem;
                 font-weight: 800;
-                line-height: 1.18;
+                line-height: 1.15;
                 white-space: normal;
                 overflow-wrap: break-word;
                 word-break: break-word;
@@ -1111,76 +1130,77 @@
             }
             .action-card-sub {
                 display: -webkit-box !important;
-                -webkit-line-clamp: 2;
+                -webkit-line-clamp: 1;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
-                font-size: 0.65rem;
-                line-height: 1.2;
+                font-size: 0.62rem;
+                line-height: 1.15;
                 color: #94a3b8;
                 white-space: normal;
                 overflow-wrap: break-word;
                 word-break: break-word;
             }
             .header-bar {
-                padding: 8px 10px;
-                gap: 6px;
+                padding: 6px 8px;
+                gap: 5px;
             }
             .brand-badge {
-                width: 34px;
-                height: 34px;
-                font-size: 1rem;
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
             }
             .brand-text h1 {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
             }
             .brand-sub {
-                font-size: 0.65rem;
+                font-size: 0.62rem;
             }
             .norma-pill {
                 display: none;
             }
             .header-stats {
-                gap: 5px;
+                gap: 4px;
                 width: 100%;
                 justify-content: space-between;
             }
             .stat-badge {
-                padding: 4px 7px;
-                font-size: 0.74rem;
-                gap: 4px;
+                padding: 3px 6px;
+                font-size: 0.7rem;
+                gap: 3px;
                 border-radius: var(--radius-sm);
             }
             .combo-badge {
-                padding: 3px 6px;
-                font-size: 0.6875rem;
+                padding: 2px 5px;
+                font-size: 0.65rem;
             }
             .bot-banner {
-                padding: 6px 10px;
-                gap: 8px;
+                padding: 5px 8px;
+                gap: 6px;
+                margin: 4px 6px;
             }
             .bot-avatar {
-                width: 34px;
-                height: 34px;
-                font-size: 1.2rem;
+                width: 30px;
+                height: 30px;
+                font-size: 1.05rem;
             }
             .bot-name {
-                font-size: 0.6875rem;
+                font-size: 0.65rem;
             }
             .bot-dialog {
-                font-size: 0.8rem;
-                line-height: 1.25;
+                font-size: 0.74rem;
+                line-height: 1.2;
             }
             .comic-pop-bubble {
-                font-size: 0.75rem;
-                padding: 5px 10px;
+                font-size: 0.72rem;
+                padding: 4px 8px;
             }
             .tech-feedback-toast {
-                left: 8px;
-                right: 8px;
-                top: 60px;
+                left: 6px;
+                right: 6px;
+                top: 52px;
                 margin: 0 auto;
-                padding: 8px 10px;
-                font-size: 0.75rem;
+                padding: 6px 8px;
+                font-size: 0.72rem;
             }
         }
 
@@ -1188,24 +1208,24 @@
         @media (max-width: 380px) {
             .tray-cards-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 5px;
+                gap: 4px;
             }
             .action-card {
-                padding: 6px 7px;
-                gap: 6px;
-                min-height: 52px;
+                padding: 5px 6px;
+                gap: 5px;
+                min-height: 44px;
             }
             .action-card-icon-box {
-                width: 28px;
-                height: 28px;
-                min-width: 28px;
-                font-size: 0.85rem;
+                width: 24px;
+                height: 24px;
+                min-width: 24px;
+                font-size: 0.78rem;
             }
             .action-card-title {
-                font-size: 0.72rem;
+                font-size: 0.68rem;
             }
             .action-card-sub {
-                font-size: 0.6rem;
+                font-size: 0.58rem;
             }
         }
 
@@ -2910,6 +2930,14 @@
 
                     if (activeClone) {
                         activeClone.style.transform = `translate(${dx}px, ${dy}px) scale(1.05) rotate(2deg)`;
+
+                        // Auto-scroll vertical en teléfonos cuando se arrastra cerca de los bordes de la pantalla
+                        if (e.clientY < 75) {
+                            window.scrollBy(0, -10);
+                        } else if (e.clientY > window.innerHeight - 75) {
+                            window.scrollBy(0, 10);
+                        }
+
                         const elem = document.elementFromPoint(e.clientX, e.clientY);
                         const targetHotspot = elem ? elem.closest('.hotspot-target') : null;
 
@@ -2971,6 +2999,15 @@
                         h.classList.add('awaiting-target');
                     }
                 });
+
+                // En pantallas móviles, asegurar que el escenario de vehículos sea visible al seleccionar una tarjeta
+                const stageEl = document.getElementById('svg-stage-container');
+                if (stageEl && window.innerWidth <= 768) {
+                    const stRect = stageEl.getBoundingClientRect();
+                    if (stRect.top < 0) {
+                        stageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
 
                 this.audio.playTone(500, 'sine', 0.1);
                 if (cardId.startsWith('trap')) {

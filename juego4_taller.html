@@ -424,7 +424,7 @@
             align-items: center;
             justify-content: center;
             user-select: none;
-            touch-action: none;
+            touch-action: pan-y;
         }
 
         .btn-rotate-90-clean {
@@ -2382,12 +2382,13 @@
            ========================================================================== */
         @media (max-width: 820px) {
             .iso-viewport {
-                height: 520px;
+                height: 440px;
+                min-height: 380px;
             }
             .iso-world {
                 --pan-x: 0px;
                 --pan-y: 20px;
-                --scene-scale: 0.85;
+                --scene-scale: 0.78;
             }
             .tray-task-grid, .tray-grid-2cols {
                 grid-template-columns: 1fr !important;
@@ -2399,52 +2400,69 @@
         }
 
         @media (max-width: 640px) {
+            body {
+                padding: 0;
+                align-items: flex-start;
+            }
+            .app-viewport {
+                border-radius: 0;
+                border: none;
+                min-height: 100dvh;
+            }
+            .iso-viewport {
+                height: 360px;
+                min-height: 320px;
+            }
             .stage-control-toolbar {
-                top: 8px;
+                top: 6px;
             }
             .btn-rotate-90-clean {
-                font-size: 0.74rem;
-                padding: 6px 14px;
+                font-size: 0.7rem;
+                padding: 5px 12px;
             }
             .workshop-roadmap-guide {
-                top: 48px;
-                padding: 4px 10px;
+                top: 42px;
+                padding: 4px 8px;
                 gap: 4px;
+                max-width: 96%;
+                overflow-x: auto;
             }
             .roadmap-badge-title {
-                font-size: 0.65rem;
-                padding-right: 5px;
+                font-size: 0.62rem;
+                padding-right: 4px;
             }
             .roadmap-step-pill {
-                font-size: 0.64rem;
-                padding: 3px 7px;
-                gap: 4px;
+                font-size: 0.62rem;
+                padding: 2px 6px;
+                gap: 3px;
+                flex-shrink: 0;
             }
             .roadmap-step-pill .step-circle {
-                width: 15px;
-                height: 15px;
-                font-size: 0.58rem;
+                width: 14px;
+                height: 14px;
+                font-size: 0.56rem;
             }
         }
 
         @media (max-width: 540px) {
             .iso-viewport {
-                height: 440px;
+                height: 330px;
+                min-height: 300px;
             }
             .iso-world {
                 --pan-x: 0px;
-                --pan-y: 15px;
-                --scene-scale: 0.72;
+                --pan-y: 12px;
+                --scene-scale: 0.58;
             }
             .header-bar {
-                padding: 10px 12px;
+                padding: 8px 10px;
             }
             .brand-text h1 {
-                font-size: 0.95rem;
+                font-size: 0.85rem;
             }
             .stat-badge {
-                padding: 4px 8px;
-                font-size: 0.78rem;
+                padding: 3px 6px;
+                font-size: 0.72rem;
             }
         }
 
@@ -3854,13 +3872,14 @@
                 this.avatarVestidorPos = { x: 250, y: 250 };
                 this.avatarWorkshopPos = { x: 250, y: 250 };
 
-                // Estado de Cámara y Desplazamiento del Escenario (Centrado perfecto)
+                // Estado de Cámara y Desplazamiento del Escenario (Adaptado al ancho de pantalla)
+                const camDefaults = this.getResponsiveCameraDefaults();
                 this.camState = {
                     panX: 0,
-                    panY: 35,
+                    panY: camDefaults.panY,
                     rotX: 60,
                     rotZ: -45,
-                    scale: 1.0
+                    scale: camDefaults.scale
                 };
 
                 this.dom = {};
@@ -3868,7 +3887,21 @@
                 this.applyCameraTransform();
                 this.buildIsometricGrids();
                 this.bindEvents();
+                window.addEventListener('resize', () => {
+                    const defs = this.getResponsiveCameraDefaults();
+                    this.camState.scale = defs.scale;
+                    this.camState.panY = defs.panY;
+                    this.applyCameraTransform();
+                });
                 this.isGameActive = false;
+            }
+
+            getResponsiveCameraDefaults() {
+                const w = window.innerWidth || 1024;
+                if (w <= 420) return { scale: 0.56, panY: 12 };
+                if (w <= 560) return { scale: 0.64, panY: 16 };
+                if (w <= 820) return { scale: 0.78, panY: 22 };
+                return { scale: 1.0, panY: 35 };
             }
 
             cacheDom() {
@@ -5547,10 +5580,12 @@
                     this.dom.avatarWorkshop.style.top = '250px';
                 }
 
-                // Reset de cámara centrada
+                // Reset de cámara centrada con escala responsiva
+                const camDefs = this.getResponsiveCameraDefaults();
                 this.camState.panX = 0;
-                this.camState.panY = 35;
+                this.camState.panY = camDefs.panY;
                 this.camState.rotZ = -45;
+                this.camState.scale = camDefs.scale;
                 this.applyCameraTransform();
 
                 this.startTimer();

@@ -281,4 +281,11 @@
     - [x] Reposicionamiento adaptativo automático de los 6 hotspots de inspección, manguera de trasiego, cable de polo a tierra, pinza de masa y bandeja de goteo en `applySvgResponsiveLayout()`.
     - [x] Adaptación contextual de etiquetas en hotspots (`MOTOR / PANEL` para generador estacionario vs `MOTOR / CELULAR` para vehículos móviles).
     - [x] Reconstrucción de paquetes SCORM 1.2 mediante `python build_scorm.py`.
+  - [x] Corrección Integral de Experiencia Móvil (Scroll, Movimientos Táctiles y Visibilidad) en los 5 Juegos:
+    - [x] Juego 1 (`juego1_sga.html`): Desbloqueo de scroll vertical en `html, body`, `.app-viewport` y niveles 1, 2 y 3; separación de `pointercancel` en cableado del Nivel 1; auto-scroll al arrastrar tarjetas en bordes.
+    - [x] Juego 2 (`juego2_bodega.html`): Escala responsiva de `#warehouse-board` (`235x235px`) para evitar desborde diagonal en teléfonos; eliminación de `setPointerCapture` para asegurar compatibilidad entre `Tap-to-Select` y `Drag-and-Drop`; auto-scroll en bordes.
+    - [x] Juego 3 (`juego3_trasiego.html`): Compactación móvil de cabecera, barra de ruta, escenario SVG y grilla de 9 tarjetas en `@media (max-width: 768px)`; auto-scroll al arrastrar o seleccionar tarjetas.
+    - [x] Juego 4 (`juego4_taller.html`): Escala dinámica `getResponsiveCameraDefaults()` en inicialización, `resize` y `restartGame()` para encuadrar el escenario `500x500` completo en teléfonos; `touch-action: pan-y` en `.iso-viewport` para permitir scroll vertical con 1 dedo sin perder `Tap-to-Move` ni zoom/paneo con 2 dedos.
+    - [x] Juego 5 (`juego5_emergencias.html`): Desbloqueo de scroll táctil en modales (`#modal-briefing-overlay`, `#modal-audit-overlay`); compactación de HUD móvil sin solapamientos; soporte multitáctil (`lookTouchId`) para caminar con D-Pad y girar la cámara al mismo tiempo.
+    - [x] Regeneración de los 6 paquetes SCORM 1.2 (`python build_scorm.py`).
 
