@@ -5604,7 +5604,7 @@
             }
 
             startTimer() {
-                this.timeLeft = 90; // Calibrado a 90 segundos para desafío dinámico
+                this.timeLeft = 120; // Calibrado a 120 segundos para análisis y organización técnica sin estrés
                 this.updateTimerDisplay();
                 clearInterval(this.timerInterval);
                 this.timerInterval = setInterval(() => {
@@ -6738,7 +6738,7 @@
 
             startExothermicCountdown() {
                 if (this.exothermicInterval) return;
-                this.exothermicSecondsLeft = 10;
+                this.exothermicSecondsLeft = 18;
                 const strip = document.getElementById('exothermic-alert-strip');
                 if (strip) {
                     strip.classList.remove('hidden');
@@ -6752,7 +6752,7 @@
                             </div>
                         </div>
                         <div class="exothermic-timer-box">
-                            <span id="exothermic-seconds-num">10</span>s
+                            <span id="exothermic-seconds-num">18</span>s
                         </div>
                     `;
                 }
@@ -6803,14 +6803,14 @@
                         <div class="flex items-center gap-2">
                             <span style="font-size: 1.4rem;">💥</span>
                             <div>
-                                <strong style="color: #f87171; font-weight: 900; text-transform: uppercase;">¡INCIDENTE QUÍMICO CONSUMADO!</strong>
-                                <span style="color: #fca5a5; font-size: var(--font-xs); display: block;">Deflagración por falta de segregación (-150 pts de auditoría)</span>
+                                <strong style="color: #f87171; font-weight: 900; text-transform: uppercase;">¡INCIDENTE QUÍMICO REGISTRADO!</strong>
+                                <span style="color: #fca5a5; font-size: var(--font-xs); display: block;">Deflagración por falta de segregación (-15 pts de auditoría)</span>
                             </div>
                         </div>
-                        <span style="font-family: var(--font-mono); color: #f87171; font-weight: 900; font-size: 1.1rem;">-150 PTS</span>
+                        <span style="font-family: var(--font-mono); color: #f87171; font-weight: 900; font-size: 1.1rem;">-15 PTS</span>
                     `;
                 }
-                this.showHazardToast('¡DEFLAGRACIÓN EN BODEGA! El tiempo de contención se agotó y la reacción química dañó el lote (-150 pts).');
+                this.showHazardToast('¡DEFLAGRACIÓN EN BODEGA! El tiempo de contención se agotó y ocurrió una reacción violenta (-15 pts).');
             }
 
             updateCounters() {
@@ -6952,6 +6952,7 @@
              */
             finishAndAudit() {
                 clearInterval(this.timerInterval);
+                this.clearExothermicCountdown();
                 this.phase = 'audit';
                 sound.tap();
 
@@ -7085,17 +7086,36 @@
                         return nData && nData.isLiquid;
                     });
 
+                    const diagNeighbors = [
+                        [palletRow - 1, palletCol - 1], [palletRow - 1, palletCol + 1],
+                        [palletRow + 1, palletCol - 1], [palletRow + 1, palletCol + 1]
+                    ].filter(([nr, nc]) => nr >= 0 && nr < 3 && nc >= 0 && nc < 3);
+
+                    const touchesDiagLiquid = diagNeighbors.some(([nr, nc]) => {
+                        const nId = this.grid[nr][nc];
+                        if (!nId) return false;
+                        const nData = CHEMICAL_ITEMS.find(it => it.id === nId);
+                        return nData && nData.isLiquid;
+                    });
+
                     if (touchesLiquid) {
                         score += 20;
                         findings.push({
                             title: 'Contención Secundaria Activa de Líquidos (110% Capacidad)',
-                            desc: 'La estiba antiderrame está protegiendo tambores o garrafas líquidas (ACPM, Ácidos o Álcalis) para mitigar vertimientos.',
+                            desc: 'La estiba antiderrame está protegiendo directamente tambores o garrafas líquidas (ACPM, Ácidos o Álcalis) para mitigar vertimientos.',
+                            type: 'success'
+                        });
+                    } else if (touchesDiagLiquid) {
+                        score += 15;
+                        findings.push({
+                            title: 'Contención Secundaria en Proximidad Diagonal (+15 pts)',
+                            desc: 'La estiba antiderrame brinda cobertura contigua en proximidad diagonal a sustancias líquidas.',
                             type: 'success'
                         });
                     } else {
                         score += 5;
                         findings.push({
-                            title: 'Estiba Antiderrame Desconectada de Líquidos',
+                            title: 'Estiba Antiderrame Desconectada de Líquidos (+5 pts)',
                             desc: 'La estiba fue ubicada sola sin colindar con tambores o garrafas líquidas que requieran retención secundaria.',
                             type: 'warning'
                         });
@@ -7129,9 +7149,11 @@
                         type: 'success'
                     });
                 } else {
+                    const partialPts = Math.round((placedLegalCount / legalItems.length) * 15);
+                    score += partialPts;
                     const missing = legalItems.length - placedLegalCount;
                     findings.push({
-                        title: `Insumos Faltantes en Bodega (${missing} sin ubicar)`,
+                        title: `Insumos Faltantes en Bodega (${missing} sin ubicar, +${partialPts}/15 pts)`,
                         desc: 'Dejar productos químicos en la bandeja sin almacenar formalmente incumple las pautas de orden y aseo SST.',
                         type: 'warning'
                     });
@@ -7147,13 +7169,22 @@
                     }
                 }
 
-                if (gasPlaced && extinguisherPlaced && !hasIncompatibilities) {
-                    score += 15;
-                    findings.push({
-                        title: 'Segregación de Gas y Barrera de Protección PQS',
-                        desc: 'Cilindro de gas acetileno segregado y extintor PQS desplegado como barrera física reglamentaria (NFPA 10 / Res. 2400).',
-                        type: 'success'
-                    });
+                if (gasPlaced && extinguisherPlaced) {
+                    if (!hasIncompatibilities) {
+                        score += 15;
+                        findings.push({
+                            title: 'Segregación de Gas y Barrera de Protección PQS',
+                            desc: 'Cilindro de gas acetileno segregado y extintor PQS desplegado como barrera física reglamentaria (NFPA 10 / Res. 2400).',
+                            type: 'success'
+                        });
+                    } else {
+                        score += 10;
+                        findings.push({
+                            title: 'Gas y Extintor Posicionados (+10/15 pts)',
+                            desc: 'El extintor y el cilindro están en bodega, pero persisten reactividades químicas contiguas que comprometen la barrera.',
+                            type: 'warning'
+                        });
+                    }
                 } else {
                     findings.push({
                         title: 'Mitigación de Incendios o Gas Incompleta',
@@ -7183,17 +7214,27 @@
                         type: 'danger'
                     });
                 }
+                if (!a3Violation && !c1Violation) {
+                    findings.push({
+                        title: 'Aislamiento de Riesgos Locativos (440V y Radiación Solar)',
+                        desc: 'Se respetaron las distancias al tablero eléctrico de potencia A3 y a la zona de radiación solar C1 (NFPA 70 / NFPA 55).',
+                        type: 'success'
+                    });
+                }
 
-                // Penalización por Deflagraciones / Incidentes Exotérmicos Activos
+                // Penalización por Deflagraciones / Incidentes Exotérmicos durante el ejercicio
                 if (this.exothermicIncidentsCount > 0) {
-                    const penalty = this.exothermicIncidentsCount * 150;
+                    const penalty = Math.min(30, this.exothermicIncidentsCount * 15);
                     score = Math.max(0, score - penalty);
                     findings.unshift({
-                        title: `💥 ${this.exothermicIncidentsCount} Incidente(s) Exotérmico(s) con Deflagración (-${penalty} pts)`,
-                        desc: 'Se agotó la ventana de contención activa de 6s y ocurrió una reacción violenta/deflagración sin mitigar.',
+                        title: `💥 ${this.exothermicIncidentsCount} Incidente(s) Exotérmico(s) Durante Maniobra (-${penalty} pts)`,
+                        desc: 'Durante la operación se superó el tiempo de contención activa causando una reacción violenta. En auditoría real esto representa una no conformidad severa pero subsanable.',
                         type: 'danger'
                     });
                 }
+
+                // Normalizar Score a rango 0 - 100
+                score = Math.round(Math.max(0, Math.min(100, score)));
 
                 // Render Score
                 this.dom.auditScoreNum.textContent = `${score}%`;
@@ -7265,6 +7306,9 @@
                 this.activeHazardIndex = 0;
                 this.hazardToastCollapsed = false;
                 this.hideHazardToast();
+                this.exothermicIncidentsCount = 0;
+                this.hasExothermicDetonated = false;
+                this.clearExothermicCountdown();
 
                 this.dom.rejectZoneStatus.innerHTML = `
                     <span class="reject-status-badge">

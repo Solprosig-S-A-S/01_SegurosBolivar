@@ -1945,13 +1945,51 @@
                 font-size: 0.65rem !important;
                 line-height: 1.2 !important;
             }
+            .fps-hands-layer {
+                display: none !important;
+            }
+            .action-touch-btn #action-btn-label {
+                display: none !important;
+            }
+            .action-touch-btn {
+                width: 58px !important;
+                height: 58px !important;
+                border-radius: 50% !important;
+                padding: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                overflow: hidden !important;
+                opacity: 0.9 !important;
+            }
+            .action-touch-btn .key-badge-e {
+                margin-right: 0 !important;
+                font-size: 0.68rem !important;
+                padding: 1px 5px !important;
+            }
+            .action-touch-btn i {
+                font-size: 1.15rem !important;
+            }
+            .hud-mission-steps-bar {
+                top: 36px !important;
+                transform: translateX(-50%) scale(0.82) !important;
+                transform-origin: top center !important;
+                padding: 1px 4px !important;
+                gap: 3px !important;
+                max-width: 94vw !important;
+            }
+            .hud-step-chip {
+                padding: 2px 6px !important;
+                font-size: 0.54rem !important;
+            }
             .hud-touch-dpad {
                 bottom: 8px !important;
                 left: 8px !important;
                 width: 104px !important;
                 height: 104px !important;
                 gap: 3px !important;
-                opacity: 0.82;
+                opacity: 0.85;
             }
             .dpad-btn {
                 border-radius: 8px !important;
@@ -1960,18 +1998,6 @@
             .hud-action-btn-box {
                 bottom: 10px !important;
                 right: 8px !important;
-            }
-            .action-touch-btn {
-                width: 68px !important;
-                height: 68px !important;
-                padding: 4px !important;
-                opacity: 0.85;
-            }
-            .action-touch-btn i {
-                font-size: 1.15rem !important;
-            }
-            .action-touch-btn span {
-                font-size: 0.55rem !important;
             }
             .fps-modal-overlay {
                 padding: 8px !important;
@@ -1998,43 +2024,85 @@
 
         /* Regla específica para teléfonos en modo horizontal (Landscape < 550px) */
         @media (max-height: 550px) {
+            .fps-hands-layer {
+                display: none !important;
+            }
             .fps-visor-hud {
-                border-width: 3px !important;
+                border-width: 2px !important;
             }
             .hud-header {
-                padding: 2px 8px !important;
+                padding: 2px 6px !important;
+                height: 32px !important;
+                gap: 4px !important;
             }
             .hud-minimap-radar {
-                width: 40px !important;
-                height: 40px !important;
+                width: 36px !important;
+                height: 36px !important;
             }
             .hud-detector-card, .hud-timer-card {
-                padding: 1px 5px !important;
+                padding: 1px 4px !important;
+                height: 26px !important;
             }
             .gas-reading, .timer-digits {
-                font-size: 0.75rem !important;
+                font-size: 0.72rem !important;
             }
-            .hud-left-stats {
-                top: 40px !important;
-                left: 6px !important;
+            .mission-pill-btn {
+                padding: 1px 5px !important;
+                font-size: 0.58rem !important;
+            }
+            .hud-mission-steps-bar {
+                top: 33px !important;
+                transform: translateX(-50%) scale(0.75) !important;
+                transform-origin: top center !important;
+                padding: 1px 4px !important;
+                gap: 2px !important;
+                max-width: 92vw !important;
+                background: rgba(15, 23, 42, 0.95) !important;
+            }
+            .hud-step-chip {
+                padding: 1px 5px !important;
+                font-size: 0.52rem !important;
                 gap: 2px !important;
             }
+            .hud-left-stats {
+                top: 33px !important;
+                left: 6px !important;
+                flex-direction: row !important;
+                gap: 3px !important;
+            }
             .stat-card-hud {
-                width: 80px !important;
+                width: 72px !important;
+                padding: 1px 4px !important;
+            }
+            .stat-title {
+                font-size: 0.48rem !important;
+                margin-bottom: 1px !important;
+            }
+            .stat-bar-track {
+                height: 3px !important;
+            }
+            .fps-crosshair-prompt {
+                top: calc(50% + 18px) !important;
+                font-size: 0.65rem !important;
+                padding: 2px 8px !important;
+                max-width: 80vw !important;
+            }
+            .fps-crosshair-prompt .key-badge-e {
+                font-size: 0.6rem !important;
                 padding: 1px 4px !important;
             }
             .hud-bot-dialog {
-                bottom: 4px !important;
-                max-width: 300px !important;
+                bottom: 2px !important;
+                max-width: 290px !important;
                 padding: 2px 6px !important;
             }
             .bot-avatar-face {
-                width: 16px !important;
-                height: 16px !important;
-                font-size: 0.58rem !important;
+                width: 14px !important;
+                height: 14px !important;
+                font-size: 0.55rem !important;
             }
             .bot-message-text {
-                font-size: 0.6rem !important;
+                font-size: 0.58rem !important;
                 line-height: 1.15 !important;
             }
             .mouse-look-hint {
@@ -2043,17 +2111,36 @@
             .hud-touch-dpad {
                 bottom: 4px !important;
                 left: 6px !important;
-                transform: scale(0.8);
-                transform-origin: bottom left;
+                transform: scale(0.78) !important;
+                transform-origin: bottom left !important;
+                opacity: 0.88 !important;
             }
             .hud-action-btn-box {
                 bottom: 4px !important;
                 right: 6px !important;
             }
             .action-touch-btn {
-                width: 58px !important;
-                height: 58px !important;
-                padding: 2px !important;
+                width: 54px !important;
+                height: 54px !important;
+                border-radius: 50% !important;
+                padding: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                gap: 1px !important;
+                overflow: hidden !important;
+            }
+            .action-touch-btn #action-btn-label {
+                display: none !important;
+            }
+            .action-touch-btn .key-badge-e {
+                margin-right: 0 !important;
+                font-size: 0.68rem !important;
+                padding: 1px 5px !important;
+            }
+            .action-touch-btn i {
+                font-size: 1.15rem !important;
             }
         }
     </style>
