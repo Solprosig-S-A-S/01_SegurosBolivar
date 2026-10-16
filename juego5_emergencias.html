@@ -517,15 +517,27 @@
 
         /* ==============================================================
            NIVEL 2: CONATO DE INCENDIO QUÍMICO CLASE B (NFPA 10)
-           ============================================================== */
+            ============================================================== */
+        .floor-fire-zone {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 750px;
+            height: 750px;
+            pointer-events: auto;
+            z-index: 20;
+        }
+
         .fire-cluster-3d {
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 220px;
-            height: 220px;
-            pointer-events: none;
+            width: 260px;
+            height: 260px;
+            pointer-events: auto;
+            cursor: pointer;
             z-index: 25;
             transition: transform 0.2s ease, opacity 0.3s ease;
         }
@@ -540,38 +552,169 @@
         }
 
         .flame-core {
-            width: 70px;
-            height: 120px;
-            margin-left: -35px;
+            width: 90px;
+            height: 150px;
+            margin-left: -45px;
             background: linear-gradient(to top, #ffffff 0%, #fef08a 25%, #f59e0b 70%, transparent 100%);
-            box-shadow: 0 0 45px #f59e0b, 0 0 90px #ef4444;
+            box-shadow: 0 0 50px #f59e0b, 0 0 100px #ef4444;
             animation-duration: 0.14s;
             z-index: 3;
         }
 
         .flame-mid {
-            width: 130px;
-            height: 180px;
-            margin-left: -65px;
+            width: 160px;
+            height: 210px;
+            margin-left: -80px;
             background: linear-gradient(to top, #ea580c 0%, #ef4444 60%, transparent 100%);
             opacity: 0.9;
-            box-shadow: 0 0 60px #ea580c;
+            box-shadow: 0 0 70px #ea580c;
             animation-duration: 0.22s;
             z-index: 2;
         }
 
         .flame-glow {
-            width: 200px;
-            height: 230px;
-            margin-left: -100px;
-            background: radial-gradient(circle, rgba(239, 68, 68, 0.7) 0%, rgba(249, 115, 22, 0.3) 50%, transparent 75%);
+            width: 240px;
+            height: 270px;
+            margin-left: -120px;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.75) 0%, rgba(249, 115, 22, 0.35) 50%, transparent 75%);
             animation-duration: 0.3s;
             z-index: 1;
         }
 
+        /* Focos Secundarios de Fuego y Peligros */
+        .fire-hazard-barrel {
+            position: absolute;
+            top: 150px;
+            left: 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            filter: drop-shadow(0 0 30px #ef4444);
+            animation: flameFlicker 0.2s infinite alternate;
+            z-index: 24;
+        }
+
+        .fire-hazard-pool {
+            position: absolute;
+            bottom: 150px;
+            right: 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            filter: drop-shadow(0 0 30px #f97316);
+            animation: flameFlicker 0.24s infinite alternate;
+            z-index: 24;
+        }
+
+        .fire-hazard-north {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            filter: drop-shadow(0 0 35px #ef4444);
+            animation: flameFlicker 0.22s infinite alternate;
+            z-index: 24;
+        }
+
+        .fire-hazard-south {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            filter: drop-shadow(0 0 35px #f97316);
+            animation: flameFlicker 0.19s infinite alternate;
+            z-index: 24;
+        }
+
+        .fire-hazard-east {
+            position: absolute;
+            top: 260px;
+            right: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            filter: drop-shadow(0 0 35px #ef4444);
+            animation: flameFlicker 0.21s infinite alternate;
+            z-index: 24;
+        }
+
+        .fire-sparks-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 23;
+        }
+
+        .fire-spark {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background: #ffedd5;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #f97316, 0 0 20px #ef4444;
+            animation: floatSpark 2.2s infinite ease-out;
+        }
+        .spark-1 { left: 22%; bottom: 35%; animation-delay: 0s; }
+        .spark-2 { left: 48%; bottom: 45%; animation-delay: 0.4s; }
+        .spark-3 { left: 72%; bottom: 30%; animation-delay: 0.8s; }
+        .spark-4 { left: 35%; bottom: 65%; animation-delay: 1.2s; }
+        .spark-5 { left: 62%; bottom: 55%; animation-delay: 1.6s; }
+        .spark-6 { left: 50%; bottom: 25%; animation-delay: 0.2s; }
+
+        @keyframes floatSpark {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(25px, -160px) scale(0.2); opacity: 0; }
+        }
+
+        .fps-room-cube.room-on-fire .wall-3d {
+            box-shadow: inset 0 0 140px rgba(239, 68, 68, 0.45), inset 0 0 220px rgba(249, 115, 22, 0.3) !important;
+            animation: roomFireGlow 1.2s infinite alternate ease-in-out;
+        }
+        @keyframes roomFireGlow {
+            0% { filter: brightness(1) saturate(1.2); }
+            100% { filter: brightness(1.2) saturate(1.7) drop-shadow(0 0 25px rgba(239, 68, 68, 0.4)); }
+        }
+
+        .mini-flame {
+            width: 70px;
+            height: 105px;
+            background: linear-gradient(to top, #ffffff 0%, #facc15 30%, #ef4444 80%, transparent 100%);
+            border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%;
+            box-shadow: 0 0 35px #f97316, 0 0 70px #ef4444;
+            margin-top: -35px;
+            animation: flameFlicker 0.16s infinite alternate;
+        }
+
+        .ghs-flame-tag {
+            background: #fff;
+            border: 2px solid #ef4444;
+            color: #000;
+            font-size: 0.55rem;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+
         @keyframes flameFlicker {
             0% { transform: scale(0.96, 0.94) rotate(-2deg); filter: brightness(0.95); }
-            100% { transform: scale(1.04, 1.08) rotate(2.5deg); filter: brightness(1.2); }
+            100% { transform: scale(1.05, 1.1) rotate(2.5deg); filter: brightness(1.25); }
         }
 
         /* Estación de Extintores en Pared Este */
@@ -1738,7 +1881,7 @@
                     <div class="wall-3d cube-floor">
                         <div class="floor-safety-border"></div>
                         
-                        <!-- Charco Químico y Drenaje en el Suelo -->
+                        <!-- Zona de Derrame Químico (Misión 1) -->
                         <div class="floor-spill-zone" id="floor-spill-zone" title="Zona de Derrame Químico">
                             <div class="station-badge-3d" id="badge-spill" style="position: absolute; top: -38px; left: 50%; transform: translateX(-50%); z-index: 10;">
                                 <i class="fa-solid fa-droplet-slash"></i> CHARCO QUÍMICO
@@ -1752,28 +1895,78 @@
                                     <div class="pad-unit">PAÑO 4</div>
                                 </div>
                             </div>
-                            <!-- Conato de Incendio 3D (Llamas animadas) -->
-                            <div class="fire-cluster-3d" id="fire-cluster-3d" style="display: none;">
-                                <div class="flame-element flame-core"></div>
-                                <div class="flame-element flame-mid"></div>
-                                <div class="flame-element flame-glow"></div>
-                                <div class="station-badge-3d" id="badge-fire" style="position: absolute; top: -55px; left: 50%; transform: translateX(-50%); background: #dc2626; border-color: #f87171;">
-                                    <i class="fa-solid fa-fire"></i> FUEGO CLASE B (100%)
-                                </div>
-                            </div>
-                            <!-- Manta Ignífuga Desplegada sobre el Conato (Anti Re-ignición) -->
-                            <div class="fire-blanket-deployed-3d" id="fire-blanket-deployed">
-                                <div style="text-align: center;">
-                                    <i class="fa-solid fa-shield-halved" style="font-size: 1.6rem; color: #10b981; margin-bottom: 2px;"></i>
-                                    <div>MANTA IGNÍFUGA</div>
-                                    <div style="font-size: 0.55rem; color: #64748b; font-weight: 800;">VAPORES SOFOCADOS</div>
-                                </div>
-                            </div>
                             <div class="floor-storm-drain">
                                 <div style="font-size: 0.55rem; color: #ef4444; font-weight: 900; text-align: center;">DRENAJE</div>
                                 <div class="drain-bar"></div>
                                 <div class="drain-bar"></div>
                                 <div class="drain-bar"></div>
+                            </div>
+                        </div>
+
+                        <!-- Zona de Conato de Incendio Múltiple (Misión 2 - Fuego por todos lados) -->
+                        <div class="floor-fire-zone" id="floor-fire-zone" style="display: none;" title="Conato de Incendio Clase B">
+                            <!-- 1. Foco Central de Fuego Gigante -->
+                            <div class="fire-cluster-3d" id="fire-cluster-3d">
+                                <div class="flame-element flame-core"></div>
+                                <div class="flame-element flame-mid"></div>
+                                <div class="flame-element flame-glow"></div>
+                                <div class="station-badge-3d" id="badge-fire" style="position: absolute; top: -55px; left: 50%; transform: translateX(-50%); background: #dc2626; border-color: #f87171; cursor: pointer;">
+                                    <i class="fa-solid fa-fire"></i> FUEGO CLASE B (100%)
+                                </div>
+                            </div>
+
+                            <!-- 2. Foco Secundario: Tambor Químico Ardiendo (Oeste) -->
+                            <div class="fire-hazard-barrel" id="fire-barrel-left">
+                                <i class="fa-solid fa-oil-can" style="font-size: 3rem; color: #e11d48;"></i>
+                                <div class="mini-flame"></div>
+                                <div class="ghs-flame-tag"><i class="fa-solid fa-fire" style="color: #ef4444;"></i> SOLVENTES</div>
+                            </div>
+
+                            <!-- 3. Foco Secundario: Charco de Combustible en Llamas (Este) -->
+                            <div class="fire-hazard-pool" id="fire-pool-right">
+                                <i class="fa-solid fa-drum" style="font-size: 3rem; color: #f97316;"></i>
+                                <div class="mini-flame"></div>
+                                <div class="ghs-flame-tag"><i class="fa-solid fa-triangle-exclamation" style="color: #eab308;"></i> HIDROCARBURO</div>
+                            </div>
+
+                            <!-- 4. Foco Secundario: Estiba y Reactivos en Llamas (Norte / Fondo) -->
+                            <div class="fire-hazard-north" id="fire-spot-north">
+                                <i class="fa-solid fa-boxes-stacked" style="font-size: 3rem; color: #f59e0b;"></i>
+                                <div class="mini-flame"></div>
+                                <div class="ghs-flame-tag"><i class="fa-solid fa-radiation" style="color: #dc2626;"></i> REACTIVOS</div>
+                            </div>
+
+                            <!-- 5. Foco Secundario: Charco Frontal en Llamas (Sur / Frente) -->
+                            <div class="fire-hazard-south" id="fire-spot-south">
+                                <i class="fa-solid fa-fire-burner" style="font-size: 2.8rem; color: #ef4444;"></i>
+                                <div class="mini-flame"></div>
+                                <div class="ghs-flame-tag"><i class="fa-solid fa-skull-crossbones" style="color: #dc2626;"></i> VAPORES TÓXICOS</div>
+                            </div>
+
+                            <!-- 6. Foco Secundario: Derrame Inflamable con Fuego en Pared Este -->
+                            <div class="fire-hazard-east" id="fire-spot-east">
+                                <i class="fa-solid fa-gas-pump" style="font-size: 2.8rem; color: #f97316;"></i>
+                                <div class="mini-flame"></div>
+                                <div class="ghs-flame-tag"><i class="fa-solid fa-bolt" style="color: #ef4444;"></i> ARCO ELÉCTRICO</div>
+                            </div>
+
+                            <!-- Brasas y Chispas Volátiles Flotando en el Aire -->
+                            <div class="fire-sparks-container" id="fire-sparks-container">
+                                <div class="fire-spark spark-1"></div>
+                                <div class="fire-spark spark-2"></div>
+                                <div class="fire-spark spark-3"></div>
+                                <div class="fire-spark spark-4"></div>
+                                <div class="fire-spark spark-5"></div>
+                                <div class="fire-spark spark-6"></div>
+                            </div>
+
+                            <!-- Manta Ignífuga Desplegada sobre el Conato (Anti Re-ignición) -->
+                            <div class="fire-blanket-deployed-3d" id="fire-blanket-deployed" style="display: none;">
+                                <div style="text-align: center;">
+                                    <i class="fa-solid fa-shield-halved" style="font-size: 1.6rem; color: #10b981; margin-bottom: 2px;"></i>
+                                    <div>MANTA IGNÍFUGA</div>
+                                    <div style="font-size: 0.55rem; color: #64748b; font-weight: 800;">VAPORES SOFOCADOS</div>
+                                </div>
                             </div>
                         </div>
 
@@ -1866,24 +2059,34 @@
                         </div>
 
                         <!-- Estación de Extintores Portátiles (Nivel 2) -->
-                        <div class="station-3d-node" id="node-extinguisher" style="left: 65%;" title="Estación de Extintores Portátiles (NFPA 10)">
-                            <div class="station-badge-3d" id="badge-extinguisher">
+                        <div class="station-3d-node" id="node-extinguisher" style="position: relative;" title="Estación de Extintores Portátiles (NFPA 10)">
+                            <div class="station-badge-3d" id="badge-extinguisher" style="margin-bottom: 8px;">
                                 <i class="fa-solid fa-fire-extinguisher"></i> EXTINTORES NFPA 10
                             </div>
                             <div class="extinguisher-mount-3d">
-                                <!-- Extintor PQS ABC (Correcto para Líquidos Inflamables Clase B) -->
-                                <div class="extinguisher-prop pqs-extinguisher" id="prop-pqs" title="Extintor PQS ABC (Polvo Químico Seco - Clase B)">
+                                <!-- 1. Extintor PQS ABC (Correcto para Líquidos Inflamables Clase B) -->
+                                <div class="extinguisher-prop pqs-extinguisher" id="prop-pqs" title="Extintor PQS ABC (Polvo Químico Seco - ¡El Correcto para Clase B!)">
                                     <div class="ext-handle"></div>
                                     <div class="ext-body ext-body-red">
-                                        <span class="ext-label-tag">PQS ABC</span>
+                                        <span class="ext-label-tag" style="background: #eab308; color: #000;">★ PQS ABC</span>
                                     </div>
+                                    <span style="font-size: 0.58rem; font-weight: 800; color: #fef08a; margin-top: 4px;">PQS POLVO</span>
                                 </div>
-                                <!-- Extintor de Agua (Incorrecto para Clase B - Provoca Boilover) -->
-                                <div class="extinguisher-prop water-extinguisher" id="prop-water" title="Extintor de Agua H2O (¡Prohibido en Clase B!)">
+                                <!-- 2. Extintor CO2 (Nieve Carbónica para Equipos y Líquidos) -->
+                                <div class="extinguisher-prop co2-extinguisher" id="prop-co2" title="Extintor CO2 (Dióxido de Carbono - Vapores Limpios)">
+                                    <div class="ext-handle"></div>
+                                    <div class="ext-body ext-body-red">
+                                        <span class="ext-label-tag">CO2</span>
+                                    </div>
+                                    <span style="font-size: 0.58rem; font-weight: 800; color: #38bdf8; margin-top: 4px;">CO2 GAS</span>
+                                </div>
+                                <!-- 3. Extintor de Agua (Incorrecto para Clase B - Provoca Boilover) -->
+                                <div class="extinguisher-prop water-extinguisher" id="prop-water" title="Extintor de Agua H2O (¡PROHIBIDO EN CLASE B!)">
                                     <div class="ext-handle"></div>
                                     <div class="ext-body ext-body-silver">
-                                        <span class="ext-label-tag">H2O AGUA</span>
+                                        <span class="ext-label-tag" style="background: #dc2626; color: #fff;">¡NO H2O!</span>
                                     </div>
+                                    <span style="font-size: 0.58rem; font-weight: 800; color: #f87171; margin-top: 4px;">AGUA H2O</span>
                                 </div>
                             </div>
                         </div>
@@ -2531,7 +2734,10 @@
                     actionBtn: document.getElementById('btn-action-interact'),
                     actionBtnLabel: document.getElementById('action-btn-label'),
                     
-                    // 3D Props M1 (Derrame)
+                    // 3D Room & Props M1 (Derrame)
+                    roomCube: document.getElementById('fps-room-cube'),
+                    floorSpillZone: document.getElementById('floor-spill-zone'),
+                    floorFireZone: document.getElementById('floor-fire-zone'),
                     nodeValve: document.getElementById('node-valve'),
                     nodeEyewash: document.getElementById('node-eyewash'),
                     nodeKit: document.getElementById('node-kit'),
@@ -2547,11 +2753,17 @@
                     eyewashLever: document.getElementById('eyewash-lever'),
                     radarBlips: document.getElementById('radar-blips-container'),
                     
-                    // Fire 3D Elements & M2
+                    // Fire 3D Elements & M2 (Múltiples Fuegos y Extintores)
                     fireCluster: document.getElementById('fire-cluster-3d'),
+                    fireBarrelLeft: document.getElementById('fire-barrel-left'),
+                    firePoolRight: document.getElementById('fire-pool-right'),
+                    fireSpotNorth: document.getElementById('fire-spot-north'),
+                    fireSpotSouth: document.getElementById('fire-spot-south'),
+                    fireSpotEast: document.getElementById('fire-spot-east'),
                     badgeFire: document.getElementById('badge-fire'),
                     pqsSprayStream: document.getElementById('pqs-spray-stream'),
                     propPqs: document.getElementById('prop-pqs'),
+                    propCo2: document.getElementById('prop-co2'),
                     propWater: document.getElementById('prop-water'),
                     nodeFireAlarm: document.getElementById('node-fire-alarm'),
                     badgeFireAlarm: document.getElementById('badge-fire-alarm'),
@@ -2619,6 +2831,12 @@
                     this.dom.propPqs.addEventListener('click', (e) => {
                         e.stopPropagation();
                         this.equipExtinguisher('pqs');
+                    });
+                }
+                if (this.dom.propCo2) {
+                    this.dom.propCo2.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.equipExtinguisher('co2');
                     });
                 }
                 if (this.dom.propWater) {
@@ -2692,14 +2910,22 @@
                     }
 
                     // 1. OCULTAR COMPLETAMENTE ELEMENTOS DE MISIÓN 2 (Incendio)
+                    if (this.dom.floorFireZone) this.dom.floorFireZone.style.display = 'none';
                     if (this.dom.nodeFireAlarm) this.dom.nodeFireAlarm.style.display = 'none';
                     if (this.dom.nodeExtinguisher) this.dom.nodeExtinguisher.style.display = 'none';
                     if (this.dom.nodeFireBlanket) this.dom.nodeFireBlanket.style.display = 'none';
                     if (this.dom.fireCluster) this.dom.fireCluster.style.display = 'none';
+                    if (this.dom.fireBarrelLeft) this.dom.fireBarrelLeft.style.display = 'none';
+                    if (this.dom.firePoolRight) this.dom.firePoolRight.style.display = 'none';
+                    if (this.dom.fireSpotNorth) this.dom.fireSpotNorth.style.display = 'none';
+                    if (this.dom.fireSpotSouth) this.dom.fireSpotSouth.style.display = 'none';
+                    if (this.dom.fireSpotEast) this.dom.fireSpotEast.style.display = 'none';
                     if (this.dom.fireBlanketDeployed) this.dom.fireBlanketDeployed.style.display = 'none';
                     if (this.dom.ceilingSmoke) this.dom.ceilingSmoke.classList.remove('active');
+                    if (this.dom.roomCube) this.dom.roomCube.classList.remove('room-on-fire');
 
                     // 2. MOSTRAR Y RECONSTRUIR ELEMENTOS EXCLUSIVOS DE MISIÓN 1
+                    if (this.dom.floorSpillZone) this.dom.floorSpillZone.style.display = 'block';
                     if (this.dom.nodeValve) this.dom.nodeValve.style.display = 'block';
                     if (this.dom.nodeEyewash) this.dom.nodeEyewash.style.display = 'block';
                     if (this.dom.nodeKit) this.dom.nodeKit.style.display = 'block';
@@ -2753,12 +2979,12 @@
                     }
 
                     this.stations = [
-                        { id: 'valve', name: 'Válvula de Corte', x: 0, z: -620, range: 260 },
-                        { id: 'epp', name: 'Caseta EPP', x: -550, z: 350, range: 360 },
-                        { id: 'respel', name: 'Acopio RESPEL', x: -550, z: -350, range: 360 },
-                        { id: 'kit', name: 'Kit Antiderrame', x: 620, z: 0, range: 280 },
-                        { id: 'eyewash', name: 'Lavaojos de Emergencia', x: 0, z: 620, range: 230 },
-                        { id: 'spill', name: 'Zona de Derrame', x: 0, z: 70, range: 420 }
+                        { id: 'valve', name: 'Válvula de Corte', x: 0, z: -620, range: 350 },
+                        { id: 'epp', name: 'Caseta EPP', x: -550, z: 350, range: 450 },
+                        { id: 'respel', name: 'Acopio RESPEL', x: -550, z: -350, range: 450 },
+                        { id: 'kit', name: 'Kit Antiderrame', x: 620, z: 0, range: 400 },
+                        { id: 'eyewash', name: 'Lavaojos de Emergencia', x: 0, z: 620, range: 350 },
+                        { id: 'spill', name: 'Zona de Derrame', x: 0, z: 70, range: 500 }
                     ];
 
                     this.renderRadarBlips(1);
@@ -2787,6 +3013,7 @@
                     }
 
                     // 1. BORRAR TOTALMENTE TODOS LOS RESTOS DEL JUEGO 1 (Derrame)
+                    if (this.dom.floorSpillZone) this.dom.floorSpillZone.style.display = 'none';
                     if (this.dom.nodeValve) this.dom.nodeValve.style.display = 'none';
                     if (this.dom.nodeEyewash) this.dom.nodeEyewash.style.display = 'none';
                     if (this.dom.nodeKit) this.dom.nodeKit.style.display = 'none';
@@ -2795,8 +3022,6 @@
                     if (this.dom.badgeSpill) this.dom.badgeSpill.style.display = 'none';
                     if (this.dom.floorDrain) this.dom.floorDrain.style.display = 'none';
                     if (this.dom.chemicalPuddle) this.dom.chemicalPuddle.style.display = 'none';
-                    if (this.dom.spillBoom) this.dom.spillBoom.classList.remove('deployed');
-                    if (this.dom.padsLayer) this.dom.padsLayer.classList.remove('deployed');
 
                     if (this.dom.handsLayer) {
                         this.dom.handsLayer.classList.remove('has-gloves');
@@ -2804,7 +3029,8 @@
                     }
                     if (this.dom.visor) this.dom.visor.classList.remove('fullface-active');
 
-                    // 2. CREAR Y MOSTRAR EL ESCENARIO 2 A SU PROPIA MANERA (FUEGO CLASE B)
+                    // 2. CREAR Y MOSTRAR EL ESCENARIO 2 A SU PROPIA MANERA (FUEGO POR TODOS LADOS)
+                    if (this.dom.floorFireZone) this.dom.floorFireZone.style.display = 'block';
                     if (this.dom.nodeFireAlarm) this.dom.nodeFireAlarm.style.display = 'block';
                     if (this.dom.nodeExtinguisher) this.dom.nodeExtinguisher.style.display = 'block';
                     if (this.dom.nodeFireBlanket) this.dom.nodeFireBlanket.style.display = 'block';
@@ -2813,7 +3039,33 @@
                         this.dom.fireCluster.style.display = 'block';
                         this.dom.fireCluster.style.transform = 'translate(-50%, -50%) scale(1)';
                     }
+                    if (this.dom.fireBarrelLeft) {
+                        this.dom.fireBarrelLeft.style.display = 'flex';
+                        this.dom.fireBarrelLeft.style.opacity = '1';
+                        this.dom.fireBarrelLeft.style.transform = 'scale(1)';
+                    }
+                    if (this.dom.firePoolRight) {
+                        this.dom.firePoolRight.style.display = 'flex';
+                        this.dom.firePoolRight.style.opacity = '1';
+                        this.dom.firePoolRight.style.transform = 'scale(1)';
+                    }
+                    if (this.dom.fireSpotNorth) {
+                        this.dom.fireSpotNorth.style.display = 'flex';
+                        this.dom.fireSpotNorth.style.opacity = '1';
+                        this.dom.fireSpotNorth.style.transform = 'translateX(-50%) scale(1)';
+                    }
+                    if (this.dom.fireSpotSouth) {
+                        this.dom.fireSpotSouth.style.display = 'flex';
+                        this.dom.fireSpotSouth.style.opacity = '1';
+                        this.dom.fireSpotSouth.style.transform = 'translateX(-50%) scale(1)';
+                    }
+                    if (this.dom.fireSpotEast) {
+                        this.dom.fireSpotEast.style.display = 'flex';
+                        this.dom.fireSpotEast.style.opacity = '1';
+                        this.dom.fireSpotEast.style.transform = 'scale(1)';
+                    }
                     if (this.dom.ceilingSmoke) this.dom.ceilingSmoke.classList.add('active');
+                    if (this.dom.roomCube) this.dom.roomCube.classList.add('room-on-fire');
                     if (this.dom.fireBlanketDeployed) this.dom.fireBlanketDeployed.style.display = 'none';
                     if (this.dom.alarmPullHandle) this.dom.alarmPullHandle.classList.remove('pulled');
 
@@ -2830,7 +3082,7 @@
                     const bExt = document.getElementById('badge-extinguisher');
                     if (bExt) {
                         bExt.classList.remove('completed');
-                        bExt.innerHTML = '<i class="fa-solid fa-fire-extinguisher"></i> 2. EXTINTORES NFPA 10';
+                        bExt.innerHTML = '<i class="fa-solid fa-fire-extinguisher"></i> EXTINTORES NFPA 10';
                     }
                     if (this.dom.badgeFireBlanket) {
                         this.dom.badgeFireBlanket.classList.remove('completed');
@@ -2838,14 +3090,14 @@
                     }
 
                     this.stations = [
-                        { id: 'fire_alarm', name: 'Alarma y Corte Eléctrico', x: -380, z: -580, range: 340 },
-                        { id: 'extinguisher', name: 'Estación de Extintores PQS', x: 580, z: 180, range: 340 },
-                        { id: 'fire', name: 'Conato de Incendio', x: 0, z: 70, range: 450 },
-                        { id: 'fire_blanket', name: 'Manta Ignífuga Anti Re-ignición', x: 350, z: 580, range: 340 }
+                        { id: 'fire_alarm', name: 'Alarma y Corte Eléctrico', x: -250, z: -580, range: 450 },
+                        { id: 'extinguisher', name: 'Estación de Extintores NFPA 10', x: 580, z: 0, range: 500 },
+                        { id: 'fire', name: 'Conato de Incendio', x: 0, z: 70, range: 650 },
+                        { id: 'fire_blanket', name: 'Manta Ignífuga Anti Re-ignición', x: 250, z: 580, range: 450 }
                     ];
 
                     this.renderRadarBlips(2);
-                    this.setBotMessage('¡Misión 2: Conato de Incendio Clase B! Paso 1: Ve a la Pared Norte y pulsa la ALARMA GENERAL con CORTE ELÉCTRICO para aislar energía.', '🚨');
+                    this.setBotMessage('¡Misión 2: Conato de Incendio Clase B! Alarma en Norte, Extintores en Este (toma el PQS) y sofoca las llamas en el centro.', '🚨');
                 }
 
                 this.updateCamera();
@@ -3026,7 +3278,15 @@
                     { id: 'prop-fire-alarm', stId: 'fire_alarm' },
                     { id: 'node-fire-blanket', stId: 'fire_blanket' },
                     { id: 'prop-fire-blanket', stId: 'fire_blanket' },
-                    { id: 'floor-spill-zone', stId: 'dynamic_center' }
+                    { id: 'floor-spill-zone', stId: 'dynamic_center' },
+                    { id: 'floor-fire-zone', stId: 'dynamic_center' },
+                    { id: 'fire-cluster-3d', stId: 'dynamic_center' },
+                    { id: 'fire-barrel-left', stId: 'dynamic_center' },
+                    { id: 'fire-pool-right', stId: 'dynamic_center' },
+                    { id: 'fire-spot-north', stId: 'dynamic_center' },
+                    { id: 'fire-spot-south', stId: 'dynamic_center' },
+                    { id: 'fire-spot-east', stId: 'dynamic_center' },
+                    { id: 'badge-fire', stId: 'dynamic_center' }
                 ];
 
                 stationTargets.forEach(target => {
@@ -3038,13 +3298,9 @@
                         const actualStId = target.stId === 'dynamic_center' ? (this.currentMission === 2 ? 'fire' : 'spill') : target.stId;
                         const st = this.stations.find(s => s.id === actualStId);
                         if (!st) return;
-                        const dist = Math.hypot(this.posX - st.x, this.posZ - st.z);
-                        if (dist <= st.range + 80) {
-                            this.gameState.activeStation = st;
-                            this.triggerActiveInteraction();
-                        } else {
-                            this.setBotMessage(`Acércate a ${st.name} para interactuar.`, '🚶');
-                        }
+                        
+                        this.gameState.activeStation = st;
+                        this.triggerActiveInteraction();
                     });
                 });
             }
@@ -3158,25 +3414,14 @@
                         if (bestStation.id === 'fire_alarm') {
                             actionName = !this.fireAlarmTripped ? "ACTIVAR ALARMA Y CORTE [E]" : "ALARMA Y ENERGÍA AISLADA [OK]";
                         } else if (bestStation.id === 'extinguisher') {
-                            if (!this.fireAlarmTripped) actionName = "PELIGRO: ACTIVA ALARMA PRIMERO";
-                            else if (!this.extinguisherEquipped) actionName = "TOMAR EXTINTOR PQS ABC [E]";
-                            else if (!this.pinPulled) actionName = "RETIRAR PASADOR DE SEGURIDAD (PASS: P) [E]";
-                            else actionName = `PQS DESASEGURADO (${this.extinguisherCharge}%)`;
+                            actionName = !this.extinguisherEquipped ? "TOMAR EXTINTOR PQS ABC [E]" : `EXTINTOR LISTO (${this.extinguisherCharge}%)`;
                         } else if (bestStation.id === 'fire') {
-                            if (!this.fireAlarmTripped) actionName = "PELIGRO: ACTIVA ALARMA PRIMERO";
-                            else if (!this.extinguisherEquipped) actionName = "¡BUSCA EXTINTOR PQS EN PARED ESTE!";
-                            else if (!this.pinPulled) actionName = "¡RETIRA EL PASADOR EN EL EXTINTOR PRIMERO!";
-                            else if (this.fireIntensity > 0) {
-                                const distToFire = Math.hypot(this.posX - 0, this.posZ - 70);
-                                if (distToFire > 380) actionName = "MUY LEJOS (>3.5m) - ACÉRCATE A 2-3m";
-                                else if (distToFire < 210) actionName = "¡CALOR EXTREMO (<1.5m)! RETROCEDE A 2-3m";
-                                else actionName = "DESCARGA CHORRO PQS A LA BASE [E]";
-                            } else if (!this.blanketEquipped) {
-                                actionName = "FUEGO EXTINTO: BUSCA MANTA EN PARED SUR";
+                            if (this.fireIntensity > 0) {
+                                actionName = !this.extinguisherEquipped ? "EQUIPAR PQS Y DISPARAR [E]" : "DESCARGAR PQS A LA BASE [E]";
                             } else if (!this.reignitionSealed) {
-                                actionName = "DESPLEGAR MANTA ANTI RE-IGNICIÓN [E]";
+                                actionName = !this.blanketEquipped ? "TOMAR MANTA EN PARED SUR [E]" : "DESPLEGAR MANTA IGNÍFUGA [E]";
                             } else {
-                                actionName = "CONATO CERTIFICADO EXTINTO [OK]";
+                                actionName = "CONATO EXTINTO Y SELLADO [OK]";
                             }
                         } else if (bestStation.id === 'fire_blanket') {
                             if (this.fireIntensity > 0) actionName = "FUEGO ACTIVO: SOFOCA CON PQS PRIMERO";
@@ -3221,8 +3466,8 @@
                     if (this.fireIntensity > 0) {
                         const temp = Math.max(32, Math.round((280 - distToCenter * 0.45) * (this.fireIntensity / 100)));
                         this.dom.gasReading.textContent = `${temp} °C`;
-                        if (distToCenter < 180) {
-                            this.damageHealth(2, "¡Radiación térmica crítica! Mantén distancia de seguridad táctica (2 a 3 metros).");
+                        if (distToCenter < 100) {
+                            this.damageHealth(1, "¡Radiación térmica extrema! Retrocede un paso.");
                         }
                     } else {
                         this.dom.gasReading.textContent = "42 °C (Rescoldos)";
@@ -3238,27 +3483,35 @@
             }
 
             equipExtinguisher(type) {
-                if (!this.fireAlarmTripped) {
-                    this.audio.playAlarm();
-                    this.damageHealth(5, "¡Incumplimiento de Protocolo! Antes de manipular extintores debes activar la Alarma General y corte eléctrico en la Pared Norte.");
-                    return;
-                }
-
                 if (type === 'water') {
                     this.audio.playAlarm();
-                    this.damageHealth(20, "¡ALERTA CRÍTICA DE BOILOVER! Prohibido usar agua en fuego Clase B (líquidos inflamables). El agua es más densa, hierve bruscamente bajo el solvente (expansión 1:1700) y desata una violenta eyección explosiva de líquido encendido. ¡Usa el extintor PQS ABC!");
+                    this.damageHealth(10, "¡ALERTA CRÍTICA DE BOILOVER! Prohibido usar agua en fuego Clase B (líquidos inflamables). El agua hierve bruscamente bajo el solvente (expansión 1:1700) eyectando combustible en llamas. ¡Usa el extintor PQS ABC o CO2!");
                     return;
                 }
 
-                this.extinguisherEquipped = 'pqs';
-                this.m2Step = 3;
+                if (!this.fireAlarmTripped) {
+                    this.fireAlarmTripped = true;
+                    if (this.dom.alarmPullHandle) this.dom.alarmPullHandle.classList.add('pulled');
+                    if (this.dom.badgeFireAlarm) {
+                        this.dom.badgeFireAlarm.classList.add('completed');
+                        this.dom.badgeFireAlarm.innerHTML = '<i class="fa-solid fa-check"></i> ALARMA ACTIVA / CORTE OK';
+                    }
+                }
+
+                this.extinguisherEquipped = (type === 'co2') ? 'co2' : 'pqs';
+                this.pinPulled = true;
+                this.m2Step = 4;
                 this.audio.playValveClank();
+                this.audio.playPinPull();
+                if (this.dom.handsLayer) {
+                    this.dom.handsLayer.classList.add('holding-extinguisher');
+                }
                 const bExt = document.getElementById('badge-extinguisher');
                 if (bExt) {
                     bExt.classList.add('completed');
-                    bExt.innerHTML = '<i class="fa-solid fa-check"></i> PQS EQUIPADO (CON SEGURO)';
+                    bExt.innerHTML = `<i class="fa-solid fa-check"></i> ${this.extinguisherEquipped.toUpperCase()} LISTO (TÉCNICA PASS)`;
                 }
-                this.setBotMessage('¡Extintor PQS ABC reglamentario equipado! Seguro y precinto puestos. Pulsa [E] para RETIRAR EL PASADOR DE SEGURIDAD (Técnica PASS: Pull) antes de disparar.', '🧯');
+                this.setBotMessage(`¡Extintor ${this.extinguisherEquipped.toUpperCase()} reglamentario equipado y precinto liberado (Técnica PASS: Pull)! Haz clic sobre las llamas o pulsa [E] para descargar en abanico sobre la base.`, '🧯');
                 this.checkProximity();
             }
 
@@ -3280,73 +3533,29 @@
                                 this.dom.badgeFireAlarm.classList.add('completed');
                                 this.dom.badgeFireAlarm.innerHTML = '<i class="fa-solid fa-check"></i> ALARMA ACTIVA / CORTE OK';
                             }
-                            this.setBotMessage('¡Alarma general activada y corte eléctrico efectuado! Se notificó a la brigada y se previenen arcos secundarios. Paso 2: Ve a la Pared Este y selecciona el extintor reglamentario (NFPA 10).', '⚡');
+                            this.setBotMessage('¡Alarma general activada y corte eléctrico efectuado! Se notificó a la brigada y se previenen arcos secundarios. Toma el extintor PQS ABC reglamentario en Pared Este.', '⚡');
                             this.checkProximity();
                         } else {
-                            this.setBotMessage('La alarma y el corte eléctrico ya están activos. Ve a la Pared Este por el extintor PQS.', 'ℹ️');
+                            this.setBotMessage('La alarma y el corte eléctrico ya están activos. Ve a la Pared Este por el extintor PQS ABC.', 'ℹ️');
                         }
                         return;
                     }
 
                     if (st.id === 'extinguisher') {
-                        if (!this.fireAlarmTripped) {
-                            this.damageHealth(5, "¡Error de protocolo! Activa primero la alarma y corte eléctrico en la Pared Norte.");
-                            return;
-                        }
-                        if (!this.extinguisherEquipped) {
-                            this.equipExtinguisher('pqs');
-                            return;
-                        }
-                        if (!this.pinPulled) {
-                            this.pinPulled = true;
-                            this.m2Step = 4;
-                            this.audio.playPinPull();
-                            const bExt = document.getElementById('badge-extinguisher');
-                            if (bExt) {
-                                bExt.classList.add('completed');
-                                bExt.innerHTML = '<i class="fa-solid fa-unlock"></i> PASADOR RETIRADO (PASS)';
-                            }
-                            this.setBotMessage('¡Pasador y precinto retirados! Percutor liberado (PASS - Pull). Ahora acércate al conato a 2-3 metros, apunta a la base y descarga en abanico continuo con [E].', '🔓');
-                            this.checkProximity();
-                            return;
-                        }
-                        this.setBotMessage('Extintor PQS desasegurado y listo para combate. Acércate a 2-3m del conato.', '🧯');
+                        this.equipExtinguisher('pqs');
                         return;
                     }
 
                     if (st.id === 'fire') {
-                        if (!this.fireAlarmTripped) {
-                            this.damageHealth(5, "¡Activa la alarma y corte de energía en Pared Norte antes de combatir el conato!");
-                            return;
-                        }
+                        // Si no tiene extintor aún, auto-equipar PQS de inmediato
                         if (!this.extinguisherEquipped) {
-                            this.damageHealth(5, "¡No puedes combatir fuego de hidrocarburos desarmado! Busca el extintor PQS ABC en la Pared Este.");
-                            return;
-                        }
-                        if (!this.pinPulled) {
-                            this.audio.playAlarm();
-                            this.setBotMessage("¡Palanca bloqueada por pasador de seguridad! Retira el pasador (Técnica PASS) en el extintor antes de disparar.", '⚠️');
-                            return;
+                            this.equipExtinguisher('pqs');
                         }
 
                         // Si el fuego aún está activo: Descarga táctica PQS
                         if (this.fireIntensity > 0) {
-                            const distToFire = Math.hypot(this.posX - 0, this.posZ - 70);
-
-                            if (distToFire > 380) {
-                                this.setBotMessage("¡Demasiado lejos (>3.5 metros)! La nube de polvo químico se dispersa antes de alcanzar la llama. Acércate a la distancia táctica de 2 a 3 metros.", '⚠️');
-                                return;
-                            }
-
-                            if (distToFire < 210) {
-                                this.damageHealth(8, "¡PELIGRO: Demasiado cerca (<1.5 metros)! La alta presión del chorro puede salpicar combustible encendido y recibes radiación térmica directa. Retrocede a 2-3 metros.");
-                                return;
-                            }
-
-                            // Distancia táctica correcta (210 - 380 px / 2 a 3 metros)
                             if (this.extinguisherCharge <= 0) {
-                                this.triggerGameOver(false, "Carga de extintor agotada sin sofocar el fuego por completo.");
-                                return;
+                                this.extinguisherCharge = 60; // Recarga táctica
                             }
 
                             this.audio.playExtinguisherDischarge();
@@ -3355,7 +3564,7 @@
                                 setTimeout(() => this.dom.pqsSprayStream.classList.remove('active'), 250);
                             }
 
-                            this.extinguisherCharge = Math.max(0, this.extinguisherCharge - 20);
+                            this.extinguisherCharge = Math.max(0, this.extinguisherCharge - 15);
                             this.fireIntensity = Math.max(0, this.fireIntensity - 25);
                             this.dom.meterDrain.style.width = `${this.fireIntensity}%`;
                             this.dom.textDrain.textContent = `${Math.round(this.fireIntensity)}%`;
@@ -3364,40 +3573,51 @@
                                 this.dom.badgeFire.innerHTML = `<i class="fa-solid fa-fire"></i> FUEGO CLASE B (${Math.round(this.fireIntensity)}%)`;
                             }
 
-                            if (this.dom.fireCluster) {
-                                const scale = Math.max(0.08, this.fireIntensity / 100);
-                                this.dom.fireCluster.style.transform = `translate(-50%, -50%) scale(${scale})`;
-                            }
+                            // Reducir la escala visual de todos los focos de fuego simultáneamente
+                            const scale = Math.max(0.08, this.fireIntensity / 100);
+                            if (this.dom.fireCluster) this.dom.fireCluster.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                            if (this.dom.fireBarrelLeft) this.dom.fireBarrelLeft.style.transform = `scale(${scale})`;
+                            if (this.dom.firePoolRight) this.dom.firePoolRight.style.transform = `scale(${scale})`;
+                            if (this.dom.fireSpotNorth) this.dom.fireSpotNorth.style.transform = `translateX(-50%) scale(${scale})`;
+                            if (this.dom.fireSpotSouth) this.dom.fireSpotSouth.style.transform = `translateX(-50%) scale(${scale})`;
+                            if (this.dom.fireSpotEast) this.dom.fireSpotEast.style.transform = `scale(${scale})`;
 
                             if (this.fireIntensity <= 0) {
                                 if (this.dom.fireCluster) this.dom.fireCluster.style.display = 'none';
+                                if (this.dom.fireBarrelLeft) this.dom.fireBarrelLeft.style.display = 'none';
+                                if (this.dom.firePoolRight) this.dom.firePoolRight.style.display = 'none';
+                                if (this.dom.fireSpotNorth) this.dom.fireSpotNorth.style.display = 'none';
+                                if (this.dom.fireSpotSouth) this.dom.fireSpotSouth.style.display = 'none';
+                                if (this.dom.fireSpotEast) this.dom.fireSpotEast.style.display = 'none';
+                                if (this.dom.roomCube) this.dom.roomCube.classList.remove('room-on-fire');
+                                if (this.dom.ceilingSmoke) this.dom.ceilingSmoke.classList.remove('active');
+
                                 this.m2Step = 5;
                                 if (this.dom.badgeFire) {
                                     this.dom.badgeFire.classList.add('completed');
                                     this.dom.badgeFire.innerHTML = '<i class="fa-solid fa-check"></i> FUEGO APAGADO (RESCÒLDOS ACTIVOS)';
                                 }
-                                this.setBotMessage("¡Llama visible extinguida por interrupción de radicales libres! ATENCIÓN: El sustrato sigue a 240°C. Paso 5: Ve a la Pared Sur por la MANTA IGNÍFUGA para sofocar rescoldos y evitar re-ignición catastrófica.", '🔥');
+                                this.setBotMessage("¡Llamas visibles extinguidas por sofocación química! ATENCIÓN: El sustrato sigue emitiendo vapores calientes. Toma la MANTA IGNÍFUGA en Pared Sur o pulsa [E] para sellar contra re-ignición.", '🔥');
                                 this.checkProximity();
                             } else {
-                                this.setBotMessage(`¡Descarga efectiva en abanico sobre la base (PASS: Sweep)! Fuego reducido al ${Math.round(this.fireIntensity)}%. Carga PQS restante: ${this.extinguisherCharge}%. Continúa barriendo.`, '🧯');
+                                this.setBotMessage(`¡Descarga efectiva en abanico sobre la base (Técnica PASS)! Fuego reducido al ${Math.round(this.fireIntensity)}%. Carga PQS restante: ${this.extinguisherCharge}%. Continúa barriendo las llamas.`, '🧯');
                             }
                             return;
                         }
 
-                        // Fuego ya apagado, pero falta sellar contra re-ignición con la manta
+                        // Fuego ya apagado: desplegar manta y sellar contra re-ignición
                         if (!this.reignitionSealed) {
-                            if (!this.blanketEquipped) {
-                                this.setBotMessage("¡Alerta de Re-ignición! Los vapores calientes pueden encenderse espontáneamente con el oxígeno ambiental. Ve a la Pared Sur y toma la Manta Ignífuga.", '⚠️');
-                                return;
-                            }
-
-                            // Desplegar manta sobre el foco
+                            this.blanketEquipped = true;
                             this.reignitionSealed = true;
                             if (this.dom.fireBlanketDeployed) {
                                 this.dom.fireBlanketDeployed.style.display = 'flex';
                             }
                             if (this.dom.ceilingSmoke) {
                                 this.dom.ceilingSmoke.classList.remove('active');
+                            }
+                            if (this.dom.badgeFireBlanket) {
+                                this.dom.badgeFireBlanket.classList.add('completed');
+                                this.dom.badgeFireBlanket.innerHTML = '<i class="fa-solid fa-check"></i> MANTA EN MANO';
                             }
                             this.audio.playTone(660, 'sine', 0.25);
                             setTimeout(() => this.audio.playTone(880, 'sine', 0.35), 180);
@@ -3409,7 +3629,7 @@
                             }
 
                             this.mission2Completed = true;
-                            this.setBotMessage("¡CONTROL INTEGRAL DE INCENDIO COMPLETADO! Has ejecutado el ciclo completo: Corte y alarma, selección de PQS ABC con descarte de boilover, pasador PASS, descarga en abanico a distancia táctica (2-3m) y sellado sofocante anti re-ignición conforme a NFPA 10 y NFPA 600.", '🏆');
+                            this.setBotMessage("¡CONTROL INTEGRAL DE INCENDIO COMPLETADO! Has ejecutado el ciclo completo: Alarma y corte, selección de PQS ABC con descarte de boilover, pasador PASS, descarga en abanico a la base y sellado sofocante anti re-ignición conforme a NFPA 10 y NFPA 600.", '🏆');
                             this.triggerGameOver(true);
                             return;
                         }
