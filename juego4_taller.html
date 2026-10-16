@@ -2058,14 +2058,28 @@
             align-items: center;
             justify-content: space-between;
             text-align: center;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
             position: relative;
             box-sizing: border-box;
             min-height: 155px;
             min-width: 0;
-            overflow: hidden;
+            overflow: visible;
             -webkit-font-smoothing: antialiased;
+        }
+        .respel-source-card * {
+            pointer-events: none;
+        }
+        .respel-source-card.is-dragging {
+            z-index: 99999 !important;
+            cursor: grabbing;
+            border-color: var(--amarillo-bolivar) !important;
+            background: rgba(15, 23, 42, 0.98) !important;
+            box-shadow: 0 22px 45px rgba(0, 0, 0, 0.85), 0 0 24px rgba(255, 199, 44, 0.65) !important;
+            transition: none !important;
         }
 
         .respel-source-card:hover {
@@ -2124,6 +2138,12 @@
             min-height: 125px;
             min-width: 0;
             -webkit-font-smoothing: antialiased;
+        }
+        .respel-dest-card.drop-target-hover {
+            transform: scale(1.06) !important;
+            border-color: var(--amarillo-bolivar) !important;
+            box-shadow: 0 0 24px rgba(255, 199, 44, 0.75) !important;
+            filter: brightness(1.2);
         }
 
         .respel-dest-card:hover {
@@ -4475,8 +4495,10 @@
                 // ==============================================================
                 this._hasDraggedCamera = false;
 
-                // 1. Control móvil con 2 dedos (Two-Finger Pan / Pinch Zoom)
+                // 1. Control móvil con 1 dedo (Arrastre > 14px) o 2 dedos (Two-Finger Pan / Pinch Zoom)
                 let isTwoFingerPanning = false;
+                let isOneFingerPanning = false;
+                let startTouchX = 0, startTouchY = 0;
                 let startMidX = 0, startMidY = 0;
                 let initPanX = 0, initPanY = 35;
                 let startDist = 0;
@@ -4494,6 +4516,7 @@
                 this.dom.viewport.addEventListener('touchstart', (e) => {
                     if (e.touches.length === 2) {
                         isTwoFingerPanning = true;
+                        isOneFingerPanning = false;
                         this._hasDraggedCamera = true;
                         const { midX, midY, dist } = getTouchesCenterAndDist(e.touches);
                         startMidX = midX;
@@ -4503,47 +4526,68 @@
                         initPanY = this.camState.panY;
                         initScale = typeof this.camState.scale === 'number' ? this.camState.scale : 1.0;
                         e.preventDefault();
+                    } else if (e.touches.length === 1) {
+                        isTwoFingerPanning = false;
+                        if (e.target.closest('.stage-control-toolbar') || e.target.closest('.btn-primary') || e.target.closest('.action-card')) {
+                            isOneFingerPanning = false;
+                            return;
+                        }
+                        isOneFingerPanning = true;
+                        startTouchX = e.touches[0].clientX;
+                        startTouchY = e.touches[0].clientY;
+                        initPanX = this.camState.panX;
+                        initPanY = this.camState.panY;
                     } else {
                         isTwoFingerPanning = false;
+                        isOneFingerPanning = false;
                     }
                 }, { passive: false });
 
                 window.addEventListener('touchmove', (e) => {
-                    if (!isTwoFingerPanning || e.touches.length !== 2) return;
-                    const { midX, midY, dist } = getTouchesCenterAndDist(e.touches);
-                    const dx = midX - startMidX;
-                    const dy = midY - startMidY;
+                    if (isTwoFingerPanning && e.touches.length === 2) {
+                        const { midX, midY, dist } = getTouchesCenterAndDist(e.touches);
+                        const dx = midX - startMidX;
+                        const dy = midY - startMidY;
 
-                    // Desplazamiento del escenario con dos dedos
-                    this.camState.panX = initPanX + dx;
-                    this.camState.panY = initPanY + dy;
+                        this.camState.panX = initPanX + dx;
+                        this.camState.panY = initPanY + dy;
 
-                    // Zoom suave opcional con separación de los dos dedos
-                    if (startDist > 15 && dist > 15) {
-                        const pinchRatio = dist / startDist;
-                        const newScale = Math.max(0.65, Math.min(1.4, initScale * pinchRatio));
-                        this.camState.scale = Math.round(newScale * 100) / 100;
+                        if (startDist > 15 && dist > 15) {
+                            const pinchRatio = dist / startDist;
+                            const newScale = Math.max(0.65, Math.min(1.4, initScale * pinchRatio));
+                            this.camState.scale = Math.round(newScale * 100) / 100;
+                        }
+
+                        this.applyCameraTransform();
+                        this._hasDraggedCamera = true;
+                        e.preventDefault();
+                    } else if (isOneFingerPanning && e.touches.length === 1) {
+                        const dx = e.touches[0].clientX - startTouchX;
+                        const dy = e.touches[0].clientY - startTouchY;
+                        if (Math.hypot(dx, dy) > 14) {
+                            this._hasDraggedCamera = true;
+                            this.camState.panX = initPanX + dx;
+                            this.camState.panY = initPanY + dy;
+                            this.applyCameraTransform();
+                            if (e.cancelable) e.preventDefault();
+                        }
                     }
-
-                    this.applyCameraTransform();
-                    this._hasDraggedCamera = true;
-                    e.preventDefault();
                 }, { passive: false });
 
-                const endTwoFingerPan = (e) => {
-                    if (isTwoFingerPanning) {
-                        if (!e.touches || e.touches.length < 2) {
+                const endTouchPan = (e) => {
+                    if (isTwoFingerPanning || isOneFingerPanning) {
+                        if (!e.touches || e.touches.length === 0) {
                             isTwoFingerPanning = false;
-                            // Prevenir toques fantasma al retirar los dedos
+                            isOneFingerPanning = false;
                             setTimeout(() => {
                                 this._hasDraggedCamera = false;
-                            }, 120);
+                            }, 100);
                         }
                     }
                 };
 
-                window.addEventListener('touchend', endTwoFingerPan);
-                window.addEventListener('touchcancel', endTwoFingerPan);
+                window.addEventListener('touchend', endTouchPan);
+                window.addEventListener('touchcancel', endTouchPan);
 
                 // 2. Control en Escritorio (Ratón: Clic izquierdo o central para arrastrar)
                 let isMouseDragging = false;
@@ -5299,6 +5343,86 @@
                 if (badge) {
                     badge.textContent = `0 de ${this.activeRespelWastes.length} Confinados`;
                 }
+
+                this.setupRespelDragAndDrop();
+            }
+
+            setupRespelDragAndDrop() {
+                const cards = document.querySelectorAll('.respel-source-card');
+                const findBinAtPoint = (x, y) => {
+                    const bins = document.querySelectorAll('.respel-dest-card');
+                    let bestBin = null;
+                    let bestDist = Infinity;
+                    bins.forEach(bin => {
+                        const r = bin.getBoundingClientRect();
+                        if (x >= r.left - 12 && x <= r.right + 12 && y >= r.top - 12 && y <= r.bottom + 12) {
+                            const cx = r.left + r.width / 2;
+                            const cy = r.top + r.height / 2;
+                            const d = Math.hypot(x - cx, y - cy);
+                            if (d < bestDist) {
+                                bestDist = d;
+                                bestBin = bin;
+                            }
+                        }
+                    });
+                    return bestBin;
+                };
+
+                cards.forEach(card => {
+                    let isDragging = false;
+                    let hasMoved = false;
+                    let startX = 0, startY = 0;
+
+                    card.addEventListener('pointerdown', (e) => {
+                        if (card.classList.contains('confined')) return;
+                        isDragging = true;
+                        hasMoved = false;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                        try { card.setPointerCapture(e.pointerId); } catch (_) {}
+
+                        // Seleccionar tarjeta inmediatamente al tocar/agarrar
+                        document.querySelectorAll('.respel-source-card').forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                        this.selectedWasteItem = card.dataset.waste;
+                    });
+
+                    card.addEventListener('pointermove', (e) => {
+                        if (!isDragging) return;
+                        const dx = e.clientX - startX;
+                        const dy = e.clientY - startY;
+                        if (!hasMoved && Math.hypot(dx, dy) > 6) {
+                            hasMoved = true;
+                            card.classList.add('is-dragging');
+                            this.audio.playTone(500, 'sine', 0.06);
+                        }
+                        if (hasMoved) {
+                            card.style.setProperty('transform', `translate3d(${dx}px, ${dy}px, 0) scale(1.06)`, 'important');
+                            document.querySelectorAll('.respel-dest-card').forEach(b => b.classList.remove('drag-over'));
+                            const targetBin = findBinAtPoint(e.clientX, e.clientY);
+                            if (targetBin) targetBin.classList.add('drag-over');
+                        }
+                    });
+
+                    const endDrag = (e) => {
+                        if (!isDragging) return;
+                        isDragging = false;
+                        try { card.releasePointerCapture(e.pointerId); } catch (_) {}
+                        document.querySelectorAll('.respel-dest-card').forEach(b => b.classList.remove('drag-over'));
+
+                        if (hasMoved) {
+                            card.classList.remove('is-dragging');
+                            card.style.removeProperty('transform');
+                            const targetBin = findBinAtPoint(e.clientX, e.clientY);
+                            if (targetBin) {
+                                this.depositWasteInBin(targetBin);
+                            }
+                        }
+                    };
+
+                    card.addEventListener('pointerup', endDrag);
+                    card.addEventListener('pointercancel', endDrag);
+                });
             }
 
             openRespelStation() {

@@ -1223,7 +1223,7 @@
             border: 1px solid rgba(255, 199, 44, 0.28);
             border-radius: var(--radius-md);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 0 24px rgba(0, 0, 0, 0.7), 0 8px 24px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
+            overflow: visible;
             user-select: none;
             -webkit-user-select: none;
         }
@@ -1287,7 +1287,7 @@
             width: 100%;
             padding: 6px 8px;
             flex: 1;
-            overflow-y: auto;
+            overflow: visible;
             box-sizing: border-box;
             align-items: stretch;
         }
@@ -1308,8 +1308,8 @@
             border: 1px solid rgba(148, 163, 184, 0.2);
             border-radius: 6px;
             padding: 4px 8px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: grab;
+            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
             position: relative;
             display: flex;
             align-items: center;
@@ -1318,21 +1318,30 @@
             min-height: 52px;
             box-sizing: border-box;
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: none;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-user-drag: none !important;
+            touch-action: none !important;
+            will-change: transform;
+        }
+        .patch-card:active {
+            cursor: grabbing;
+        }
+        .patch-card * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-user-drag: none !important;
+            touch-action: none !important;
         }
         .patch-card:hover:not(.matched) {
             border-color: rgba(255, 199, 44, 0.6);
             background: rgba(30, 41, 59, 0.9);
-            transform: translateY(-1px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 199, 44, 0.2);
         }
         .patch-card.selected {
             border-color: var(--bolivar-yellow) !important;
-            background: rgba(255, 199, 44, 0.12) !important;
-            box-shadow: 0 0 12px rgba(255, 199, 44, 0.45) !important;
-            transform: scale(1.015);
+            background: rgba(255, 199, 44, 0.16) !important;
+            box-shadow: 0 0 14px rgba(255, 199, 44, 0.5) !important;
         }
         .patch-card.matched {
             border-color: rgba(16, 185, 129, 0.4) !important;
@@ -1779,9 +1788,12 @@
                 height: auto !important;
             }
             .patch-card {
-                touch-action: pan-y !important;
+                touch-action: none !important;
                 min-height: 58px !important;
                 padding: 6px 6px !important;
+            }
+            .patch-card-target {
+                touch-action: manipulation !important;
             }
             .patch-jack-pin, .patch-socket-port {
                 touch-action: none !important;
@@ -3756,14 +3768,21 @@
                 if (this.level1Matches[lawItem.key]) return;
                 if (e.button !== undefined && e.button !== 0) return;
 
+                const pt = (e.touches && e.touches[0]) ? e.touches[0] : e;
+
                 this.isDraggingWire = true;
                 this.dragMoved = false;
                 this.dragSourceKey = lawItem.key;
                 this.dragSourceEl = cardEl;
                 this.dragSourceColor = lawItem.color;
+                this.dragStartClientX = pt.clientX;
+                this.dragStartClientY = pt.clientY;
 
                 const pin = cardEl.querySelector('.patch-jack-pin');
                 this.dragStartPos = this.getRelativeCenter(pin);
+
+                cardEl.style.transition = 'none';
+                cardEl.style.zIndex = '1000';
 
                 if (this.dom.l1ActiveWire) {
                     this.dom.l1ActiveWire.style.stroke = lawItem.color;
@@ -3778,6 +3797,19 @@
                 sound.tap();
             }
 
+            resetDraggedLawCard(cardEl) {
+                if (!cardEl) return;
+                cardEl.classList.remove('is-dragging');
+                cardEl.style.transition = 'transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                cardEl.style.setProperty('transform', 'translate3d(0px, 0px, 0px) scale(1) rotate(0deg)', 'important');
+                setTimeout(() => {
+                    if (!cardEl) return;
+                    cardEl.style.transition = '';
+                    cardEl.style.removeProperty('transform');
+                    cardEl.style.zIndex = '';
+                }, 240);
+            }
+
             handleWirePointerCancel() {
                 if (!this.isDraggingWire) return;
                 if (this.dom.l1ActiveWire) {
@@ -3787,67 +3819,102 @@
                 if (this.dom.l1ColConcepts) {
                     this.dom.l1ColConcepts.querySelectorAll('.patch-card-target').forEach(tc => tc.classList.remove('target-hover'));
                 }
+                this.resetDraggedLawCard(this.dragSourceEl);
                 this.isDraggingWire = false;
                 this.dragStartPos = null;
                 this.dragMoved = false;
             }
 
+            findHoveredConceptTarget(clientX, clientY, draggedEl) {
+                if (!this.dom.l1ColConcepts) return null;
+                const targetCards = Array.from(this.dom.l1ColConcepts.querySelectorAll('.patch-card-target:not(.matched)'));
+                for (const tc of targetCards) {
+                    const r = tc.getBoundingClientRect();
+                    if (clientX >= r.left - 8 && clientX <= r.right + 8 && clientY >= r.top - 6 && clientY <= r.bottom + 6) {
+                        return tc;
+                    }
+                }
+                if (draggedEl) {
+                    const dr = draggedEl.getBoundingClientRect();
+                    const cx = (dr.left + dr.right) / 2;
+                    const cy = (dr.top + dr.bottom) / 2;
+                    for (const tc of targetCards) {
+                        const r = tc.getBoundingClientRect();
+                        if (cx >= r.left - 12 && cx <= r.right + 12 && cy >= r.top - 8 && cy <= r.bottom + 8) {
+                            return tc;
+                        }
+                    }
+                }
+                return null;
+            }
+
             handleWirePointerMove(e) {
                 if (!this.isDraggingWire || !this.dragStartPos || !this.dom.l1PatchPanel) return;
 
-                const panelRect = this.dom.l1PatchPanel.getBoundingClientRect();
-                const curX = e.clientX - panelRect.left;
-                const curY = e.clientY - panelRect.top;
+                const pt = (e.touches && e.touches[0]) ? e.touches[0] : e;
+                const dx = pt.clientX - this.dragStartClientX;
+                const dy = pt.clientY - this.dragStartClientY;
 
-                const dist = Math.hypot(curX - this.dragStartPos.x, curY - this.dragStartPos.y);
-                if (dist > 8) this.dragMoved = true;
+                const dist = Math.hypot(dx, dy);
+                if (dist > 4) {
+                    this.dragMoved = true;
+                    if (e.cancelable) e.preventDefault();
+                }
+
+                if (this.dragMoved && this.dragSourceEl) {
+                    this.dragSourceEl.classList.add('is-dragging');
+                    const rot = Math.max(-6, Math.min(6, dx * 0.025));
+                    this.dragSourceEl.style.setProperty('transform', `translate3d(${dx}px, ${dy}px, 0px) scale(1.03) rotate(${rot}deg)`, 'important');
+                    this.dragSourceEl.style.zIndex = '9999';
+                }
+
+                const panelRect = this.dom.l1PatchPanel.getBoundingClientRect();
+                const curX = pt.clientX - panelRect.left;
+                const curY = pt.clientY - panelRect.top;
 
                 if (this.dom.l1ActiveWire) {
                     this.dom.l1ActiveWire.setAttribute('d', this.buildWirePath(this.dragStartPos.x, this.dragStartPos.y, curX, curY));
                 }
 
-                // Iluminar puerto receptor bajo el puntero
+                const hoveredTarget = this.findHoveredConceptTarget(pt.clientX, pt.clientY, this.dragSourceEl);
                 const targetCards = this.dom.l1ColConcepts.querySelectorAll('.patch-card-target:not(.matched)');
-                let hoveredTarget = null;
-                targetCards.forEach(tc => {
-                    const r = tc.getBoundingClientRect();
-                    if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
-                        hoveredTarget = tc;
-                    }
-                });
-
                 targetCards.forEach(tc => tc.classList.toggle('target-hover', tc === hoveredTarget));
             }
 
             handleWirePointerUp(e) {
                 if (!this.isDraggingWire) return;
 
+                const pt = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : e;
+
                 if (this.dom.l1ActiveWire) {
                     this.dom.l1ActiveWire.style.display = 'none';
                     this.dom.l1ActiveWire.setAttribute('d', '');
                 }
 
-                const targetCards = this.dom.l1ColConcepts.querySelectorAll('.patch-card-target:not(.matched)');
-                let droppedTarget = null;
-                targetCards.forEach(tc => {
-                    tc.classList.remove('target-hover');
-                    const r = tc.getBoundingClientRect();
-                    if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
-                        droppedTarget = tc;
-                    }
-                });
+                const droppedTarget = this.findHoveredConceptTarget(pt.clientX, pt.clientY, this.dragSourceEl);
+                if (this.dom.l1ColConcepts) {
+                    this.dom.l1ColConcepts.querySelectorAll('.patch-card-target').forEach(tc => tc.classList.remove('target-hover'));
+                }
 
                 const sourceKey = this.dragSourceKey;
                 const wasMoved = this.dragMoved;
+                const cardEl = this.dragSourceEl;
 
                 this.isDraggingWire = false;
                 this.dragStartPos = null;
+
+                // Primero restauramos la posición física de la tarjeta para que el cable permanente calcule coordenadas exactas
+                if (cardEl) {
+                    cardEl.classList.remove('is-dragging');
+                    cardEl.style.transition = 'none';
+                    cardEl.style.removeProperty('transform');
+                    cardEl.style.zIndex = '';
+                }
 
                 if (droppedTarget) {
                     const conceptKey = droppedTarget.dataset.conceptKey;
                     this.connectLevel1Circuit(sourceKey, conceptKey);
                 } else if (!wasMoved) {
-                    // Clic estático
                     if (this.selectedConceptKey) {
                         this.connectLevel1Circuit(this.selectedLawKey, this.selectedConceptKey);
                     }
@@ -4061,18 +4128,37 @@
                 let currentHoverZone = null;
                 let hasMoved = false;
 
-                // Prevenir arrastre nativo HTML5 (fantasma de texto o imagen)
                 cardEl.setAttribute('draggable', 'false');
                 cardEl.addEventListener('dragstart', (e) => e.preventDefault());
+
+                const findDropZoneAt = (clientX, clientY) => {
+                    const zones = Array.from(document.querySelectorAll(dropZoneSelector));
+                    for (const z of zones) {
+                        const r = z.getBoundingClientRect();
+                        if (clientX >= r.left - 4 && clientX <= r.right + 4 && clientY >= r.top - 4 && clientY <= r.bottom + 4) {
+                            return z;
+                        }
+                    }
+                    const cr = cardEl.getBoundingClientRect();
+                    const cx = (cr.left + cr.right) / 2;
+                    const cy = (cr.top + cr.bottom) / 2;
+                    for (const z of zones) {
+                        const r = z.getBoundingClientRect();
+                        if (cx >= r.left - 6 && cx <= r.right + 6 && cy >= r.top - 6 && cy <= r.bottom + 6) {
+                            return z;
+                        }
+                    }
+                    return null;
+                };
 
                 const onPointerMove = (e) => {
                     if (!isDragging) return;
 
-                    const dx = e.clientX - startX;
-                    const dy = e.clientY - startY;
+                    const pt = (e.touches && e.touches[0]) ? e.touches[0] : e;
+                    const dx = pt.clientX - startX;
+                    const dy = pt.clientY - startY;
 
-                    // Umbral de 5px para diferenciar toque/clic simple de arrastre intencional
-                    if (!hasMoved && Math.hypot(dx, dy) > 5) {
+                    if (!hasMoved && Math.hypot(dx, dy) > 4) {
                         hasMoved = true;
                         this.wasDragged = true;
                         cardEl.style.animation = 'none';
@@ -4082,19 +4168,17 @@
 
                     if (hasMoved) {
                         if (e.cancelable) e.preventDefault();
-                        const rot = Math.max(-10, Math.min(10, dx * 0.04));
-                        cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(0.96) rotate(${rot}deg)`;
-                        cardEl.style.zIndex = '1000';
+                        const rot = Math.max(-8, Math.min(8, dx * 0.035));
+                        cardEl.style.setProperty('transform', `translate3d(${dx}px, ${dy}px, 0px) scale(0.98) rotate(${rot}deg)`, 'important');
+                        cardEl.style.setProperty('z-index', '9999', 'important');
 
-                        if (e.clientY < 75) {
+                        if (pt.clientY < 75) {
                             window.scrollBy(0, -10);
-                        } else if (e.clientY > window.innerHeight - 75) {
+                        } else if (pt.clientY > window.innerHeight - 75) {
                             window.scrollBy(0, 10);
                         }
 
-                        // Detección precisa de colisión bajo el puntero
-                        const elemUnder = document.elementFromPoint(e.clientX, e.clientY);
-                        const dropZone = elemUnder ? elemUnder.closest(dropZoneSelector) : null;
+                        const dropZone = findDropZoneAt(pt.clientX, pt.clientY);
 
                         if (dropZone !== currentHoverZone) {
                             if (currentHoverZone) {
@@ -4120,39 +4204,45 @@
                     isDragging = false;
                     cleanupListeners();
 
-                    // Limpiar clases de las zonas destino siempre
+                    const pt = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : e;
+                    const finalZone = currentHoverZone || (hasMoved ? findDropZoneAt(pt.clientX, pt.clientY) : null);
+
                     document.querySelectorAll(dropZoneSelector).forEach(el => {
                         el.classList.remove('drop-target-active', 'drop-target-hover');
                     });
 
                     if (hasMoved) {
                         cardEl.classList.remove('is-dragging');
-                        const targetZone = currentHoverZone;
                         currentHoverZone = null;
 
-                        if (targetZone) {
+                        if (finalZone) {
                             cardEl.style.transition = 'transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                            cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
-                            cardEl.style.zIndex = '';
-                            
-                            const dropValue = targetZone.dataset.sgaId || targetZone.dataset.family;
-                            onDropCallback(dropValue);
-                        } else {
-                            cardEl.style.transition = 'transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                            cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+                            cardEl.style.setProperty('transform', 'translate3d(0px, 0px, 0px) scale(1) rotate(0deg)', 'important');
+                            cardEl.style.removeProperty('z-index');
                             setTimeout(() => {
                                 cardEl.style.transition = '';
-                                cardEl.style.zIndex = '';
-                            }, 300);
+                                cardEl.style.removeProperty('transform');
+                            }, 200);
+
+                            const dropValue = finalZone.dataset.sgaId || finalZone.dataset.family;
+                            onDropCallback(dropValue);
+                        } else {
+                            cardEl.style.transition = 'transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                            cardEl.style.setProperty('transform', 'translate3d(0px, 0px, 0px) scale(1) rotate(0deg)', 'important');
+                            setTimeout(() => {
+                                cardEl.style.transition = '';
+                                cardEl.style.removeProperty('transform');
+                                cardEl.style.removeProperty('z-index');
+                            }, 280);
                         }
                     } else {
                         cardEl.classList.remove('is-dragging');
-                        cardEl.style.zIndex = '';
-                        cardEl.style.transform = '';
+                        cardEl.style.removeProperty('z-index');
+                        cardEl.style.removeProperty('transform');
                     }
                 };
 
-                const onPointerCancel = (e) => {
+                const onPointerCancel = () => {
                     if (!isDragging) return;
                     isDragging = false;
                     cleanupListeners();
@@ -4164,22 +4254,26 @@
                     cardEl.classList.remove('is-dragging');
                     currentHoverZone = null;
                     cardEl.style.transition = 'transform 0.2s ease';
-                    cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+                    cardEl.style.setProperty('transform', 'translate3d(0px, 0px, 0px) scale(1) rotate(0deg)', 'important');
                     setTimeout(() => {
                         cardEl.style.transition = '';
-                        cardEl.style.zIndex = '';
-                    }, 250);
+                        cardEl.style.removeProperty('transform');
+                        cardEl.style.removeProperty('z-index');
+                    }, 220);
                 };
 
                 const onPointerDown = (e) => {
+                    if (e.target && e.target.closest('button')) return;
                     if (e.button !== undefined && e.button !== 0) return;
                     if (canDragCondition && !canDragCondition()) return;
+
+                    const pt = (e.touches && e.touches[0]) ? e.touches[0] : e;
 
                     this.wasDragged = false;
                     isDragging = true;
                     hasMoved = false;
-                    startX = e.clientX;
-                    startY = e.clientY;
+                    startX = pt.clientX;
+                    startY = pt.clientY;
                     currentHoverZone = null;
 
                     cardEl.style.animation = 'none';

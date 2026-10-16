@@ -1902,9 +1902,11 @@
         .is-dragging,
         .is-dragging * {
             pointer-events: none !important;
+            animation: none !important;
         }
         .is-dragging:not(.iso-sprite) {
-            opacity: 0.95;
+            position: relative;
+            opacity: 0.96;
             z-index: 99999 !important;
             box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.9), 0 0 28px rgba(255, 199, 44, 0.85) !important;
             border: 2px solid #FFC72C !important;
@@ -1913,6 +1915,7 @@
             transform-origin: center center !important;
             pointer-events: none !important;
             transition: none !important;
+            animation: none !important;
         }
         /* Al mover el item de casilla en casilla: el sprite en la celda se atenúa mientras la tarjeta idéntica flota */
         .iso-sprite.is-dragging {
@@ -5635,17 +5638,43 @@
                 let currentHoverZone = null;
                 let dragProxy = null;
 
+                const findDropZoneAt = (x, y) => {
+                    const elemUnder = document.elementFromPoint(x, y);
+                    if (elemUnder) {
+                        const directZone = elemUnder.closest(dropZoneSelector);
+                        if (directZone && directZone !== cardEl) return directZone;
+                    }
+                    const zones = document.querySelectorAll(dropZoneSelector);
+                    let bestZone = null;
+                    let bestDist = Infinity;
+                    for (const z of zones) {
+                        if (z === cardEl || z.offsetParent === null) continue;
+                        const r = z.getBoundingClientRect();
+                        if (r.width === 0 || r.height === 0) continue;
+                        if (x >= r.left - 8 && x <= r.right + 8 && y >= r.top - 8 && y <= r.bottom + 8) {
+                            const cx = r.left + r.width / 2;
+                            const cy = r.top + r.height / 2;
+                            const dist = Math.hypot(x - cx, y - cy);
+                            if (dist < bestDist) {
+                                bestDist = dist;
+                                bestZone = z;
+                            }
+                        }
+                    }
+                    return bestZone;
+                };
+
                 const onPointerMove = (e) => {
                     if (!isDragging) return;
 
                     const dx = e.clientX - startX;
                     const dy = e.clientY - startY;
 
-                    // Umbral de 6px para diferenciar toque de arrastre intencionado
-                    if (!hasMoved && Math.hypot(dx, dy) > 6) {
+                    if (!hasMoved && Math.hypot(dx, dy) > 4) {
                         hasMoved = true;
                         this.wasDragged = true;
                         cardEl.classList.add('is-dragging');
+                        cardEl.style.setProperty('z-index', '99999', 'important');
 
                         if (itemId) {
                             this.selectedItemId = itemId;
@@ -5653,7 +5682,6 @@
                             this.updateActiveItemDisplay(itemId);
                         }
 
-                        // Si es una pieza ya colocada en el tablero isométrico, proyectar la tarjeta táctica idéntica
                         if (cardEl.classList.contains('iso-sprite')) {
                             const itemData = CHEMICAL_ITEMS.find(it => it.id === itemId);
                             if (itemData) {
@@ -5691,11 +5719,9 @@
                         const rot = Math.max(-8, Math.min(8, dx * 0.03));
 
                         if (dragProxy) {
-                            // La tarjeta flotante idéntica sigue al puntero suavemente centrada
-                            dragProxy.style.transform = `translate3d(${e.clientX - 60}px, ${e.clientY - 55}px, 0) scale(1.04) rotate(${rot}deg)`;
+                            dragProxy.style.setProperty('transform', `translate3d(${e.clientX - 60}px, ${e.clientY - 55}px, 0) scale(1.04) rotate(${rot}deg)`, 'important');
                         } else if (!cardEl.classList.contains('iso-sprite')) {
-                            // En la bandeja: tarjeta flotante con rotación y escala estable
-                            cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(1.02) rotate(${rot}deg)`;
+                            cardEl.style.setProperty('transform', `translate3d(${dx}px, ${dy}px, 0) scale(1.04) rotate(${rot}deg)`, 'important');
                         }
 
                         if (e.clientY < 75) {
@@ -5704,9 +5730,7 @@
                             window.scrollBy(0, 10);
                         }
 
-                        // Detección directa de zona bajo el puntero
-                        const elemUnder = document.elementFromPoint(e.clientX, e.clientY);
-                        const dropZone = elemUnder ? elemUnder.closest(dropZoneSelector) : null;
+                        const dropZone = findDropZoneAt(e.clientX, e.clientY);
 
                         if (dropZone !== currentHoverZone) {
                             if (currentHoverZone) {
@@ -5729,7 +5753,6 @@
                     window.removeEventListener('pointerup', onPointerUp);
                     window.removeEventListener('pointercancel', onPointerUp);
 
-                    // Limpiar resaltados de destino
                     document.querySelectorAll(dropZoneSelector).forEach(el => {
                         el.classList.remove('drop-target-active', 'drop-target-hover');
                     });
@@ -5737,38 +5760,38 @@
                     if (hasMoved && e.type !== 'pointercancel') {
                         cardEl.classList.remove('is-dragging');
                         cardEl.style.opacity = '';
+                        cardEl.style.removeProperty('z-index');
 
                         if (dragProxy) {
                             dragProxy.remove();
                             dragProxy = null;
                         }
 
-                        const targetZone = currentHoverZone;
+                        const targetZone = currentHoverZone || findDropZoneAt(e.clientX, e.clientY);
                         currentHoverZone = null;
 
                         const isIsoSprite = cardEl.classList.contains('iso-sprite');
 
                         if (targetZone && onDrop) {
-                            cardEl.style.transform = '';
+                            cardEl.style.removeProperty('transform');
                             onDrop(targetZone, cardEl);
                         } else {
-                            // Retorno elástico suave si no se soltó en zona válida
                             cardEl.style.transition = 'transform 0.24s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                             if (isIsoSprite) {
-                                cardEl.style.transform = '';
+                                cardEl.style.removeProperty('transform');
                             } else {
-                                cardEl.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+                                cardEl.style.setProperty('transform', 'translate3d(0, 0, 0) scale(1) rotate(0deg)', 'important');
                             }
                             setTimeout(() => {
-                                cardEl.style.transform = '';
+                                cardEl.style.removeProperty('transform');
                                 cardEl.style.transition = '';
                             }, 250);
                         }
                     } else {
-                        // Fue un clic, toque simple o cancelación: garantizar que wasDragged quede falso y transform limpio
                         cardEl.classList.remove('is-dragging');
                         this.wasDragged = false;
-                        cardEl.style.transform = '';
+                        cardEl.style.removeProperty('transform');
+                        cardEl.style.removeProperty('z-index');
                         cardEl.style.opacity = '';
                         if (dragProxy) {
                             dragProxy.remove();
@@ -5790,7 +5813,6 @@
 
                     cardEl.style.transition = 'none';
 
-                    // Resaltar sutilmente todas las zonas destino de soltado
                     document.querySelectorAll(dropZoneSelector).forEach(el => {
                         el.classList.add('drop-target-active');
                     });

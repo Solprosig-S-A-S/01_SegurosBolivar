@@ -921,14 +921,19 @@
             to { transform: scale(1.08); box-shadow: 0 0 16px #EF4444; }
         }
 
-        .floating-drag-clone {
+        .floating-drag-clone,
+        .floating-drag-clone * {
             pointer-events: none !important;
             user-select: none !important;
+        }
+        .floating-drag-clone {
             will-change: transform;
             height: auto !important;
             max-height: 80px !important;
             box-sizing: border-box !important;
             margin: 0 !important;
+            z-index: 99999 !important;
+            transition: none !important;
         }
 
         /* Screen Shake Animation */
@@ -2861,6 +2866,31 @@
                 let isDragging = false;
                 let startX = 0;
                 let startY = 0;
+                let offsetX = 0;
+                let offsetY = 0;
+
+                const findHotspotAt = (x, y) => {
+                    const elem = document.elementFromPoint(x, y);
+                    if (elem) {
+                        const directHotspot = elem.closest('.hotspot-target');
+                        if (directHotspot) return directHotspot;
+                    }
+                    let bestHotspot = null;
+                    let bestDist = Infinity;
+                    this.dom.hotspots.forEach(h => {
+                        const r = h.getBoundingClientRect();
+                        if (r.width === 0 || r.height === 0) return;
+                        const cx = r.left + r.width / 2;
+                        const cy = r.top + r.height / 2;
+                        const dist = Math.hypot(x - cx, y - cy);
+                        const radius = Math.max(36, Math.max(r.width, r.height) * 0.65);
+                        if (dist <= radius && dist < bestDist) {
+                            bestDist = dist;
+                            bestHotspot = h;
+                        }
+                    });
+                    return bestHotspot;
+                };
 
                 const cleanupDrag = () => {
                     if (activeClone) {
@@ -2874,12 +2904,12 @@
                     activeCard = null;
                 };
 
-                // Limpieza global ante cualquier cancelación o pérdida de foco
                 window.addEventListener('pointercancel', cleanupDrag);
                 window.addEventListener('blur', cleanupDrag);
 
                 this.dom.actionCards.forEach(card => {
                     card.addEventListener('pointerdown', (e) => {
+                        if (e.button !== undefined && e.button !== 0) return;
                         const cardId = card.dataset.card;
                         if (!cardId.startsWith('trap') && this.resolvedHotspots.has(parseInt(cardId, 10))) return;
                         if (!this.isGameActive) return;
@@ -2888,6 +2918,9 @@
                         activeCard = card;
                         startX = e.clientX;
                         startY = e.clientY;
+                        const rect = card.getBoundingClientRect();
+                        offsetX = e.clientX - rect.left;
+                        offsetY = e.clientY - rect.top;
                         isDragging = false;
                     });
                 });
@@ -2900,25 +2933,21 @@
                     const dist = Math.hypot(dx, dy);
 
                     if (!isDragging) {
-                        // En táctil, permitir desplazamiento lateral del carrusel si el vector es horizontal
-                        if (e.pointerType === 'touch' && Math.abs(dx) > Math.abs(dy) * 1.2 && dist < 30) {
-                            return;
-                        }
-                        if (dist > 10) {
+                        if (dist > 5) {
                             isDragging = true;
                             document.querySelectorAll('.floating-drag-clone').forEach(el => el.remove());
 
+                            const rect = activeCard.getBoundingClientRect();
                             activeClone = activeCard.cloneNode(true);
                             activeClone.className = activeCard.className + ' floating-drag-clone';
                             activeClone.style.position = 'fixed';
                             activeClone.style.pointerEvents = 'none';
-                            const rect = activeCard.getBoundingClientRect();
                             activeClone.style.width = `${rect.width}px`;
                             activeClone.style.height = `${rect.height}px`;
-                            activeClone.style.left = `${rect.left}px`;
-                            activeClone.style.top = `${rect.top}px`;
+                            activeClone.style.left = '0px';
+                            activeClone.style.top = '0px';
                             activeClone.style.boxShadow = '0 25px 50px rgba(0,0,0,0.85), 0 0 30px rgba(255,199,44,0.7)';
-                            activeClone.style.transform = 'scale(1.05) rotate(2deg)';
+                            activeClone.style.setProperty('transform', `translate3d(${e.clientX - offsetX}px, ${e.clientY - offsetY}px, 0) scale(1.05) rotate(2deg)`, 'important');
                             document.body.appendChild(activeClone);
 
                             activeCard.classList.add('is-dragging');
@@ -2929,24 +2958,24 @@
                     }
 
                     if (activeClone) {
-                        activeClone.style.transform = `translate(${dx}px, ${dy}px) scale(1.05) rotate(2deg)`;
+                        if (e.cancelable) e.preventDefault();
+                        const rot = Math.max(-6, Math.min(6, dx * 0.03));
+                        activeClone.style.setProperty('transform', `translate3d(${e.clientX - offsetX}px, ${e.clientY - offsetY}px, 0) scale(1.05) rotate(${rot}deg)`, 'important');
 
-                        // Auto-scroll vertical en teléfonos cuando se arrastra cerca de los bordes de la pantalla
                         if (e.clientY < 75) {
                             window.scrollBy(0, -10);
                         } else if (e.clientY > window.innerHeight - 75) {
                             window.scrollBy(0, 10);
                         }
 
-                        const elem = document.elementFromPoint(e.clientX, e.clientY);
-                        const targetHotspot = elem ? elem.closest('.hotspot-target') : null;
+                        const targetHotspot = findHotspotAt(e.clientX, e.clientY);
 
                         this.dom.hotspots.forEach(h => h.classList.remove('drop-hover'));
                         if (targetHotspot) {
                             targetHotspot.classList.add('drop-hover');
                         }
                     }
-                });
+                }, { passive: false });
 
                 window.addEventListener('pointerup', (e) => {
                     if (!activeCard) return;
@@ -2962,8 +2991,7 @@
 
                     cleanupDrag();
 
-                    const elem = document.elementFromPoint(dropX, dropY);
-                    const targetHotspot = elem ? elem.closest('.hotspot-target') : null;
+                    const targetHotspot = findHotspotAt(dropX, dropY);
 
                     if (targetHotspot) {
                         const targetId = parseInt(targetHotspot.dataset.target, 10);
