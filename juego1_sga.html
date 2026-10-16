@@ -461,8 +461,8 @@
         /* SGA Pictogram Tiles */
         .pictogram-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 8px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 6px;
             width: 100%;
             box-sizing: border-box;
         }
@@ -470,17 +470,18 @@
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid rgba(148, 163, 184, 0.2);
             border-radius: var(--radius-md);
-            padding: 8px 4px;
+            padding: 6px 3px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 4px;
             transition: all 0.15s ease;
             text-align: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             cursor: pointer;
             user-select: none;
+            touch-action: none;
         }
         .pictogram-tile:hover {
             background: rgba(30, 41, 59, 0.8);
@@ -491,8 +492,8 @@
             transform: scale(0.97);
         }
         .pictogram-tile-icon {
-            width: 44px;
-            height: 44px;
+            width: 38px;
+            height: 38px;
             pointer-events: none;
             transition: transform 0.15s ease;
         }
@@ -500,17 +501,17 @@
             transform: scale(1.04);
         }
         .pictogram-tile-name {
-            font-size: 11px;
+            font-size: 9.5px;
             font-weight: 700;
             color: #cbd5e1;
             text-transform: uppercase;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.02em;
             pointer-events: none;
             width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            padding: 0 4px;
+            padding: 0 2px;
         }
 
         /* Exam Status Bar */
@@ -549,7 +550,7 @@
             white-space: nowrap;
         }
 
-        /* Exam Cards Tray */
+        /* Exam Cards Tray & Chemical Station (Subphase 3A) */
         .exam-cards-tray {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -560,6 +561,183 @@
             padding: 2px 0;
             overflow: visible !important;
             touch-action: none;
+        }
+        .exam-station-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            touch-action: none;
+        }
+        .station-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: var(--radius-lg);
+            padding: 10px 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .station-card.drop-target-hover {
+            border-color: var(--bolivar-yellow) !important;
+            box-shadow: 0 0 18px rgba(255, 199, 44, 0.5) !important;
+            transform: scale(1.01);
+        }
+        .station-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            padding-bottom: 8px;
+        }
+        .station-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background: rgba(52, 211, 153, 0.12);
+            border: 1px solid rgba(52, 211, 153, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #34d399;
+            flex-shrink: 0;
+        }
+        .station-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .station-step-badge {
+            font-size: 9.5px;
+            font-weight: 800;
+            color: var(--bolivar-yellow);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+        }
+        .station-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #f8fafc;
+            margin: 1px 0 0;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .station-alias {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-station-fds {
+            padding: 5px 9px;
+            border-radius: var(--radius-sm);
+            background: rgba(51, 65, 85, 0.65);
+            color: #f1f5f9;
+            font-weight: 700;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid rgba(255, 199, 44, 0.4);
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+        .btn-station-fds:hover {
+            background: rgba(71, 85, 105, 0.85);
+            border-color: var(--bolivar-yellow);
+        }
+        .station-body {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .station-prompt {
+            font-size: 11px;
+            color: #cbd5e1;
+            line-height: 1.3;
+            margin: 0;
+        }
+        .station-slots-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 4px 0;
+        }
+        .station-slot {
+            width: 68px;
+            height: 68px;
+            border-radius: var(--radius-md);
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px dashed rgba(148, 163, 184, 0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            position: relative;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        .station-slot.slot-empty {
+            border-color: rgba(255, 199, 44, 0.4);
+        }
+        .station-slot.slot-empty:hover {
+            border-color: var(--bolivar-yellow);
+            background: rgba(255, 199, 44, 0.08);
+        }
+        .station-slot.slot-filled {
+            border: 2px solid #10b981;
+            background: rgba(16, 185, 129, 0.12);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+        }
+        .slot-diamond-icon {
+            width: 38px;
+            height: 38px;
+            pointer-events: none;
+        }
+        .slot-badge-name {
+            font-size: 8px;
+            font-weight: 800;
+            color: #34d399;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1;
+            max-width: 95%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .slot-ghost-diamond {
+            width: 30px;
+            height: 30px;
+            border: 2px dashed rgba(148, 163, 184, 0.45);
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s ease;
+        }
+        .slot-ghost-diamond i {
+            transform: rotate(-45deg);
+            font-size: 10px;
+            color: rgba(148, 163, 184, 0.6);
+        }
+        .slot-hint-text {
+            font-size: 8.5px;
+            color: var(--text-muted);
+            font-weight: 700;
         }
         .exam-card {
             position: relative;
@@ -937,11 +1115,13 @@
         .is-dragging {
             animation: none !important;
             transition: none !important;
-            opacity: 0.95 !important;
-            z-index: 10000 !important;
+            opacity: 0.96 !important;
+            z-index: 99999 !important;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 199, 44, 0.6) !important;
             border-color: #FFC72C !important;
             touch-action: none !important;
+            pointer-events: none !important;
+            will-change: transform !important;
         }
         .drop-target-hover {
             border-color: #FFC72C !important;
@@ -1891,8 +2071,8 @@
                 gap: 6px !important;
             }
             .pictogram-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 6px !important;
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 5px !important;
             }
             .fds-nav-grid {
                 max-height: 280px !important;
@@ -2123,16 +2303,16 @@
                 <!-- Sub-Fase 3A: Etiqueta y Pictogramas SGA -->
                 <div id="subphase-3a" class="flex-1 flex flex-col justify-between" style="overflow: visible;">
                     <div class="exam-status-bar" style="margin-bottom: 6px;">
-                        <span id="exam-item-counter" style="font-size: var(--font-xs); font-family: var(--font-mono);">1 de 6</span>
+                        <span id="exam-item-counter" style="font-size: var(--font-xs); font-family: var(--font-mono);">Producto 1 de 3</span>
                         <div id="lucho-widget" class="lucho-widget">
                             <span id="lucho-avatar" class="lucho-avatar">👨‍🔧</span>
-                            <span id="lucho-quote" class="lucho-quote">¡Identifica pictograma y advertencia!</span>
+                            <span id="lucho-quote" class="lucho-quote">¡Arrastra o toca los rombos SGA que aplican a este envase!</span>
                         </div>
-                        <span style="font-size: var(--font-xs);">Puntos: <strong id="exam-score-display" class="text-bolivar-yellow">0</strong>/6</span>
+                        <span style="font-size: var(--font-xs);">Puntos: <strong id="exam-score-display" class="text-bolivar-yellow">0</strong>/<span id="exam-max-score-display">10</span></span>
                     </div>
 
                     <div class="flex-1 flex flex-col justify-center" style="padding: 2px 0; overflow: visible;">
-                        <div id="exam-cards-tray" class="exam-cards-tray"></div>
+                        <div id="exam-station-container" class="exam-station-container"></div>
                     </div>
 
                     <div class="pictogram-grid" id="exam-pictogram-grid" style="padding-top: 4px; overflow: visible;"></div>
@@ -2528,6 +2708,35 @@
                     <rect x="46" y="28" width="8" height="28" rx="3" fill="#0F172A"/>
                     <circle cx="50" cy="65" r="4.5" fill="#0F172A"/>
                 </svg>`
+            },
+            medio_ambiente: {
+                id: 'medio_ambiente',
+                name: 'Medio Ambiente',
+                desc: 'Toxicidad acuática severa y bioacumulación',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <polygon points="50,4 96,50 50,96 4,50" fill="#ffffff" stroke="#EF4444" stroke-width="7"/>
+                    <!-- Bare Tree -->
+                    <path d="M40 68 L40 44 L32 36 M40 50 L48 40 M40 44 L40 32 L35 27 M40 34 L45 28" stroke="#0F172A" stroke-width="3.5" stroke-linecap="round"/>
+                    <!-- Ground/Water Line -->
+                    <path d="M22 68 L78 68" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
+                    <!-- Dead Fish Belly-Up -->
+                    <path d="M50 58 C58 52 68 53 74 58 C68 63 58 64 50 58 Z" fill="#0F172A"/>
+                    <polygon points="74,58 82,51 82,65" fill="#0F172A"/>
+                    <circle cx="56" cy="56" r="1.5" fill="#ffffff"/>
+                </svg>`
+            },
+            comburente: {
+                id: 'comburente',
+                name: 'Comburente',
+                desc: 'Oxidante que aviva o acelera el fuego',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <polygon points="50,4 96,50 50,96 4,50" fill="#ffffff" stroke="#EF4444" stroke-width="7"/>
+                    <!-- Circle base -->
+                    <circle cx="50" cy="58" r="15" fill="none" stroke="#0F172A" stroke-width="5"/>
+                    <!-- Flame over circle -->
+                    <path d="M50 22 C53 29 59 34 62 42 C57 44 53 43 50 40 C47 43 43 44 38 42 C41 34 47 29 50 22 Z" fill="#0F172A"/>
+                    <path d="M50 40 C52 44 54 47 52 50 C50 52 48 51 47 49 C47 47 49 44 50 40 Z" fill="#EF4444"/>
+                </svg>`
             }
         };
 
@@ -2552,142 +2761,55 @@
 
         const EXAM_CHEMICALS = [
             {
-                id: 'chem_1',
-                name: 'Ácido Muriático',
-                alias: 'Ácido Clorhídrico en Solución al 28%',
-                icon: 'fa-skull-crossbones',
-                desc: 'Utilizado en obra para desmanchado de fachadas de ladrillo a la vista y lavado de pisos.',
-                correctSga: 'corrosivo',
-                fds: {
-                    sec1: 'Ácido Clorhídrico 28% Grado Técnico. Distribución Obras KMA.',
-                    sec2: 'H314: Provoca quemaduras graves en la piel y lesiones oculares graves. H335: Puede irritar las vías respiratorias. H290: Corrosivo para metales.',
-                    warning: 'PELIGRO',
-                    code: 'H314 / H290 (Cat. 1B)',
-                    sec8: 'Respirador con cartucho para gases ácidos (amarillo), guantes de neopreno/nitrilo, monogafas químicas estancas y careta facial.'
-                },
-                hChallenge: {
-                    correct: 'H314: Provoca quemaduras graves en piel y lesiones oculares',
-                    distractors: [
-                        'H226: Líquidos y vapores inflamables en recipientes',
-                        'H280: Contiene gas a presión; peligro de explosión'
-                    ]
-                },
-                normaExplain: 'Res. 773/2021 Art. 6 & Dec. 1496/2018: Clasificado en Corrosión Cutánea Categoría 1 y Corrosivo para Metales Categoría 1.'
-            },
-            {
                 id: 'chem_2',
                 name: 'Thinner / Solvente Corriente',
                 alias: 'Mezcla de Hidrocarburos Aromáticos',
                 icon: 'fa-spray-can',
                 desc: 'Disolvente para pinturas de esmalte, limpieza de pistolas de aspersión y desengrase rápido.',
-                correctSga: 'salud',
-                fds: {
-                    sec1: 'Thinner Estándar Mezcla de Tolueno, Xileno y Éteres.',
-                    sec2: 'H304: Puede ser mortal en caso de ingestión y penetración en las vías respiratorias. H373: Puede provocar daños en el sistema nervioso central tras exposiciones repetidas.',
-                    warning: 'PELIGRO',
-                    code: 'H304 / H373 (Cat. 1)',
-                    sec8: 'Protección respiratoria con filtros para vapores orgánicos (V.O.), guantes de alcohol polivinílico (PVA) o nitrilo grueso, protección ocular.'
-                },
-                hChallenge: {
-                    correct: 'H304: Mortal en caso de ingestión y penetración respiratoria',
-                    distractors: [
-                        'H314: Provoca quemaduras químicas profundas en piel',
-                        'H290: Puede ser corrosivo para los metales ferrosos'
-                    ]
-                },
-                normaExplain: 'Dec. 1496/2018: Peligro Crónico para la Salud humana por aspiración pulmonar y neurotoxicidad específica (STOT RE).'
-            },
-            {
-                id: 'chem_3',
-                name: 'ACPM / Combustible Diésel',
-                alias: 'Aceite Combustible Para Motores',
-                icon: 'fa-gas-pump',
-                desc: 'Suministro para tanques de generadores eléctricos, volquetas y maquinaria pesada.',
                 correctSga: 'inflamable',
+                requiredSga: ['inflamable', 'salud', 'irritante'],
                 fds: {
-                    sec1: 'Combustible Diésel Automotriz Grado 2. Almacenamiento en patio.',
-                    sec2: 'H226: Líquidos y vapores inflamables. H351: Susceptible de provocar cáncer. H315: Provoca irritación cutánea.',
-                    warning: 'ATENCIÓN',
-                    code: 'H226 (Líq. Inflamable Cat. 3)',
-                    sec8: 'Guantes de nitrilo resistentes a hidrocarburos, calzado con suela antideslizante dieléctrica y antiestática, gafas de seguridad.'
-                },
-                hChallenge: {
-                    correct: 'H226: Líquidos y vapores inflamables (Cat. 3)',
-                    distractors: [
-                        'H330: Mortal en caso de inhalación masiva de gases',
-                        'H318: Provoca lesiones oculares graves irreversibles'
-                    ]
-                },
-                normaExplain: 'Res. 773/2021 Art. 12: Todo trasiego de combustibles requiere pictograma de llama y conexión equipotencial a tierra.'
-            },
-            {
-                id: 'chem_4',
-                name: 'Cilindro de Acetileno',
-                alias: 'Gas Disuelto C2H2 a Alta Presión',
-                icon: 'fa-fire-burner',
-                desc: 'Combustible gaseoso empleado en el equipo de oxicorte para corte de perfiles y varillas de acero.',
-                correctSga: 'gas',
-                fds: {
-                    sec1: 'Acetileno Disuelto en Acetona. Uso en Taller Metalmecánico.',
-                    sec2: 'H280: Contiene gas a presión; peligro de explosión en caso de calentamiento. H220: Gas extremadamente inflamable.',
+                    sec1: 'Thinner Estándar Mezcla de Tolueno, Xileno y Éteres. Distribución KMA.',
+                    sec2: 'H225: Líquido y vapores muy inflamables (Cat. 2). H304: Puede ser mortal en caso de ingestión y penetración en las vías respiratorias (Cat. 1). H336: Puede provocar somnolencia o vértigo (Cat. 3).',
                     warning: 'PELIGRO',
-                    code: 'H280 (Gas Comprimido)',
-                    sec8: 'Guantes de carnaza/cuero para manejo de botellas, gafas con filtro sombra 5 para corte, calzado con puntera de seguridad de acero.'
+                    code: 'H225 / H304 / H336',
+                    sec8: 'Protección respiratoria con filtros para vapores orgánicos (V.O.), guantes de nitrilo grueso/PVA y protección ocular.'
                 },
-                hChallenge: {
-                    correct: 'H280: Contiene gas a presión; peligro de explosión',
-                    distractors: [
-                        'H314: Corrosión cutánea y destrucción tisular por contacto',
-                        'H350: Puede provocar cáncer ocupacional acumulado'
-                    ]
-                },
-                normaExplain: 'Dec. 1079/2015 & Res. 773/2021: El almacenamiento de gases a presión exige pictograma de bombona y sujeción rígida con cadenas.'
+                normaExplain: 'Res. 773/2021 & Dec. 1496/2018: El Thinner requiere 3 rombos: Llama (Inflamable H225), Peligro para la Salud (Aspiración H304) y Signo de Exclamación (Irritante/Narcótico H336).'
             },
             {
-                id: 'chem_5',
-                name: 'Soda Cáustica (Escamas)',
-                alias: 'Hidróxido de Sodio al 98%',
-                icon: 'fa-mortar-pestle',
-                desc: 'Utilizado para destape de drenajes industriales y neutralización química en obras.',
+                id: 'chem_1',
+                name: 'Ácido Muriático Concentrado',
+                alias: 'Ácido Clorhídrico en Solución al 28%',
+                icon: 'fa-skull-crossbones',
+                desc: 'Utilizado en obra para desmanchado de fachadas de ladrillo a la vista y lavado de pisos.',
                 correctSga: 'corrosivo',
+                requiredSga: ['corrosivo', 'irritante', 'toxicidad'],
                 fds: {
-                    sec1: 'Soda Cáustica Sólida en Escamas. Reactivo de limpieza profunda.',
-                    sec2: 'H314: Provoca quemaduras graves en la piel y lesiones oculares graves. H318: Provoca lesiones oculares graves irreversibles.',
+                    sec1: 'Ácido Clorhídrico 28% Grado Técnico. Distribución Obras KMA.',
+                    sec2: 'H314: Provoca quemaduras graves en la piel y lesiones oculares graves (Cat. 1B). H290: Corrosivo para metales. H335: Puede irritar las vías respiratorias (Cat. 3). H331: Tóxico en caso de inhalación (Cat. 3).',
                     warning: 'PELIGRO',
-                    code: 'H314 (Cat. 1A Corrosivo)',
-                    sec8: 'Protección facial completa, respirador para polvos alcalinos N95, guantes de caucho butílico y peto impermeable de PVC.'
+                    code: 'H314 / H335 / H331',
+                    sec8: 'Respirador con cartucho para gases ácidos (amarillo), guantes de neopreno/nitrilo, monogafas químicas estancas y careta facial.'
                 },
-                hChallenge: {
-                    correct: 'H314: Provoca quemaduras graves en la piel y ojos',
-                    distractors: [
-                        'H225: Líquido y vapores muy inflamables a ambiente',
-                        'H280: Contiene gas licuado comprimido a alta presión'
-                    ]
-                },
-                normaExplain: 'Res. 773/2021 Art. 7: Prohibición tajante de mezclar álcalis con ácidos; su corrosión cutánea es instantánea y exotérmica.'
+                normaExplain: 'Res. 773/2021: El Ácido Clorhídrico exige 3 rombos: Corrosión (H314), Signo de Exclamación (Irritante H335) y Calavera (Toxicidad por inhalación H331).'
             },
             {
                 id: 'chem_6',
                 name: 'Pintura Epóxica Alto Tráfico',
-                alias: 'Resina Bicomponente para Pavimentos',
+                alias: 'Resina Bicomponente de Poliuretano/Epóxica',
                 icon: 'fa-paint-roller',
                 desc: 'Pintura de demarcación vial y revestimiento de pisos de bodegas y talleres.',
-                correctSga: 'salud',
+                correctSga: 'inflamable',
+                requiredSga: ['inflamable', 'salud', 'irritante', 'medio_ambiente'],
                 fds: {
-                    sec1: 'Esmalte Epóxico Poliamida Parte A. Señalización horizontal.',
-                    sec2: 'H317: Puede provocar una reacción alérgica en la piel. H319: Provoca irritación ocular grave. H341: Susceptible de causar defectos genéticos.',
-                    warning: 'ATENCIÓN',
-                    code: 'H317 / H341 (Sensibilizante)',
+                    sec1: 'Esmalte Epóxico Poliamida Bicomponente. Señalización vial KMA.',
+                    sec2: 'H226: Líquidos y vapores inflamables (Cat. 3). H341: Susceptible de causar defectos genéticos (Cat. 2). H317: Puede provocar una reacción alérgica en la piel (Cat. 1). H411: Tóxico para los organismos acuáticos con efectos nocivos duraderos.',
+                    warning: 'PELIGRO',
+                    code: 'H226 / H341 / H317 / H411',
                     sec8: 'Guantes de nitrilo desechables de cambio frecuente, respirador con cartucho combinado contra vapores orgánicos y partículas, gafas de montura integral.'
                 },
-                hChallenge: {
-                    correct: 'H317: Puede provocar reacción alérgica cutánea (Sensibilizante)',
-                    distractors: [
-                        'H201: Explosivo con peligro de explosión masiva',
-                        'H314: Quemaduras graves de piel por contacto ácido'
-                    ]
-                },
-                normaExplain: 'Dec. 1496/2018: Clasificación de productos con aminas y epóxidos como agentes sensibilizantes y riesgo carcinógeno/mutágeno.'
+                normaExplain: 'Dec. 1496/2018 y Res. 773/2021: La Pintura Epóxica de obra exige 4 rombos: Llama (Inflamable), Peligro para la Salud (Mutágeno), Signo de Exclamación (Sensibilizante) y Medio Ambiente (Acuático).'
             }
         ];
 
@@ -2700,20 +2822,16 @@
                 howItWorks: 'Posee pH alcalino > 11.5 y destruye el tejido cutáneo (H314). La regla SGA exige el pictograma <strong>Corrosivo</strong>.'
             },
             chem_1: {
-                whyFailed: 'El Ácido Muriático no genera combustión ni es gas comprimido; es una disolución inorgánica concentrada que ataca superficies y piel.',
-                howItWorks: 'Provoca quemaduras químicas severas y corroe metales (H314 / H290). La regla SGA exige el pictograma <strong>Corrosivo</strong>.'
+                whyFailed: 'El Ácido Muriático no genera combustión ni es inflamable; es una disolución concentrada cáustica y ácida.',
+                howItWorks: 'Exige 3 rombos obligatorios según FDS: Corrosión (H314 piel y metales), Signo de Exclamación (H335 irritante respiratorio) y Calavera (H331 toxicidad aguda por vapores).'
             },
             chem_2: {
-                whyFailed: 'Aunque es un disolvente común, su peligro técnico crítico según FDS no es superficial, sino la toxicidad por inhalación pulmonar.',
-                howItWorks: 'Sus hidrocarburos causan daño pulmonar letal y neurotoxicidad acumulada (H304 / H373). El SGA exige el pictograma de <strong>Peligro para la Salud</strong>.'
+                whyFailed: 'El Thinner no es un ácido corrosivo ni un gas comprimido; es una mezcla volátil de solventes aromáticos.',
+                howItWorks: 'Exige 3 rombos obligatorios según FDS: Llama (Inflamable H225), Peligro para la Salud (H304 por daño pulmonar letal) y Signo de Exclamación (H336 por vapores narcóticos).'
             },
-            chem_3: {
-                whyFailed: 'El ACPM no se clasifica como gas a presión ni corrosivo. Es un combustible automotriz de hidrocarburos líquidos.',
-                howItWorks: 'Emite vapores inflamables con punto de ignición (H226). La norma técnica exige el pictograma de <strong>Llama (Inflamable)</strong> y control antiestático.'
-            },
-            chem_4: {
-                whyFailed: 'El factor crítico en obra es el confinamiento mecánico del gas dentro del cilindro de acero a alta presión.',
-                howItWorks: 'Almacena gas disuelto a alta presión (H280) con riesgo de explosión por calor. La norma exige el pictograma de <strong>Gas a Presión (Bombona)</strong>.'
+            chem_6: {
+                whyFailed: 'La resina epóxica no es un gas a presión ni un explosivo; es un revestimiento químico de polímeros y solventes.',
+                howItWorks: 'Exige 4 rombos obligatorios según FDS: Llama (H226 Inflamable), Peligro para la Salud (H341 daño genético), Signo de Exclamación (H317 sensibilizante) y Medio Ambiente (H411 toxicidad acuática persistente).'
             },
             chem_5: {
                 whyFailed: 'La soda cáustica es un hidróxido sólido fuertemente alcalino, no un líquido inflamable ni un gas.',
@@ -4212,24 +4330,21 @@
                 let startY = 0;
                 let currentHoverZone = null;
                 let hasMoved = false;
+                let activePointerId = null;
 
                 cardEl.setAttribute('draggable', 'false');
                 cardEl.addEventListener('dragstart', (e) => e.preventDefault());
 
-                const findDropZoneAt = (clientX, clientY) => {
+                const getTargetZone = (clientX, clientY) => {
+                    const el = document.elementFromPoint(clientX, clientY);
+                    if (el) {
+                        const zone = el.closest(dropZoneSelector);
+                        if (zone) return zone;
+                    }
                     const zones = Array.from(document.querySelectorAll(dropZoneSelector));
                     for (const z of zones) {
                         const r = z.getBoundingClientRect();
-                        if (clientX >= r.left - 4 && clientX <= r.right + 4 && clientY >= r.top - 4 && clientY <= r.bottom + 4) {
-                            return z;
-                        }
-                    }
-                    const cr = cardEl.getBoundingClientRect();
-                    const cx = (cr.left + cr.right) / 2;
-                    const cy = (cr.top + cr.bottom) / 2;
-                    for (const z of zones) {
-                        const r = z.getBoundingClientRect();
-                        if (cx >= r.left - 6 && cx <= r.right + 6 && cy >= r.top - 6 && cy <= r.bottom + 6) {
+                        if (clientX >= r.left - 6 && clientX <= r.right + 6 && clientY >= r.top - 6 && clientY <= r.bottom + 6) {
                             return z;
                         }
                     }
@@ -4238,7 +4353,6 @@
 
                 const onPointerMove = (e) => {
                     if (!isDragging) return;
-
                     const pt = (e.touches && e.touches[0]) ? e.touches[0] : e;
                     const dx = pt.clientX - startX;
                     const dy = pt.clientY - startY;
@@ -4254,8 +4368,8 @@
                     if (hasMoved) {
                         if (e.cancelable) e.preventDefault();
                         const rot = Math.max(-8, Math.min(8, dx * 0.035));
-                        cardEl.style.setProperty('transform', `translate3d(${dx}px, ${dy}px, 0px) scale(0.98) rotate(${rot}deg)`, 'important');
-                        cardEl.style.setProperty('z-index', '9999', 'important');
+                        cardEl.style.setProperty('transform', `translate3d(${dx}px, ${dy}px, 0px) scale(1.02) rotate(${rot}deg)`, 'important');
+                        cardEl.style.setProperty('z-index', '99999', 'important');
 
                         if (pt.clientY < 75) {
                             window.scrollBy(0, -10);
@@ -4263,8 +4377,7 @@
                             window.scrollBy(0, 10);
                         }
 
-                        const dropZone = findDropZoneAt(pt.clientX, pt.clientY);
-
+                        const dropZone = getTargetZone(pt.clientX, pt.clientY);
                         if (dropZone !== currentHoverZone) {
                             if (currentHoverZone) {
                                 currentHoverZone.classList.remove('drop-target-hover');
@@ -4278,22 +4391,26 @@
                     }
                 };
 
-                const cleanupListeners = (e) => {
-                    if (cardEl.releasePointerCapture && e && e.pointerId !== undefined) {
-                        try { cardEl.releasePointerCapture(e.pointerId); } catch(err) {}
+                const cleanup = () => {
+                    if (activePointerId !== null && cardEl.releasePointerCapture) {
+                        try { cardEl.releasePointerCapture(activePointerId); } catch(err) {}
+                        activePointerId = null;
                     }
                     window.removeEventListener('pointermove', onPointerMove, true);
                     window.removeEventListener('pointerup', onPointerUp, true);
                     window.removeEventListener('pointercancel', onPointerCancel, true);
+                    window.removeEventListener('touchmove', onPointerMove, { passive: false });
+                    window.removeEventListener('touchend', onPointerUp, true);
+                    window.removeEventListener('touchcancel', onPointerCancel, true);
                 };
 
                 const onPointerUp = (e) => {
                     if (!isDragging) return;
                     isDragging = false;
-                    cleanupListeners(e);
+                    cleanup();
 
                     const pt = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : e;
-                    const finalZone = currentHoverZone || (hasMoved ? findDropZoneAt(pt.clientX, pt.clientY) : null);
+                    const finalZone = currentHoverZone || (hasMoved ? getTargetZone(pt.clientX, pt.clientY) : null);
 
                     document.querySelectorAll(dropZoneSelector).forEach(el => {
                         el.classList.remove('drop-target-active', 'drop-target-hover');
@@ -4312,8 +4429,8 @@
                                 cardEl.style.removeProperty('transform');
                             }, 200);
 
-                            const dropValue = finalZone.dataset.sgaId || finalZone.dataset.family;
-                            onDropCallback(dropValue);
+                            const dropValue = finalZone.dataset.sgaId || finalZone.dataset.family || finalZone.dataset.target || finalZone.id || 'station';
+                            if (onDropCallback) onDropCallback(dropValue, finalZone, cardEl);
                         } else {
                             cardEl.style.transition = 'transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                             cardEl.style.setProperty('transform', 'translate3d(0px, 0px, 0px) scale(1) rotate(0deg)', 'important');
@@ -4333,7 +4450,7 @@
                 const onPointerCancel = (e) => {
                     if (!isDragging) return;
                     isDragging = false;
-                    cleanupListeners(e);
+                    cleanup();
 
                     document.querySelectorAll(dropZoneSelector).forEach(el => {
                         el.classList.remove('drop-target-active', 'drop-target-hover');
@@ -4351,7 +4468,6 @@
                 };
 
                 const onPointerDown = (e) => {
-                    if (e.target && e.target.closest('button')) return;
                     if (e.pointerType === 'mouse' && e.button !== 0) return;
                     if (canDragCondition && !canDragCondition()) return;
 
@@ -4363,14 +4479,15 @@
                     startX = pt.clientX;
                     startY = pt.clientY;
                     currentHoverZone = null;
+                    activePointerId = (e.pointerId !== undefined) ? e.pointerId : null;
 
                     cardEl.style.animation = 'none';
                     cardEl.classList.remove('pop-comic');
                     cardEl.style.transition = 'none';
                     cardEl.style.touchAction = 'none';
 
-                    if (cardEl.setPointerCapture && e.pointerId !== undefined) {
-                        try { cardEl.setPointerCapture(e.pointerId); } catch(err) {}
+                    if (activePointerId !== null && cardEl.setPointerCapture) {
+                        try { cardEl.setPointerCapture(activePointerId); } catch(err) {}
                     }
 
                     document.querySelectorAll(dropZoneSelector).forEach(el => {
@@ -4380,9 +4497,13 @@
                     window.addEventListener('pointermove', onPointerMove, { passive: false, capture: true });
                     window.addEventListener('pointerup', onPointerUp, { capture: true });
                     window.addEventListener('pointercancel', onPointerCancel, { capture: true });
+                    window.addEventListener('touchmove', onPointerMove, { passive: false });
+                    window.addEventListener('touchend', onPointerUp, { capture: true });
+                    window.addEventListener('touchcancel', onPointerCancel, { capture: true });
                 };
 
                 cardEl.addEventListener('pointerdown', onPointerDown);
+                cardEl.addEventListener('touchstart', onPointerDown, { passive: false });
             }
 
             // ==============================================================
@@ -4568,147 +4689,195 @@
             initLevel3A() {
                 this.score3A = 0;
                 this.answersLog3A = [];
-                this.selectedCardId = null;
+                this.examChemIndex = 0;
+                this.placedSgaForCurrent = [];
+
+                const maxScore3A = EXAM_CHEMICALS.reduce((sum, c) => sum + (c.requiredSga ? c.requiredSga.length : 1), 0);
+                this.maxScore3A = maxScore3A;
 
                 this.dom.examScoreDisplay.textContent = '0';
-                this.dom.examItemCounter.textContent = `0 de ${EXAM_CHEMICALS.length}`;
+                const maxDisp = document.getElementById('exam-max-score-display');
+                if (maxDisp) maxDisp.textContent = maxScore3A;
+                this.dom.examItemCounter.textContent = `Producto 1 de ${EXAM_CHEMICALS.length}`;
+                if (this.dom.luchoQuote) {
+                    this.dom.luchoQuote.textContent = '¡Arrastra o toca los rombos SGA que requiere este envase!';
+                }
 
                 // Render Pictograms Grid
                 this.dom.examGrid.innerHTML = '';
                 Object.keys(SGA_PICTOGRAMS).forEach(key => {
                     const pict = SGA_PICTOGRAMS[key];
                     const btn = document.createElement('button');
-                    btn.className = 'pictogram-tile sga-pictogram-tile';
+                    btn.type = 'button';
+                    btn.className = 'pictogram-tile sga-pictogram-tile draggable-card';
                     btn.dataset.sgaId = key;
                     btn.innerHTML = `
                         <div class="pictogram-tile-icon">${pict.svg}</div>
                         <span class="pictogram-tile-name">${pict.name}</span>
                     `;
+
                     btn.addEventListener('click', () => {
-                        if (!this.selectedCardId) {
-                            sound.error();
-                            this.showComicBubble('¡ELIGE UNA TARJETA!', 'bad', this.getCenterInViewport(this.dom.examCardsTray));
-                            return;
-                        }
-                        this.handleExamSelection(key, this.selectedCardId);
+                        if (this.wasDragged) { this.wasDragged = false; return; }
+                        sound.tap();
+                        this.handlePlaceSga(key, btn);
                     });
+
+                    this.setupDragAndDrop(
+                        btn, 
+                        '#exam-station-container, .station-slot, .station-card', 
+                        () => {
+                            this.handlePlaceSga(key, btn);
+                        }, 
+                        () => this.currentLevel === 3 && this.level3Subphase === '3a'
+                    );
+
                     this.dom.examGrid.appendChild(btn);
                 });
 
-                // Render Exam Cards
-                this.renderExamCards();
+                // Render Active Chemical Station
+                this.renderCurrentChemicalStation();
             }
 
-            renderExamCards() {
-                this.dom.examCardsTray.innerHTML = '';
-                this.selectedCardId = null;
+            renderCurrentChemicalStation() {
+                if (this.examChemIndex >= EXAM_CHEMICALS.length) {
+                    // All finished, move to 3B
+                    setTimeout(() => this.setSubphase('3b'), 700);
+                    return;
+                }
+                const chem = EXAM_CHEMICALS[this.examChemIndex];
+                this.placedSgaForCurrent = [];
+                this.dom.examItemCounter.textContent = `Producto ${this.examChemIndex + 1} de ${EXAM_CHEMICALS.length}`;
 
-                EXAM_CHEMICALS.forEach(chem => {
-                    const card = document.createElement('div');
-                    card.className = 'exam-card draggable-card';
-                    card.dataset.chemId = chem.id;
-                    card.innerHTML = `
-                        <div class="flex items-center gap-2 pointer-events-none" style="min-width: 0; width: 100%;">
-                            <div style="width: 30px; height: 30px; border-radius: var(--radius-sm); background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #34d399; flex-shrink: 0;">
-                                <i class="fa-solid ${chem.icon}"></i>
-                            </div>
-                            <div style="min-width: 0; flex: 1; overflow: hidden;">
-                                <h3 style="font-weight: 700; font-size: 11.5px; color: #f8fafc; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${chem.name}</h3>
-                                <span style="display: block; font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${chem.alias}</span>
-                            </div>
+                const tray = this.dom.examStationContainer || document.getElementById('exam-station-container') || this.dom.examCardsTray;
+                if (tray) tray.innerHTML = '';
+
+                const stationCard = document.createElement('div');
+                stationCard.className = 'station-card';
+                stationCard.id = 'active-station-card';
+                stationCard.innerHTML = `
+                    <div class="station-header">
+                        <div class="station-icon">
+                            <i class="fa-solid ${chem.icon}"></i>
                         </div>
-                        <button class="btn-card-fds">
+                        <div class="station-info">
+                            <span class="station-step-badge">ENVASE SECUNDARIO ${this.examChemIndex + 1} DE ${EXAM_CHEMICALS.length}</span>
+                            <h3 class="station-title">${chem.name}</h3>
+                            <span class="station-alias">${chem.alias}</span>
+                        </div>
+                        <button class="btn-station-fds" id="btn-station-fds" type="button">
                             <i class="fa-solid fa-file-shield text-bolivar-yellow"></i>
                             <span>FDS</span>
                         </button>
-                        <div class="card-status hidden exam-card-status"></div>
+                    </div>
+                    <div class="station-body">
+                        <p class="station-prompt">
+                            <i class="fa-solid fa-tags text-bolivar-yellow" style="margin-right: 4px;"></i>
+                            Adhiere los <strong>${chem.requiredSga.length} rombos SGA</strong> obligatorios según su FDS:
+                        </p>
+                        <div class="station-slots-row" id="station-slots-row"></div>
+                    </div>
+                `;
+
+                // FDS button listener
+                stationCard.querySelector('#btn-station-fds').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sound.tap();
+                    this.openFds(chem);
+                });
+
+                // Setup slots
+                const slotsRow = stationCard.querySelector('#station-slots-row');
+                for (let i = 0; i < chem.requiredSga.length; i++) {
+                    const slot = document.createElement('div');
+                    slot.className = 'station-slot slot-empty';
+                    slot.dataset.slotIndex = i;
+                    slot.innerHTML = `
+                        <div class="slot-ghost-diamond">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <span class="slot-hint-text">Rombo ${i + 1}</span>
                     `;
+                    slotsRow.appendChild(slot);
+                }
 
-                    card.querySelector('.btn-card-fds').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        if (this.wasDragged) return;
-                        sound.tap();
-                        this.openFds(chem);
-                    });
-
-                    card.addEventListener('click', () => {
-                        if (this.wasDragged) { this.wasDragged = false; return; }
-                        if (card.dataset.state === 'done') return;
-                        sound.tap();
-                        this.selectCard(this.selectedCardId === chem.id ? null : chem.id);
-                    });
-
-                    this.setupDragAndDrop(card, '.sga-pictogram-tile', (sgaId) => {
-                        if (sgaId) {
-                            this.handleExamSelection(sgaId, chem.id);
-                        }
-                    }, () => this.currentLevel === 3 && card.dataset.state !== 'done');
-
-                    this.dom.examCardsTray.appendChild(card);
-                    this.playAnimation(card, 'pop-comic', 450);
-                });
+                if (tray) tray.appendChild(stationCard);
+                this.playAnimation(stationCard, 'pop-comic', 450);
             }
 
-            selectCard(id) {
-                this.selectedCardId = id;
-                this.dom.examCardsTray.querySelectorAll('.exam-card').forEach(card => {
-                    const isSelected = card.dataset.chemId === id;
-                    card.classList.toggle('pulse-selected', isSelected);
-                    card.classList.toggle('card-selected', isSelected);
-                });
-            }
+            handlePlaceSga(chosenSgaKey, tileEl) {
+                if (this.examChemIndex >= EXAM_CHEMICALS.length) return;
+                const chem = EXAM_CHEMICALS[this.examChemIndex];
+                const pict = SGA_PICTOGRAMS[chosenSgaKey];
+                const tray = this.dom.examStationContainer || document.getElementById('exam-station-container') || this.dom.examCardsTray;
+                const stationCard = tray ? tray.querySelector('.station-card') : null;
 
-            markCardResolved(cardEl, isCorrect) {
-                cardEl.dataset.state = 'done';
-                cardEl.classList.remove('draggable-card', 'pulse-selected', 'card-selected');
-                cardEl.classList.add(isCorrect ? 'card-resolved-correct' : 'card-resolved-error');
-                cardEl.style.cursor = 'default';
-                const badge = cardEl.querySelector('.card-status');
-                badge.classList.remove('hidden');
-                badge.className = 'exam-card-status ' + (isCorrect ? 'status-correct' : 'status-error');
-                badge.innerHTML = `<i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>`;
-                cardEl.querySelector('.btn-card-fds').disabled = true;
-            }
+                // Check if already placed on this chemical
+                if (this.placedSgaForCurrent.includes(chosenSgaKey)) {
+                    sound.tap();
+                    this.showComicBubble('¡YA COLOCADO!', 'warn', this.getCenterInViewport(stationCard || tileEl));
+                    return;
+                }
 
-            handleExamSelection(chosenSgaKey, chemId) {
-                const currentChem = EXAM_CHEMICALS.find(c => c.id === chemId);
-                const cardEl = this.dom.examCardsTray.querySelector(`[data-chem-id="${chemId}"]`);
-                if (!currentChem || !cardEl || cardEl.dataset.state === 'done') return;
-
-                const isCorrect = (chosenSgaKey === currentChem.correctSga);
-                const tileEl = this.dom.examGrid.querySelector(`[data-sga-id="${chosenSgaKey}"]`);
+                const isCorrect = Array.isArray(chem.requiredSga) && chem.requiredSga.includes(chosenSgaKey);
 
                 if (isCorrect) {
+                    this.placedSgaForCurrent.push(chosenSgaKey);
                     this.score3A++;
-                    this.answersLog3A.push({ chem: currentChem, chosenSga: chosenSgaKey, isCorrect: true });
-                    this.markCardResolved(cardEl, true);
-                    this.selectedCardId = null;
-
-                    sound.success();
                     this.dom.examScoreDisplay.textContent = this.score3A;
+                    sound.success();
                     this.celebrateCorrect(tileEl);
-                } else {
-                    this.answersLog3A.push({ chem: currentChem, chosenSga: chosenSgaKey, isCorrect: false });
-                    this.markCardResolved(cardEl, false);
-                    this.selectedCardId = null;
 
+                    // Find first empty slot and fill it
+                    const emptySlot = stationCard ? stationCard.querySelector('.station-slot.slot-empty') : null;
+                    if (emptySlot) {
+                        emptySlot.className = 'station-slot slot-filled pop-comic';
+                        emptySlot.innerHTML = `
+                            <div class="slot-diamond-icon">${pict.svg}</div>
+                            <span class="slot-badge-name">${pict.name}</span>
+                        `;
+                    }
+
+                    this.showComicBubble('¡CORRECTO! +1', 'good', this.getCenterInViewport(emptySlot || stationCard));
+
+                    // Check if current chemical has all required labels
+                    if (this.placedSgaForCurrent.length >= chem.requiredSga.length) {
+                        this.answersLog3A.push({ chem, placed: [...this.placedSgaForCurrent], isCorrect: true });
+                        if (stationCard) {
+                            stationCard.style.borderColor = '#10b981';
+                            stationCard.style.boxShadow = '0 0 18px rgba(16, 185, 129, 0.45)';
+                        }
+                        sound.victory();
+                        this.showComicBubble('¡ENVASE ROTULADO!', 'good', this.getCenterInViewport(stationCard));
+
+                        setTimeout(() => {
+                            this.examChemIndex++;
+                            if (this.examChemIndex < EXAM_CHEMICALS.length) {
+                                this.renderCurrentChemicalStation();
+                            } else {
+                                this.dom.examItemCounter.textContent = `${EXAM_CHEMICALS.length} de ${EXAM_CHEMICALS.length}`;
+                                if (this.dom.luchoQuote) {
+                                    this.dom.luchoQuote.textContent = '¡Excelente! Rotulaste todos los envases según la Res. 773/2021.';
+                                }
+                                setTimeout(() => {
+                                    this.setSubphase('3b');
+                                }, 1000);
+                            }
+                        }, 900);
+                    }
+                } else {
+                    this.answersLog3A.push({ chem, attempted: chosenSgaKey, isCorrect: false });
                     sound.error();
                     this.triggerScreenShake();
                     this.punishWrong(tileEl);
-                    this.showComicBubble('¡ERROR PICTOGRAMA!', 'bad', this.getCenterInViewport(cardEl));
-                    setTimeout(() => {
-                        this.showErrorFeedback(currentChem, chosenSgaKey, false);
-                    }, 400);
-                }
+                    this.showComicBubble('¡NO APLICA!', 'bad', this.getCenterInViewport(stationCard || tileEl));
 
-                const answered = this.answersLog3A.length;
-                this.dom.examItemCounter.textContent = `${answered} de ${EXAM_CHEMICALS.length}`;
+                    if (this.dom.luchoQuote) {
+                        this.dom.luchoQuote.textContent = `¡Cuidado! ${chem.name} no requiere ${pict ? pict.name : chosenSgaKey}. Consulta su FDS.`;
+                    }
 
-                if (answered >= EXAM_CHEMICALS.length) {
-                    // Switch to 3B FDS automatically after small delay
                     setTimeout(() => {
-                        this.setSubphase('3b');
-                    }, 1000);
+                        this.showErrorFeedback(chem, chosenSgaKey, false);
+                    }, 450);
                 }
             }
 
@@ -4844,15 +5013,17 @@
                 this.dom.phaseL3.classList.add('hidden');
                 this.dom.phaseResults.classList.remove('hidden');
 
-                // Total Evaluation: 4 (L1) + 6 (L2) + 6 (L3A) + 6 (L3B) = 22 total items
-                const totalPossible = 4 + 6 + 6 + 6;
+                // Total Evaluation: 4 (L1) + 6 (L2) + maxScore3A (L3A) + 6 (L3B)
+                const maxScore3A = EXAM_CHEMICALS.reduce((sum, c) => sum + (c.requiredSga ? c.requiredSga.length : 1), 0);
+                const maxL3Total = maxScore3A + (typeof FDS_SITUATIONAL_QUESTIONS !== 'undefined' ? FDS_SITUATIONAL_QUESTIONS.length : 6);
+                const totalPossible = 4 + 6 + maxL3Total;
                 const totalEarned = (Object.keys(this.level1Matches).length) + this.level2Score + this.score3A + this.fdsScore;
                 const percent = Math.round((totalEarned / totalPossible) * 100);
 
                 this.dom.resultsPercent.textContent = `${percent}%`;
                 this.dom.resBadgeL1.textContent = `${Object.keys(this.level1Matches).length}/4`;
                 this.dom.resBadgeL2.textContent = `${this.level2Score}/6`;
-                this.dom.resBadgeL3.textContent = `${this.score3A + this.fdsScore}/12`;
+                this.dom.resBadgeL3.textContent = `${this.score3A + this.fdsScore}/${maxL3Total}`;
 
                 if (percent >= 80) {
                     sound.victory();
@@ -4902,7 +5073,9 @@
             showErrorFeedback(chem, chosenKey, isTutorial = false) {
                 if (!this.dom.modalError) return;
                 const chosen = SGA_PICTOGRAMS[chosenKey] || HAZARD_FAMILIES[chosenKey] || { name: chosenKey, desc: '', svg: '' };
-                const correct = SGA_PICTOGRAMS[chem.correctSga] || HAZARD_FAMILIES[chem.correctSga] || { name: chem.correctSga, desc: '', svg: '' };
+                const correctNames = Array.isArray(chem.requiredSga)
+                    ? chem.requiredSga.map(k => (SGA_PICTOGRAMS[k] ? SGA_PICTOGRAMS[k].name : k)).join(' y ')
+                    : ((SGA_PICTOGRAMS[chem.correctSga] || HAZARD_FAMILIES[chem.correctSga] || {}).name || chem.correctSga || '');
                 const guide = LEARNING_GUIDES[chem.id] || {
                     whyFailed: `La clasificación elegida (${chosen.name || chosenKey}) no coincide con las propiedades técnicas de esta sustancia.`,
                     howItWorks: `Revisa la Sección 2 de la FDS oficial y la Res. 773/2021 para verificar los peligros correspondientes.`
@@ -4922,7 +5095,7 @@
                         </div>
                         <div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; padding: 8px 10px; border-radius: var(--radius-sm);">
                             <span style="color: #34d399; font-weight: 800; font-size: 11px; text-transform: uppercase;">
-                                <i class="fa-solid fa-circle-check"></i> Clasificación Correcta (${correct.name || chem.correctSga}):
+                                <i class="fa-solid fa-circle-check"></i> Clasificación Correcta (${correctNames}):
                             </span>
                             <p style="margin: 3px 0 0; color: #e2e8f0; font-size: 11px; line-height: 1.35;">${guide.howItWorks}</p>
                         </div>

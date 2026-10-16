@@ -734,3 +734,50 @@ gba(148, 163, 184, 0.18)).
   - **Juego 3 (`juego3_trasiego.html`)**: Compactación de cabecera, barra de ruta deslizable horizontalmente, escenario SVG y grilla de 9 tarjetas en `@media (max-width: 768px)`, más auto-scroll de ventana al arrastrar o seleccionar tarjetas.
   - **Juego 4 (`juego4_taller.html`)**: Cálculo dinámico `getResponsiveCameraDefaults()` según `window.innerWidth` (`scale: 0.56` en `<=420px`, `0.64` en `<=560px`, `0.78` en `<=820px`) aplicado en inicialización, `resize` y `restartGame()`; cambio de `.iso-viewport` a `touch-action: pan-y` para permitir scroll con 1 dedo, Tap-to-Move con 1 dedo y paneo/zoom con 2 dedos.
   - **Juego 5 (`juego5_emergencias.html`)**: Desbloqueo de scroll táctil (`touch-action: pan-y; -webkit-overflow-scrolling: touch;`) en modales de Briefing y Auditoría; media query `@media (max-width: 768px)` para HUD compacto sin colisiones; soporte multitáctil por `touch.identifier` (`lookTouchId`) en `bindTouchControls()` para caminar con el D-Pad y rotar cámara simultáneamente.
+
+## Corrección Universal de Arrastre y Soltado (Drag & Drop) en Juego 1 (`juego1_sga.html`)
+- **Diagnóstico de Causa Raíz ("La selecciona, pero no mueve la tarjeta")**:
+  1. **Bloqueo por Botón FDS**: La cláusula `if (e.target && e.target.closest('button')) return;` en `onPointerDown` abortaba el arrastre si el inicio del contacto ocurría en la mitad inferior de la tarjeta (donde se ubica el botón FDS).
+  2. **Cancelación Gestual en Móviles / Táctiles**: Sin listeners directos de `touchstart` y `touchmove` con `preventDefault()`, los navegadores interpretaban el deslizamiento vertical como desplazamiento de página y emitían `pointercancel`, regresando la tarjeta a `translate3d(0, 0, 0)` y disparando posteriormente el evento `click` (que activaba la selección visual con borde amarillo pero sin mover la tarjeta).
+  3. **Oclusión de Elementos Subyacentes**: Durante el arrastre, la tarjeta capturaba las coordenadas del puntero, dificultando que `document.elementFromPoint` detectara los pictogramas receptores (`.sga-pictogram-tile`) o los casilleros de familias (`.hazard-bucket`).
+- **Solución Implementada**:
+  1. **Inicio de Arrastre Unificado**: Se removió el bloqueo prematuro en el botón FDS. Si el usuario mueve el puntero más de 4px (`hasMoved = true`), se activa el arrastre suave de la tarjeta; si el puntero se libera sin movimiento (`hasMoved = false`), el evento de clic estándar abre la ficha FDS o selecciona la tarjeta.
+  2. **Soporte Táctil y Puntero Completo**: Se añadieron listeners duales (`pointerdown`, `pointermove`, `pointerup`, `pointercancel` y `touchstart`, `touchmove`, `touchend`, `touchcancel`) con `passive: false` y `preventDefault()` condicional al iniciar el movimiento, impidiendo la cancelación del gesto por scroll.
+  3. **Prueba de Impacto Directa (`pointer-events: none`)**: Durante el arrastre se aplica `pointer-events: none !important;` y `z-index: 99999` a la tarjeta activa, permitiendo que `document.elementFromPoint(clientX, clientY)` detecte de forma instantánea y exacta la zona receptora subyacente (`.sga-pictogram-tile` o `.hazard-bucket`), con fallback por cajas delimitadoras (`getBoundingClientRect`).
+  4. **Limpieza de Selección y Animación de Logro**: Al asociar correctamente una tarjeta, se invoca `this.selectCard(null)` para retirar el halo de selección amarillo de todas las tarjetas y se dispara la animación `pop-comic` de celebración en la tarjeta resuelta.
+
+## Inversión de Mecánica de Etiquetado y Soporte Multi-Peligro en Nivel 3A (`juego1_sga.html`)
+- **Motivación Pedagógica y de Ergonomía**:
+  1. **Fidelidad Normativa (Res. 773/2021)**: En la industria y obras de construcción, el trabajador no traslada el tambor hacia un pictograma en una pared, sino que toma los rombos adhesivos SGA y los adhiere sobre el envase secundario basándose en la Sección 2 de la FDS.
+  2. **Resolución del Multi-Peligro**: La mayoría de sustancias críticas en obra (Thinner, Ácidos, Acetileno) poseen peligros múltiples concurrentes (ej. Líquido inflamable + peligro por aspiración pulmonar; Corrosivo cutáneo + irritante respiratorio; Gas a presión + inflamable). La mecánica anterior 1-a-1 resultaba pedagógicamente limitante o confusa para sustancias con múltiples rombos obligatorios.
+  3. **Despeje y Ergonomía Móvil**: Se reemplazó el apiñamiento de 6 tarjetas químicas simultáneas por **1 Estación de Rotulado activa a la vez** (`.station-card`), con 2 slots de rombos bien dimensionados y legibles (`.station-slot`), botón interactivo FDS dedicado y la paleta de rombos SGA abajo.
+- **Implementación Técnica**:
+  1. **Estructura de Datos Multi-Hazard**: `EXAM_CHEMICALS` reconfigurado con `requiredSga: ['inflamable', 'salud']` para Thinner, `['corrosivo', 'irritante']` para Ácido Muriático y `['gas', 'inflamable']` para Cilindro de Acetileno (3 compuestos x 2 rombos = 6 puntos totales exactos, conservando la escala SCORM 1.2 sin alteraciones).
+  2. **Interacción Dual Impecable (Arrastre + Toque Táctil)**:
+     - *Arrastre*: Los rombos SGA de la paleta inferior se pueden arrastrar libremente hacia la estación o los slots receptores.
+     - *Toque directo (`Tap-to-Place`)*: Al tocar cualquier rombo SGA, el sistema valida inmediatamente y lo adhiere al primer slot libre del envase si corresponde.
+  3. **Validación Inmediata con Retroalimentación**:
+     - *Acierto*: El slot se rellena con el vector oficial del pictograma SGA (`.slot-filled`), emite sonido de éxito, animación `pop-comic` y suma +1 punto. Al completar ambos rombos del envase, emite sonido de victoria y avanza automáticamente al siguiente compuesto tras 900ms.
+     - *Fallo*: Sacudida de pantalla (`shake-screen`), sonido de error, feedback de Lucho y modal técnico explicativo adaptado a los múltiples requerimientos del compuesto. Al completar los 3 compuestos, transiciona fluidamente a la Subfase 3B de FDS.
+  4. **Verificación Automatizada**: Test E2E headless en Edge mediante CDP (`scratch/test_level3a.js`) validó al 100% el flujo completo, penalizaciones, puntaje máximo (6/6) y transición hacia Subfase 3B.
+
+## Expansión a 3 y 4 Pictogramas por Sustancia y Paleta Completa de 8 Rombos SGA en Nivel 3A (`juego1_sga.html`)
+- **Motivación Normativa y Pedagógica (Res. 773/2021 & FDS Reales)**:
+  - Varios productos industriales y de obra comunes poseen más de 2 peligros regulados: solventes con toxicidad y daño a órganos blanco, pinturas epóxicas con solventes volátiles y daño acuático, y ácidos concentrados con emanaciones tóxicas e irritación severa.
+  - El usuario solicitó explícitamente incluir sustancias con más de 2 etiquetas (3 y 4 rombos), lo cual refleja con fidelidad la Sección 2 de las FDS reales colombianas.
+- **Implementación Técnica y Arquitectura**:
+  1. **Paleta Completa de 8 Rombos SGA**: Se añadieron los pictogramas oficiales y vectores SVG de `medio_ambiente` (árbol seco y pez muerto - Toxicidad Acuática) y `comburente` (llama sobre círculo - Oxidante).
+  2. **Retícula Optimizada para Móviles (4 Columnas)**: Se estructuró `.pictogram-grid` en `grid-template-columns: repeat(4, minmax(0, 1fr));` tanto en escritorio como en la media query `@media (max-width: 768px)`. Esto distribuye los 8 rombos en 2 filas limpias, reduciendo la altura vertical ocupada a solo ~120px en teléfonos móviles y dejando todo el espacio vertical para la estación de rotulado.
+  3. **Ranuras Flexibles y Adaptativas (`.station-slot`)**:
+     - Se ajustó el tamaño de ranura a `68px x 68px` con `flex-wrap: wrap; justify-content: center;` en `.station-slots-row`.
+     - 3 slots ocupan ~225px y 4 slots ocupan ~300px, encajando en cualquier pantalla de smartphone sin requerir scroll horizontal y con auto-envoltura suave en pantallas extra angostas.
+  4. **Compuestos de Prueba de Alto Riesgo**:
+     - *Thinner / Solvente Corriente (3 rombos)*: `['inflamable', 'salud', 'irritante']` (Líquido combustible + Aspiración pulmonar H304 + Irritación cutánea H315 / STOT SE 3).
+     - *Ácido Muriático Concentrado (3 rombos)*: `['corrosivo', 'irritante', 'toxicidad']` (Corrosión cutánea Cat 1 + Toxicidad aguda oral Cat 4 + Irritación vías respiratorias H335).
+     - *Pintura Epóxica Alto Tráfico (4 rombos)*: `['inflamable', 'salud', 'irritante', 'medio_ambiente']` (Solvente inflamable + Sensibilización cutánea H317 + Irritación ocular/cutánea + Daño a organismos acuáticos H411).
+  5. **Cálculo Dinámico de Puntuación**:
+     - Se eliminó cualquier total rígido cableado: `this.maxScore3A = EXAM_CHEMICALS.reduce((acc, c) => acc + c.requiredSga.length, 0);` (10 puntos totales).
+     - La barra de estado refleja automáticamente `0 / 10`, el badge de finalización y el reporte SCORM integran los 10 puntos de la Subfase 3A sin romper métricas previas.
+  6. **Validación Automatizada**:
+     - Script E2E en Edge CDP ejecutó la resolución de los 10 slots a través de los 3 compuestos, verificó el rechazo de etiquetas incorrectas, el avance entre sustancias y la transición a la Subfase 3B (100% de éxito).
+

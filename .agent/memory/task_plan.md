@@ -287,5 +287,26 @@
     - [x] Juego 3 (`juego3_trasiego.html`): Compactación móvil de cabecera, barra de ruta, escenario SVG y grilla de 9 tarjetas en `@media (max-width: 768px)`; auto-scroll al arrastrar o seleccionar tarjetas.
     - [x] Juego 4 (`juego4_taller.html`): Escala dinámica `getResponsiveCameraDefaults()` en inicialización, `resize` y `restartGame()` para encuadrar el escenario `500x500` completo en teléfonos; `touch-action: pan-y` en `.iso-viewport` para permitir scroll vertical con 1 dedo sin perder `Tap-to-Move` ni zoom/paneo con 2 dedos.
     - [x] Juego 5 (`juego5_emergencias.html`): Desbloqueo de scroll táctil en modales (`#modal-briefing-overlay`, `#modal-audit-overlay`); compactación de HUD móvil sin solapamientos; soporte multitáctil (`lookTouchId`) para caminar con D-Pad y girar la cámara al mismo tiempo.
+  - [x] Corrección Universal de Arrastre y Soltado (Drag & Drop) en Juego 1 (juego1_sga.html):
+    - [x] Diagnóstico de causa raíz: El botón FDS bloqueaba el inicio del arrastre al abarcar la mitad de la tarjeta con `closest('button')`, y la ausencia de manejadores de eventos táctiles (`touchstart`, `touchmove`, `touchend`) provocaba cancelación de puntero (`pointercancel`) por scroll del navegador en dispositivos móviles.
+    - [x] Implementación de `setupDragAndDrop` universal: Detección inteligente de arrastre vs tap en cualquier punto de la tarjeta (incluido el botón FDS), captura de puntero robusta con fallback, listeners táctiles dedicados (`touchstart`, `touchmove`, `touchend`) con `preventDefault()` condicional para erradicar cancelaciones por scroll, y prueba de impacto directa mediante `document.elementFromPoint` con `pointer-events: none` dinámico durante el arrastre.
+    - [x] Soporte dual e impecable de interacción en Nivel 3A: Arrastre libre de tarjetas a pictogramas SGA (`.sga-pictogram-tile`) y selección por clic/toque (`tap-to-place`), con feedback lumínico inmediato (`drop-target-hover`, `card-resolved-correct` y animación de celebración).
+    - [x] Validación automatizada vía CDP en Edge headless de arrastre táctil y de ratón (100% aprobado).
+    - [x] Regeneración de los 6 paquetes SCORM 1.2 (`python build_scorm.py`).
+  - [x] Inversión de Mecánica de Etiquetado y Soporte Multi-Peligro en Juego 1 (juego1_sga.html - Nivel 3A):
+    - [x] Transformación pedagógica hacia la Estación de Rotulado de Envases Secundarios (Res. 773/2021): Las etiquetas/rombos SGA se arrastran o tocan para adherirse a los slots del envase activo.
+    - [x] Catálogo de compuestos multipeligro de construcción: Thinner (Inflamable + Salud), Ácido Muriático (Corrosivo + Irritante) y Acetileno (Gas + Inflamable), con 2 slots de rombos cada uno (6 puntos totales para equivalencia SCORM 1.2).
+    - [x] Soporte táctil y de ratón dual (Drag & Drop de rombos a los slots + Tap-to-Place directo con autoubicación en slot libre).
+    - [x] Modal de retroalimentación técnica y guías formativas adaptadas a los múltiples pictogramas requeridos por sustancia.
+    - [x] Verificación automatizada vía CDP en Edge headless (flujo completo, penalización por error, completado de envases y transición a Subfase 3B).
+    - [x] Regeneración de los 6 paquetes SCORM 1.2 (`python build_scorm.py`).
+  - [x] Expansión a 3 y 4 Pictogramas por Compuesto Químico y Paleta Completa de 8 Rombos SGA (juego1_sga.html - Nivel 3A):
+    - [x] Ampliación de la paleta de pictogramas a 8 rombos oficiales SGA (incorporación de `medio_ambiente` y `comburente` con sus respectivos vectores SVG oficiales).
+    - [x] Distribución ergonómica de 4 columnas en `.pictogram-grid` tanto en desktop como en dispositivos móviles (`@media (max-width: 768px)`), reduciendo la altura vertical y maximizando el espacio de la estación.
+    - [x] Dimensionamiento adaptativo de ranuras de rotulado (`.station-slot` a 68px con `flex-wrap: wrap`), permitiendo renderizar 3 o 4 slots por compuesto sin desbordamiento horizontal en pantallas móviles estrechas.
+    - [x] Configuración de compuestos de obra con perfiles de peligro reales de FDS (Res. 773/2021): Thinner / Solvente Corriente (3 rombos: Inflamable, Peligro para la Salud, Irritante/Toxicidad Aguda Cat 4), Ácido Muriático Concentrado (3 rombos: Corrosivo, Toxicidad Aguda, Irritante Cutáneo/Ocular) y Pintura Epóxica Alto Tráfico (4 rombos: Inflamable, Peligro para la Salud, Irritante Cutáneo y Toxicidad para el Medio Ambiente Acuático).
+    - [x] Cálculo dinámico de puntuación en Subfase 3A (`maxScore3A = EXAM_CHEMICALS.reduce(...)` = 10 puntos totales), actualizando la barra de estado y los badges de resultado final.
+    - [x] Guías formativas y técnicas de retroalimentación ampliadas con justificación legal de las FDS y sus frases H.
+    - [x] Validación automatizada vía CDP en Edge headless probando los 10 slots a través de los 3 compuestos (100% aprobado).
     - [x] Regeneración de los 6 paquetes SCORM 1.2 (`python build_scorm.py`).
 
