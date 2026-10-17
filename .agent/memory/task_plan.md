@@ -349,6 +349,15 @@
       - [x] Interpolación cinemática suave (`easeInOutCubic`, 1100ms) con cálculo de rumbo por el ángulo más corto, pasos de marcha y balanceo de cámara.
       - [x] Ejecución automática de la maniobra técnica ("Moverse y Tomar") al llegar a la estación objetivo.
       - [x] Despacho multi-canal: toque en botón táctico, clic directo sobre estación 3D, clic en chip de paso del HUD o teclas `Space`/`Enter`/`E`.
-      - [x] Verificación automatizada vía CDP en Edge headless de pasos 1 y 2 con captura de pantalla.
+    - [x] Reestructuración Integral de Apariencia, Ergonomía y Espacio en Juego 4 (`juego4_taller.html`):
+      - [x] Layout móvil de altura completa 100dvh (`.app-viewport`) eliminando scroll vertical y erradicando ~200px de espacio muerto inferior.
+      - [x] Viewport isométrico `.iso-viewport` dinámico (`flex: 1; height: auto; min-height: 280px;`) adaptado con precisión a cualquier alto de pantalla.
+      - [x] HUD móvil condensado en una sola fila (`[🔥 RACHA] [⏱ TIEMPO] [🛡 PUNTOS] [⛶ FULLSCREEN] [🔊 SONIDO]`), ocultando `.brand-cluster` en pantallas `<= 640px`.
+      - [x] Barra de fase reestructurada en 2 filas (`.stage-bar-top-row` con pestañas y botón `[🔄 Girar 90°]`, y `.stage-status-wrapper` a ancho completo), erradicando el truncamiento de texto.
+      - [x] Enriquecimiento de suelo con gradientes radiales de iluminación ambiental, doble borde de seguridad y sombras proyectadas (`0 35px 70px rgba(0,0,0,0.95)`).
+      - [x] Escalado de casilleros (110x105px) y puerta de checkpoint (95x110px) con detalles de ventilación, chapas y arcos de escaneo.
+      - [x] Bandeja inferior vertical con tarjetas ergonómicas de 56px min-height, badges claros y regla `.tray-task-grid[style*="display: none"] { display: none !important; }` que garantiza alternancia limpia entre Vestidor (2 tarjetas) y Patio (3 operaciones).
+      - [x] Verificación visual integral en resolución móvil (375x740) para Zona 1 y Zona 2 mediante Edge headless y CDP.
     - [x] Reconstrucción y sincronización de los 6 paquetes SCORM 1.2 mediante `python build_scorm.py`.
+
 

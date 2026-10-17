@@ -874,3 +874,28 @@ gba(148, 163, 184, 0.18)).
     - Erradicación total del D-Pad virtual de 7 botones y del botón flotante de acción.
     - Reubicación de las estadísticas de vitalidad y drenaje a `bottom: 92px`, eliminando cualquier solapamiento en móviles.
 
+## Reestructuración Integral de Apariencia, Ergonomía y Espacio en Juego 4 (`juego4_taller.html`)
+- **Diagnóstico de Deficiencias Visuales en Pantalla Móvil**:
+  1. *Desbordamiento y Espacio Muerto*: `.iso-viewport` restringido a 330px fijos dejaba ~200px de fondo negro vacío en pantallas verticales, provocando desplazamiento vertical innecesario.
+  2. *Saturación de Cabecera*: El cluster de marca Bolívar provocaba quiebre de insignias a múltiples filas y dejaba huérfano el botón de audio.
+  3. *Truncamiento en Barra de Fase*: La píldora `#stage-status-text` se hallaba comprimida entre las pestañas y el botón de rotación, mostrando `Paso 1: Equipa tu ...` con puntos suspensivos.
+  4. *Escenario 3D Pobre en Escala*: Baldosas pequeñas con props comprimidos que se perdían en el fondo negro.
+  5. *Tarjetas de Misión Inferiores*: Tarjetas en dos columnas estrechas comprimían el texto técnico a 6 líneas apretadas.
+- **Implementación Arquitectónica y Visual**:
+  - **Layout de Altura Completa 100dvh (`.app-viewport`)**:
+    - Estructura `display: flex; flex-direction: column; height: 100vh; height: 100dvh; max-height: 100dvh; overflow: hidden;`.
+    - `.iso-viewport` dinámico con `flex: 1; height: auto; min-height: 280px;`, adaptándose con precisión milimétrica a cualquier altura de pantalla y erradicando el espacio muerto inferior.
+  - **HUD de Una Sola Fila en Móvil**:
+    - Ocultamiento de marca redundante (`.brand-cluster`) en pantallas `<= 640px`, consolidando los indicadores `[🔥 RACHA] [⏱ TIEMPO] [🛡 PUNTOS] [⛶ PANTALLA COMPLETA] [🔊 SONIDO]` en una única barra limpia.
+  - **Barra de Control en 2 Filas Estructuradas (`.stage-indicator-bar`)**:
+    - Fila 1 (`.stage-bar-top-row`): Pestañas de zona (`[👕 Vestidor] [🔧 Patio Taller]`) a la izquierda y botón de rotación (`[🔄 Girar 90°]`) a la derecha.
+    - Fila 2 (`.stage-status-wrapper`): Píldora de estado a ancho completo con `text-overflow: ellipsis`, eliminando el truncamiento y garantizando legibilidad total.
+  - **Enriquecimiento Textural y Escalado Isométrico 2.5D**:
+    - Suelo del vestidor con gradiente radial iluminado, bordes dobles de seguridad y sombras proyectadas (`box-shadow: 0 0 0 3px #0284c7, 0 35px 70px rgba(0,0,0,0.95)`).
+    - Escalado de casilleros a 110x105px con louvers de ventilación y chapa dorada reflectiva; puerta de checkpoint a 95x110px con arco de escáner.
+    - Suelo del patio con textura de concreto reforzado y balizas 3D de alta definición.
+  - **Bandeja Inferior Contextual Vertical**:
+    - Conversión a tarjetas ergonómicas verticales de 56px de altura mínima, con iconografía de 36px, jerarquía tipográfica limpia y badges de estado claros.
+    - Corrección de visibilidad entre zonas: Regla `.tray-task-grid[style*="display: none"] { display: none !important; }` que garantiza la conmutación sin solapamientos entre Vestidor (2 tarjetas) y Patio (3 operaciones de mantenimiento).
+
+
