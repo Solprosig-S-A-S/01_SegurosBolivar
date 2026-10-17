@@ -309,4 +309,46 @@
     - [x] Guías formativas y técnicas de retroalimentación ampliadas con justificación legal de las FDS y sus frases H.
     - [x] Validación automatizada vía CDP en Edge headless probando los 10 slots a través de los 3 compuestos (100% aprobado).
     - [x] Regeneración de los 6 paquetes SCORM 1.2 (`python build_scorm.py`).
+  - [x] Rectificación y Auditoría Visual Exhaustiva en Teléfonos Móviles (320px, 360px, 375px) en Juego 1 (juego1_sga.html):
+    - [x] Corrección de desbordamiento horizontal en retícula de 8 rombos SGA: sustitución de `repeat(4, 1fr)` por `repeat(4, minmax(0, 1fr))` y asignación de `min-width: 0; box-sizing: border-box; width: 100%` en `.pictogram-tile` y texto con elipsis a 7.5px, erradicando el ensanchamiento intrínseco por min-content (`IRRITANTE / ATENCIÓN`) que empujaba la 4ª columna fuera de la pantalla.
+    - [x] Calibración de ranuras receptoras en estación de 4 slots: reducción de `.station-slot` a 60px con gap de 6px en pantallas móviles, asegurando que los 4 slots de la Pintura Epóxica quepan en una sola línea horizontal con holgura (240px + 18px = 258px) sin saltos forzados.
+    - [x] Ajuste ergonómico del diálogo de Briefing (`#modal-briefing-overlay`): compactación de párrafos legales, ocultamiento de instrucciones de teclado de PC en móviles, y fijación `sticky` inferior del botón principal `INICIAR RUTA SGA (3 NIVELES)` para garantizar su visibilidad inmediata sin necesidad de scroll.
+    - [x] Auditoría visual E2E mediante capturas headless en Edge sobre viewports de 360x740, 375x667 y 320x568 comprobando 0% de overflow horizontal y operatividad completa en los 3 niveles pedagógicos.
+    - [x] Reconstrucción de paquetes SCORM 1.2 mediante `python build_scorm.py`.
+  - [x] Optimización Integral de Ergonomía Móvil (Android 360x740 / 375x667) en Juego 4 (juego4_taller.html) y Juego 5 (juego5_emergencias.html):
+    - [x] Juego 4 (`juego4_taller.html`):
+      - [x] Erradicación de distorsión 3D del personaje: Sustitución de primitivas HTML compuestas en perspectiva 3D por sprite vectorial 2.5D SVG de alta definición (Operario Técnico con casco industrial, overol verde Bolívar, franjas reflectivas de alta visibilidad, guantes químicos, monogafas panorámicas, respirador con doble filtro y botas de seguridad dieléctricas).
+      - [x] Corrección de la sombra en el aire: Desacoplamiento de la sombra del billboard vertical mediante `.avatar-floor-shadow` plano a Z=0 (`translateZ(0)`) fijado directamente sobre la baldosa isométrica.
+      - [x] Sincronización idéntica de capas SVG de EPP en Zona 1 (Vestidor) y Zona 2 (Patio de Mantenimiento) manteniendo compatibilidad completa con `updateAvatarVisualEPP()` y animaciones GSAP.
+      - [x] Ajuste ergonómico del modal de Briefing en pantallas móviles (`@media (max-width: 540px)`).
+    - [x] Juego 5 (`juego5_emergencias.html`):
+      - [x] Visibilidad de Manos en 1ª Persona: Eliminación de `display: none !important;` en `.fps-hands-layer` para móviles; redimensionamiento proporcional y ergonómico de mangas y guantes (`height: 155px; width: 76px;`) con capas de nitrilo y extintor FPV.
+      - [x] Erradicación de colisión del Diálogo del Bot: Reubicación de `.hud-bot-dialog` en zona superior (`top: 80px; left: 50%; transform: translateX(-50%)`), despejando 100% de la zona inferior de control táctil.
+      - [x] Controles táctiles ergonómicos: D-Pad virtual reposicionado a `bottom: 18px; left: 14px` con botones de 38x38px sin recortes de pantalla; botón de acción táctil a `bottom: 22px; right: 14px` (62x62px).
+      - [x] Estadísticas de vitalidad y drenaje reubicadas sobre el D-Pad (`bottom: 160px; left: 14px`), eliminando interferencias con la barra de pasos superior.
+      - [x] Encuadre de cámara y perspectiva 3D: Calibración de `perspective: 440px` y `perspective-origin: 50% 43%` con `translateZ(440px)` en móvil, abriendo el campo de visión horizontal de 27° a 45° y eliminando el efecto de habitación "recortada a la mitad" con horizonte a nivel de ojos.
+    - [x] Calibración y Diseño Completo Mobile-First en los 5 Juegos:
+      - [x] Juego 4 (`juego4_taller.html`): Eliminación de estiramiento vertical en avatar (`60x74px` con `preserveAspectRatio="none"`) y props (mesa de desengrase a `104x56px`, motor a `102x60px`, estación RESPEL a `172x64px`, casilleros a `104x68px`, puerta a `78x76px`); protección de transformaciones 3D en animaciones GSAP.
+      - [x] Juego 5 (`juego5_emergencias.html`): Botón de acción táctil arcade (`72x72px` circular dorado con icono de mano y rótulo "INTERACTUAR"); erradicación de ocultamiento de manos en `@media (max-height: 550px)` para visibilidad garantizada en cualquier pantalla móvil; orientación inicial en `yaw = 270°` hacia caseta de dotación; cooldown de daño por radiación/vapores (1500ms); banner de objetivo táctico con brújula dinámica (`#hud-objective-guide`) y auto-aproximación; botón central auto-aim (`#btn-auto-aim`); D-pad de 44x44px; interacción por toque directo en viewport 3D; extinción de fuego en M2 calibrada al 25% por descarga.
+      - [x] Juego 3 (`juego3_trasiego.html`): Calibración de relación de aspecto de `.svg-canvas-wrap` a `940 / 260` eliminando bandas negras y optimizando el espacio vertical en pantallas estrechas.
+      - [x] Reconstrucción y sincronización de los 6 paquetes SCORM 1.2 mediante `python build_scorm.py`.
+    - [x] Sistema Universal de Pantalla Completa por Doble Toque y Botón Flotante de Salida (Juegos 1 al 5):
+      - [x] Detección de doble toque táctil (cadencia 50-360ms, jitter <35px) y doble clic en escritorio en los 5 juegos.
+      - [x] Inyección reactiva de botón flotante rojo/blanco de salida (`#btn-floating-exit-fullscreen`) en la esquina superior derecha (`top: 14px; right: 14px; z-index: 10000;`).
+      - [x] Toast de confirmación de pantalla completa (`#toast-fullscreen-info`) con auto-ocultado tras 2.8s.
+      - [x] Expansión del viewport a 100vw x 100vh mediante Fullscreen API y fallback con clase CSS `.is-fullscreen`.
+    - [x] Rediseño Visual, Ergonomía de Cámara y Despeje en Juego 5 (`juego5_emergencias.html`):
+      - [x] Calibración de perspectiva 3D a 540px (`perspective: 540px`, `perspective-origin: 50% 46%`, `pDist = 540`), erradicando la distorsión focal y estiramiento de estaciones al caminar.
+      - [x] Texturas industriales de acero remachado, zócalos con franjas de advertencia (`#FFC72C`/`#000`), lámpara estroboscópica superior, focos direccionales y piso epóxico brillante.
+      - [x] Supresión del prompt de retícula central `.fps-crosshair-prompt` en móviles para despejar el campo visual, y auto-colapso del diálogo del bot tras 5s.
+      - [x] Botones de misión (`Misión 1` y `Misión 2`) fijados como `sticky` en la base del modal de briefing para visibilidad inmediata sin scroll.
+      - [x] Manos en primera persona rediseñadas con mangas Bolívar, ribetes reflectivos amarillos, guantes táctiles y anclaje inferior ergonómico.
+    - [x] Mecánica de Autopilot Cinemático "1-Click Tactical Dispatch" (Moverse y Tomar con 1 Toque - juego5_emergencias.html):
+      - [x] Sustitución total del D-Pad virtual de 7 botones y botón de acción por el Botón Táctico Central `#btn-tactical-dispatch`.
+      - [x] Calibración de coordenadas de postura y mira (`STANCE_COORDINATES`) para las 11 estaciones de Misión 1 y Misión 2.
+      - [x] Interpolación cinemática suave (`easeInOutCubic`, 1100ms) con cálculo de rumbo por el ángulo más corto, pasos de marcha y balanceo de cámara.
+      - [x] Ejecución automática de la maniobra técnica ("Moverse y Tomar") al llegar a la estación objetivo.
+      - [x] Despacho multi-canal: toque en botón táctico, clic directo sobre estación 3D, clic en chip de paso del HUD o teclas `Space`/`Enter`/`E`.
+      - [x] Verificación automatizada vía CDP en Edge headless de pasos 1 y 2 con captura de pantalla.
+    - [x] Reconstrucción y sincronización de los 6 paquetes SCORM 1.2 mediante `python build_scorm.py`.
 

@@ -85,12 +85,13 @@
             min-height: 100vh;
             min-height: 100dvh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
-            padding: 8px;
+            padding: 0;
+            margin: 0;
         }
 
         /* Primitivas de Layout y Utilidades */
@@ -139,22 +140,23 @@
             50% { opacity: .45; }
         }
 
-        /* Contenedor Principal (Cockpit Táctico) */
+        /* Contenedor Principal (Cockpit Táctico Mobile-First) */
         .app-viewport {
             width: 100%;
-            max-width: 620px;
-            height: 98vh;
-            max-height: 940px;
+            max-width: 500px;
+            min-height: 100dvh;
+            height: 100dvh;
             background-color: var(--bg-viewport);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+            border: none;
+            border-radius: 0;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.85);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow-x: hidden;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            padding-bottom: env(safe-area-inset-bottom, 8px);
             background-image: 
                 radial-gradient(circle at 50% 20%, rgba(0, 103, 56, 0.08) 0%, transparent 60%),
                 linear-gradient(rgba(36, 53, 82, 0.2) 1px, transparent 1px),
@@ -482,6 +484,9 @@
             cursor: pointer;
             user-select: none;
             touch-action: none;
+            min-width: 0;
+            width: 100%;
+            box-sizing: border-box;
         }
         .pictogram-tile:hover {
             background: rgba(30, 41, 59, 0.8);
@@ -2070,10 +2075,149 @@
                 grid-template-columns: repeat(2, 1fr) !important;
                 gap: 6px !important;
             }
+            /* Pictogram Grid & Tiles Mobile */
             .pictogram-grid {
-                grid-template-columns: repeat(4, 1fr) !important;
-                gap: 5px !important;
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 4px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
             }
+            .pictogram-tile {
+                min-width: 0 !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                padding: 4px 2px !important;
+                gap: 2px !important;
+            }
+            .pictogram-tile-icon {
+                width: 30px !important;
+                height: 30px !important;
+            }
+            .pictogram-tile-name {
+                font-size: 7.5px !important;
+                line-height: 1.1 !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                white-space: nowrap !important;
+                padding: 0 1px !important;
+            }
+
+            /* Station Card & Slots Mobile */
+            .station-card {
+                padding: 8px 10px !important;
+                gap: 6px !important;
+            }
+            .station-header {
+                padding-bottom: 6px !important;
+                gap: 8px !important;
+            }
+            .station-icon {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 0.95rem !important;
+            }
+            .station-title {
+                font-size: 12px !important;
+            }
+            .station-alias {
+                font-size: 9px !important;
+            }
+            .btn-station-fds {
+                padding: 4px 7px !important;
+                font-size: 10px !important;
+            }
+            .station-prompt {
+                font-size: 10px !important;
+            }
+            .station-slots-row {
+                gap: 6px !important;
+                padding: 2px 0 !important;
+            }
+            .station-slot {
+                width: 60px !important;
+                height: 60px !important;
+                border-radius: var(--radius-sm) !important;
+            }
+            .slot-diamond-icon {
+                width: 32px !important;
+                height: 32px !important;
+            }
+            .slot-ghost-diamond {
+                width: 24px !important;
+                height: 24px !important;
+            }
+            .slot-ghost-diamond i {
+                font-size: 8px !important;
+            }
+            .slot-badge-name {
+                font-size: 7px !important;
+            }
+            .slot-hint-text {
+                font-size: 7.5px !important;
+            }
+
+            /* Status Bar & Lucho Quote Mobile */
+            .exam-status-bar {
+                padding-bottom: 4px !important;
+                margin-bottom: 4px !important;
+            }
+            .lucho-widget {
+                max-width: 170px !important;
+                padding: 2px 6px !important;
+                gap: 4px !important;
+            }
+            .lucho-avatar {
+                font-size: 0.85rem !important;
+            }
+            .lucho-quote {
+                font-size: 9px !important;
+            }
+
+            /* Briefing Dialog Mobile */
+            .briefing-dialog {
+                padding: 12px 12px !important;
+                gap: 8px !important;
+                max-height: 94dvh !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                touch-action: pan-y !important;
+            }
+            .briefing-title {
+                font-size: 0.92rem !important;
+            }
+            .briefing-subtitle {
+                font-size: 0.72rem !important;
+                line-height: 1.25 !important;
+            }
+            .briefing-steps {
+                gap: 5px !important;
+                padding: 6px 8px !important;
+            }
+            .briefing-step-row {
+                gap: 6px !important;
+                font-size: 0.7rem !important;
+            }
+            .briefing-step-row p {
+                margin: 1px 0 0 !important;
+                line-height: 1.25 !important;
+            }
+            .briefing-step-row strong {
+                font-size: 0.74rem !important;
+            }
+            .briefing-controls {
+                display: none !important;
+            }
+            .btn-start-briefing {
+                padding: 10px 14px !important;
+                font-size: 0.8rem !important;
+                flex-shrink: 0 !important;
+                position: sticky !important;
+                bottom: 0 !important;
+                z-index: 10 !important;
+            }
+
             .fds-nav-grid {
                 max-height: 280px !important;
                 overflow-y: auto !important;
@@ -3064,29 +3208,214 @@
         }
 
         function setupMoodleFullscreen(buttonId = 'btn-moodle-fullscreen') {
-            const btn = document.getElementById(buttonId);
-            if (!btn) return;
-            const updateIcon = () => {
-                const isFull = !!document.fullscreenElement;
-                const icon = btn.querySelector('i');
-                if (icon) {
-                    icon.className = isFull ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+            const btnHeader = document.getElementById(buttonId);
+            let btnFloatExit = document.getElementById('btn-floating-exit-fullscreen');
+            if (!btnFloatExit) {
+                btnFloatExit = document.createElement('button');
+                btnFloatExit.id = 'btn-floating-exit-fullscreen';
+                btnFloatExit.className = 'btn-floating-exit-fullscreen';
+                btnFloatExit.type = 'button';
+                btnFloatExit.title = 'Salir de Pantalla Completa';
+                btnFloatExit.innerHTML = '<i class="fa-solid fa-compress"></i> <span>SALIR PANTALLA COMPLETA</span>';
+                document.body.appendChild(btnFloatExit);
+            }
+
+            let toastInfo = document.getElementById('toast-fullscreen-info');
+            if (!toastInfo) {
+                toastInfo = document.createElement('div');
+                toastInfo.id = 'toast-fullscreen-info';
+                toastInfo.className = 'toast-fullscreen-info';
+                toastInfo.innerHTML = '<i class="fa-solid fa-expand"></i> <span id="toast-fullscreen-msg">Pantalla Completa Activa • Doble toque para salir</span>';
+                document.body.appendChild(toastInfo);
+            }
+
+            if (!document.getElementById('fullscreen-enhanced-styles')) {
+                const style = document.createElement('style');
+                style.id = 'fullscreen-enhanced-styles';
+                style.textContent = `
+                    .btn-floating-exit-fullscreen {
+                        display: none;
+                        position: fixed;
+                        top: 10px;
+                        right: 12px;
+                        z-index: 999999;
+                        background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+                        color: #ffffff;
+                        border: 2px solid #ffffff;
+                        border-radius: 9999px;
+                        padding: 7px 15px;
+                        font-size: 0.76rem;
+                        font-weight: 900;
+                        font-family: inherit;
+                        letter-spacing: 0.05em;
+                        cursor: pointer;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 16px rgba(239, 68, 68, 0.6);
+                        align-items: center;
+                        gap: 8px;
+                        transition: transform 0.2s ease, background 0.2s ease;
+                        user-select: none;
+                        -webkit-user-select: none;
+                    }
+                    .btn-floating-exit-fullscreen:hover,
+                    .btn-floating-exit-fullscreen:active {
+                        transform: scale(1.05);
+                        background: #991b1b;
+                    }
+                    :fullscreen .btn-floating-exit-fullscreen,
+                    :-webkit-full-screen .btn-floating-exit-fullscreen,
+                    body.is-fullscreen .btn-floating-exit-fullscreen {
+                        display: flex !important;
+                    }
+                    .toast-fullscreen-info {
+                        position: fixed;
+                        top: 56px;
+                        left: 50%;
+                        transform: translateX(-50%) translateY(-25px);
+                        background: rgba(15, 23, 42, 0.95);
+                        color: #FFC72C;
+                        border: 1.5px solid #FFC72C;
+                        border-radius: 9999px;
+                        padding: 6px 18px;
+                        font-size: 0.74rem;
+                        font-weight: 800;
+                        font-family: inherit;
+                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+                        z-index: 999999;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        pointer-events: none;
+                        opacity: 0;
+                        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                    }
+                    .toast-fullscreen-info.show {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(0);
+                    }
+                    :fullscreen .app-viewport, :-webkit-full-screen .app-viewport, body.is-fullscreen .app-viewport {
+                        max-width: 100vw !important; width: 100vw !important; height: 100vh !important; height: 100dvh !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            const toastMsg = document.getElementById('toast-fullscreen-msg');
+            const container = document.querySelector('.app-viewport') || document.documentElement;
+
+            let toastTimeout = null;
+            function showToast(msg) {
+                if (!toastInfo) return;
+                if (toastMsg) toastMsg.textContent = msg;
+                toastInfo.classList.add('show');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toastInfo.classList.remove('show');
+                }, 2200);
+            }
+
+            function isFullscreenActive() {
+                return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+            }
+
+            function enterFullscreen() {
+                const el = container;
+                const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+                if (req) {
+                    req.call(el).catch(() => {
+                        if (document.documentElement.requestFullscreen) {
+                            document.documentElement.requestFullscreen().catch(() => {});
+                        }
+                    });
                 }
-                btn.title = isFull ? 'Salir de Pantalla Completa' : 'Pantalla Completa (Moodle)';
-            };
-            btn.addEventListener('click', () => {
-                if (!document.fullscreenElement) {
-                    const docEl = document.documentElement;
-                    if (docEl.requestFullscreen) docEl.requestFullscreen().catch(() => {});
-                    else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
-                    else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+            }
+
+            function exitFullscreen() {
+                const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+                if (exit && isFullscreenActive()) {
+                    exit.call(document).catch(() => {});
+                }
+                document.body.classList.remove('is-fullscreen');
+                if (container) container.classList.remove('is-fullscreen');
+                if (btnFloatExit) btnFloatExit.style.display = 'none';
+                updateUI();
+            }
+
+            function toggleFullscreen() {
+                if (isFullscreenActive()) {
+                    exitFullscreen();
                 } else {
-                    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                    enterFullscreen();
                 }
+            }
+
+            function updateUI() {
+                const active = isFullscreenActive();
+                if (active) {
+                    document.body.classList.add('is-fullscreen');
+                    if (container) container.classList.add('is-fullscreen');
+                    if (btnFloatExit) btnFloatExit.style.display = 'flex';
+                    showToast('Pantalla Completa Activa • Doble toque para salir');
+                } else {
+                    document.body.classList.remove('is-fullscreen');
+                    if (container) container.classList.remove('is-fullscreen');
+                    if (btnFloatExit) btnFloatExit.style.display = 'none';
+                }
+                if (btnHeader) {
+                    const icon = btnHeader.querySelector('i');
+                    if (icon) icon.className = active ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                    btnHeader.title = active ? 'Salir de Pantalla Completa' : 'Pantalla Completa (Doble Toque)';
+                }
+            }
+
+            if (btnHeader) {
+                btnHeader.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleFullscreen();
+                });
+            }
+
+            if (btnFloatExit) {
+                btnFloatExit.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    exitFullscreen();
+                });
+            }
+
+            let lastTapTime = 0;
+            let lastTapX = 0;
+            let lastTapY = 0;
+
+            container.addEventListener('touchend', (e) => {
+                if (e.target.closest('button, .modal-dialog, .chem-card, .patch-card, .sga-pictogram-tile, .hazard-bucket, .station-slot, a, input, select')) {
+                    return;
+                }
+                const now = Date.now();
+                const touch = e.changedTouches[0];
+                if (!touch) return;
+                const timeDiff = now - lastTapTime;
+                const dist = Math.hypot(touch.clientX - lastTapX, touch.clientY - lastTapY);
+
+                if (timeDiff > 50 && timeDiff < 360 && dist < 35) {
+                    e.preventDefault();
+                    toggleFullscreen();
+                    lastTapTime = 0;
+                } else {
+                    lastTapTime = now;
+                    lastTapX = touch.clientX;
+                    lastTapY = touch.clientY;
+                }
+            }, { passive: false });
+
+            container.addEventListener('dblclick', (e) => {
+                if (e.target.closest('button, .modal-dialog, .chem-card, .patch-card, .sga-pictogram-tile, .hazard-bucket, .station-slot, a, input, select')) {
+                    return;
+                }
+                toggleFullscreen();
             });
-            document.addEventListener('fullscreenchange', updateIcon);
-            document.addEventListener('webkitfullscreenchange', updateIcon);
+
+            ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+                document.addEventListener(evt, updateUI);
+            });
         }
 
         /**

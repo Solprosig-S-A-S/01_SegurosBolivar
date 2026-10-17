@@ -781,3 +781,96 @@ gba(148, 163, 184, 0.18)).
   6. **Validación Automatizada**:
      - Script E2E en Edge CDP ejecutó la resolución de los 10 slots a través de los 3 compuestos, verificó el rechazo de etiquetas incorrectas, el avance entre sustancias y la transición a la Subfase 3B (100% de éxito).
 
+## Optimización Integral de Ergonomía Móvil (Android 360x740 / 375x667) en Juego 4 y Juego 5
+- **Causa Raíz de Distorsión y Fallas Detectadas**:
+  1. **Juego 4 (Taller Seguro - Avatar y Sombra)**:
+     - El avatar estaba construido mediante primitivas CSS `div` anidadas (`avatar-head`, `avatar-torso`, `avatar-legs`). Bajo la matriz 3D con `perspective: 1200px` y el factor de escala `scale(0.58)` en móviles Android, el subpixel rendering generaba estiramiento asimétrico y deformación grotesca.
+     - `.avatar-shadow` era hijo del avatar con `rotateX(-60deg)`, lo que provocaba que la elipse de sombra flotara 60° levantada en el aire detrás del personaje en lugar de descansar sobre el suelo.
+     - *Solución*: Se rediseñó la arquitectura desacoplando la sombra del billboard (`.avatar-floor-shadow` plano a Z=0 con `translateZ(0)` sobre la baldosa) y se implementó un sprite vectorial 2.5D SVG de alta definición (Operario Técnico con casco industrial, overol verde Bolívar, franjas reflectivas, guantes químicos, monogafas, respirador y botas dieléctricas), sincronizado tanto en Zona 1 como en Zona 2 con soporte completo de GSAP y `updateAvatarVisualEPP()`.
+  2. **Juego 5 (Brigada de Emergencia - Manos Ocultas, Botones y Recorte)**:
+     - En `@media (max-width: 768px)`, la regla `.fps-hands-layer { display: none !important; }` ocultaba deliberadamente las manos en teléfonos móviles.
+     - `.hud-bot-dialog` estaba anclado a `bottom: 8px; left: 50%; max-width: 360px`, superponiéndose directamente sobre la hilera inferior del D-Pad táctil y el botón de acción.
+     - El D-Pad táctil (`bottom: 8px; left: 8px`) tenía la fila inferior cortada por el borde físico de la pantalla.
+     - La perspectiva 3D (`perspective: 750px` con `translateZ(750px)` y `perspective-origin: 50% 50%` con `pitch: -12deg`) provocaba un campo de visión horizontal extremadamente estrecho (teleobjetivo de 27°) y forzaba el horizonte en la mitad exacta vertical, dejando el 50% inferior como suelo oscuro vacío y el 50% superior con objetos hiper-aumentados ("recortado a la mitad").
+     - *Solución*:
+       1. Se eliminó `display: none !important;` y se redimensionaron las manos a escala móvil (`height: 155px; width: 76px;`) con mangas verdes y guantes visibles.
+       2. Se reubicó `.hud-bot-dialog` en la zona superior (`top: 80px; left: 50%; transform: translateX(-50%)`), dejando la zona inferior 100% despejada para controles.
+       3. Se reubicó el D-Pad a `bottom: 18px; left: 14px` (botones 38x38px sin recortes) y el botón de acción a `bottom: 22px; right: 14px` (62x62px).
+       4. Se reubicaron las tarjetas de vitalidad/drenaje sobre el D-Pad (`bottom: 160px; left: 14px`).
+       5. Se calibró la cámara 3D en móviles con `perspective: 440px`, `perspective-origin: 50% 43%`, `translateZ(440px)` y `pitch: -4deg` adaptativo en JavaScript, abriendo el campo visual a 45° a nivel de ojos.
+- **Validación Automatizada**:
+  - Capturas CDP de pantalla en Chrome/Edge headless sobre viewports estándar de Android (360x740 y 375x667) comprobaron 0% solapamientos, excelente nitidez de sprites y ergonomía táctil en los 5 juegos.
+
+## Optimización y Calibración Crítica de Jugabilidad Móvil en Juego 5 (`juego5_emergencias.html`)
+- **Diagnóstico de Fricción y Dificultad Reportada**:
+  1. **Daño Letal Instantáneo a 60Hz (Loop de Física)**: `checkProximity()` invocaba `damageHealth()` en cada fotograma dentro de `requestAnimationFrame`. Al dar un par de pasos hacia el centro del derrame, la vitalidad bajaba del 100% al 0% en apenas 1.5 segundos sin dar oportunidad al jugador de retroceder ni advertir el peligro.
+  2. **Desorientación Inicial de Cámara**: El jugador reaparecía con `yaw = 0°` mirando al Norte contra tuberías industriales genéricas, mientras que los objetivos iniciales de Misión 1 (Caseta EPP) y Misión 2 (Caseta Traje Nomex) estaban ubicados al Oeste (`x = -550, z = 0`), forzando rotaciones a ciegas.
+  3. **Ausencia de Indicador Táctico de Rumbo**: En pantallas móviles verticales (pantallas estrechas), no había brújula ni guía de orientación hacia el objetivo activo, lo que dificultaba localizar las estaciones en el entorno 3D.
+  4. **Tolerancia de Interacción Rígida**: Para interactuar, se exigía un ángulo de mira estricto (`dot >= 0.35`) y proximidad exacta (`dist <= 260`), lo que en pantallas táctiles provocaba que el jugador estuviera frente a la estación pero el botón no respondiera si la cámara no estaba milimétricamente centrada.
+  5. **Controles Táctiles Pequeños**: Los botones del D-pad y el botón de acción carecían de suficiente área táctil para pulgares en movimiento.
+- **Solución Implementada**:
+  1. **Cooldown de Daño Térmico y Vapores**: Se implementó `this.lastDamageTime` con una cadencia mínima de 1500ms entre eventos de daño, calibrando los radios de peligro (`distToCenter < 180` en M1 y `< 120` en M2), emitiendo sonido de alarma y permitiendo reaccionar a tiempo.
+  2. **Orientación Inicial Táctica**: Spawn inicial calibrado en `yaw = 270°` apuntando directamente al Oeste hacia la Caseta EPP / Nomex en ambas misiones.
+  3. **Banner Táctico de Objetivo con Brújula Dinámica (`#hud-objective-guide`)**: Barra flotante bajo el HUD con flecha direccional reactiva (`▲`, `◀`, `▶`, `▼`) calculada en tiempo real según el ángulo relativo hacia el objetivo activo. Al tocar la barra, la cámara se alinea automáticamente hacia la estación y traslada al jugador a rango operativo.
+  4. **Botón Central Auto-Aim en el D-Pad (`#btn-auto-aim`)**: Se añadió un botón con icono de mira telescópica en el centro del D-Pad que orienta de inmediato la cámara hacia el objetivo de la misión activa.
+  5. **D-Pad Ampliado y Botón de Acción Ergonómico de 72px**: D-Pad aumentado a 44x44px y botón de interacción circular dorado de 72x72px con respuesta háptica (`navigator.vibrate(40)`).
+  6. **Tolerancia Inteligente de Proximidad y Fallback**: `checkProximity()` otorga tolerancia de ángulo (`dot >= -0.2` o distancia <= 320px) para la estación objetivo activa, y `triggerActiveInteraction()` recurre a la estación objetivo si el jugador está en rango aunque no esté centrada.
+  7. **Interacción por Toque Directo en Pantalla 3D**: Toque directo sobre el viewport 3D con tolerancia de jitter táctil de 16px para ejecutar la interacción cómodamente.
+  8. **Calibración de Extinción de Fuego (Misión 2)**: 25% de reducción por descarga con extintor (4 descargas efectivas completan la extinción).
+
+## Sistema Universal de Pantalla Completa por Doble Toque y Botón Flotante de Salida (Suite Completa)
+- **Diagnóstico y Necesidad de Usuario**:
+  - En entornos móviles o LMS embebidos (Moodle), las barras del navegador, los márgenes y las interfaces externas comprimían el área de juego, restando inmersión y dificultando el disfrute táctil.
+  - El usuario requirió: (1) Activar pantalla completa al dar doble toque en cualquier zona del juego; (2) Contar con un botón accesible y visible para salir de pantalla completa en cualquier momento.
+- **Implementación Técnica Universal (`juego1_sga.html` a `juego5_emergencias.html`)**:
+  - **Doble Toque Táctil y Doble Clic Desktop**:
+    - Detección precisa de cadencia de doble toque (`timeDiff > 50 && timeDiff < 360 && dist < 35`), descartando falsos positivos por arrastre o pulsación accidental.
+    - Soporte multi-vendor de Fullscreen API (`requestFullscreen`, `webkitRequestFullscreen`, `mozRequestFullScreen`, `msRequestFullscreen`).
+    - Fallback elegante con la clase CSS `.is-fullscreen` cuando el navegador restringe la API nativa de pantalla completa en iframes sin atributo `allowfullscreen`.
+  - **Botón Flotante de Salida (`#btn-floating-exit-fullscreen`)**:
+    - Cápsula flotante roja/blanca fijada en la esquina superior derecha (`top: 14px; right: 14px; z-index: 10000;`).
+    - Visible exclusivamente en modo pantalla completa (`:fullscreen`, `:-webkit-full-screen`, `.is-fullscreen`).
+    - Permite salir instantáneamente con un solo toque o clic.
+  - **Notificación Toast de Confirmación (`#toast-fullscreen-info`)**:
+    - Toast sutil de confirmación ("Pantalla Completa Activa • Doble toque para salir") que aparece durante 2.8 segundos y se desvanece suavemente.
+  - **Sincronización con Botón de Cabecera Moodle**:
+    - Conexión reactiva con `#btn-moodle-fullscreen` manteniendo el estado y los iconos de pantalla completa coherentes en toda la aplicación.
+
+## Rediseño Visual, Ergonomía de Cámara y Despeje de Pantalla en Juego 5 (`juego5_emergencias.html`)
+- **Calibración de Perspectiva y Erradicación de Deformación Geométrica**:
+  - *Causa Raíz*: `perspective: 440px` con `translateZ(440px)` colocaba al jugador peligrosamente cerca del plano de singularidad de proyección ($d / (d - z)$), provocando que al aproximarse a las estaciones de pared los elementos se estiraran y distorsionaran grotescamente hasta 8x.
+  - *Solución*: Calibración a `perspective: 540px` y `perspective-origin: 50% 46%` en CSS, sincronizando `pDist = 540` en `updateCamera()`. Esto produce un campo de visión natural (54° FOV), líneas arquitectónicas rectas y confort espacial al desplazarse.
+- **Ambientación Arquitectónica e Inmersión Visual**:
+  - Sustitución de paredes lisas oscuras por textura de paneles industriales de acero remachado, zócalos perimetrales con franjas de peligro reflectivas (`#FFC72C` / `#000`), lámparas de emergencia estroboscópicas superiores, focos de iluminación ambiental direccionados sobre cada estación y suelo epóxico brillante con demarcaciones de seguridad delimitadas.
+- **Despeje Radical del HUD Móvil**:
+  - Ocultamiento de la retícula invasiva `.fps-crosshair-prompt` en pantallas móviles (`@media (max-width: 768px)`), ya que el botón de acción dorado de 72px ya indica el verbo interactivo ("INTERACTUAR", "CERRAR", "LAVAR"), despejando el 100% del centro del escenario 3D.
+  - Temporizador de auto-colapso de 5 segundos y toque para descartar en el diálogo del Bolívar Safety Bot (`.hud-bot-dialog`).
+- **Botones Sticky en Modal de Briefing Inicial**:
+  - Contenedor `.briefing-actions-sticky` que ancla los botones de "MISIÓN 1: DERRAME (120S)" y "MISIÓN 2: INCENDIO (90S)" en la base del modal, garantizando visibilidad inmediata en cualquier resolución móvil sin requerir desplazamiento.
+- **Rediseño Ergonómico de Manos FPV**:
+  - Reemplazo de manos simples por mangas verdes Bolívar con ribetes reflectivos amarillos (`#FFC72C`), guantes táctiles y posicionamiento inferior optimizado (`bottom: -22px`) para no invadir el D-pad ni el botón de acción.
+
+## Sistema de Autopilot Cinemático "1-Click Tactical Dispatch" en Juego 5 (`juego5_emergencias.html`)
+- **Diagnóstico y Motivación de Diseño**:
+  - *Falla Reportada en Móvil*: El botón virtual izquierdo del D-Pad ("◀" / Strafe Left) parecía inoperante cuando el operador se encontraba con `yaw = 270°` cerca de la pared oeste, debido a la restricción física de colisión contra `posX = -520px`.
+  - *Fricción de Control FPS Táctil*: Operar simultáneamente un D-Pad de 7 direcciones y un botón de acción separado en pantallas táctiles estrechas generaba desorientación espacial, colisiones continuas contra muros de tuberías y riesgo constante de pisar ácido o radiación de fuego mientras se buscaba alinear milimétricamente la cámara.
+- **Solución: Mecánica de Despacho Táctico Semiatónomo ("1-Click Dispatch: Moverse y Tomar")**:
+  - En lugar de forzar al usuario a batallar con controles de cruceta virtual tipo consola de los 90s, se implementó un sistema táctico de alto nivel donde el jugador actúa como Coordinador de Brigada con órdenes directas.
+  - **Botón Central Táctico Prominente (`#btn-tactical-dispatch`)**:
+    - Ubicado centrado en la base de la pantalla (`bottom: 18px; left: 50%; transform: translateX(-50%)`).
+    - Presenta un anillo de pulso dorado (`.dispatch-pulse-ring`), icono visual reactivo (`.dispatch-icon-box`), badge de estado ("ORDENAR", "DESCARGAR", "COMPLETADO") y el título del paso activo (ej. `"1. EQUIPAR EPP (OESTE)"`, `"2. CERRAR VÁLVULA (NORTE)"`).
+  - **Coordenadas de Postura Calibradas (`STANCE_COORDINATES`)**:
+    - Mapeo exacto de coordenadas $(X, Z)$ y ángulo de mira $(Yaw)$ para las 11 estaciones operativas (`epp`, `valve`, `eyewash`, `kit`, `spill`, `respel`, `fire_gear`, `fire_alarm`, `extinguisher`, `fire`, `fire_blanket`).
+  - **Interpolación Cinemática Suave (`dispatchToStation`)**:
+    - Traslado fluido en 1100ms mediante curva cúbica de aceleración/desaceleración (`easeInOutCubic`).
+    - **Ángulo Más Corto de Rotación**: Cálculo matemático `((targetYaw - startYaw) % 360 + 540) % 360 - 180` que garantiza que el giro de cámara siempre tome la trayectoria angular más corta (por ejemplo, girar 10° en lugar de 350° al cruzar el eje norte).
+    - **Inmersión Auditiva y Visual**: Emisión de pasos de marcha (`playFootstepSound()`) a cadencia de 180ms y balanceo vertical de cabeza (`head bobbing` senoidal).
+    - **Ejecución Automática al Arribar**: Al llegar a la postura, el operador encaja milimétricamente frente a la estación y ejecuta de inmediato la maniobra ("tomar", "cerrar válvula", "lavar ojos", "descargar extintor") invocando `triggerActiveInteraction()`.
+  - **Disparo Multi-canal Ergonomico**:
+    - Tocar el botón central táctico `#btn-tactical-dispatch`.
+    - Tocar directamente cualquier estación 3D o hacer clic sobre las píldoras de pasos del HUD (`updateMissionStepsBar`).
+    - Teclado en PC: Teclas `Space`, `Enter` o `KeyE`.
+  - **Despeje Integral de Pantalla**:
+    - Erradicación total del D-Pad virtual de 7 botones y del botón flotante de acción.
+    - Reubicación de las estadísticas de vitalidad y drenaje a `bottom: 92px`, eliminando cualquier solapamiento en móviles.
+

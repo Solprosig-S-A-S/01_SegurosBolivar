@@ -79,9 +79,15 @@
                 linear-gradient(rgba(30, 41, 59, 0.25) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(30, 41, 59, 0.25) 1px, transparent 1px);
             background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
-            padding: 8px;
+            padding: 0;
+            margin: 0;
             user-select: none;
             -webkit-user-select: none;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
         }
 
         html, body {
@@ -91,18 +97,21 @@
             touch-action: manipulation;
         }
 
-        /* Contenedor Principal (Viewport del Taller Isométrico) */
+        /* Contenedor Principal (Viewport del Taller Isométrico Mobile-First) */
         .app-viewport {
             width: 100%;
-            max-width: 1040px;
-            background: rgba(15, 23, 42, 0.96);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+            max-width: 500px;
+            min-height: 100dvh;
+            background: rgba(15, 23, 42, 0.98);
+            border: none;
+            border-radius: 0;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(12px);
             display: flex;
             flex-direction: column;
             position: relative;
+            margin: 0 auto;
+            padding-bottom: env(safe-area-inset-bottom, 8px);
             overflow: hidden;
         }
 
@@ -408,14 +417,16 @@
             --rot-z: -45deg;
             --counter-rot-z: 45deg;
             --counter-rot-x: -60deg;
-            --scene-scale: 1;
+            --pan-x: 0px;
+            --pan-y: 15px;
+            --scene-scale: 0.65;
         }
 
         .iso-viewport {
             position: relative;
             width: 100%;
-            height: 640px;
-            min-height: 580px;
+            height: 350px;
+            min-height: 320px;
             overflow: hidden;
             background: #090e1a;
             perspective: 1200px;
@@ -1218,8 +1229,8 @@
         .prop-locker-bank {
             left: 60px;
             top: 50px;
-            width: 100px;
-            height: 92px;
+            width: 104px;
+            height: 68px;
             display: flex;
             gap: 3px;
         }
@@ -1233,7 +1244,7 @@
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7);
             display: flex;
             flex-direction: column;
-            padding: 4px 3px;
+            padding: 3px 2px;
             position: relative;
             box-sizing: border-box;
         }
@@ -1247,7 +1258,7 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
-            margin: 4px 0;
+            margin: 2px 0;
         }
 
         .locker-louver {
@@ -1258,11 +1269,11 @@
 
         .locker-handle {
             width: 4px;
-            height: 10px;
+            height: 8px;
             background: var(--amarillo-bolivar);
             border-radius: 1px;
             position: absolute;
-            right: 4px;
+            right: 3px;
             top: 50%;
             transform: translateY(-50%);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
@@ -1273,7 +1284,7 @@
             left: 350px;
             top: 45px;
             width: 78px;
-            height: 102px;
+            height: 76px;
         }
 
         .door-frame {
@@ -1314,8 +1325,8 @@
         .door-leaf-right { right: 0; }
 
         .door-porthole {
-            width: 14px;
-            height: 24px;
+            width: 12px;
+            height: 18px;
             background: rgba(56, 189, 248, 0.25);
             border: 1.5px solid #64748b;
             border-radius: 6px;
@@ -1339,12 +1350,12 @@
 
         .door-sign {
             position: absolute;
-            bottom: 4px;
-            font-size: 0.45rem;
+            bottom: 3px;
+            font-size: 0.42rem;
             font-weight: 900;
             color: #fff;
             background: rgba(15, 23, 42, 0.95);
-            padding: 1px 5px;
+            padding: 1px 4px;
             border-radius: 3px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             z-index: 5;
@@ -1358,10 +1369,10 @@
 
         /* Estación 1: Banco Compacto de Desengrase de Piezas */
         .prop-workbench {
-            left: 52px;
-            top: 56px;
-            width: 96px;
-            height: 86px;
+            left: 50px;
+            top: 60px;
+            width: 104px;
+            height: 56px;
         }
 
         .bench-top {
@@ -1376,22 +1387,22 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 6px 4px;
+            padding: 4px 6px;
             box-sizing: border-box;
         }
 
         .bench-part {
-            width: 44px;
-            height: 28px;
+            width: 36px;
+            height: 22px;
             background: #64748b;
-            border: 2px solid #0f172a;
+            border: 1.5px solid #0f172a;
             border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.15rem;
+            font-size: 1rem;
             color: #0f172a;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
             transition: all 0.4s ease;
         }
 
@@ -1403,7 +1414,7 @@
         }
 
         .bench-label {
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             font-weight: 900;
             color: #f1f5f9;
             letter-spacing: 0.05em;
@@ -1412,10 +1423,10 @@
 
         .bench-vice {
             position: absolute;
-            left: -6px;
-            top: 14px;
-            width: 14px;
-            height: 18px;
+            left: -5px;
+            top: 8px;
+            width: 12px;
+            height: 14px;
             background: #475569;
             border: 1.5px solid #94a3b8;
             border-radius: 2px;
@@ -1424,10 +1435,10 @@
 
         .bench-spray-bottle {
             position: absolute;
-            right: 6px;
-            top: 8px;
-            width: 12px;
-            height: 20px;
+            right: 5px;
+            top: 5px;
+            width: 10px;
+            height: 16px;
             background: #0284c7;
             border: 1.5px solid #38bdf8;
             border-radius: 2px 2px 3px 3px;
@@ -1436,18 +1447,18 @@
         .bench-spray-bottle::before {
             content: "🔥";
             position: absolute;
-            top: 2px;
+            top: 1px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.45rem;
+            font-size: 0.4rem;
         }
 
         /* Estación 2: Bloque de Motor con Bandeja Antiderrame */
         .prop-engine {
-            left: 348px;
-            top: 52px;
-            width: 96px;
-            height: 90px;
+            left: 346px;
+            top: 56px;
+            width: 102px;
+            height: 60px;
         }
 
         .engine-block {
@@ -1462,12 +1473,12 @@
             align-items: center;
             justify-content: space-between;
             position: relative;
-            padding: 5px 4px;
+            padding: 4px 5px;
             box-sizing: border-box;
         }
 
         .engine-title {
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             font-weight: 900;
             color: #ffffff;
             letter-spacing: 0.04em;
@@ -1478,24 +1489,24 @@
         }
 
         .engine-filter-spot {
-            width: 28px;
-            height: 28px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             background: #ef4444;
             border: 2px solid #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             color: #ffffff;
-            box-shadow: 0 0 12px rgba(239, 68, 68, 0.95);
-            margin: 2px 0;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.95);
+            margin: 1px 0;
             transition: all 0.3s ease;
         }
 
         .engine-tray-base {
             width: 100%;
-            height: 16px;
+            height: 14px;
             background: #0f172a;
             border: 1.5px solid var(--amarillo-bolivar);
             border-radius: 3px;
@@ -1507,7 +1518,7 @@
 
         .engine-tray-base::after {
             content: "ANTIDERRAME";
-            font-size: 0.52rem;
+            font-size: 0.48rem;
             font-weight: 900;
             color: var(--amarillo-bolivar);
             letter-spacing: 0.05em;
@@ -1530,11 +1541,11 @@
             left: 164px;
             top: 310px;
             width: 172px;
-            height: 92px;
+            height: 64px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 5px 6px;
+            padding: 4px 6px;
             background: #0b1120;
             border: 2px solid var(--amarillo-bolivar);
             border-radius: 6px;
@@ -1547,10 +1558,10 @@
             background: #0f172a;
             border: 1px solid var(--amarillo-bolivar);
             color: var(--amarillo-bolivar);
-            font-size: 0.62rem;
+            font-size: 0.56rem;
             font-weight: 900;
             letter-spacing: 0.05em;
-            padding: 2px 4px;
+            padding: 1px 4px;
             border-radius: 3px;
             text-align: center;
             white-space: nowrap;
@@ -1561,22 +1572,22 @@
             display: flex;
             align-items: stretch;
             justify-content: space-between;
-            gap: 6px;
+            gap: 4px;
             width: 100%;
-            margin: 3px 0;
+            margin: 2px 0;
             box-sizing: border-box;
         }
 
         .respel-bin {
             flex: 1;
-            height: 48px;
+            height: 34px;
             border-radius: 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 3px;
-            padding: 4px 2px;
+            gap: 1px;
+            padding: 2px;
             text-align: center;
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
             position: relative;
@@ -1606,7 +1617,7 @@
         }
 
         .bin-label {
-            font-size: 0.58rem;
+            font-size: 0.50rem;
             font-weight: 900;
             color: #ffffff;
             text-transform: uppercase;
@@ -1616,7 +1627,7 @@
         }
 
         .bin-icon {
-            font-size: 1.05rem;
+            font-size: 0.82rem;
             color: #ffffff;
             filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.7));
         }
@@ -1624,7 +1635,7 @@
         /* Estiba Antiderrame Continua (Base Colectora SST) */
         .respel-station-pallet {
             width: 100%;
-            height: 8px;
+            height: 6px;
             background: #eab308;
             border: 1px solid #000;
             border-radius: 2px;
@@ -1647,128 +1658,48 @@
             position: absolute;
             left: 250px;
             top: 250px;
-            width: 56px;
-            height: 96px;
-            margin-left: -28px; /* Calibración exacta: pies del avatar centrados en (targetX, targetY) */
-            margin-top: -96px;  /* Anclaje Z=0 rasante en el centro de la baldosa */
+            width: 60px;
+            height: 74px;
+            margin-left: -30px; /* Calibración exacta: pies del avatar centrados en (targetX, targetY) */
+            margin-top: -74px;  /* Anclaje Z=0 rasante en el centro de la baldosa */
             transform-style: preserve-3d;
-            transform: rotateZ(var(--counter-rot-z, 45deg)) rotateX(var(--counter-rot-x, -60deg));
-            transform-origin: 50% 100%; /* Base en Z=0 para apoyar los pies en el suelo */
             z-index: 50;
             pointer-events: none;
-            transition: filter 0.25s ease;
         }
 
-        .avatar-shadow {
+        /* Sombra hiperrealista en el piso (Z=0 en el plano de la baldosa, NO levantada en el aire) */
+        .avatar-floor-shadow {
             position: absolute;
-            bottom: 0;
+            bottom: -6px;
             left: 50%;
-            transform: translateX(-50%);
-            width: 44px;
-            height: 12px;
-            background: rgba(0, 0, 0, 0.65);
+            transform: translateX(-50%) translateZ(0);
+            width: 48px;
+            height: 18px;
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 55%, transparent 75%);
             border-radius: 50%;
-            filter: blur(2px);
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .avatar-body {
-            position: absolute;
-            bottom: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 46px;
-            height: 86px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .avatar-head {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #fde047;
-            border: 2px solid #ca8a04;
-            position: relative;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-        }
-
-        .epp-layer-goggles {
-            position: absolute;
-            top: 7px;
-            left: 2px;
-            width: 18px;
-            height: 6px;
-            background: #38bdf8;
-            border: 1px solid #0284c7;
-            border-radius: 3px;
-            opacity: 0;
-            box-shadow: 0 0 6px #38bdf8;
-            transition: opacity 0.3s ease;
-        }
-
-        .epp-layer-respirator {
+        /* Billboard 2.5D vertical que orienta la ilustración del operador directamente hacia la cámara */
+        .avatar-billboard {
             position: absolute;
             bottom: 0;
-            left: 3px;
-            width: 16px;
-            height: 10px;
-            background: #1e293b;
-            border: 1.5px solid #64748b;
-            border-radius: 2px 2px 6px 6px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            left: 0;
+            width: 60px;
+            height: 74px;
+            transform-style: preserve-3d;
+            transform: rotateZ(var(--counter-rot-z, 45deg)) rotateX(var(--counter-rot-x, -60deg));
+            transform-origin: 50% 100%;
+            will-change: transform;
+            z-index: 2;
         }
 
-        .avatar-torso {
-            width: 32px;
-            height: 38px;
-            background: var(--verde-bolivar);
-            border: 2px solid #064e3b;
-            border-radius: 6px;
-            margin-top: -2px;
-            position: relative;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-        }
-
-        .epp-layer-gloves-l, .epp-layer-gloves-r {
-            position: absolute;
-            bottom: -4px;
-            width: 8px;
-            height: 10px;
-            background: #0284c7;
-            border-radius: 3px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .epp-layer-gloves-l { left: -6px; }
-        .epp-layer-gloves-r { right: -6px; }
-
-        .avatar-legs {
-            display: flex;
-            gap: 6px;
-            margin-top: -2px;
-        }
-
-        .avatar-leg {
-            width: 10px;
-            height: 24px;
-            background: #0f172a;
-            border-radius: 2px;
-            position: relative;
-        }
-
-        .epp-layer-boots {
-            position: absolute;
-            bottom: 0;
-            left: -2px;
-            width: 14px;
-            height: 10px;
-            background: #78350f;
-            border: 1px solid #b45309;
-            border-radius: 3px;
-            opacity: 0.4;
-            transition: opacity 0.3s ease;
+        .avatar-operator-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            overflow: visible;
         }
 
         .tap-destination-beacon {
@@ -2484,6 +2415,30 @@
                 padding: 3px 6px;
                 font-size: 0.72rem;
             }
+            .briefing-dialog {
+                padding: 16px 14px;
+                max-height: 88vh;
+                gap: 10px;
+            }
+            .briefing-title {
+                font-size: 1rem;
+            }
+            .briefing-subtitle {
+                font-size: 0.76rem;
+            }
+            .briefing-step-row {
+                font-size: 0.74rem;
+                gap: 8px;
+            }
+            .briefing-step-num {
+                min-width: 20px;
+                height: 20px;
+                font-size: 0.68rem;
+            }
+            .btn-start-briefing {
+                padding: 10px 14px;
+                font-size: 0.82rem;
+            }
         }
 
         /* Situational Mission Briefing (Star Wars Datapad clean style) */
@@ -2806,20 +2761,111 @@
 
                     <!-- AVATAR EN VESTIDOR -->
                     <div class="iso-avatar" id="avatar-vestidor">
-                        <div class="avatar-shadow"></div>
-                        <div class="avatar-body" id="avatar-body-vestidor">
-                            <div class="avatar-head">
-                                <div class="epp-layer-goggles" id="avatar-goggles-vestidor"></div>
-                                <div class="epp-layer-respirator" id="avatar-respirator-vestidor"></div>
-                            </div>
-                            <div class="avatar-torso">
-                                <div class="epp-layer-gloves-l" id="avatar-glove-l-vestidor"></div>
-                                <div class="epp-layer-gloves-r" id="avatar-glove-r-vestidor"></div>
-                            </div>
-                            <div class="avatar-legs">
-                                <div class="avatar-leg"><div class="epp-layer-boots" id="avatar-boot-l-vestidor"></div></div>
-                                <div class="avatar-leg"><div class="epp-layer-boots" id="avatar-boot-r-vestidor"></div></div>
-                            </div>
+                        <div class="avatar-floor-shadow"></div>
+                        <div class="avatar-billboard" id="avatar-body-vestidor">
+                            <svg class="avatar-operator-svg" viewBox="0 0 56 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="suitGrad-vestidor" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#008244"/>
+                                        <stop offset="100%" stop-color="#00552b"/>
+                                    </linearGradient>
+                                    <linearGradient id="helmetGrad-vestidor" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#FFE81F"/>
+                                        <stop offset="60%" stop-color="#FFC72C"/>
+                                        <stop offset="100%" stop-color="#D97706"/>
+                                    </linearGradient>
+                                    <linearGradient id="skinGrad-vestidor" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#fed7aa"/>
+                                        <stop offset="100%" stop-color="#fba862"/>
+                                    </linearGradient>
+                                    <filter id="avatarDropShadow-vestidor" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feDropShadow dx="0" dy="2" stdDeviation="1.5" flood-color="#000" flood-opacity="0.35"/>
+                                    </filter>
+                                </defs>
+                                <g filter="url(#avatarDropShadow-vestidor)">
+                                    <!-- Piernas / Pantalón de Trabajo -->
+                                    <path d="M 20 54 L 18 78 L 26 78 L 27 55 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+                                    <path d="M 29 55 L 30 78 L 38 78 L 36 54 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+                                    <rect x="18" y="62" width="8" height="6" rx="2" fill="#334155"/>
+                                    <rect x="30" y="62" width="8" height="6" rx="2" fill="#334155"/>
+
+                                    <!-- Calzado Base (Civil) -->
+                                    <path d="M 16 78 L 26 78 L 26 86 C 26 87 23 88 19 88 L 15 88 C 14 88 14 85 15 82 Z" fill="#475569" stroke="#1e293b" stroke-width="1"/>
+                                    <path d="M 30 78 L 40 78 L 41 82 C 42 85 42 88 41 88 L 37 88 C 33 88 30 87 30 86 Z" fill="#475569" stroke="#1e293b" stroke-width="1"/>
+
+                                    <!-- CAPA EPP: BOTAS DIELÉCTRICAS REFORZADAS -->
+                                    <g id="avatar-boot-l-vestidor" class="epp-svg-layer" style="opacity: 0.4; transition: opacity 0.3s ease;">
+                                        <path d="M 15 77 L 27 77 L 27 86 C 27 88.5 24 90 19 90 L 14 90 C 12.5 90 12.5 85 14 81 Z" fill="#78350f" stroke="#b45309" stroke-width="1.5"/>
+                                        <path d="M 13 86 Q 16 85 19 86 L 19 90 L 13 90 Z" fill="#1e293b"/>
+                                        <line x1="13" y1="90" x2="27" y2="90" stroke="#000" stroke-width="2"/>
+                                    </g>
+                                    <g id="avatar-boot-r-vestidor" class="epp-svg-layer" style="opacity: 0.4; transition: opacity 0.3s ease;">
+                                        <path d="M 29 77 L 41 77 L 42 81 C 43.5 85 43.5 90 42 90 L 37 90 C 32 90 29 88.5 29 86 Z" fill="#78350f" stroke="#b45309" stroke-width="1.5"/>
+                                        <path d="M 37 86 Q 40 85 43 86 L 43 90 L 37 90 Z" fill="#1e293b"/>
+                                        <line x1="29" y1="90" x2="43" y2="90" stroke="#000" stroke-width="2"/>
+                                    </g>
+
+                                    <!-- TORSO & OVEROL DE SEGURIDAD BOLÍVAR -->
+                                    <path d="M 16 28 L 40 28 L 38 56 L 18 56 Z" fill="url(#suitGrad-vestidor)" stroke="#052e16" stroke-width="1.5"/>
+                                    <path d="M 17 40 L 39 40 L 39 44 L 17 44 Z" fill="#FFC72C"/>
+                                    <path d="M 17 41.5 L 39 41.5 L 39 43 L 17 43 Z" fill="#f8fafc"/>
+                                    <line x1="22" y1="28" x2="22" y2="56" stroke="#FFC72C" stroke-width="3"/>
+                                    <line x1="22" y1="28" x2="22" y2="56" stroke="#f8fafc" stroke-width="1.2"/>
+                                    <line x1="34" y1="28" x2="34" y2="56" stroke="#FFC72C" stroke-width="3"/>
+                                    <line x1="34" y1="28" x2="34" y2="56" stroke="#f8fafc" stroke-width="1.2"/>
+                                    <circle cx="28" cy="34" r="3.5" fill="#FFC72C" stroke="#fff" stroke-width="0.8"/>
+                                    <path d="M 27 34 L 28 32 L 29 34 L 28 36 Z" fill="#006738"/>
+
+                                    <!-- BRAZOS Y MANOS -->
+                                    <path d="M 16 29 L 10 44 L 14 45 L 19 32 Z" fill="#008244" stroke="#052e16" stroke-width="1.2"/>
+                                    <ellipse cx="9" cy="48" rx="3.5" ry="4" fill="url(#skinGrad-vestidor)"/>
+
+                                    <path d="M 40 29 L 46 44 L 42 45 L 37 32 Z" fill="#008244" stroke="#052e16" stroke-width="1.2"/>
+                                    <ellipse cx="47" cy="48" rx="3.5" ry="4" fill="url(#skinGrad-vestidor)"/>
+
+                                    <!-- CAPA EPP: GUANTES DE NITRILO QUÍMICO -->
+                                    <g id="avatar-glove-l-vestidor" class="epp-svg-layer" style="opacity: 0; transition: opacity 0.3s ease;">
+                                        <path d="M 12 43 L 7 47 C 5.5 50 7 53 10 53 C 12 53 14 50 14 47 Z" fill="#0284c7" stroke="#0369a1" stroke-width="1.2"/>
+                                        <rect x="9" y="42" width="5" height="2" rx="1" fill="#38bdf8"/>
+                                    </g>
+                                    <g id="avatar-glove-r-vestidor" class="epp-svg-layer" style="opacity: 0; transition: opacity 0.3s ease;">
+                                        <path d="M 44 43 L 49 47 C 50.5 50 49 53 46 53 C 44 53 42 50 42 47 Z" fill="#0284c7" stroke="#0369a1" stroke-width="1.2"/>
+                                        <rect x="42" y="42" width="5" height="2" rx="1" fill="#38bdf8"/>
+                                    </g>
+
+                                    <!-- CUELLO Y CABEZA -->
+                                    <rect x="25" y="24" width="6" height="5" fill="#fba862"/>
+                                    <ellipse cx="28" cy="18" rx="9" ry="9.5" fill="url(#skinGrad-vestidor)" stroke="#ea580c" stroke-width="0.8"/>
+                                    <ellipse cx="24.5" cy="17.5" rx="1.2" ry="1.5" fill="#0f172a"/>
+                                    <ellipse cx="31.5" cy="17.5" rx="1.2" ry="1.5" fill="#0f172a"/>
+                                    <circle cx="24.8" cy="17" r="0.4" fill="#fff"/>
+                                    <circle cx="31.8" cy="17" r="0.4" fill="#fff"/>
+                                    <path d="M 23 15 Q 25 14 26 15" stroke="#78350f" stroke-width="0.9" fill="none"/>
+                                    <path d="M 30 15 Q 31 14 33 15" stroke="#78350f" stroke-width="0.9" fill="none"/>
+                                    <path d="M 25.5 22 Q 28 24 30.5 22" stroke="#9a3412" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+                                    <!-- CASCO INDUSTRIAL -->
+                                    <path d="M 18 14 C 18 6 38 6 38 14 L 40 16 L 16 16 Z" fill="url(#helmetGrad-vestidor)" stroke="#b45309" stroke-width="1.5"/>
+                                    <path d="M 15 15 Q 28 12 41 15 L 42 17 Q 28 14 14 17 Z" fill="#D97706" stroke="#78350f" stroke-width="0.8"/>
+                                    <path d="M 26 6 Q 28 4 30 6 L 29 14 L 27 14 Z" fill="#FFE81F"/>
+
+                                    <!-- CAPA EPP: MONOGAFAS QUÍMICAS -->
+                                    <g id="avatar-goggles-vestidor" class="epp-svg-layer" style="opacity: 0; transition: opacity 0.3s ease;">
+                                        <path d="M 17 17 L 39 17" stroke="#0f172a" stroke-width="1.8"/>
+                                        <rect x="20" y="14" width="16" height="7" rx="3.5" fill="rgba(56, 189, 248, 0.85)" stroke="#0284c7" stroke-width="1.2"/>
+                                        <path d="M 22 15 L 26 15 L 24 19 L 21 19 Z" fill="rgba(255, 255, 255, 0.7)"/>
+                                        <path d="M 29 15 L 33 15 L 31 19 L 28 19 Z" fill="rgba(255, 255, 255, 0.7)"/>
+                                    </g>
+
+                                    <!-- CAPA EPP: RESPIRADOR CON FILTROS -->
+                                    <g id="avatar-respirator-vestidor" class="epp-svg-layer" style="opacity: 0; transition: opacity 0.3s ease;">
+                                        <path d="M 23 20 L 33 20 L 32 26 C 32 27.5 24 27.5 24 26 Z" fill="#334155" stroke="#1e293b" stroke-width="1.2"/>
+                                        <circle cx="28" cy="23.5" r="2" fill="#64748b" stroke="#0f172a" stroke-width="0.6"/>
+                                        <ellipse cx="22" cy="23.5" rx="2.5" ry="3" fill="#ec4899" stroke="#9d174d" stroke-width="0.8"/>
+                                        <ellipse cx="34" cy="23.5" rx="2.5" ry="3" fill="#ec4899" stroke="#9d174d" stroke-width="0.8"/>
+                                    </g>
+                                </g>
+                            </svg>
                         </div>
                     </div>
 
@@ -2967,20 +3013,111 @@
 
                     <!-- AVATAR EN PATIO DE TALLER -->
                     <div class="iso-avatar" id="avatar-workshop">
-                        <div class="avatar-shadow"></div>
-                        <div class="avatar-body" id="avatar-body-workshop">
-                            <div class="avatar-head">
-                                <div class="epp-layer-goggles" id="avatar-goggles-workshop"></div>
-                                <div class="epp-layer-respirator" id="avatar-respirator-workshop"></div>
-                            </div>
-                            <div class="avatar-torso">
-                                <div class="epp-layer-gloves-l" id="avatar-glove-l-workshop"></div>
-                                <div class="epp-layer-gloves-r" id="avatar-glove-r-workshop"></div>
-                            </div>
-                            <div class="avatar-legs">
-                                <div class="avatar-leg"><div class="epp-layer-boots" id="avatar-boot-l-workshop"></div></div>
-                                <div class="avatar-leg"><div class="epp-layer-boots" id="avatar-boot-r-workshop"></div></div>
-                            </div>
+                        <div class="avatar-floor-shadow"></div>
+                        <div class="avatar-billboard" id="avatar-body-workshop">
+                            <svg class="avatar-operator-svg" viewBox="0 0 56 96" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="suitGrad-workshop" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#008244"/>
+                                        <stop offset="100%" stop-color="#00552b"/>
+                                    </linearGradient>
+                                    <linearGradient id="helmetGrad-workshop" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#FFE81F"/>
+                                        <stop offset="60%" stop-color="#FFC72C"/>
+                                        <stop offset="100%" stop-color="#D97706"/>
+                                    </linearGradient>
+                                    <linearGradient id="skinGrad-workshop" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#fed7aa"/>
+                                        <stop offset="100%" stop-color="#fba862"/>
+                                    </linearGradient>
+                                    <filter id="avatarDropShadow-workshop" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feDropShadow dx="0" dy="2" stdDeviation="1.5" flood-color="#000" flood-opacity="0.35"/>
+                                    </filter>
+                                </defs>
+                                <g filter="url(#avatarDropShadow-workshop)">
+                                    <!-- Piernas / Pantalón de Trabajo -->
+                                    <path d="M 20 54 L 18 78 L 26 78 L 27 55 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+                                    <path d="M 29 55 L 30 78 L 38 78 L 36 54 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+                                    <rect x="18" y="62" width="8" height="6" rx="2" fill="#334155"/>
+                                    <rect x="30" y="62" width="8" height="6" rx="2" fill="#334155"/>
+
+                                    <!-- Calzado Base (Civil) -->
+                                    <path d="M 16 78 L 26 78 L 26 86 C 26 87 23 88 19 88 L 15 88 C 14 88 14 85 15 82 Z" fill="#475569" stroke="#1e293b" stroke-width="1"/>
+                                    <path d="M 30 78 L 40 78 L 41 82 C 42 85 42 88 41 88 L 37 88 C 33 88 30 87 30 86 Z" fill="#475569" stroke="#1e293b" stroke-width="1"/>
+
+                                    <!-- CAPA EPP: BOTAS DIELÉCTRICAS REFORZADAS -->
+                                    <g id="avatar-boot-l-workshop" class="epp-svg-layer" style="opacity: 0.4; transition: opacity 0.3s ease;">
+                                        <path d="M 15 77 L 27 77 L 27 86 C 27 88.5 24 90 19 90 L 14 90 C 12.5 90 12.5 85 14 81 Z" fill="#78350f" stroke="#b45309" stroke-width="1.5"/>
+                                        <path d="M 13 86 Q 16 85 19 86 L 19 90 L 13 90 Z" fill="#1e293b"/>
+                                        <line x1="13" y1="90" x2="27" y2="90" stroke="#000" stroke-width="2"/>
+                                    </g>
+                                    <g id="avatar-boot-r-workshop" class="epp-svg-layer" style="opacity: 0.4; transition: opacity 0.3s ease;">
+                                        <path d="M 29 77 L 41 77 L 42 81 C 43.5 85 43.5 90 42 90 L 37 90 C 32 90 29 88.5 29 86 Z" fill="#78350f" stroke="#b45309" stroke-width="1.5"/>
+                                        <path d="M 37 86 Q 40 85 43 86 L 43 90 L 37 90 Z" fill="#1e293b"/>
+                                        <line x1="29" y1="90" x2="43" y2="90" stroke="#000" stroke-width="2"/>
+                                    </g>
+
+                                    <!-- TORSO & OVEROL DE SEGURIDAD BOLÍVAR -->
+                                    <path d="M 16 28 L 40 28 L 38 56 L 18 56 Z" fill="url(#suitGrad-workshop)" stroke="#052e16" stroke-width="1.5"/>
+                                    <path d="M 17 40 L 39 40 L 39 44 L 17 44 Z" fill="#FFC72C"/>
+                                    <path d="M 17 41.5 L 39 41.5 L 39 43 L 17 43 Z" fill="#f8fafc"/>
+                                    <line x1="22" y1="28" x2="22" y2="56" stroke="#FFC72C" stroke-width="3"/>
+                                    <line x1="22" y1="28" x2="22" y2="56" stroke="#f8fafc" stroke-width="1.2"/>
+                                    <line x1="34" y1="28" x2="34" y2="56" stroke="#FFC72C" stroke-width="3"/>
+                                    <line x1="34" y1="28" x2="34" y2="56" stroke="#f8fafc" stroke-width="1.2"/>
+                                    <circle cx="28" cy="34" r="3.5" fill="#FFC72C" stroke="#fff" stroke-width="0.8"/>
+                                    <path d="M 27 34 L 28 32 L 29 34 L 28 36 Z" fill="#006738"/>
+
+                                    <!-- BRAZOS Y MANOS -->
+                                    <path d="M 16 29 L 10 44 L 14 45 L 19 32 Z" fill="#008244" stroke="#052e16" stroke-width="1.2"/>
+                                    <ellipse cx="9" cy="48" rx="3.5" ry="4" fill="url(#skinGrad-workshop)"/>
+
+                                    <path d="M 40 29 L 46 44 L 42 45 L 37 32 Z" fill="#008244" stroke="#052e16" stroke-width="1.2"/>
+                                    <ellipse cx="47" cy="48" rx="3.5" ry="4" fill="url(#skinGrad-workshop)"/>
+
+                                    <!-- CAPA EPP: GUANTES DE NITRILO QUÍMICO -->
+                                    <g id="avatar-glove-l-workshop" class="epp-svg-layer" style="opacity: 0; transition: opacity 0.3s ease;">
+                                        <path d="M 12 43 L 7 47 C 5.5 50 7 53 10 53 C 12 53 14 50 14 47 Z" fill="#0284c7" stroke="#0369a1" stroke-width="1.2"/>
+                                        <rect x="9" y="42" width="5" height="2" rx="1" fill="#38bdf8"/>
+                                    </g>
+                                    <g id="avatar-glove-r-workshop" class="epp-svg-layer" style="opacity: 0; transition: opacity 0.3s ease;">
+                                        <path d="M 44 43 L 49 47 C 50.5 50 49 53 46 53 C 44 53 42 50 42 47 Z" fill="#0284c7" stroke="#0369a1" stroke-width="1.2"/>
+                                        <rect x="42" y="42" width="5" height="2" rx="1" fill="#38bdf8"/>
+                                    </g>
+
+                                    <!-- CUELLO Y CABEZA -->
+                                    <rect x="25" y="24" width="6" height="5" fill="#fba862"/>
+                                    <ellipse cx="28" cy="18" rx="9" ry="9.5" fill="url(#skinGrad-workshop)" stroke="#ea580c" stroke-width="0.8"/>
+                                    <ellipse cx="24.5" cy="17.5" rx="1.2" ry="1.5" fill="#0f172a"/>
+                                    <ellipse cx="31.5" cy="17.5" rx="1.2" ry="1.5" fill="#0f172a"/>
+                                    <circle cx="24.8" cy="17" r="0.4" fill="#fff"/>
+                                    <circle cx="31.8" cy="17" r="0.4" fill="#fff"/>
+                                    <path d="M 23 15 Q 25 14 26 15" stroke="#78350f" stroke-width="0.9" fill="none"/>
+                                    <path d="M 30 15 Q 31 14 33 15" stroke="#78350f" stroke-width="0.9" fill="none"/>
+                                    <path d="M 25.5 22 Q 28 24 30.5 22" stroke="#9a3412" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+                                    <!-- CASCO INDUSTRIAL -->
+                                    <path d="M 18 14 C 18 6 38 6 38 14 L 40 16 L 16 16 Z" fill="url(#helmetGrad-workshop)" stroke="#b45309" stroke-width="1.5"/>
+                                    <path d="M 15 15 Q 28 12 41 15 L 42 17 Q 28 14 14 17 Z" fill="#D97706" stroke="#78350f" stroke-width="0.8"/>
+                                    <path d="M 26 6 Q 28 4 30 6 L 29 14 L 27 14 Z" fill="#FFE81F"/>
+
+                                    <!-- CAPA EPP: MONOGAFAS QUÍMICAS -->
+                                    <g id="avatar-goggles-workshop" class="epp-svg-layer" style="opacity: 0; transition: opacity 0.3s ease;">
+                                        <path d="M 17 17 L 39 17" stroke="#0f172a" stroke-width="1.8"/>
+                                        <rect x="20" y="14" width="16" height="7" rx="3.5" fill="rgba(56, 189, 248, 0.85)" stroke="#0284c7" stroke-width="1.2"/>
+                                        <path d="M 22 15 L 26 15 L 24 19 L 21 19 Z" fill="rgba(255, 255, 255, 0.7)"/>
+                                        <path d="M 29 15 L 33 15 L 31 19 L 28 19 Z" fill="rgba(255, 255, 255, 0.7)"/>
+                                    </g>
+
+                                    <!-- CAPA EPP: RESPIRADOR CON FILTROS -->
+                                    <g id="avatar-respirator-workshop" class="epp-svg-layer" style="opacity: 0; transition: opacity 0.3s ease;">
+                                        <path d="M 23 20 L 33 20 L 32 26 C 32 27.5 24 27.5 24 26 Z" fill="#334155" stroke="#1e293b" stroke-width="1.2"/>
+                                        <circle cx="28" cy="23.5" r="2" fill="#64748b" stroke="#0f172a" stroke-width="0.6"/>
+                                        <ellipse cx="22" cy="23.5" rx="2.5" ry="3" fill="#ec4899" stroke="#9d174d" stroke-width="0.8"/>
+                                        <ellipse cx="34" cy="23.5" rx="2.5" ry="3" fill="#ec4899" stroke="#9d174d" stroke-width="0.8"/>
+                                    </g>
+                                </g>
+                            </svg>
                         </div>
                     </div>
 
@@ -3595,29 +3732,214 @@
         }
 
         function setupMoodleFullscreen(buttonId = 'btn-moodle-fullscreen') {
-            const btn = document.getElementById(buttonId);
-            if (!btn) return;
-            const updateIcon = () => {
-                const isFull = !!document.fullscreenElement;
-                const icon = btn.querySelector('i');
-                if (icon) {
-                    icon.className = isFull ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+            const btnHeader = document.getElementById(buttonId);
+            let btnFloatExit = document.getElementById('btn-floating-exit-fullscreen');
+            if (!btnFloatExit) {
+                btnFloatExit = document.createElement('button');
+                btnFloatExit.id = 'btn-floating-exit-fullscreen';
+                btnFloatExit.className = 'btn-floating-exit-fullscreen';
+                btnFloatExit.type = 'button';
+                btnFloatExit.title = 'Salir de Pantalla Completa';
+                btnFloatExit.innerHTML = '<i class="fa-solid fa-compress"></i> <span>SALIR PANTALLA COMPLETA</span>';
+                document.body.appendChild(btnFloatExit);
+            }
+
+            let toastInfo = document.getElementById('toast-fullscreen-info');
+            if (!toastInfo) {
+                toastInfo = document.createElement('div');
+                toastInfo.id = 'toast-fullscreen-info';
+                toastInfo.className = 'toast-fullscreen-info';
+                toastInfo.innerHTML = '<i class="fa-solid fa-expand"></i> <span id="toast-fullscreen-msg">Pantalla Completa Activa • Doble toque para salir</span>';
+                document.body.appendChild(toastInfo);
+            }
+
+            if (!document.getElementById('fullscreen-enhanced-styles')) {
+                const style = document.createElement('style');
+                style.id = 'fullscreen-enhanced-styles';
+                style.textContent = `
+                    .btn-floating-exit-fullscreen {
+                        display: none;
+                        position: fixed;
+                        top: 10px;
+                        right: 12px;
+                        z-index: 999999;
+                        background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+                        color: #ffffff;
+                        border: 2px solid #ffffff;
+                        border-radius: 9999px;
+                        padding: 7px 15px;
+                        font-size: 0.76rem;
+                        font-weight: 900;
+                        font-family: inherit;
+                        letter-spacing: 0.05em;
+                        cursor: pointer;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 16px rgba(239, 68, 68, 0.6);
+                        align-items: center;
+                        gap: 8px;
+                        transition: transform 0.2s ease, background 0.2s ease;
+                        user-select: none;
+                        -webkit-user-select: none;
+                    }
+                    .btn-floating-exit-fullscreen:hover,
+                    .btn-floating-exit-fullscreen:active {
+                        transform: scale(1.05);
+                        background: #991b1b;
+                    }
+                    :fullscreen .btn-floating-exit-fullscreen,
+                    :-webkit-full-screen .btn-floating-exit-fullscreen,
+                    body.is-fullscreen .btn-floating-exit-fullscreen {
+                        display: flex !important;
+                    }
+                    .toast-fullscreen-info {
+                        position: fixed;
+                        top: 56px;
+                        left: 50%;
+                        transform: translateX(-50%) translateY(-25px);
+                        background: rgba(15, 23, 42, 0.95);
+                        color: #FFC72C;
+                        border: 1.5px solid #FFC72C;
+                        border-radius: 9999px;
+                        padding: 6px 18px;
+                        font-size: 0.74rem;
+                        font-weight: 800;
+                        font-family: inherit;
+                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+                        z-index: 999999;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        pointer-events: none;
+                        opacity: 0;
+                        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                    }
+                    .toast-fullscreen-info.show {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(0);
+                    }
+                    :fullscreen .app-viewport, :-webkit-full-screen .app-viewport, body.is-fullscreen .app-viewport {
+                        max-width: 100vw !important; width: 100vw !important; height: 100vh !important; height: 100dvh !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            const toastMsg = document.getElementById('toast-fullscreen-msg');
+            const container = document.querySelector('.app-viewport') || document.documentElement;
+
+            let toastTimeout = null;
+            function showToast(msg) {
+                if (!toastInfo) return;
+                if (toastMsg) toastMsg.textContent = msg;
+                toastInfo.classList.add('show');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toastInfo.classList.remove('show');
+                }, 2200);
+            }
+
+            function isFullscreenActive() {
+                return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+            }
+
+            function enterFullscreen() {
+                const el = container;
+                const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+                if (req) {
+                    req.call(el).catch(() => {
+                        if (document.documentElement.requestFullscreen) {
+                            document.documentElement.requestFullscreen().catch(() => {});
+                        }
+                    });
                 }
-                btn.title = isFull ? 'Salir de Pantalla Completa' : 'Pantalla Completa (Moodle)';
-            };
-            btn.addEventListener('click', () => {
-                if (!document.fullscreenElement) {
-                    const docEl = document.documentElement;
-                    if (docEl.requestFullscreen) docEl.requestFullscreen().catch(() => {});
-                    else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
-                    else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+            }
+
+            function exitFullscreen() {
+                const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+                if (exit && isFullscreenActive()) {
+                    exit.call(document).catch(() => {});
+                }
+                document.body.classList.remove('is-fullscreen');
+                if (container) container.classList.remove('is-fullscreen');
+                if (btnFloatExit) btnFloatExit.style.display = 'none';
+                updateUI();
+            }
+
+            function toggleFullscreen() {
+                if (isFullscreenActive()) {
+                    exitFullscreen();
                 } else {
-                    if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                    enterFullscreen();
                 }
+            }
+
+            function updateUI() {
+                const active = isFullscreenActive();
+                if (active) {
+                    document.body.classList.add('is-fullscreen');
+                    if (container) container.classList.add('is-fullscreen');
+                    if (btnFloatExit) btnFloatExit.style.display = 'flex';
+                    showToast('Pantalla Completa Activa • Doble toque para salir');
+                } else {
+                    document.body.classList.remove('is-fullscreen');
+                    if (container) container.classList.remove('is-fullscreen');
+                    if (btnFloatExit) btnFloatExit.style.display = 'none';
+                }
+                if (btnHeader) {
+                    const icon = btnHeader.querySelector('i');
+                    if (icon) icon.className = active ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+                    btnHeader.title = active ? 'Salir de Pantalla Completa' : 'Pantalla Completa (Doble Toque)';
+                }
+            }
+
+            if (btnHeader) {
+                btnHeader.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleFullscreen();
+                });
+            }
+
+            if (btnFloatExit) {
+                btnFloatExit.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    exitFullscreen();
+                });
+            }
+
+            let lastTapTime = 0;
+            let lastTapX = 0;
+            let lastTapY = 0;
+
+            container.addEventListener('touchend', (e) => {
+                if (e.target.closest('button, .modal-dialog, .iso-tile, .iso-prop, .respel-card, .phase-pill, a, input, select')) {
+                    return;
+                }
+                const now = Date.now();
+                const touch = e.changedTouches[0];
+                if (!touch) return;
+                const timeDiff = now - lastTapTime;
+                const dist = Math.hypot(touch.clientX - lastTapX, touch.clientY - lastTapY);
+
+                if (timeDiff > 50 && timeDiff < 360 && dist < 35) {
+                    e.preventDefault();
+                    toggleFullscreen();
+                    lastTapTime = 0;
+                } else {
+                    lastTapTime = now;
+                    lastTapX = touch.clientX;
+                    lastTapY = touch.clientY;
+                }
+            }, { passive: false });
+
+            container.addEventListener('dblclick', (e) => {
+                if (e.target.closest('button, .modal-dialog, .iso-tile, .iso-prop, .respel-card, .phase-pill, a, input, select')) {
+                    return;
+                }
+                toggleFullscreen();
             });
-            document.addEventListener('fullscreenchange', updateIcon);
-            document.addEventListener('webkitfullscreenchange', updateIcon);
+
+            ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+                document.addEventListener(evt, updateUI);
+            });
         }
 
         /**
@@ -4665,20 +4987,22 @@
                 const duration = Math.max(0.35, Math.min(1.2, dist / 260));
 
                 // Voltear horizontalmente el avatar según la dirección cardinal del movimiento
-                if (avatarBody && window.gsap) {
+                const svgEl = avatarBody ? avatarBody.querySelector('.avatar-operator-svg') : null;
+                const animTarget = svgEl || avatarBody;
+                if (animTarget && window.gsap) {
                     const deltaX = targetX - curX;
                     if (deltaX > 4) {
-                        gsap.to(avatarBody, { scaleX: 1, duration: 0.15 });
+                        gsap.to(animTarget, { scaleX: 1, duration: 0.15 });
                     } else if (deltaX < -4) {
-                        gsap.to(avatarBody, { scaleX: -1, duration: 0.15 });
+                        gsap.to(animTarget, { scaleX: -1, duration: 0.15 });
                     }
                 }
 
                 if (window.gsap && avatar) {
                     // Animación de rebote sutil de pasos
-                    if (avatarBody) {
-                        gsap.to(avatarBody, {
-                            y: -7,
+                    if (animTarget) {
+                        gsap.to(animTarget, {
+                            y: -4,
                             yoyo: true,
                             repeat: Math.floor(duration * 6),
                             duration: 0.12,
@@ -4699,7 +5023,7 @@
                                 this.avatarWorkshopPos = { x: targetX, y: targetY };
                             }
                             this.isAvatarMoving = false;
-                            if (avatarBody) gsap.set(avatarBody, { y: 0 });
+                            if (animTarget) gsap.set(animTarget, { y: 0 });
                             if (onComplete) onComplete();
                         }
                     });
