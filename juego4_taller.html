@@ -211,11 +211,11 @@
             background: rgba(15, 23, 42, 0.85);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-full);
-            padding: 4px 8px;
+            padding: 4px 10px;
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.72rem;
+            gap: 6px;
+            font-size: 0.74rem;
             font-weight: 800;
             color: #fff;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
@@ -230,11 +230,11 @@
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(15, 23, 42, 0.85));
             border: 1px solid var(--alerta-rojo);
             border-radius: var(--radius-full);
-            padding: 4px 8px;
+            padding: 4px 10px;
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.72rem;
+            gap: 6px;
+            font-size: 0.74rem;
             font-weight: 900;
             color: #fca5a5;
             white-space: nowrap;
@@ -531,10 +531,10 @@
         .roadmap-step-pill {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
+            gap: 7px;
+            padding: 4px 11px;
             border-radius: var(--radius-full);
-            font-size: 0.72rem;
+            font-size: 0.74rem;
             font-weight: 800;
             background: rgba(30, 41, 59, 0.75);
             color: #94a3b8;
@@ -542,19 +542,22 @@
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             white-space: nowrap;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
         }
 
         .roadmap-step-pill .step-circle {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.12);
-            display: flex;
+            background: rgba(255, 255, 255, 0.15);
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.65rem;
+            font-size: 0.72rem;
             font-weight: 900;
             color: inherit;
+            flex-shrink: 0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
         }
 
         .roadmap-step-pill .step-done-icon {
@@ -647,12 +650,17 @@
         }
 
         .beacon-step-badge {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.22);
             color: #fff;
-            font-size: 0.58rem;
-            padding: 1px 5px;
+            font-size: 0.68rem;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
             border-radius: var(--radius-full);
             font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .guide-beacon-arrow {
@@ -1901,9 +1909,9 @@
         }
 
         .action-card-status {
-            font-size: 0.66rem;
+            font-size: 0.72rem;
             font-weight: 800;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: var(--radius-full);
             background: rgba(255, 255, 255, 0.1);
             color: #cbd5e1;
@@ -1911,6 +1919,7 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             flex-shrink: 0;
             user-select: none;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
         }
 
         .action-card-status.active-pulse {
@@ -2443,15 +2452,16 @@
                 padding-right: 4px;
             }
             .roadmap-step-pill {
-                font-size: 0.62rem;
-                padding: 2px 6px;
-                gap: 3px;
+                font-size: 0.68rem;
+                padding: 3px 8px;
+                gap: 5px;
                 flex-shrink: 0;
             }
             .roadmap-step-pill .step-circle {
-                width: 14px;
-                height: 14px;
-                font-size: 0.56rem;
+                width: 20px;
+                height: 20px;
+                font-size: 0.70rem;
+                flex-shrink: 0;
             }
         }
 
@@ -2473,8 +2483,10 @@
                 font-size: 0.82rem;
             }
             .stat-badge {
-                padding: 3px 6px;
-                font-size: 0.7rem;
+                padding: 4px 9px;
+                font-size: 0.74rem;
+                gap: 5px;
+                border-radius: var(--radius-full);
             }
             .briefing-dialog {
                 padding: 16px 14px;
@@ -2686,12 +2698,11 @@
         </header>
 
         <!-- ASISTENTE TÉCNICO: BOLÍVAR SAFETY BOT -->
-        <div class="bot-banner">
-            <div class="bot-avatar" id="bot-avatar" title="Toca para recibir un tip técnico">👨‍🔧</div>
+        <div class="bot-banner" style="padding: 6px 12px; margin: 4px 10px;">
+            <div class="bot-avatar" id="bot-avatar" style="width: 28px; height: 28px; font-size: 1.05rem;" title="Toca para recibir un tip">👨‍🔧</div>
             <div class="bot-content">
-                <div class="bot-name">Bolívar Safety Bot • Asesor Técnico SST</div>
-                <div class="bot-dialog" id="bot-dialog">
-                    ¡Bienvenido al Taller Seguro! Toca el casillero para equipar tu EPP obligatorio contra solventes (Res. 773/2021). Luego dirígete a la puerta de seguridad para ingresar al patio.
+                <div class="bot-dialog" id="bot-dialog" style="font-size: 0.78rem; font-weight: 600;">
+                    ¡Toca el casillero para equipar tu EPP y luego valida en el checkpoint!
                 </div>
             </div>
         </div>
@@ -3192,7 +3203,7 @@
         <!-- BANDEJA INFERIOR CONTEXTUAL POR ZONA (TRAY SECTION) -->
         <section class="tray-section">
             <div class="tray-header">
-                <span id="tray-header-title"><i class="fa-solid fa-shirt"></i> MISIÓN EN VESTIDOR | RES. 773 DE 2021</span>
+                <span id="tray-header-title"><i class="fa-solid fa-shirt"></i> OBJETIVOS DEL VESTIDOR</span>
                 <span id="tray-task-counter" style="color: var(--amarillo-bolivar);">0/4 EPP Equipados</span>
             </div>
 
@@ -3202,7 +3213,7 @@
                     <div class="action-card-icon"><i class="fa-solid fa-shirt"></i></div>
                     <div class="action-card-text">
                         <div class="action-card-title">1. Casillero de EPP</div>
-                        <div class="action-card-sub">Equipa Guantes, Gafas, Respirador y Botas técnicas.</div>
+                        <div class="action-card-sub">Equipa guantes, gafas, respirador y botas.</div>
                     </div>
                     <div class="action-card-status" id="badge-v1-locker">0/4 EPP</div>
                 </div>
@@ -3210,8 +3221,8 @@
                 <div class="action-card" id="card-v1-door" title="Paso 2: Toca para caminar hacia el Checkpoint y escanear tu dotación">
                     <div class="action-card-icon"><i class="fa-solid fa-door-closed"></i></div>
                     <div class="action-card-text">
-                        <div class="action-card-title">2. Checkpoint Salida</div>
-                        <div class="action-card-sub">Inspección biométrica de EPP para acceder al patio de taller.</div>
+                        <div class="action-card-title">2. Checkpoint de Salida</div>
+                        <div class="action-card-sub">Inspección de EPP para acceder al patio de taller.</div>
                     </div>
                     <div class="action-card-status locked" id="badge-v1-door">🔒 Bloqueado</div>
                 </div>
@@ -3244,7 +3255,7 @@
                     <div class="action-card-icon"><i class="fa-solid fa-recycle"></i></div>
                     <div class="action-card-text">
                         <div class="action-card-title">3. Segregación RESPEL</div>
-                        <div class="action-card-sub">Clasifica filtro, trapo y aceite (Decreto 4741/2005).</div>
+                        <div class="action-card-sub">Clasifica filtro, trapos y aceite en sus canecas.</div>
                     </div>
                     <div class="action-card-status locked" id="badge-task-3">⏳ Paso 3</div>
                 </div>
@@ -5357,20 +5368,20 @@
                     if (this.dom.trayGridZone1) this.dom.trayGridZone1.style.display = 'none';
                     if (this.dom.trayGridZone2) this.dom.trayGridZone2.style.display = 'grid';
                     if (this.dom.trayHeaderTitle) {
-                        this.dom.trayHeaderTitle.innerHTML = '<i class="fa-solid fa-list-check"></i> GUÍA DE MANTENIMIENTO | PATIO DE TALLER';
+                        this.dom.trayHeaderTitle.innerHTML = '<i class="fa-solid fa-list-check"></i> GUÍA DE MANTENIMIENTO';
                     }
 
                     this.updateScenario2Guide();
                     this.updateTaskCounter();
 
                     if (!this.tasksCompleted.degrease) {
-                        this.setBotMessage("👷‍♂️ GUÍA PATIO (Paso 1 de 3): Acércate a la Mesa de Desengrase (marcada con el 1 dorado) para limpiar la pieza mecánica con solvente.", '🧼');
+                        this.setBotMessage("Paso 1: Acércate a la Mesa de Desengrase para limpiar la pieza.", '🧼');
                     } else if (!this.tasksCompleted.maintenance) {
-                        this.setBotMessage("⚙️ GUÍA PATIO (Paso 2 de 3): Ve al Motor V8 (marcado con el 2 dorado) para desmontar el filtro y purgar el aceite en la bandeja.", '🛢️');
+                        this.setBotMessage("Paso 2: Ve al Motor V8 para cambiar filtro y purgar aceite.", '🛢️');
                     } else if (!this.tasksCompleted.respel) {
-                        this.setBotMessage("♻️ GUÍA PATIO (Paso 3 de 3): Ve a la Estación RESPEL (marcada con el 3 dorado) para segregar los 3 residuos generados (Dec. 4741/2005).", '📦');
+                        this.setBotMessage("Paso 3: Ve a la Estación RESPEL para clasificar los residuos.", '📦');
                     } else {
-                        this.setBotMessage("🎉 ¡Excelente trabajo! Mantenimiento completado conforme a la normativa.", '✨');
+                        this.setBotMessage("¡Excelente trabajo! Mantenimiento completado con éxito.", '✨');
                     }
                 } else {
                     this.currentZone = 1;
@@ -5384,12 +5395,12 @@
                     if (this.dom.trayGridZone1) this.dom.trayGridZone1.style.display = 'grid';
                     if (this.dom.trayGridZone2) this.dom.trayGridZone2.style.display = 'none';
                     if (this.dom.trayHeaderTitle) {
-                        this.dom.trayHeaderTitle.innerHTML = '<i class="fa-solid fa-shirt"></i> MISIÓN EN VESTIDOR | RES. 773 DE 2021';
+                        this.dom.trayHeaderTitle.innerHTML = '<i class="fa-solid fa-shirt"></i> OBJETIVOS DEL VESTIDOR';
                     }
                     if (this.dom.trayCounter) {
                         this.dom.trayCounter.textContent = `${this.equippedEPP.size}/4 EPP Equipados`;
                     }
-                    this.setBotMessage("Estás en el Vestidor. Equipa los 4 elementos obligatorios en el casillero (1) y valida tu dotación en el Checkpoint (2).", '👔');
+                    this.setBotMessage("Equipa los 4 elementos en el casillero (1) y valida tu dotación en el Checkpoint (2).", '👔');
                 }
             }
 

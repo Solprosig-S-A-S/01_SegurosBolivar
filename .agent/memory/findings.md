@@ -898,4 +898,100 @@ gba(148, 163, 184, 0.18)).
     - Conversión a tarjetas ergonómicas verticales de 56px de altura mínima, con iconografía de 36px, jerarquía tipográfica limpia y badges de estado claros.
     - Corrección de visibilidad entre zonas: Regla `.tray-task-grid[style*="display: none"] { display: none !important; }` que garantiza la conmutación sin solapamientos entre Vestidor (2 tarjetas) y Patio (3 operaciones de mantenimiento).
 
+## Desaturación y Aligeramiento Visual de la Suite (5 Juegos)
+- **Diagnóstico**: Sobrecarga de densidad informativa, exceso de textos regulatorios repetitivos ("Res. 773/2021", "Dec. 4741/2005", "NTC 4435") en cabeceras y bandejas, duplicidad de banners de instrucciones y diálogos largos del bot que restaban protagonismo y espacio a la acción lúdica.
+- **Acciones Quirúrgicas Aplicadas**:
+  - **Juego 1 (SGA)**: Retirada de norma-badge del header; simplificación de pasos del stepper (`1. Marco Legal`, `2. Peligros SGA`, `3. Fichas FDS`); condensación de diálogos del bot a 1 línea activa; banners de feedback estáticos ocultos de inicio (`display: none`) para dar 45px más de altura a los cables y cubos de clasificación; supresión de etiquetas redundantes en casos FDS.
+  - **Juego 2 (Bodega)**: Eliminación de norma-badge en header; condensación del diálogo del tutorial; simplificación de la zona de rechazo a etiqueta ágil (`Zona de Rechazo | Botellas ilegales`); leyenda de semáforo compacta; retiro de la barra de título de la bandeja para ganar 30px de espacio vertical en el tablero 3D.
+  - **Juego 3 (Trasiego)**: Header limpio sin subtítulos normativos; banner de Lucho condensado a prompt directo; ocultamiento de condiciones ambientales innecesarias en el header del escenario; maximización del lienzo SVG del camión cisterna.
+  - **Juego 4 (Taller)**: Eliminación de citas legales en el título de la bandeja y en las tarjetas de acción; acortamiento de las instrucciones contextuales del bot en ambas zonas a 1 línea clara.
+  - **Juego 5 (Emergencias)**: Supresión de tipografía diminuta y citas normativas flotantes en las estaciones 3D de pared (Pared Norte, Sur y Oeste); simplificación de badges a verbos directos (`Válvula de Corte`, `Alarma General`, `Lavaojos`, `Caseta EPP`, `Acopio RESPEL`, `Traje Ignífugo`); simplificación de leyendas en el HUD (`GAS` y `TIEMPO`).
 
+## Optimización de Espaciado y Holgura ("Respiración") en Datos Encerrados en Círculos y Píldoras (5 Juegos)
+- **Diagnóstico**: Múltiples datos, números de paso, cronómetros y badges de estado se encontraban encerrados en círculos y pastillas con dimensiones microscópicas (14px - 18px) y paddings extremadamente ajustados (1px - 2px), asfixiando visualmente los dígitos contra los bordes perimetrales.
+- **Acciones Quirúrgicas por Juego**:
+  - **Juego 1 (`juego1_sga.html`)**:
+    - `.level-step-num`: Ampliado de 18x18px a 22x22px con `font-size: 0.72rem;`, centrado flexible, sombra interna y separación `gap: 8px;` en `.level-step-btn`.
+    - `.briefing-step-num`: Convertido de cuadrado rígido (3px radius) a círculo fluido de 24x24px (`border-radius: 50%`) con `font-size: 0.75rem;`.
+    - `.timer-pill`: Relajado de `padding: 5px 10px;` a `padding: 5px 12px; font-size: 0.78rem; gap: 7px;` con sombra suave.
+    - `.patch-circuit-badge`: Convertido en píldora con `padding: 3px 10px; border-radius: var(--radius-full); font-size: 0.68rem;`.
+  - **Juego 2 (`juego2_bodega.html`)**:
+    - `.stepper-num`: Ampliado de 18x18px a 22x22px con `font-size: 0.72rem; font-weight: 900;` y sombra interna.
+    - `.stepper-pill`: Relajado a `padding: 6px 12px; gap: 8px;`.
+    - `.matrix-legend-chip` y `.chip-dot`: Eliminados los estilos inline constrictivos (`padding: 2px 6px; font-size: 0.68rem;`), adoptando `padding: 4px 10px; font-size: 0.74rem; gap: 7px;` y puntos de 8x8px.
+    - `.reject-status-badge`: Convertido en píldora con `padding: 4px 10px; font-size: 0.72rem; border-radius: var(--radius-full);`.
+  - **Juego 3 (`juego3_trasiego.html`)**:
+    - `.roadmap-step-pill .step-badge`: Ampliado de 18x18px a 22x22px con `font-size: 0.72rem;` y centrado fluido.
+    - `.roadmap-step-pill`: Convertido en píldora con `padding: 4px 11px; border-radius: var(--radius-full); gap: 7px;`.
+    - `.stat-badge` y `.combo-badge`: Convertidos a píldoras suaves (`border-radius: var(--radius-full); padding: 5px 12px;` en desktop, `padding: 4px 9px;` en móvil).
+    - `.briefing-step-num`: Rediseñado a círculo cómodo de 24x24px (`border-radius: 50%`) con `font-size: 0.75rem;`.
+  - **Juego 4 (`juego4_taller.html`)**:
+    - `.roadmap-step-pill .step-circle`: Ampliado de 18x18px a 22x22px en escritorio y de 14x14px a 20x20px en móvil (`font-size: 0.70rem;`), eliminando la compresión de dígitos.
+    - `.beacon-step-badge`: Rediseñado con `min-width: 20px; height: 20px; font-size: 0.68rem; padding: 0 5px; border-radius: var(--radius-full);`.
+    - `.action-card-status`: Relajado a `padding: 4px 10px; font-size: 0.72rem; border-radius: var(--radius-full);`.
+    - `.stat-badge` y `.combo-badge`: Relajados a `padding: 4px 10px; font-size: 0.74rem;` en desktop y `padding: 4px 9px;` en móvil.
+  - **Juego 5 (`juego5_emergencias.html`)**:
+    - `.step-num`: Convertido a círculo equilibrado de 24x24px (`border-radius: 50%`) con `font-size: 0.76rem; font-weight: 900;`.
+    - `.mission-pill-btn`: Rediseñado con `padding: 5px 12px; font-size: 0.74rem; border-radius: var(--radius-full);`.
+    - `.hud-detector-card` y `.hud-timer-card`: Rediseñados como tarjetas píldora con `padding: 4px 12px; border-radius: var(--radius-full); gap: 7px;` en desktop y `padding: 3px 8px;` en móvil.
+    - `.hud-step-chip`: Relajado de `padding: 3px 8px; font-size: 0.6rem;` a `padding: 4px 10px; font-size: 0.68rem; gap: 6px;` en desktop y `padding: 3px 8px; font-size: 0.62rem;` en móvil.
+
+## Arquitectura de Dos Escenarios Secuenciales con Cinemática Automática - Juego 3 (`juego3_trasiego.html`)
+- **Diagnóstico Inicial de Escasez de Espacio y Oclusión**:
+  - El lienzo SVG tenía una relación de aspecto ultra-ancha (`940 / 260` = 3.61:1) limitada a 115px - 165px de altura en móviles. A esa escala, un camión cisterna de 18 ruedas y una excavadora de 25 toneladas debían coexistir simultáneamente, resultando en vehículos diminutos (apenas 40px de alto) donde los rótulos SGA y puntos de inspección eran prácticamente invisibles.
+  - La bandeja de tarjetas inferior mostraba simultáneamente 9 tarjetas de acción (6 correctas + 3 trampas) dispuestas en 3 filas de 3 columnas en desktop o 5 filas en móvil, consumiendo la mayor parte de la pantalla.
+  - El toast flotante normativo (`#tech-feedback-toast`) estaba configurado con `position: absolute; top: 68px;`, encimándose de forma directa sobre el diálogo del Safety Bot y tapando el tercio superior del lienzo.
+- **División en Dos Escenarios Secuenciales Especializados (Opción 1 Seleccionada)**:
+  - **Fase 1 (Aseguramiento del Camión Cisterna)**:
+    - Enfoque con alto zoom en el carrotanque cisterna de ACPM / Diésel (UN 1202 / Clase 3).
+    - Pasos de seguridad normativos 1 a 3:
+      - Paso 1 (targetId 5): Cuñas Antichispa de Inmovilización en las llantas (`translate(210, 275)` desktop, `translate(95, 205)` móvil).
+      - Paso 2 (targetId 1): Neutralización de fuentes térmicas y celulares (Cabina del Cisterna `translate(255, 175)` desktop, `translate(180, 115)` móvil). Anima el letrero `#svg-tanker-motor-sign`.
+      - Paso 3 (targetId 2): Conexión del cable equipotencial de Polo a Tierra (<10 Ω) al carrete del cisterna (`translate(185, 235)` desktop, `translate(135, 175)` móvil).
+    - Bandeja de tarjetas: Únicamente 4 tarjetas visibles (`.scenario-1-card`: Cuñas, Motor, Polo a tierra, y Trampa de Lavar con Agua).
+    - Grid en desktop: `grid-template-columns: repeat(4, minmax(0, 1fr));` (1 sola fila limpia). Grid en móvil: 2 filas de 2 tarjetas.
+  - **Transición Cinemática Suave con GSAP**:
+    - Al validar con éxito el Paso 3 (targetId 2, Polo a Tierra), el sistema marca el badge verde de Fase 1 completada (`#scene-1-check`), reproduce audio de éxito y activa un temporizador de 750ms.
+    - El método `transitionToScenario(2, true)` utiliza GSAP para trasladar fluidamente el `viewBox` del SVG desde las coordenadas del cisterna (`10 50 480 260`) hasta la maquinaria receptora (`460 50 480 260`) en un paneo horizontal de 0.85s con curva `power2.inOut`.
+    - La bandeja commuta a `.scenario-mode-2`, desvaneciendo las tarjetas de Fase 1 y desplegando las tarjetas de Fase 2 en una sola fila de 5 columnas.
+  - **Fase 2 (Acople y Maquinaria Receptora)**:
+    - Enfoque con alto zoom en la máquina pesada de obra (Excavadora CAT 320D, Volqueta Kenworth T800, Bulldozer CAT D6T o Generador CAT 250kVA).
+    - Pasos de seguridad normativos 4 a 6:
+      - Paso 4 (targetId 3): Bandeja Antiderrame al 110% colocada bajo la toma de combustible.
+      - Paso 5 (targetId 6): Kit de control de derrames de hidrocarburos listo en el área.
+      - Paso 6 (targetId 4): Extintor Satélite ABC 150 lbs situado a 5 metros en el perímetro.
+    - Al validar el Paso 6, se marca `#scene-2-check` y se detona la certificación completa del vehículo con +150 pts de bonificación.
+  - **Selector Manual de Pestañas (`#scenario-selector-bar`)**:
+    - Dispone de dos pestañas ergonómicas (`#btn-scene-1` y `#btn-scene-2`) con indicadores numéricos y checkmarks verdes para permitir al usuario alternar libremente la cámara entre ambos escenarios en cualquier momento.
+- **Ampliación Extrema del Lienzo SVG (>2.5x Más Grande)**:
+  - Desktop: Se ajustó el aspect-ratio a `480 / 260` (~1.85:1) con altura de 230px a 390px.
+  - Móvil: Se ajustó el aspect-ratio a `280 / 250` (~1.12:1) con altura mínima de 220px y máxima de 335px. Los vehículos se muestran ahora con un nivel de detalle 2.5 veces mayor.
+- **Erradicación del Solapamiento de Alertas**:
+  - Se reubicó `#tech-feedback-toast` a `position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); z-index: 9999;` con `backdrop-filter: blur(10px)`. Ya no interfiere con el bot banner ni invade el campo visual de la escena de inspección.
+
+## Optimización Ergonómica de Tarjetas, Desacople de Hotspots y Corrección del Extintor - Juego 3 (`juego3_trasiego.html`)
+- **Reubicación de 'Apagar Motor & Celulares' (targetId 1) al Escenario 2 (Maquinaria Receptora)**:
+  - El operario Lucho y el motor diésel con emisión de humo residen en la cabina del equipo receptor (Excavadora CAT 320D, Volqueta Kenworth, etc.).
+  - Se reasignó la tarjeta 1 (`card-action-1`) a `.scenario-2-card` y se ajustaron las reglas CSS de filtrado (`.scenario-mode-1 #hotspot-1 { display: none !important; }`).
+  - **Fase 1 (Cisterna - 2 Pasos)**:
+    - Paso 1 (targetId 5): Cuñas en Llantas del Carrotanque (`translate(100, 275)` desktop, `translate(60, 205)` móvil).
+    - Paso 2 (targetId 2): Conexión de Polo a Tierra (<10 Ω) (`translate(250, 235)` desktop, `translate(160, 165)` móvil).
+    - Tarjetas visibles en bandeja: Únicamente 3 tarjetas amplias (`Cuñas`, `Polo a Tierra`, y `Lavar con Agua` - trampa).
+    - Al completar el Paso 2 (targetId 2), se detona la transición cinemática automática al Escenario 2 con GSAP.
+  - **Fase 2 (Maquinaria Receptora - 4 Pasos)**:
+    - Paso 3 (targetId 1): Desconectar Motor & Celulares en la cabina del operario Lucho (`translate(665, 135)` desktop, `translate(375, 95)` móvil).
+    - Paso 4 (targetId 3): Bandeja Antiderrame al 110% bajo el acople (`translate(600, 260)` desktop, `translate(325, 175)` móvil).
+    - Paso 5 (targetId 6): Alistamiento del Kit Antiderrame (`translate(490, 265)` desktop, `translate(255, 205)` móvil).
+    - Paso 6 (targetId 4): Extintor Satélite ABC 150 lbs a 5 metros en el perímetro derecho (`translate(840, 240)` desktop, `translate(460, 160)` móvil).
+- **Legibilidad Nítida de Tarjetas y del Clon de Arrastre (`.floating-drag-clone`)**:
+  - En la bandeja, el grid se estructuró a 3 columnas simétricas (`grid-template-columns: repeat(3, minmax(0, 1fr))`), otorgando a cada tarjeta ancho generoso (>260px) con altura mínima de 56px, eliminando el apiñamiento y truncamiento excesivo.
+  - El clon arrastrado `.floating-drag-clone` se independizó del ancho colapsado de la cuadrícula: ahora tiene ancho fijo garantizado de 260px (`max-width: 290px`), fondo azul marino de alto contraste (`rgba(15, 23, 42, 0.98)`), borde dorado Bolívar de 2.5px, sombra 3D profunda, icono de 36px, y texto completo sin truncar (`-webkit-line-clamp: unset`).
+  - Durante el arrastre, el clon se centra automáticamente bajo el punto táctil (`offsetX = 130`, `offsetY = 40`), evitando que el dedo o puntero tape el contenido.
+- **Separación Radical de Círculos / Hotspots y Eliminación de Solapamiento**:
+  - Se redujo el radio transparente del hitbox de `r="52"` a `r="34"`, y el radio de detección geométrica en `findHotspotAt` a `Math.max(30, Math.max(r.width, r.height) * 0.55)`.
+  - Las coordenadas se distribuyeron a lo largo de todo el lienzo visual:
+    - En Escenario 1: Hotspot 5 (X=100) y Hotspot 2 (X=250) están separados por 150px.
+    - En Escenario 2: Hotspot 6 (X=490), Hotspot 3 (X=600), Hotspot 1 (X=665, Y=135) y Hotspot 4 (X=840, Y=240) mantienen entre 110px y 240px de distancia mutua. Cero superposiciones.
+- **Corrección de la Activación del Extintor (Hotspot 4)**:
+  - *Causa 1 (Colisión)*: El hotspot 4 y el hotspot 6 estaban prácticamente en las mismas coordenadas, por lo que el hit testing capturaba el kit en lugar del extintor. Al reubicar el extintor al perímetro a 5m (X=840) y reducir los hitboxes, la detección es unívoca.
+  - *Causa 2 (Sobrescritura destructiva de Transform en GSAP)*: `applySvgSceneFix(4)` ejecutaba `gsap.fromTo(this.dom.svgExtinguisher, { opacity: 0, x: -80, rotation: -15 }, { opacity: 1, x: 0 })`. En SVG, GSAP sustituye el atributo `transform` por una matriz de coordenadas relativas a `x: 0`, reseteando el elemento a X=0 (fuera de la pantalla a la izquierda). Se corrigió aplicando animación de escala elástica `{ opacity: 0, scale: 0.3, transformOrigin: "14px 40px" }` a `{ opacity: 1, scale: 1, duration: 0.55, ease: "back.out(2)" }` y se actualizó el reset en `resetHotspotsAndCards` a `{ opacity: 0, scale: 1 }`.

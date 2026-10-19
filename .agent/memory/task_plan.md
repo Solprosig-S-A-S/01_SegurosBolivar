@@ -358,6 +358,49 @@
       - [x] Escalado de casilleros (110x105px) y puerta de checkpoint (95x110px) con detalles de ventilación, chapas y arcos de escaneo.
       - [x] Bandeja inferior vertical con tarjetas ergonómicas de 56px min-height, badges claros y regla `.tray-task-grid[style*="display: none"] { display: none !important; }` que garantiza alternancia limpia entre Vestidor (2 tarjetas) y Patio (3 operaciones).
       - [x] Verificación visual integral en resolución móvil (375x740) para Zona 1 y Zona 2 mediante Edge headless y CDP.
-    - [x] Reconstrucción y sincronización de los 6 paquetes SCORM 1.2 mediante `python build_scorm.py`.
+    - [x] Desaturación y Aligeramiento Visual de la Suite (5 Juegos):
+      - [x] Juego 1: Supresión de norma-badge, bot dialogue reducido a 1 línea activa, banners estáticos de feedback ocultos de inicio (`display: none`), stepper limpio y casos FDS desaturados.
+      - [x] Juego 2: Eliminación de norma-badge, diálogo condensado, zona de rechazo simplificada, semáforo compacto y eliminación del header de bandeja para maximizar el tablero 3D.
+      - [x] Juego 3: Header sin subtítulos normativos, diálogo directo de Lucho, condiciones ambientales ocultas y máxima visibilidad del camión cisterna.
+      - [x] Juego 4: Retiro de citas normativas en títulos de bandeja y tarjetas, y mensajes del bot condensados a 1 línea clara.
+      - [x] Juego 5: Supresión de texto diminuto regulatorio en paredes 3D (Norte, Sur, Oeste), simplificación de badges a verbos directos y leyendas del HUD compactas (`GAS` y `TIEMPO`).
+      - [x] Verificación de sintaxis de los 5 juegos y reconstrucción de los 6 paquetes SCORM 1.2 mediante `python build_scorm.py`.
+    - [x] Optimización de Espaciado y Holgura ("Respiración") en Datos Encerrados en Círculos y Píldoras (5 Juegos):
+      - [x] Juego 1: `.level-step-num` ampliado a 22px con `gap: 8px;`, `.briefing-step-num` circular 24px, `.timer-pill` y `.patch-circuit-badge` con padding relajado.
+      - [x] Juego 2: `.stepper-num` a 22px, `.stepper-pill` con `padding: 6px 12px;`, `.matrix-legend-chip` y `.reject-status-badge` en píldoras con padding y puntos de 8px.
+      - [x] Juego 3: `.step-badge` a 22px, `.roadmap-step-pill`, `.stat-badge`, `.combo-badge` y `.briefing-step-num` convertidos a círculos y píldoras fluidas.
+      - [x] Juego 4: `.step-circle` a 22px (20px móvil), `.beacon-step-badge` 20px, `.action-card-status`, `.stat-badge` y `.combo-badge` relajados.
+      - [x] Juego 5: `.step-num` circular 24px, `.mission-pill-btn`, `.hud-detector-card`, `.hud-timer-card` y `.hud-step-chip` con padding y radio relajados.
+      - [x] Verificación de sintaxis de los 5 juegos y regeneración de los 6 paquetes SCORM 1.2 mediante `python build_scorm.py`.
+    - [x] Arquitectura de Dos Escenarios Secuenciales con Cinemática Automática (`juego3_trasiego.html`):
+      - [x] División secuencial en 2 Fases operativas especializadas:
+        - [x] Fase 1 (Aseguramiento del Cisterna): Enfoque en el Camión Cisterna para Pasos 1 a 3 (Cuñas [5], Motor/Cabina [1], Polo a Tierra [2]). Bandeja con solo 4 tarjetas (`.scenario-1-card`).
+        - [x] Fase 2 (Acople y Maquinaria Receptora): Enfoque en la maquinaria para Pasos 4 a 6 (Bandeja Antiderrame [3], Kit Derrames [6], Extintor ABC a 5m [4]). Bandeja con 5 tarjetas (`.scenario-2-card`).
+      - [x] Barra de selector manual de pestañas (`#scenario-selector-bar`) con `#btn-scene-1`, `#btn-scene-2` e indicadores de certificación completada (`#scene-1-check`, `#scene-2-check`).
+      - [x] Transición cinemática automática con GSAP: al completar el Paso 3 (targetId 2), la cámara traslada el `viewBox` suavemente de izquierda a derecha (0.85s `power2.inOut`) y la bandeja revela las tarjetas de Fase 2.
+      - [x] Ampliación extrema del lienzo SVG (>2.5x área visual):
+        - [x] Desktop: de `aspect-ratio: 940/260` a `480/260`, altura mínima de 230px a 390px.
+        - [x] Móvil: de `aspect-ratio: 940/260` (115px de altura) a `280/250`, altura mínima de 220px a 335px.
+      - [x] Corrección de solapamiento de alertas: reubicación fija de `#tech-feedback-toast` en `position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);` eliminando toda oclusión sobre el bot banner o el SVG.
+      - [x] Calibración anatómica de coordenadas en `VEHICLE_CONFIGS` para Excavadora, Volqueta, Bulldozer y Generador en ambos escenarios y modos desktop/móvil.
+      - [x] Verificación automatizada con script `verify_juego3.js` y regeneración de los 6 paquetes SCORM 1.2 vía `python build_scorm.py`.
 
 
+
+    - [x] Optimización Ergonómica de Tarjetas, Desacople de Hotspots y Corrección del Extintor (`juego3_trasiego.html`):
+      - [x] Reubicación de 'Desconectar Motor & Celulares' (targetId 1) al Escenario 2 en la cabina del operario de la máquina receptora (donde está Lucho).
+      - [x] Secuencia Procedimental Canónica:
+        - [x] Fase 1 (Cisterna - 2 Pasos): Paso 1 (Cuñas Llantas [5]) y Paso 2 (Polo a Tierra [2]). Bandeja con solo 3 tarjetas amplias.
+        - [x] Transición cinemática automática al completar el Paso 2 hacia el Escenario 2.
+        - [x] Fase 2 (Maquinaria - 4 Pasos): Paso 3 (Motor & Celulares con Lucho [1]), Paso 4 (Bandeja Antiderrame [3]), Paso 5 (Kit Antiderrame [6]), Paso 6 (Extintor ABC a 5m [4]).
+      - [x] Legibilidad y nitidez en tarjetas y clon de arrastre (`.floating-drag-clone`):
+        - [x] Grid de bandeja estructurado en 3 columnas amplias (`repeat(3, minmax(0, 1fr))`) eliminando apiñamiento.
+        - [x] Clon flotante fijado en ancho de 260px (`max-width: 290px`), fondo oscuro contrastado, borde dorado 2.5px, sombra 3D, icono de 36px y tipografía completa sin truncar (`-webkit-line-clamp: unset`).
+        - [x] Clon centrado ergonómicamente bajo el puntero (`offsetX = 130`, `offsetY = 40`) para no ser tapado por el dedo.
+      - [x] Separación radical de círculos / hotspots:
+        - [x] Hitbox reducido de `r="52"` a `r="34"` y radio de colisión ajustado para cero interferencia.
+        - [x] Coordenadas re-espaciadas a lo largo de todo el canvas: en Escenario 1 separados por 150px; en Escenario 2 cada punto distanciado por 110px a 240px.
+      - [x] Corrección definitiva del Extintor Satélite ABC (Hotspot 4):
+        - [x] Eliminada interferencia de colisión con el kit antiderrame mediante separación a X=840 (perímetro a 5m).
+        - [x] Sustituida la animación GSAP destructiva `{ opacity: 0, x: -80, rotation: -15 }` por escala elástica `{ opacity: 0, scale: 0.3 }` a `{ opacity: 1, scale: 1 }`, preservando intacto el `transform="translate(820, 220)"`.
+      - [x] Verificación automatizada con `verify_juego3.js` (10 checks exitosos) y reconstrucción de paquetes SCORM 1.2 vía `python build_scorm.py`.

@@ -194,13 +194,14 @@
         .stat-badge {
             background: var(--card-bg);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            padding: 5px 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             font-size: var(--font-sm);
             font-weight: 700;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
         }
 
         .stat-badge i {
@@ -219,8 +220,8 @@
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(239, 68, 68, 0.25));
             border: 1.5px solid var(--amarillo-bolivar);
             color: var(--amarillo-bolivar);
-            border-radius: var(--radius-md);
-            padding: 6px 10px;
+            border-radius: var(--radius-full);
+            padding: 5px 12px;
             font-size: var(--font-xs);
             font-weight: 900;
             display: flex;
@@ -339,45 +340,48 @@
             color: #FFFFFF;
         }
 
-        /* Toast Técnico Normativo de Confirmación Flotante (Sin alterar layout) */
+        /* Toast Técnico Normativo de Confirmación Flotante Inferior (Sin alterar layout ni tapar el juego) */
         .tech-feedback-toast {
-            position: absolute;
-            top: 68px;
-            left: 16px;
-            right: 16px;
-            max-width: 800px;
-            margin: 0 auto;
-            z-index: 50;
-            background: rgba(15, 23, 42, 0.96);
-            border: 1px solid rgba(148, 163, 184, 0.2);
+            position: fixed;
+            bottom: 24px;
+            top: auto;
+            left: 50%;
+            right: auto;
+            transform: translateX(-50%) translateY(20px);
+            width: calc(100% - 32px);
+            max-width: 660px;
+            margin: 0;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.97);
+            border: 1px solid rgba(148, 163, 184, 0.25);
             border-left: 4px solid var(--exito-verde);
             border-radius: var(--radius-md);
-            padding: 10px 14px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             gap: 12px;
             font-size: var(--font-xs);
             color: #d1fae5;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 16px rgba(16, 185, 129, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             opacity: 0;
-            transform: translateY(-8px);
-            transition: opacity 0.25s ease, transform 0.25s ease;
+            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
         }
 
         .tech-feedback-toast.show {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateX(-50%) translateY(0);
             pointer-events: auto;
         }
 
         .tech-feedback-toast.error-toast {
-            background: rgba(15, 23, 42, 0.96);
-            border-color: rgba(148, 163, 184, 0.2);
+            background: rgba(15, 23, 42, 0.97);
+            border-color: rgba(148, 163, 184, 0.25);
             border-left: 4px solid var(--alerta-rojo);
             color: #fee2e2;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 16px rgba(239, 68, 68, 0.3);
         }
 
         .tech-toast-icon {
@@ -448,17 +452,153 @@
             50% { opacity: 0.3; }
         }
 
-        /* Contenedor del Lienzo SVG */
+        /* Selector de Dos Escenarios Secuenciales (Fase 1 Cisterna / Fase 2 Receptor) */
+        .scenario-selector-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 7px 12px;
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .scenario-tab-btn {
+            flex: 1;
+            max-width: 320px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 14px;
+            border-radius: var(--radius-md);
+            background: rgba(30, 41, 59, 0.65);
+            border: 1.5px solid var(--border-subtle);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: left;
+            user-select: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .scenario-tab-btn:hover {
+            border-color: rgba(255, 199, 44, 0.6);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .scenario-tab-btn.active {
+            background: linear-gradient(135deg, rgba(255, 199, 44, 0.16), rgba(245, 158, 11, 0.08));
+            border-color: var(--amarillo-bolivar);
+            color: #ffffff;
+            box-shadow: 0 0 16px rgba(255, 199, 44, 0.3);
+        }
+
+        .scenario-tab-btn .scene-tab-num {
+            width: 24px;
+            height: 24px;
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 900;
+            background: #334155;
+            color: #ffffff;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-tab-btn.active .scene-tab-num {
+            background: var(--amarillo-bolivar);
+            color: #0f172a;
+            box-shadow: 0 0 8px rgba(255, 199, 44, 0.6);
+        }
+
+        .scenario-tab-btn .scene-tab-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .scenario-tab-btn .scene-tab-text strong {
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .scenario-tab-btn .scene-tab-text small {
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .scenario-tab-btn.active .scene-tab-text small {
+            color: #cbd5e1;
+        }
+
+        .scenario-tab-btn .scene-tab-check {
+            margin-left: auto;
+            width: 20px;
+            height: 20px;
+            border-radius: var(--radius-full);
+            background: var(--exito-verde);
+            color: #0f172a;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 900;
+            flex-shrink: 0;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+
+        .scenario-divider-arrow {
+            color: var(--text-subtle);
+            font-size: 0.78rem;
+            opacity: 0.6;
+            flex-shrink: 0;
+        }
+
+        /* Reglas de Filtrado de Tarjetas y Hotspots por Escenario Activo */
+        .scenario-mode-1 .scenario-2-card {
+            display: none !important;
+        }
+        .scenario-mode-2 .scenario-1-card {
+            display: none !important;
+        }
+        .scenario-mode-1 #hotspot-1,
+        .scenario-mode-1 #hotspot-3,
+        .scenario-mode-1 #hotspot-4,
+        .scenario-mode-1 #hotspot-6 {
+            display: none !important;
+        }
+        .scenario-mode-2 #hotspot-2,
+        .scenario-mode-2 #hotspot-5 {
+            display: none !important;
+        }
+
+        /* Contenedor del Lienzo SVG con Alto Zoom (Espacioso y Confortable) */
         .svg-canvas-wrap {
             width: 100%;
-            aspect-ratio: 940 / 260;
-            max-height: min(340px, 38vh);
+            aspect-ratio: 480 / 260;
+            min-height: 230px;
+            max-height: min(390px, 46vh);
             position: relative;
             background: radial-gradient(circle at 50% 30%, #1e293b 0%, #070d18 85%);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            border-radius: var(--radius-sm);
+            box-shadow: inset 0 2px 14px rgba(0, 0, 0, 0.7);
         }
 
         svg.field-svg {
@@ -488,18 +628,19 @@
         .roadmap-step-pill {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 9px;
-            border-radius: var(--radius-sm);
+            gap: 7px;
+            padding: 4px 11px;
+            border-radius: var(--radius-full);
             background: rgba(30, 41, 59, 0.65);
             border: 1px solid var(--border-subtle);
-            font-size: 0.72rem;
+            font-size: 0.74rem;
             font-weight: 700;
             color: var(--text-muted);
             transition: all 0.25s ease;
             cursor: default;
             flex-shrink: 0;
             user-select: none;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
         }
         .roadmap-step-pill.step-completed {
             background: rgba(16, 185, 129, 0.15);
@@ -523,17 +664,18 @@
             border-color: rgba(148, 163, 184, 0.12);
         }
         .roadmap-step-pill .step-badge {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             border-radius: var(--radius-full);
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.65rem;
+            font-size: 0.72rem;
             font-weight: 900;
             background: #334155;
             color: #FFFFFF;
             flex-shrink: 0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
         }
         .roadmap-step-pill.step-completed .step-badge {
             background: var(--exito-verde);
@@ -640,11 +782,16 @@
         .tray-cards-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 8px;
+            gap: 12px;
             width: 100%;
             padding: 2px 0 4px 0;
             box-sizing: border-box;
             overflow: visible;
+        }
+
+        .tray-cards-grid.scenario-mode-2 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
         }
 
         /* Guía Luminosa cuando una tarjeta está seleccionada para toque táctil */
@@ -667,10 +814,11 @@
             background: var(--card-bg);
             border: 2px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            padding: 6px 8px;
+            padding: 8px 12px;
+            min-height: 56px;
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 10px;
             cursor: grab;
             user-select: none;
             touch-action: none;
@@ -753,10 +901,10 @@
         }
 
         .action-card-title {
-            font-size: 0.78rem;
+            font-size: 0.82rem;
             font-weight: 800;
             color: #fff;
-            line-height: 1.15;
+            line-height: 1.25;
             margin-bottom: 2px;
             white-space: normal;
             overflow-wrap: break-word;
@@ -768,9 +916,9 @@
         }
 
         .action-card-sub {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            line-height: 1.2;
+            font-size: 0.70rem;
+            color: #cbd5e1;
+            line-height: 1.25;
             white-space: normal;
             overflow-wrap: break-word;
             word-break: break-word;
@@ -931,13 +1079,64 @@
             user-select: none !important;
         }
         .floating-drag-clone {
-            will-change: transform;
+            position: fixed !important;
+            min-width: 250px !important;
+            max-width: 300px !important;
+            width: 260px !important;
             height: auto !important;
-            max-height: 80px !important;
+            max-height: 120px !important;
+            background: rgba(15, 23, 42, 0.98) !important;
+            border: 2.5px solid var(--amarillo-bolivar) !important;
+            border-radius: var(--radius-md) !important;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.95), 0 0 30px rgba(255, 199, 44, 0.7) !important;
+            padding: 10px 14px !important;
+            gap: 12px !important;
             box-sizing: border-box !important;
             margin: 0 !important;
             z-index: 99999 !important;
             transition: none !important;
+            will-change: transform;
+            display: flex !important;
+            align-items: center !important;
+        }
+        .floating-drag-clone .action-card-icon-box {
+            width: 36px !important;
+            height: 36px !important;
+            min-width: 36px !important;
+            font-size: 1.15rem !important;
+            background: rgba(255, 199, 44, 0.15) !important;
+            border: 1.5px solid var(--amarillo-bolivar) !important;
+            color: var(--amarillo-bolivar) !important;
+            border-radius: var(--radius-sm) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+        .floating-drag-clone .action-card-text {
+            flex: 1 !important;
+            min-width: 0 !important;
+            overflow: visible !important;
+        }
+        .floating-drag-clone .action-card-title {
+            font-size: 0.84rem !important;
+            font-weight: 900 !important;
+            color: #ffffff !important;
+            line-height: 1.25 !important;
+            margin-bottom: 3px !important;
+            white-space: normal !important;
+            display: block !important;
+            -webkit-line-clamp: unset !important;
+            overflow: visible !important;
+        }
+        .floating-drag-clone .action-card-sub {
+            font-size: 0.70rem !important;
+            color: #cbd5e1 !important;
+            line-height: 1.25 !important;
+            white-space: normal !important;
+            display: block !important;
+            -webkit-line-clamp: unset !important;
+            overflow: visible !important;
         }
 
         /* Card Error Feedback (Sin temblor de pantalla ni desalineación de tarjetas) */
@@ -957,12 +1156,13 @@
             border-color: #ef4444 !important;
         }
 
-        /* Responsive para Tablets y Desktops compactos: 3 filas de 3 columnas */
+        /* Responsive para Tablets y Desktops compactos */
         @media (max-width: 960px) {
-            .tray-cards-grid {
+            .tray-cards-grid,
+            .tray-cards-grid.scenario-mode-2 {
                 display: grid;
                 grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 6px;
+                gap: 8px;
                 width: 100%;
                 overflow: visible;
                 padding: 2px 0 4px 0;
@@ -1042,6 +1242,25 @@
                 margin: 0 auto;
                 overflow-y: visible;
             }
+            .scenario-selector-bar {
+                padding: 4px 6px;
+                gap: 6px;
+            }
+            .scenario-tab-btn {
+                padding: 5px 8px;
+                gap: 6px;
+            }
+            .scenario-tab-btn .scene-tab-num {
+                width: 20px;
+                height: 20px;
+                font-size: 0.68rem;
+            }
+            .scenario-tab-btn .scene-tab-text strong {
+                font-size: 0.68rem;
+            }
+            .scenario-tab-btn .scene-tab-text small {
+                display: none;
+            }
             .stage-section {
                 margin: 4px 6px;
                 border-radius: var(--radius-md);
@@ -1072,9 +1291,9 @@
                 flex-shrink: 0;
             }
             .svg-canvas-wrap {
-                aspect-ratio: 940 / 260;
-                min-height: 115px;
-                max-height: 165px;
+                aspect-ratio: 280 / 250;
+                min-height: 220px;
+                max-height: 335px;
             }
             .tray-section {
                 padding: 4px 6px 18px 6px;
@@ -1093,7 +1312,8 @@
             .tray-swipe-cue {
                 display: none;
             }
-            .tray-cards-grid {
+            .tray-cards-grid,
+            .tray-cards-grid.scenario-mode-2 {
                 display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 6px;
@@ -1177,14 +1397,16 @@
                 justify-content: space-between;
             }
             .stat-badge {
-                padding: 3px 6px;
-                font-size: 0.7rem;
-                gap: 3px;
-                border-radius: var(--radius-sm);
+                padding: 4px 9px;
+                font-size: 0.74rem;
+                gap: 5px;
+                border-radius: var(--radius-full);
             }
             .combo-badge {
-                padding: 2px 5px;
-                font-size: 0.65rem;
+                padding: 4px 9px;
+                font-size: 0.72rem;
+                gap: 5px;
+                border-radius: var(--radius-full);
             }
             .bot-banner {
                 padding: 5px 8px;
@@ -1328,18 +1550,20 @@
             color: #ffffff;
         }
         .briefing-step-num {
-            min-width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
             background: rgba(255, 199, 44, 0.15);
             border: 1px solid var(--amarillo-bolivar, #FFC72C);
             color: var(--amarillo-bolivar, #FFC72C);
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             font-weight: 800;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 3px;
+            border-radius: 50%;
             flex-shrink: 0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
         }
         .briefing-controls {
             display: flex;
@@ -1395,10 +1619,9 @@
                     <i class="fa-solid fa-clipboard-check"></i>
                 </div>
                 <div class="brand-text">
-                    <h1>Inspector de Trasiego: Inspección de Campo</h1>
+                    <h1>Inspector de Trasiego</h1>
                     <div class="brand-sub">
-                        <span>Seguros Bolívar</span>
-                        <span class="norma-pill">Dec. 1079/2015 & Res. 773/2021</span>
+                        <span>Seguros Bolívar • KMA</span>
                     </div>
                 </div>
             </div>
@@ -1432,12 +1655,11 @@
 
         <main class="game-viewport">
             <!-- Bolívar Safety Bot Onboarding / Diálogo -->
-            <div class="bot-banner">
-                <div class="bot-avatar" id="bot-avatar" title="Toca para recibir un tip de Lucho">👨‍🔧</div>
+            <div class="bot-banner" style="padding: 6px 12px; margin-bottom: 4px;">
+                <div class="bot-avatar" id="bot-avatar" style="width: 30px; height: 30px; font-size: 1.1rem;" title="Toca para recibir un tip de Lucho">👨‍🔧</div>
                 <div class="bot-content">
-                    <div class="bot-name">Bolívar Safety Bot • Inspector SST</div>
-                    <div class="bot-dialog" id="bot-dialog-text">
-                        ¡Bienvenido a la inspección táctica! Revisa los 6 puntos parpadeantes en rojo en la zona de llenado. ¡Ojo con las tarjetas trampa que violan la norma! Arrastra o toca para certificar.
+                    <div class="bot-dialog" id="bot-dialog-text" style="font-size: 0.8rem; font-weight: 600;">
+                        ¡Inspecciona los 6 puntos clave de seguridad en la zona de abastecimiento!
                     </div>
                 </div>
             </div>
@@ -1446,21 +1668,39 @@
             <div class="tech-feedback-toast" id="tech-feedback-toast">
                 <i class="fa-solid fa-circle-check tech-toast-icon" id="toast-icon"></i>
                 <div>
-                    <strong id="toast-title">Polo a Tierra Equipotencial Conectado</strong><br>
-                    <span id="toast-desc">Disipación de cargas electrostáticas: hasta 15.000 V drenados a tierra (&lt;10 Ω) para evitar deflagración de vapor (Dec. 1079/2015).</span>
+                    <strong id="toast-title">Polo a Tierra Conectado</strong><br>
+                    <span id="toast-desc">Disipación de cargas electrostáticas para evitar deflagración de vapor.</span>
                 </div>
             </div>
 
             <!-- ZONA A: Panel de Escena de Trasiego (Imagen/Esquema de Inspección) -->
             <section class="stage-section">
-                <div class="stage-header">
-                    <div>
-                        <span>PUNTO DE DESPACHO • VISTA TÉCNICA</span>
-                        <span class="stage-condition-badge" id="stage-env-condition">
-                            <i class="fa-solid fa-cloud-sun"></i> Terreno plano • Viento moderado
+                <div class="stage-header" style="padding: 4px 10px; min-height: 28px;">
+                    <span class="stage-badge-live" id="equipment-name-badge"><i class="fa-solid fa-truck-monster"></i> EXCAVADORA CAT 320D</span>
+                    <span class="stage-condition-badge" id="stage-env-condition" style="display: none;">
+                        <i class="fa-solid fa-cloud-sun"></i> Terreno plano
+                    </span>
+                </div>
+
+                <!-- Selector de Dos Escenarios de Trasiego (Cinemática Secuencial) -->
+                <div class="scenario-selector-bar" id="scenario-selector-bar">
+                    <button type="button" class="scenario-tab-btn active" id="btn-scene-1" data-scene="1" title="Enfoque en el Camión Cisterna (Pasos 1 y 2)">
+                        <span class="scene-tab-num">1</span>
+                        <span class="scene-tab-text">
+                            <strong>FASE 1: CISTERNA</strong>
+                            <small>Cuñas y Polo a Tierra</small>
                         </span>
-                    </div>
-                    <span class="stage-badge-live" id="equipment-name-badge">EXCAVADORA CAT 320D (MOTOR DIESEL)</span>
+                        <span class="scene-tab-check" id="scene-1-check" style="display: none;">✓</span>
+                    </button>
+                    <div class="scenario-divider-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    <button type="button" class="scenario-tab-btn" id="btn-scene-2" data-scene="2" title="Enfoque en la Maquinaria Receptora (Pasos 3 a 6)">
+                        <span class="scene-tab-num">2</span>
+                        <span class="scene-tab-text">
+                            <strong>FASE 2: MAQUINARIA</strong>
+                            <small>Motor, Bandeja, Kit y Extintor</small>
+                        </span>
+                        <span class="scene-tab-check" id="scene-2-check" style="display: none;">✓</span>
+                    </button>
                 </div>
 
                 <!-- Barra de Procedimiento Paso a Paso (Dec. 1079/2015 & NFPA 77) -->
@@ -1472,12 +1712,12 @@
                     <span class="roadmap-step-arrow"><i class="fa-solid fa-chevron-right"></i></span>
                     <div class="roadmap-step-pill step-locked" data-step="2">
                         <span class="step-badge">2</span>
-                        <span class="step-label">2. Motor/Cabina</span>
+                        <span class="step-label">2. Polo a Tierra</span>
                     </div>
                     <span class="roadmap-step-arrow"><i class="fa-solid fa-chevron-right"></i></span>
                     <div class="roadmap-step-pill step-locked" data-step="3">
                         <span class="step-badge">3</span>
-                        <span class="step-label">3. Polo a Tierra</span>
+                        <span class="step-label">3. Motor/Cabina</span>
                     </div>
                     <span class="roadmap-step-arrow"><i class="fa-solid fa-chevron-right"></i></span>
                     <div class="roadmap-step-pill step-locked" data-step="4">
@@ -1496,8 +1736,8 @@
                     </div>
                 </div>
 
-                <div class="svg-canvas-wrap" id="svg-stage-container">
-                    <svg class="field-svg" id="field-svg" viewBox="0 70 940 260" preserveAspectRatio="xMidYMid meet">
+                <div class="svg-canvas-wrap scenario-mode-1" id="svg-stage-container">
+                    <svg class="field-svg scenario-mode-1" id="field-svg" viewBox="10 50 480 260" preserveAspectRatio="xMidYMid meet">
                         <defs>
                             <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%" stop-color="#1e293b"/>
@@ -1547,6 +1787,12 @@
                             <path d="M 200,80 L 245,80 L 245,115 L 200,115 Z" fill="#38bdf8" opacity="0.8"/>
                             <rect x="220" y="140" width="30" height="20" fill="#0f172a"/>
 
+                            <!-- Letrero Seguro Motor Cisterna Apagado -->
+                            <g id="svg-tanker-motor-sign" transform="translate(175, 45)" opacity="0">
+                                <rect x="0" y="0" width="85" height="20" rx="4" fill="#065f46" stroke="#10B981" stroke-width="1.5"/>
+                                <text x="42" y="14" fill="#FFFFFF" font-size="8" font-weight="900" text-anchor="middle">MOTOR APAGADO</text>
+                            </g>
+
                             <!-- Tanque Cisterna Cilíndrico de ACPM -->
                             <rect x="20" y="45" width="165" height="110" rx="28" fill="url(#tankerGrad)" stroke="#64748b" stroke-width="3"/>
                             
@@ -1583,7 +1829,7 @@
                         </g>
 
                         <!-- BANDEJA DE GOTEO ANTIDERRAME (Animación con muelle elástico) -->
-                        <g id="svg-drip-tray" transform="translate(550, 250)" opacity="0">
+                        <g id="svg-drip-tray" transform="translate(570, 255)" opacity="0">
                             <ellipse cx="35" cy="18" rx="40" ry="7" fill="rgba(0,0,0,0.5)"/>
                             <path d="M 0,0 L 70,0 L 62,18 L 8,18 Z" fill="#FFC72C" stroke="#B45309" stroke-width="2"/>
                             <line x1="12" y1="6" x2="58" y2="6" stroke="#0f172a" stroke-width="2"/>
@@ -1592,8 +1838,8 @@
                             <text x="35" y="32" fill="#10B981" font-size="9" font-weight="900" text-anchor="middle">BANDEJA OK</text>
                         </g>
 
-                        <!-- EXTINTOR SATÉLITE ABC A 5M (Llega rodando con polvo) -->
-                        <g id="svg-extinguisher" transform="translate(350, 225)" opacity="0">
+                        <!-- EXTINTOR SATÉLITE ABC A 5M (Aterriza con rebote elástico a 5m) -->
+                        <g id="svg-extinguisher" transform="translate(820, 220)" opacity="0">
                             <ellipse cx="14" cy="40" rx="16" ry="5" fill="rgba(0,0,0,0.5)"/>
                             <rect x="5" y="8" width="18" height="32" rx="4" fill="#EF4444" stroke="#991b1b" stroke-width="1.5"/>
                             <circle cx="14" cy="5" r="4" fill="#e2e8f0"/>
@@ -1604,7 +1850,7 @@
                         </g>
 
                         <!-- CUÑAS DE INMOVILIZACIÓN EN LLANTAS (Bloqueo de rodamiento) -->
-                        <g id="svg-wheel-chocks" transform="translate(195, 255)" opacity="0">
+                        <g id="svg-wheel-chocks" transform="translate(95, 260)" opacity="0">
                             <ellipse cx="25" cy="18" rx="28" ry="6" fill="rgba(0,0,0,0.5)"/>
                             <!-- Cuña Rueda 1 -->
                             <path d="M 0,16 L 22,0 L 22,16 Z" fill="#FFC72C" stroke="#0f172a" stroke-width="1.5"/>
@@ -1616,7 +1862,7 @@
                         </g>
 
                         <!-- KIT ANTIDERRAME PARA HIDROCARBUROS (Respuesta Inmediata) -->
-                        <g id="svg-spill-kit" transform="translate(460, 240)" opacity="0">
+                        <g id="svg-spill-kit" transform="translate(470, 250)" opacity="0">
                             <ellipse cx="20" cy="30" rx="22" ry="6" fill="rgba(0,0,0,0.5)"/>
                             <!-- Tambor / Maletín Amarillo de Residuos y Absorbentes -->
                             <rect x="6" y="8" width="28" height="22" rx="4" fill="#FFC72C" stroke="#b45309" stroke-width="1.5"/>
@@ -1680,9 +1926,9 @@
                         <!-- ==============================================
                              LOS 6 HOTSPOTS PARPADEANTES EN ROJO (ZONA A)
                              ============================================== -->
-                        <!-- HOTSPOT 1: Cabina/Motor -->
+                        <!-- HOTSPOT 1: Cabina/Motor (Escenario 2 - Maquinaria) -->
                         <g class="hotspot-target" id="hotspot-1" data-target="1" transform="translate(665, 135)">
-                            <circle cx="0" cy="0" r="52" fill="transparent" pointer-events="all"/>
+                            <circle cx="0" cy="0" r="34" fill="transparent" pointer-events="all"/>
                             <circle class="pulse-hazard" cx="0" cy="0" r="24" fill="rgba(239, 68, 68, 0.25)" stroke="#EF4444" stroke-width="3"/>
                             <circle cx="0" cy="0" r="16" fill="#EF4444" id="hotspot-dot-1"/>
                             <text x="0" y="5" fill="#ffffff" font-size="13" font-weight="900" text-anchor="middle" id="hotspot-num-1">!</text>
@@ -1690,9 +1936,9 @@
                             <text x="0" y="-20" fill="#FFC72C" font-size="8" font-weight="900" text-anchor="middle" id="hotspot-tag-1">MOTOR / CELULAR</text>
                         </g>
 
-                        <!-- HOTSPOT 2: Chasis/Masa Trasera -->
-                        <g class="hotspot-target" id="hotspot-2" data-target="2" transform="translate(755, 245)">
-                            <circle cx="0" cy="0" r="52" fill="transparent" pointer-events="all"/>
+                        <!-- HOTSPOT 2: Chasis Cisterna / Carrete de Tierra (Escenario 1 - Cisterna) -->
+                        <g class="hotspot-target" id="hotspot-2" data-target="2" transform="translate(250, 235)">
+                            <circle cx="0" cy="0" r="34" fill="transparent" pointer-events="all"/>
                             <circle class="pulse-hazard" cx="0" cy="0" r="24" fill="rgba(239, 68, 68, 0.25)" stroke="#EF4444" stroke-width="3"/>
                             <circle cx="0" cy="0" r="16" fill="#EF4444" id="hotspot-dot-2"/>
                             <text x="0" y="5" fill="#ffffff" font-size="13" font-weight="900" text-anchor="middle" id="hotspot-num-2">!</text>
@@ -1700,9 +1946,9 @@
                             <text x="0" y="33" fill="#FFC72C" font-size="8" font-weight="900" text-anchor="middle" id="hotspot-tag-2">POLO A TIERRA</text>
                         </g>
 
-                        <!-- HOTSPOT 3: Punto de Acople/Bandeja de Goteo -->
-                        <g class="hotspot-target" id="hotspot-3" data-target="3" transform="translate(585, 255)">
-                            <circle cx="0" cy="0" r="52" fill="transparent" pointer-events="all"/>
+                        <!-- HOTSPOT 3: Punto de Acople/Bandeja de Goteo (Escenario 2 - Maquinaria) -->
+                        <g class="hotspot-target" id="hotspot-3" data-target="3" transform="translate(600, 260)">
+                            <circle cx="0" cy="0" r="34" fill="transparent" pointer-events="all"/>
                             <circle class="pulse-hazard" cx="0" cy="0" r="24" fill="rgba(239, 68, 68, 0.25)" stroke="#EF4444" stroke-width="3"/>
                             <circle cx="0" cy="0" r="16" fill="#EF4444" id="hotspot-dot-3"/>
                             <text x="0" y="5" fill="#ffffff" font-size="13" font-weight="900" text-anchor="middle" id="hotspot-num-3">!</text>
@@ -1710,9 +1956,9 @@
                             <text x="0" y="-20" fill="#FFC72C" font-size="8" font-weight="900" text-anchor="middle" id="hotspot-tag-3">BANDEJA GOTEO</text>
                         </g>
 
-                        <!-- HOTSPOT 4: Perímetro de Seguridad (Extintor ABC) -->
-                        <g class="hotspot-target" id="hotspot-4" data-target="4" transform="translate(365, 250)">
-                            <circle cx="0" cy="0" r="52" fill="transparent" pointer-events="all"/>
+                        <!-- HOTSPOT 4: Perímetro de Seguridad a 5m / Extintor ABC (Escenario 2 - Maquinaria) -->
+                        <g class="hotspot-target" id="hotspot-4" data-target="4" transform="translate(840, 240)">
+                            <circle cx="0" cy="0" r="34" fill="transparent" pointer-events="all"/>
                             <circle class="pulse-hazard" cx="0" cy="0" r="24" fill="rgba(239, 68, 68, 0.25)" stroke="#EF4444" stroke-width="3"/>
                             <circle cx="0" cy="0" r="16" fill="#EF4444" id="hotspot-dot-4"/>
                             <text x="0" y="5" fill="#ffffff" font-size="13" font-weight="900" text-anchor="middle" id="hotspot-num-4">!</text>
@@ -1720,9 +1966,9 @@
                             <text x="0" y="-20" fill="#FFC72C" font-size="8" font-weight="900" text-anchor="middle" id="hotspot-tag-4">EXTINTOR ABC</text>
                         </g>
 
-                        <!-- HOTSPOT 5: Cuñas de Inmovilización en Ruedas -->
-                        <g class="hotspot-target" id="hotspot-5" data-target="5" transform="translate(210, 275)">
-                            <circle cx="0" cy="0" r="52" fill="transparent" pointer-events="all"/>
+                        <!-- HOTSPOT 5: Cuñas de Inmovilización en Ruedas (Escenario 1 - Cisterna) -->
+                        <g class="hotspot-target" id="hotspot-5" data-target="5" transform="translate(100, 275)">
+                            <circle cx="0" cy="0" r="34" fill="transparent" pointer-events="all"/>
                             <circle class="pulse-hazard" cx="0" cy="0" r="24" fill="rgba(239, 68, 68, 0.25)" stroke="#EF4444" stroke-width="3"/>
                             <circle cx="0" cy="0" r="16" fill="#EF4444" id="hotspot-dot-5"/>
                             <text x="0" y="5" fill="#ffffff" font-size="13" font-weight="900" text-anchor="middle" id="hotspot-num-5">!</text>
@@ -1730,9 +1976,9 @@
                             <text x="0" y="33" fill="#FFC72C" font-size="8" font-weight="900" text-anchor="middle" id="hotspot-tag-5">CUÑAS LLANTAS</text>
                         </g>
 
-                        <!-- HOTSPOT 6: Kit Antiderrame para Hidrocarburos -->
-                        <g class="hotspot-target" id="hotspot-6" data-target="6" transform="translate(480, 275)">
-                            <circle cx="0" cy="0" r="52" fill="transparent" pointer-events="all"/>
+                        <!-- HOTSPOT 6: Kit Antiderrame para Hidrocarburos (Escenario 2 - Maquinaria) -->
+                        <g class="hotspot-target" id="hotspot-6" data-target="6" transform="translate(490, 265)">
+                            <circle cx="0" cy="0" r="34" fill="transparent" pointer-events="all"/>
                             <circle class="pulse-hazard" cx="0" cy="0" r="24" fill="rgba(239, 68, 68, 0.25)" stroke="#EF4444" stroke-width="3"/>
                             <circle cx="0" cy="0" r="16" fill="#EF4444" id="hotspot-dot-6"/>
                             <text x="0" y="5" fill="#ffffff" font-size="13" font-weight="900" text-anchor="middle" id="hotspot-num-6">!</text>
@@ -1754,9 +2000,9 @@
                     <span id="tray-counter-label" style="color: var(--exito-verde); white-space: nowrap;">0 de 6 Corregidos</span>
                 </div>
 
-                <div class="tray-cards-grid" id="tray-cards-grid">
-                    <!-- Tarjeta 1 -->
-                    <div class="action-card" id="card-action-1" data-card="1">
+                <div class="tray-cards-grid scenario-mode-1" id="tray-cards-grid">
+                    <!-- Tarjeta 1 (Fase 2: Maquinaria - Cabina Operario) -->
+                    <div class="action-card scenario-2-card" id="card-action-1" data-card="1">
                         <div class="action-card-icon-box">
                             <i class="fa-solid fa-power-off"></i>
                         </div>
@@ -1766,8 +2012,8 @@
                         </div>
                     </div>
 
-                    <!-- Tarjeta 2 -->
-                    <div class="action-card" id="card-action-2" data-card="2">
+                    <!-- Tarjeta 2 (Fase 1: Cisterna) -->
+                    <div class="action-card scenario-1-card" id="card-action-2" data-card="2">
                         <div class="action-card-icon-box">
                             <i class="fa-solid fa-bolt"></i>
                         </div>
@@ -1777,8 +2023,8 @@
                         </div>
                     </div>
 
-                    <!-- Tarjeta 3 -->
-                    <div class="action-card" id="card-action-3" data-card="3">
+                    <!-- Tarjeta 3 (Fase 2: Maquinaria) -->
+                    <div class="action-card scenario-2-card" id="card-action-3" data-card="3">
                         <div class="action-card-icon-box">
                             <i class="fa-solid fa-fill-drip"></i>
                         </div>
@@ -1788,8 +2034,8 @@
                         </div>
                     </div>
 
-                    <!-- Tarjeta 4 -->
-                    <div class="action-card" id="card-action-4" data-card="4">
+                    <!-- Tarjeta 4 (Fase 2: Maquinaria) -->
+                    <div class="action-card scenario-2-card" id="card-action-4" data-card="4">
                         <div class="action-card-icon-box">
                             <i class="fa-solid fa-fire-extinguisher"></i>
                         </div>
@@ -1799,8 +2045,8 @@
                         </div>
                     </div>
 
-                    <!-- Tarjeta 5: Cuñas de Inmovilización en Llantas -->
-                    <div class="action-card" id="card-action-5" data-card="5">
+                    <!-- Tarjeta 5: Cuñas de Inmovilización (Fase 1: Cisterna) -->
+                    <div class="action-card scenario-1-card" id="card-action-5" data-card="5">
                         <div class="action-card-icon-box">
                             <i class="fa-solid fa-shield-halved"></i>
                         </div>
@@ -1810,8 +2056,8 @@
                         </div>
                     </div>
 
-                    <!-- Tarjeta 6: Kit Antiderrame de Hidrocarburos -->
-                    <div class="action-card" id="card-action-6" data-card="6">
+                    <!-- Tarjeta 6: Kit Antiderrame de Hidrocarburos (Fase 2: Maquinaria) -->
+                    <div class="action-card scenario-2-card" id="card-action-6" data-card="6">
                         <div class="action-card-icon-box">
                             <i class="fa-solid fa-box-archive"></i>
                         </div>
@@ -1821,8 +2067,8 @@
                         </div>
                     </div>
 
-                    <!-- Tarjeta 7: Trampa Dinámica 1 -->
-                    <div class="action-card trap-card" id="card-action-trap" data-card="trap">
+                    <!-- Tarjeta 7: Trampa Dinámica 1 (Fase 1: Cisterna) -->
+                    <div class="action-card trap-card scenario-1-card" id="card-action-trap" data-card="trap">
                         <div class="action-card-icon-box">
                             <i class="fa-solid fa-triangle-exclamation" id="trap-card-icon"></i>
                         </div>
@@ -1832,8 +2078,8 @@
                         </div>
                     </div>
 
-                    <!-- Tarjeta 8: Trampa Dinámica 2 -->
-                    <div class="action-card trap-card" id="card-action-trap2" data-card="trap2">
+                    <!-- Tarjeta 8: Trampa Dinámica 2 (Fase 2: Maquinaria) -->
+                    <div class="action-card trap-card scenario-2-card" id="card-action-trap2" data-card="trap2">
                         <div class="action-card-icon-box">
                             <i class="fa-solid fa-faucet-drip" id="trap2-card-icon"></i>
                         </div>
@@ -1843,8 +2089,8 @@
                         </div>
                     </div>
 
-                    <!-- Tarjeta 9: Trampa Dinámica 3 -->
-                    <div class="action-card trap-card" id="card-action-trap3" data-card="trap3">
+                    <!-- Tarjeta 9: Trampa Dinámica 3 (Fase 2: Maquinaria) -->
+                    <div class="action-card trap-card scenario-2-card" id="card-action-trap3" data-card="trap3">
                         <div class="action-card-icon-box">
                             <i class="fa-solid fa-triangle-exclamation" id="trap3-card-icon"></i>
                         </div>
@@ -1935,27 +2181,27 @@
                 <div class="briefing-step-row">
                     <span class="briefing-step-num">1</span>
                     <div>
-                        <strong style="color: #38bdf8;">Inmovilización Mecánica y Apagado (Dec. 1079/2015):</strong>
+                        <strong style="color: #38bdf8;">Fase 1 - Cisterna: Cuñas y Polo a Tierra (Dec. 1079/2015 & NFPA 77):</strong>
                         <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
-                            Bloquea el camión cisterna con cuñas en llantas traseras y apaga el motor para eliminar vibraciones y fuentes térmicas de ignición en el escape.
+                            Inmoviliza mecánicamente el carrotanque con cuñas antichispa y conecta el cable a tierra en el chasis (&lt;10 Ω) para disipar estática triboeléctrica antes de acoplar.
                         </p>
                     </div>
                 </div>
                 <div class="briefing-step-row">
                     <span class="briefing-step-num">2</span>
                     <div>
-                        <strong style="color: #facc15;">Equipotencialidad y Polo a Tierra (NFPA 77):</strong>
+                        <strong style="color: #facc15;">Fase 2 - Maquinaria: Motor y Celulares (Ley 55/1993):</strong>
                         <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
-                            Conecta la pinza a tierra en metal sin pintar del chasis (&lt;10 Ω) para disipar cargas electrostáticas generadas por la fricción del combustible al fluir.
+                            En la cabina con Lucho, asegura el apagado inmediato del motor y aislamiento de celulares con baterías no intrínsecas para suprimir fuentes térmicas (&gt;450°C).
                         </p>
                     </div>
                 </div>
                 <div class="briefing-step-row">
                     <span class="briefing-step-num">3</span>
                     <div>
-                        <strong style="color: #4ade80;">Contención de Goteo y Protección Contra Fuego:</strong>
+                        <strong style="color: #4ade80;">Contención Ecológica y Extintor a 5m (Dec. 321/1999 & NFPA 10):</strong>
                         <p style="margin: 2px 0 0; font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
-                            Ubica la bandeja colectora bajo el acople rápido de la manguera y ten listo el extintor PQS a 5 metros para sofocar cualquier chispa incipiente.
+                            Posiciona la bandeja antiderrame al 110% bajo el acople, alista el kit de respuesta rápida y ubica el extintor satélite ABC a 5 metros contra el viento.
                         </p>
                     </div>
                 </div>
@@ -2504,17 +2750,17 @@
                     hose: 'M 220,225 Q 400,265 610,210',
                     groundCable: 'M 185,235 Q 450,335 755,245',
                     clamp: 'translate(755, 245)',
-                    dripTray: 'translate(550, 250)',
-                    extinguisher: 'translate(350, 225)',
-                    wheelChocks: 'translate(195, 255)',
-                    spillKit: 'translate(460, 240)',
+                    dripTray: 'translate(570, 255)',
+                    extinguisher: 'translate(820, 220)',
+                    wheelChocks: 'translate(95, 260)',
+                    spillKit: 'translate(470, 250)',
                     hotspots: {
-                        1: 'translate(665, 135)',
-                        2: 'translate(755, 245)',
-                        3: 'translate(585, 255)',
-                        4: 'translate(365, 250)',
-                        5: 'translate(210, 275)',
-                        6: 'translate(480, 275)'
+                        1: 'translate(665, 135)', // Escenario 2: Cabina Operario Lucho / Motor
+                        2: 'translate(250, 235)', // Escenario 1: Carrete Tierra Cisterna
+                        3: 'translate(600, 260)', // Escenario 2: Acople/Bandeja Maquinaria
+                        4: 'translate(840, 240)', // Escenario 2: Extintor 5m Perímetro
+                        5: 'translate(100, 275)', // Escenario 1: Cuñas Llantas Cisterna
+                        6: 'translate(490, 265)'  // Escenario 2: Kit Antiderrame
                     }
                 },
                 mobile: {
@@ -2522,17 +2768,17 @@
                     hose: 'M 170,165 Q 240,195 320,150',
                     groundCable: 'M 135,175 Q 280,240 455,205',
                     clamp: 'translate(455, 205)',
-                    dripTray: 'translate(280, 165)',
-                    extinguisher: 'translate(160, 135)',
-                    wheelChocks: 'translate(80, 185)',
-                    spillKit: 'translate(230, 175)',
+                    dripTray: 'translate(310, 170)',
+                    extinguisher: 'translate(450, 140)',
+                    wheelChocks: 'translate(55, 195)',
+                    spillKit: 'translate(245, 195)',
                     hotspots: {
-                        1: 'translate(375, 95)',
-                        2: 'translate(455, 205)',
-                        3: 'translate(315, 170)',
-                        4: 'translate(175, 160)',
-                        5: 'translate(95, 205)',
-                        6: 'translate(245, 205)'
+                        1: 'translate(375, 95)',   // Escenario 2: Cabina Operario Lucho
+                        2: 'translate(160, 165)',  // Escenario 1: Carrete Tierra Cisterna
+                        3: 'translate(325, 175)',  // Escenario 2: Acople/Bandeja Maquinaria
+                        4: 'translate(460, 160)',  // Escenario 2: Extintor 5m Perímetro
+                        5: 'translate(60, 205)',   // Escenario 1: Cuñas Llantas Cisterna
+                        6: 'translate(255, 205)'   // Escenario 2: Kit Antiderrame
                     }
                 }
             },
@@ -2543,17 +2789,17 @@
                     hose: 'M 220,225 Q 440,270 695,218',
                     groundCable: 'M 185,235 Q 480,335 785,245',
                     clamp: 'translate(785, 245)',
-                    dripTray: 'translate(635, 250)',
-                    extinguisher: 'translate(350, 225)',
-                    wheelChocks: 'translate(195, 255)',
-                    spillKit: 'translate(470, 240)',
+                    dripTray: 'translate(650, 255)',
+                    extinguisher: 'translate(820, 220)',
+                    wheelChocks: 'translate(95, 260)',
+                    spillKit: 'translate(470, 250)',
                     hotspots: {
-                        1: 'translate(640, 140)',
-                        2: 'translate(785, 245)',
-                        3: 'translate(670, 255)',
-                        4: 'translate(365, 250)',
-                        5: 'translate(210, 275)',
-                        6: 'translate(480, 275)'
+                        1: 'translate(642, 165)', // Escenario 2: Cabina Volqueta
+                        2: 'translate(250, 235)', // Escenario 1: Carrete Tierra Cisterna
+                        3: 'translate(680, 260)', // Escenario 2: Acople Volqueta
+                        4: 'translate(840, 240)', // Escenario 2: Extintor 5m Perímetro
+                        5: 'translate(100, 275)', // Escenario 1: Cuñas Llantas Cisterna
+                        6: 'translate(490, 265)'  // Escenario 2: Kit Antiderrame
                     }
                 },
                 mobile: {
@@ -2561,17 +2807,17 @@
                     hose: 'M 170,165 Q 260,200 375,155',
                     groundCable: 'M 135,175 Q 300,240 475,205',
                     clamp: 'translate(475, 205)',
-                    dripTray: 'translate(335, 168)',
-                    extinguisher: 'translate(160, 135)',
-                    wheelChocks: 'translate(80, 185)',
-                    spillKit: 'translate(230, 175)',
+                    dripTray: 'translate(345, 170)',
+                    extinguisher: 'translate(450, 140)',
+                    wheelChocks: 'translate(55, 195)',
+                    spillKit: 'translate(245, 195)',
                     hotspots: {
-                        1: 'translate(345, 98)',
-                        2: 'translate(475, 205)',
-                        3: 'translate(365, 172)',
-                        4: 'translate(175, 160)',
-                        5: 'translate(95, 205)',
-                        6: 'translate(245, 205)'
+                        1: 'translate(355, 105)',
+                        2: 'translate(160, 165)',
+                        3: 'translate(370, 175)',
+                        4: 'translate(460, 160)',
+                        5: 'translate(60, 205)',
+                        6: 'translate(255, 205)'
                     }
                 }
             },
@@ -2582,17 +2828,17 @@
                     hose: 'M 220,225 Q 400,265 610,205',
                     groundCable: 'M 185,235 Q 460,335 770,245',
                     clamp: 'translate(770, 245)',
-                    dripTray: 'translate(555, 250)',
-                    extinguisher: 'translate(350, 225)',
-                    wheelChocks: 'translate(195, 255)',
-                    spillKit: 'translate(460, 240)',
+                    dripTray: 'translate(570, 255)',
+                    extinguisher: 'translate(820, 220)',
+                    wheelChocks: 'translate(95, 260)',
+                    spillKit: 'translate(470, 250)',
                     hotspots: {
-                        1: 'translate(670, 130)',
-                        2: 'translate(770, 245)',
-                        3: 'translate(585, 255)',
-                        4: 'translate(365, 250)',
-                        5: 'translate(210, 275)',
-                        6: 'translate(480, 275)'
+                        1: 'translate(665, 140)', // Escenario 2: Cabina Bulldozer
+                        2: 'translate(250, 235)', // Escenario 1: Carrete Tierra Cisterna
+                        3: 'translate(600, 260)', // Escenario 2: Acople Bulldozer
+                        4: 'translate(840, 240)', // Escenario 2: Extintor 5m Perímetro
+                        5: 'translate(100, 275)', // Escenario 1: Cuñas Llantas Cisterna
+                        6: 'translate(490, 265)'  // Escenario 2: Kit Antiderrame
                     }
                 },
                 mobile: {
@@ -2600,17 +2846,17 @@
                     hose: 'M 170,165 Q 240,195 320,148',
                     groundCable: 'M 135,175 Q 290,240 465,205',
                     clamp: 'translate(465, 205)',
-                    dripTray: 'translate(285, 165)',
-                    extinguisher: 'translate(160, 135)',
-                    wheelChocks: 'translate(80, 185)',
-                    spillKit: 'translate(230, 175)',
+                    dripTray: 'translate(310, 170)',
+                    extinguisher: 'translate(450, 140)',
+                    wheelChocks: 'translate(55, 195)',
+                    spillKit: 'translate(245, 195)',
                     hotspots: {
-                        1: 'translate(380, 92)',
-                        2: 'translate(465, 205)',
-                        3: 'translate(315, 170)',
-                        4: 'translate(175, 160)',
-                        5: 'translate(95, 205)',
-                        6: 'translate(245, 205)'
+                        1: 'translate(375, 95)',
+                        2: 'translate(160, 165)',
+                        3: 'translate(325, 175)',
+                        4: 'translate(460, 160)',
+                        5: 'translate(60, 205)',
+                        6: 'translate(255, 205)'
                     }
                 }
             },
@@ -2621,17 +2867,17 @@
                     hose: 'M 220,225 Q 410,265 615,215',
                     groundCable: 'M 185,235 Q 470,335 795,245',
                     clamp: 'translate(795, 245)',
-                    dripTray: 'translate(560, 250)',
-                    extinguisher: 'translate(350, 225)',
-                    wheelChocks: 'translate(195, 255)',
-                    spillKit: 'translate(460, 240)',
+                    dripTray: 'translate(570, 255)',
+                    extinguisher: 'translate(820, 220)',
+                    wheelChocks: 'translate(95, 260)',
+                    spillKit: 'translate(470, 250)',
                     hotspots: {
-                        1: 'translate(745, 145)',
-                        2: 'translate(795, 245)',
-                        3: 'translate(595, 255)',
-                        4: 'translate(365, 250)',
-                        5: 'translate(210, 275)',
-                        6: 'translate(480, 275)'
+                        1: 'translate(680, 140)', // Escenario 2: Panel Operador Generador
+                        2: 'translate(250, 235)', // Escenario 1: Carrete Tierra Cisterna
+                        3: 'translate(605, 260)', // Escenario 2: Boquilla Generador
+                        4: 'translate(840, 240)', // Escenario 2: Extintor 5m Perímetro
+                        5: 'translate(100, 275)', // Escenario 1: Cuñas Llantas Cisterna
+                        6: 'translate(490, 265)'  // Escenario 2: Kit Antiderrame
                     }
                 },
                 mobile: {
@@ -2639,17 +2885,17 @@
                     hose: 'M 170,165 Q 245,195 325,152',
                     groundCable: 'M 135,175 Q 310,240 490,205',
                     clamp: 'translate(490, 205)',
-                    dripTray: 'translate(290, 168)',
-                    extinguisher: 'translate(160, 135)',
-                    wheelChocks: 'translate(80, 185)',
-                    spillKit: 'translate(230, 175)',
+                    dripTray: 'translate(315, 170)',
+                    extinguisher: 'translate(450, 140)',
+                    wheelChocks: 'translate(55, 195)',
+                    spillKit: 'translate(245, 195)',
                     hotspots: {
-                        1: 'translate(440, 100)',
-                        2: 'translate(490, 205)',
-                        3: 'translate(325, 172)',
-                        4: 'translate(175, 160)',
-                        5: 'translate(95, 205)',
-                        6: 'translate(245, 205)'
+                        1: 'translate(390, 95)',
+                        2: 'translate(160, 165)',
+                        3: 'translate(330, 175)',
+                        4: 'translate(460, 160)',
+                        5: 'translate(60, 205)',
+                        6: 'translate(255, 205)'
                     }
                 }
             }
@@ -2830,12 +3076,14 @@
                 // Secuencia Canónica Obligatoria del Procedimiento de Trasiego (Dec. 1079/2015 & NFPA 77)
                 this.PROCEDURE_STEPS = [
                     { targetId: 5, step: 1, name: "1. Cuñas", fullName: "Cuñas en Llantas", norm: "Dec. 1079/2015 Art. 2.2.1.7.7", icon: "fa-stop", prompt: "Paso 1 del Procedimiento: Inmovilice el carrotanque colocando las CUÑAS en las llantas antes de cualquier maniobra." },
-                    { targetId: 1, step: 2, name: "2. Motor/Cabina", fullName: "Apagado de Motor y Celular", norm: "Ley 55/1993 y Res. 773/2021", icon: "fa-power-off", prompt: "Paso 2: Neutralice fuentes de ignición apagando el MOTOR y aislando celulares con baterías de litio (temperatura >450°C)." },
-                    { targetId: 2, step: 3, name: "3. Polo a Tierra", fullName: "Conexión Polo a Tierra", norm: "NFPA 77 & Dec. 1079/2015", icon: "fa-bolt", prompt: "Paso 3: Conecte el cable de POLO A TIERRA (<10 Ω) al chasis para drenar la estática acumulada por la fricción." },
+                    { targetId: 2, step: 2, name: "2. Polo a Tierra", fullName: "Conexión Polo a Tierra", norm: "NFPA 77 & Dec. 1079/2015", icon: "fa-bolt", prompt: "Paso 2: Conecte el cable de POLO A TIERRA (<10 Ω) al chasis del carrotanque para drenar la estática antes de operar." },
+                    { targetId: 1, step: 3, name: "3. Motor/Cabina", fullName: "Apagado de Motor y Celular", norm: "Ley 55/1993 y Res. 773/2021", icon: "fa-power-off", prompt: "Paso 3: En la cabina de la maquinaria, verifique con Lucho el APAGADO DEL MOTOR y aislamiento de celulares (fuentes térmicas a >450°C)." },
                     { targetId: 3, step: 4, name: "4. Bandeja Goteo", fullName: "Bandeja Antiderrame al 110%", norm: "Dec. 4741/2005", icon: "fa-shield", prompt: "Paso 4: Posicione la BANDEJA ANTIDERRAME al 110% bajo el acople antes de acoplar la manguera y abrir el flujo." },
                     { targetId: 6, step: 5, name: "5. Kit Derrames", fullName: "Alistamiento Kit Antiderrame", norm: "Dec. 321/1999 PNC", icon: "fa-toolbox", prompt: "Paso 5: Aliste el KIT ANTIDERRAME de respuesta rápida con material absorbente oleofílico in situ." },
                     { targetId: 4, step: 6, name: "6. Extintor ABC", fullName: "Extintor Satélite ABC 150 lbs", norm: "NFPA 10", icon: "fa-fire-extinguisher", prompt: "Paso 6: Disponga el EXTINTOR SATÉLITE ABC 150 lbs a 5 metros contra el viento para certificar el frente de trasiego." }
                 ];
+
+                this.currentScenario = 1;
 
                 this.cacheDom();
                 this.bindEvents();
@@ -2861,6 +3109,12 @@
                     comboDisplay: document.getElementById('combo-multiplier-display'),
                     roadmapGuide: document.getElementById('trasiego-roadmap-guide'),
 
+                    // Controles de Selección de Escenario (Dos Fases)
+                    btnScene1: document.getElementById('btn-scene-1'),
+                    btnScene2: document.getElementById('btn-scene-2'),
+                    scene1Check: document.getElementById('scene-1-check'),
+                    scene2Check: document.getElementById('scene-2-check'),
+
                     // Toast Feedback
                     toast: document.getElementById('tech-feedback-toast'),
                     toastIcon: document.getElementById('toast-icon'),
@@ -2868,6 +3122,7 @@
                     toastDesc: document.getElementById('toast-desc'),
 
                     // Elementos SVG Corregibles
+                    svgTankerMotorSign: document.getElementById('svg-tanker-motor-sign'),
                     svgMotorSafeSign: document.getElementById('svg-motor-safe-sign'),
                     exhaustSmoke: document.getElementById('exhaust-smoke'),
                     luchoAvatar: document.getElementById('lucho-cabin-avatar'),
@@ -2909,8 +3164,76 @@
                 setupMoodleFullscreen('btn-moodle-fullscreen');
             }
 
+            /**
+             * Transición Cinemática entre los Dos Escenarios Secuenciales
+             * @param {number} targetScenario - 1: Cisterna | 2: Maquinaria
+             * @param {boolean} animated - Si realiza un paneo suave con GSAP
+             */
+            transitionToScenario(targetScenario, animated = true) {
+                this.currentScenario = targetScenario;
+                const isMobile = window.innerWidth <= 768;
+                const svg = document.getElementById('field-svg');
+                const stageWrap = document.getElementById('svg-stage-container');
+                const grid = document.getElementById('tray-cards-grid');
+
+                // Sincronizar botones de la barra de pestañas
+                if (this.dom.btnScene1 && this.dom.btnScene2) {
+                    this.dom.btnScene1.classList.toggle('active', targetScenario === 1);
+                    this.dom.btnScene2.classList.toggle('active', targetScenario === 2);
+                }
+
+                // Sincronizar clases CSS para visibilidad y filtros de tarjetas/hotspots
+                [svg, stageWrap, grid].forEach(el => {
+                    if (el) {
+                        el.classList.remove('scenario-mode-1', 'scenario-mode-2');
+                        el.classList.add(`scenario-mode-${targetScenario}`);
+                    }
+                });
+
+                // Coordenadas calibradas del ViewBox de cámara por dispositivo y escenario
+                let targetVb;
+                if (targetScenario === 1) {
+                    targetVb = isMobile
+                        ? { x: 0, y: 0, w: 280, h: 270 }
+                        : { x: 10, y: 50, w: 480, h: 260 };
+                } else {
+                    targetVb = isMobile
+                        ? { x: 235, y: 0, w: 285, h: 270 }
+                        : { x: 460, y: 50, w: 480, h: 260 };
+                }
+
+                if (svg) {
+                    if (animated && window.gsap) {
+                        const currentVb = svg.viewBox.baseVal;
+                        const proxy = {
+                            x: currentVb ? currentVb.x : (targetScenario === 1 ? 10 : 460),
+                            y: currentVb ? currentVb.y : 50,
+                            w: currentVb ? currentVb.width : 480,
+                            h: currentVb ? currentVb.height : 260
+                        };
+                        gsap.to(proxy, {
+                            x: targetVb.x,
+                            y: targetVb.y,
+                            w: targetVb.w,
+                            h: targetVb.h,
+                            duration: 0.85,
+                            ease: "power2.inOut",
+                            onUpdate: () => {
+                                svg.setAttribute('viewBox', `${proxy.x} ${proxy.y} ${proxy.w} ${proxy.h}`);
+                            }
+                        });
+                    } else {
+                        svg.setAttribute('viewBox', `${targetVb.x} ${targetVb.y} ${targetVb.w} ${targetVb.h}`);
+                    }
+                }
+
+                if (animated && this.audio && typeof this.audio.playTone === 'function') {
+                    this.audio.playTone(targetScenario === 2 ? 620 : 420, 'sine', 0.08, 0.1);
+                }
+            }
+
             applySvgResponsiveLayout() {
-                const isMobile = window.innerWidth <= 640;
+                const isMobile = window.innerWidth <= 768;
                 const svg = document.getElementById('field-svg');
                 if (!svg) return;
 
@@ -2920,28 +3243,22 @@
                 const vehCfg = VEHICLE_CONFIGS[vehIndex];
                 const activeCfg = isMobile ? vehCfg.mobile : vehCfg.desktop;
 
+                const groundPath = document.getElementById('svg-ground-path');
+                const groundLine = document.getElementById('svg-ground-line');
+                const tanker = document.getElementById('tanker-truck');
+                const machine = document.getElementById('machinery-truck');
+
                 if (isMobile) {
-                    svg.setAttribute('viewBox', '0 0 540 280');
-                    
-                    const groundPath = document.getElementById('svg-ground-path');
-                    const groundLine = document.getElementById('svg-ground-line');
-                    if (groundPath) groundPath.setAttribute('d', 'M 0,210 L 540,210 L 540,280 L 0,280 Z');
+                    if (groundPath) groundPath.setAttribute('d', 'M 0,210 L 940,210 L 940,390 L 0,390 Z');
                     if (groundLine) {
                         groundLine.setAttribute('x1', '0');
                         groundLine.setAttribute('y1', '210');
-                        groundLine.setAttribute('x2', '540');
+                        groundLine.setAttribute('x2', '940');
                         groundLine.setAttribute('y2', '210');
                     }
-
-                    const tanker = document.getElementById('tanker-truck');
-                    const machine = document.getElementById('machinery-truck');
                     if (tanker) tanker.setAttribute('transform', 'translate(15, 35)');
                     if (machine) machine.setAttribute('transform', activeCfg.machineTransform);
                 } else {
-                    svg.setAttribute('viewBox', '0 70 940 260');
-
-                    const groundPath = document.getElementById('svg-ground-path');
-                    const groundLine = document.getElementById('svg-ground-line');
                     if (groundPath) groundPath.setAttribute('d', 'M 0,270 L 940,270 L 940,390 L 0,390 Z');
                     if (groundLine) {
                         groundLine.setAttribute('x1', '0');
@@ -2949,9 +3266,6 @@
                         groundLine.setAttribute('x2', '940');
                         groundLine.setAttribute('y2', '270');
                     }
-
-                    const tanker = document.getElementById('tanker-truck');
-                    const machine = document.getElementById('machinery-truck');
                     if (tanker) tanker.setAttribute('transform', 'translate(40, 95)');
                     if (machine) machine.setAttribute('transform', activeCfg.machineTransform);
                 }
@@ -2980,9 +3294,28 @@
                         hs.setAttribute('transform', activeCfg.hotspots[i]);
                     }
                 }
+
+                // Aplicar encuadre de cámara según escenario actual
+                this.transitionToScenario(this.currentScenario || 1, false);
             }
 
             bindEvents() {
+                // Selector Manual de Pestañas de Escenario
+                if (this.dom.btnScene1) {
+                    this.dom.btnScene1.addEventListener('click', () => {
+                        if (this.currentScenario !== 1) {
+                            this.transitionToScenario(1, true);
+                        }
+                    });
+                }
+                if (this.dom.btnScene2) {
+                    this.dom.btnScene2.addEventListener('click', () => {
+                        if (this.currentScenario !== 2) {
+                            this.transitionToScenario(2, true);
+                        }
+                    });
+                }
+
                 // Briefing Modal de Contexto Inicial
                 const briefingOverlay = document.getElementById('modal-briefing-overlay');
                 const btnStartBriefing = document.getElementById('btn-start-briefing');
@@ -3066,7 +3399,10 @@
                     const elem = document.elementFromPoint(x, y);
                     if (elem) {
                         const directHotspot = elem.closest('.hotspot-target');
-                        if (directHotspot) return directHotspot;
+                        if (directHotspot) {
+                            const r = directHotspot.getBoundingClientRect();
+                            if (r.width > 0 && r.height > 0) return directHotspot;
+                        }
                     }
                     let bestHotspot = null;
                     let bestDist = Infinity;
@@ -3076,7 +3412,7 @@
                         const cx = r.left + r.width / 2;
                         const cy = r.top + r.height / 2;
                         const dist = Math.hypot(x - cx, y - cy);
-                        const radius = Math.max(36, Math.max(r.width, r.height) * 0.65);
+                        const radius = Math.max(30, Math.max(r.width, r.height) * 0.55);
                         if (dist <= radius && dist < bestDist) {
                             bestDist = dist;
                             bestHotspot = h;
@@ -3111,9 +3447,8 @@
                         activeCard = card;
                         startX = e.clientX;
                         startY = e.clientY;
-                        const rect = card.getBoundingClientRect();
-                        offsetX = e.clientX - rect.left;
-                        offsetY = e.clientY - rect.top;
+                        offsetX = 130;
+                        offsetY = 40;
                         isDragging = false;
                     });
                 });
@@ -3130,18 +3465,21 @@
                             isDragging = true;
                             document.querySelectorAll('.floating-drag-clone').forEach(el => el.remove());
 
-                            const rect = activeCard.getBoundingClientRect();
                             activeClone = activeCard.cloneNode(true);
                             activeClone.className = activeCard.className + ' floating-drag-clone';
                             activeClone.style.position = 'fixed';
                             activeClone.style.pointerEvents = 'none';
-                            activeClone.style.width = `${rect.width}px`;
-                            activeClone.style.height = `${rect.height}px`;
+                            activeClone.style.width = '260px';
+                            activeClone.style.maxWidth = '290px';
+                            activeClone.style.height = 'auto';
                             activeClone.style.left = '0px';
                             activeClone.style.top = '0px';
-                            activeClone.style.boxShadow = '0 25px 50px rgba(0,0,0,0.85), 0 0 30px rgba(255,199,44,0.7)';
-                            activeClone.style.setProperty('transform', `translate3d(${e.clientX - offsetX}px, ${e.clientY - offsetY}px, 0) scale(1.05) rotate(2deg)`, 'important');
                             document.body.appendChild(activeClone);
+
+                            offsetX = 130;
+                            offsetY = 40;
+
+                            activeClone.style.setProperty('transform', `translate3d(${e.clientX - offsetX}px, ${e.clientY - offsetY}px, 0) scale(1.05) rotate(2deg)`, 'important');
 
                             activeCard.classList.add('is-dragging');
                             this.audio.playTone(450, 'sine', 0.08);
@@ -3533,6 +3871,20 @@
                     // Actualizar Roadmap Secuencial y Desbloquear Siguiente Paso
                     this.updateRoadmapStepVisuals();
 
+                    // Transición Cinemática Automática al completar la Fase 1 (Paso 3: Polo a Tierra)
+                    if (targetId === 2) {
+                        if (this.dom.scene1Check) this.dom.scene1Check.style.display = 'inline-flex';
+                        setTimeout(() => {
+                            this.transitionToScenario(2, true);
+                            this.setBotMessage("¡Carrotanque asegurado con éxito! La cámara enfoca la maquinaria receptora para el acople seguro.", "🚚✨");
+                        }, 750);
+                    }
+
+                    // Certificación de Fase 2 completada (Paso 6: Extintor 5m)
+                    if (targetId === 4) {
+                        if (this.dom.scene2Check) this.dom.scene2Check.style.display = 'inline-flex';
+                    }
+
                     // Verificar si completó el vehículo actual
                     if (this.resolvedHotspots.size === 6) {
                         this.handleVehicleCompleted();
@@ -3575,7 +3927,15 @@
                 if (!window.gsap) return;
 
                 if (hotspotId === 1) {
-                    // Motor Apagado: Nube cómic 'Poof!', cese de humo y Lucho con pulgar arriba
+                    // Motor Apagado: Letrero en cisterna, cese de humo en máquina y Lucho con pulgar arriba
+                    if (this.dom.svgTankerMotorSign) {
+                        gsap.to(this.dom.svgTankerMotorSign, {
+                            opacity: 1,
+                            y: -4,
+                            duration: 0.4,
+                            ease: "back.out(2)"
+                        });
+                    }
                     gsap.to(this.dom.exhaustSmoke, { 
                         scale: 1.8, 
                         opacity: 0, 
@@ -3606,11 +3966,13 @@
                         { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(2.5)" }
                     );
                 } else if (hotspotId === 4) {
-                    // Extintor Satélite ABC: Llega rodando desde la izquierda
-                    gsap.fromTo(this.dom.svgExtinguisher, 
-                        { opacity: 0, x: -80, rotation: -15 }, 
-                        { opacity: 1, x: 0, rotation: 0, duration: 0.6, ease: "power3.out" }
-                    );
+                    // Extintor Satélite ABC: Aterriza con rebote elástico en el perímetro a 5m
+                    if (this.dom.svgExtinguisher) {
+                        gsap.fromTo(this.dom.svgExtinguisher, 
+                            { opacity: 0, scale: 0.3, transformOrigin: "14px 40px" }, 
+                            { opacity: 1, scale: 1, duration: 0.55, ease: "back.out(2)" }
+                        );
+                    }
                 } else if (hotspotId === 5) {
                     // Cuñas en Llantas: Se clavan bajo los neumáticos con rebote
                     if (this.dom.svgWheelChocks) {
@@ -4164,15 +4526,21 @@
                 });
 
                 if (window.gsap) {
+                    if (this.dom.svgTankerMotorSign) gsap.set(this.dom.svgTankerMotorSign, { opacity: 0, y: 0 });
                     gsap.set(this.dom.exhaustSmoke, { opacity: 0.7, scale: 1 });
                     gsap.set(this.dom.svgMotorSafeSign, { opacity: 0, y: 0 });
                     gsap.set(this.dom.svgGroundCable, { opacity: 0 });
                     gsap.set(this.dom.svgClampAttached, { opacity: 0 });
                     gsap.set(this.dom.svgDripTray, { opacity: 0, y: 0 });
-                    gsap.set(this.dom.svgExtinguisher, { opacity: 0, x: 0 });
+                    gsap.set(this.dom.svgExtinguisher, { opacity: 0, scale: 1 });
                     gsap.set(this.dom.svgWheelChocks, { opacity: 0, y: 0 });
                     gsap.set(this.dom.svgSpillKit, { opacity: 0, y: 0 });
                 }
+
+                // Reinicializar estados de los Dos Escenarios
+                if (this.dom.scene1Check) this.dom.scene1Check.style.display = 'none';
+                if (this.dom.scene2Check) this.dom.scene2Check.style.display = 'none';
+                this.transitionToScenario(1, false);
 
                 // Reinicializar estados del Roadmap de Trasiego
                 this.updateRoadmapStepVisuals();

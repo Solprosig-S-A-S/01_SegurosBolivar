@@ -233,15 +233,16 @@
         .timer-pill {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 5px 10px;
+            gap: 7px;
+            padding: 5px 12px;
             border-radius: var(--radius-full);
             background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            font-size: var(--font-xs);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            font-size: 0.78rem;
             font-family: var(--font-mono);
             font-weight: 700;
             color: var(--bolivar-yellow);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
         }
         .timer-urgent {
             color: var(--hazard-red) !important;
@@ -1273,18 +1274,20 @@
             color: #ffffff;
         }
         .briefing-step-num {
-            min-width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
             background: rgba(255, 199, 44, 0.15);
             border: 1px solid var(--bolivar-yellow);
             color: var(--bolivar-yellow);
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             font-weight: 800;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 3px;
+            border-radius: 50%;
             flex-shrink: 0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
         }
         .briefing-controls {
             display: flex;
@@ -1344,17 +1347,17 @@
         .level-step-btn {
             flex: 1;
             min-width: 110px;
-            padding: 6px 8px;
+            padding: 6px 12px;
             border-radius: var(--radius-sm);
             background: rgba(30, 41, 59, 0.6);
             border: 1px solid var(--border-subtle);
             color: var(--text-muted);
-            font-size: 0.72rem;
+            font-size: 0.74rem;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
             white-space: nowrap;
@@ -1374,15 +1377,17 @@
             color: var(--bolivar-yellow);
         }
         .level-step-num {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.12);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.68rem;
+            font-size: 0.72rem;
             font-weight: 800;
+            flex-shrink: 0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
         }
         .level-step-btn.active .level-step-num {
             background: var(--bolivar-green-glow);
@@ -1444,13 +1449,16 @@
         }
         .patch-circuit-badge {
             background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(255, 199, 44, 0.3);
-            border-radius: 4px;
-            padding: 1px 6px;
+            border: 1px solid rgba(255, 199, 44, 0.35);
+            border-radius: var(--radius-full);
+            padding: 3px 10px;
             color: var(--bolivar-yellow);
             font-weight: 800;
-            font-size: 0.64rem;
+            font-size: 0.68rem;
             letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
         }
         .patch-wires-svg {
             position: absolute;
@@ -2247,7 +2255,6 @@
                     <h1>Seguros Bolívar • KMA</h1>
                     <div class="brand-title-wrap">
                         <span class="brand-title">Desafío SGA</span>
-                        <span class="norma-badge">Res. 773/2021</span>
                     </div>
                 </div>
             </div>
@@ -2269,17 +2276,17 @@
 
         <!-- LEVEL STEPPER (Barra de Progreso Pedagógico 3 Niveles) -->
         <nav class="level-stepper-bar" id="level-stepper-bar">
-            <button class="level-step-btn active" id="step-btn-1" type="button" title="Nivel 1: Marco Legal Colombiano y Adopción SGA">
+            <button class="level-step-btn active" id="step-btn-1" type="button" title="Nivel 1: Marco Legal">
                 <span class="level-step-num">1</span>
-                <span>Marco Legal SGA</span>
+                <span>1. Marco Legal</span>
             </button>
-            <button class="level-step-btn" id="step-btn-2" type="button" title="Nivel 2: Clasificación de Peligros SGA">
+            <button class="level-step-btn" id="step-btn-2" type="button" title="Nivel 2: Peligros SGA">
                 <span class="level-step-num">2</span>
-                <span>Peligros SGA</span>
+                <span>2. Peligros SGA</span>
             </button>
-            <button class="level-step-btn" id="step-btn-3" type="button" title="Nivel 3: Comunicación de Peligros y FDS (16 Secciones)">
+            <button class="level-step-btn" id="step-btn-3" type="button" title="Nivel 3: FDS">
                 <span class="level-step-num">3</span>
-                <span>FDS (16 Secc.)</span>
+                <span>3. Fichas FDS</span>
             </button>
         </nav>
 
@@ -2289,24 +2296,20 @@
             <!-- ============================================================== -->
             <!-- NIVEL 1: MARCO LEGAL COLOMBIANO Y ADOPCIÓN DEL SGA (1.1) -->
             <!-- ============================================================== -->
-            <section id="phase-level1" class="flex-1 flex flex-col justify-between overflow-hidden" style="padding: 12px 14px;">
-                <div class="bot-bubble-card" style="padding: 10px 12px;">
-                    <div class="bot-avatar">⚖️</div>
+            <section id="phase-level1" class="flex-1 flex flex-col justify-between overflow-hidden" style="padding: 10px 14px;">
+                <div class="bot-bubble-card" style="padding: 7px 12px; margin-bottom: 4px;">
+                    <div class="bot-avatar" style="width: 32px; height: 32px; font-size: 1.1rem;">⚖️</div>
                     <div class="bot-content">
-                        <div class="bot-meta">
-                            <span class="bot-name">Nivel 1 • Marco Legal Colombiano</span>
-                            <span class="bot-tag">Adopción SGA</span>
-                        </div>
-                        <p id="level1-instruction" class="bot-dialog-text" style="font-size: var(--font-xs);">
-                            Conecta cada <strong>clavija de norma legal</strong> (izquierda) con su <strong>puerto técnico receptor</strong> (derecha). Arrastra el cable de conexión o toca ambos terminales para cerrar el circuito normativo.
+                        <p id="level1-instruction" class="bot-dialog-text" style="font-size: 0.8rem; font-weight: 600;">
+                            ¡Conecta cada <strong>norma legal</strong> con su <strong>concepto</strong> para cerrar el circuito!
                         </p>
                     </div>
                 </div>
 
-                <!-- Feedback Banner Pedagógico Nivel 1 -->
-                <div id="level1-feedback-banner" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 199, 44, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 0.73rem; color: #cbd5e1; margin: 4px 0 6px; min-height: 38px; display: flex; align-items: center; gap: 8px;">
+                <!-- Feedback Banner Pedagógico Nivel 1 (dinámico) -->
+                <div id="level1-feedback-banner" style="display: none; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 199, 44, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 0.73rem; color: #cbd5e1; margin: 2px 0 4px; min-height: 32px; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-scale-balanced text-bolivar-yellow"></i>
-                    <span><strong>Fundamento Legal:</strong> Relaciona cada norma con su mandato legal en Colombia.</span>
+                    <span>Relaciona cada norma con su mandato legal en Colombia.</span>
                 </div>
 
                 <!-- Consola Industrial de Cableado y Conectores SGA -->
@@ -2315,11 +2318,11 @@
                     <div class="patch-panel-topbar">
                         <div class="patch-topbar-left">
                             <span class="patch-led-indicator active"></span>
-                            <span class="patch-topbar-title"><i class="fa-solid fa-bolt text-bolivar-yellow mr-1"></i> PANEL DE CABLEADO SST • LÍNEAS NORMATIVAS</span>
+                            <span class="patch-topbar-title"><i class="fa-solid fa-bolt text-bolivar-yellow mr-1"></i> Líneas Normativas</span>
                         </div>
                         <div class="patch-topbar-right">
                             <span class="patch-circuit-badge" id="level1-circuit-status">
-                                <i class="fa-solid fa-network-wired"></i> 0/4 CIRCUITOS ACTIVOS
+                                <i class="fa-solid fa-network-wired"></i> 0/4 CIRCUITOS
                             </span>
                         </div>
                     </div>
@@ -2355,10 +2358,10 @@
                 <!-- Footer Nivel 1 -->
                 <div style="padding-top: 6px; display: flex; flex-direction: column; gap: 6px;">
                     <div class="flex items-center justify-between" style="font-size: var(--font-xs); color: var(--text-muted);">
-                        <span>Progreso Nivel 1: <strong id="level1-progress-text" class="text-bolivar-yellow">0 de 4</strong> enlazados</span>
+                        <span>Progreso: <strong id="level1-progress-text" class="text-bolivar-yellow">0 de 4</strong></span>
                         <span>Puntos: <strong id="level1-score-text" class="text-emerald-400">0</strong>/100</span>
                     </div>
-                    <button id="btn-advance-level2" disabled class="btn w-full" style="background: #1e293b; color: var(--text-subtle); padding: 12px 16px; font-size: var(--font-sm); border: 1px solid var(--border-subtle); cursor: not-allowed;">
+                    <button id="btn-advance-level2" disabled class="btn w-full" style="background: #1e293b; color: var(--text-subtle); padding: 10px 16px; font-size: var(--font-sm); border: 1px solid var(--border-subtle); cursor: not-allowed;">
                         <span>Enlaza todas las normas para avanzar</span>
                         <i class="fa-solid fa-lock" style="font-size: var(--font-xs);"></i>
                     </button>
@@ -2368,24 +2371,20 @@
             <!-- ============================================================== -->
             <!-- NIVEL 2: CLASIFICACIÓN Y PELIGROS SEGÚN EL SGA (1.2) -->
             <!-- ============================================================== -->
-            <section id="phase-level2" class="hidden flex-1 flex flex-col justify-between overflow-hidden" style="padding: 12px 14px;">
-                <div class="bot-bubble-card" style="padding: 10px 12px;">
-                    <div class="bot-avatar">☣️</div>
+            <section id="phase-level2" class="hidden flex-1 flex flex-col justify-between overflow-hidden" style="padding: 10px 14px;">
+                <div class="bot-bubble-card" style="padding: 7px 12px; margin-bottom: 4px;">
+                    <div class="bot-avatar" style="width: 32px; height: 32px; font-size: 1.1rem;">☣️</div>
                     <div class="bot-content">
-                        <div class="bot-meta">
-                            <span class="bot-name">Nivel 2 • Clasificación y Peligros</span>
-                            <span class="bot-tag">3 Familias SGA</span>
-                        </div>
-                        <p id="level2-instruction" class="bot-dialog-text" style="font-size: var(--font-xs);">
-                            Identifica si el producto y su situación de riesgo afecta la <strong>Salud</strong>, genera <strong>Peligros Físicos</strong> (fuego/presión) o afecta el <strong>Medio Ambiente</strong>.
+                        <p id="level2-instruction" class="bot-dialog-text" style="font-size: 0.8rem; font-weight: 600;">
+                            ¿Qué peligro genera este producto? ¡Arrastra o toca para clasificarlo!
                         </p>
                     </div>
                 </div>
 
-                <!-- Feedback Banner Pedagógico Nivel 2 -->
-                <div id="level2-feedback-banner" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 199, 44, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 0.73rem; color: #cbd5e1; margin: 4px 0 6px; min-height: 38px; display: flex; align-items: center; gap: 8px;">
+                <!-- Feedback Banner Pedagógico Nivel 2 (dinámico) -->
+                <div id="level2-feedback-banner" style="display: none; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 199, 44, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 0.73rem; color: #cbd5e1; margin: 2px 0 4px; min-height: 32px; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-circle-info text-bolivar-yellow"></i>
-                    <span><strong>Criterio SGA:</strong> Evalúa si el producto genera daño físico (fuego/presión), a la salud humana (toxicidad/corrosión) o impacto ambiental duradero.</span>
+                    <span>Evalúa el daño a la salud, peligros físicos o impacto ambiental.</span>
                 </div>
 
                 <!-- Tarjeta Activa a Clasificar -->
@@ -2436,11 +2435,11 @@
             <section id="phase-level3" class="hidden flex-1 flex flex-col justify-between" style="padding: 12px 14px; overflow: visible;">
                 <!-- Sub-Tabs: 3A Etiqueta SGA / 3B FDS 16 Secciones -->
                 <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-                    <button id="tab-btn-label" class="btn flex-1" style="padding: 6px 8px; font-size: 0.72rem; font-weight: 800; background: rgba(0, 103, 56, 0.4); border: 1px solid var(--bolivar-green-glow); color: #fff;">
-                        <i class="fa-solid fa-tags"></i> 3A. Etiqueta SGA
+                    <button id="tab-btn-label" class="btn flex-1" style="padding: 6px 8px; font-size: 0.75rem; font-weight: 800; background: rgba(0, 103, 56, 0.4); border: 1px solid var(--bolivar-green-glow); color: #fff;">
+                        <i class="fa-solid fa-tags"></i> 3A. Etiquetas SGA
                     </button>
-                    <button id="tab-btn-fds" class="btn flex-1" style="padding: 6px 8px; font-size: 0.72rem; font-weight: 800; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border-subtle); color: var(--text-muted);">
-                        <i class="fa-solid fa-file-shield"></i> 3B. Dónde Buscar en FDS (16 Sec.)
+                    <button id="tab-btn-fds" class="btn flex-1" style="padding: 6px 8px; font-size: 0.75rem; font-weight: 800; background: rgba(30, 41, 59, 0.6); border: 1px solid var(--border-subtle); color: var(--text-muted);">
+                        <i class="fa-solid fa-file-shield"></i> 3B. Buscar en FDS
                     </button>
                 </div>
 
@@ -2450,7 +2449,7 @@
                         <span id="exam-item-counter" style="font-size: var(--font-xs); font-family: var(--font-mono);">Producto 1 de 3</span>
                         <div id="lucho-widget" class="lucho-widget">
                             <span id="lucho-avatar" class="lucho-avatar">👨‍🔧</span>
-                            <span id="lucho-quote" class="lucho-quote">¡Arrastra o toca los rombos SGA que aplican a este envase!</span>
+                            <span id="lucho-quote" class="lucho-quote">¡Arrastra o toca los rombos SGA que aplican!</span>
                         </div>
                         <span style="font-size: var(--font-xs);">Puntos: <strong id="exam-score-display" class="text-bolivar-yellow">0</strong>/<span id="exam-max-score-display">10</span></span>
                     </div>
@@ -2468,8 +2467,7 @@
                     <div class="fds-case-card">
                         <div class="fds-case-header">
                             <div class="fds-case-meta">
-                                <span class="badge" id="fds-question-step" style="background: rgba(255,199,44,0.18); color: var(--bolivar-yellow); border: 1px solid rgba(255,199,44,0.4); font-weight: 800; font-size: 0.7rem;">CASO FDS 1 DE 6</span>
-                                <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 0.68rem; font-weight: 700;">NTC 4435 • Res. 773/2021</span>
+                                <span class="badge" id="fds-question-step" style="background: rgba(255,199,44,0.18); color: var(--bolivar-yellow); border: 1px solid rgba(255,199,44,0.4); font-weight: 800; font-size: 0.7rem;">CASO 1 DE 6</span>
                             </div>
                             <span style="font-size: 0.72rem; color: var(--text-muted);">Aciertos: <strong id="fds-score-display" class="text-emerald-400">0</strong>/6</span>
                         </div>

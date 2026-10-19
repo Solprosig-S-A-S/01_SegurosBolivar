@@ -338,14 +338,14 @@
         }
         .stepper-pill {
             flex: 1;
-            padding: 6px 8px;
+            padding: 6px 12px;
             border-radius: var(--radius-md);
             text-align: center;
             transition: all 0.25s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             font-size: var(--font-sm);
             font-weight: 800;
         }
@@ -363,14 +363,16 @@
             opacity: 0.6;
         }
         .stepper-num {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             border-radius: var(--radius-full);
-            font-size: var(--font-xs);
+            font-size: 0.72rem;
             font-weight: 900;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
         }
         .stepper-pill-active .stepper-num {
             background: var(--bolivar-green-glow);
@@ -2304,12 +2306,13 @@
         .matrix-legend-chip {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 3px 8px;
+            gap: 7px;
+            padding: 4px 10px;
             border-radius: var(--radius-full);
-            font-size: 0.72rem;
+            font-size: 0.74rem;
             font-weight: 700;
             user-select: none;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
         }
         .legend-chip-green {
             background: rgba(16, 185, 129, 0.15);
@@ -2327,8 +2330,8 @@
             border: 1px solid rgba(239, 68, 68, 0.35);
         }
         .chip-dot {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             border-radius: var(--radius-full);
             flex-shrink: 0;
         }
@@ -2630,7 +2633,6 @@
                     <h1>Seguros Bolívar • KMA</h1>
                     <div class="brand-title-wrap">
                         <span class="brand-title">Bodega Segura</span>
-                        <span class="norma-badge">Res. 773/2021</span>
                     </div>
                 </div>
             </div>
@@ -2702,7 +2704,7 @@
                             <span class="bot-tag">GUÍA SST</span>
                         </div>
                         <p id="tut-bot-dialog" class="bot-dialogue-text">
-                            ¡Bienvenido al almacén! Aprenderás a ubicar sustancias químicas en una cuadrícula 3D sin reactividades peligrosas, conforme a la <strong>Res. 773/2021</strong> y el <strong>Dec. 4741/2005</strong>.
+                            ¡Ubica cada sustancia en el almacén 3D evitando reactividades peligrosas!
                         </p>
                     </div>
                 </div>
@@ -3062,48 +3064,35 @@
                 </div>
 
                 <!-- TACTICAL LOWER DOCK: ZONA DE RECHAZO + SEMÁFORO MATRIZ (Side-by-Side Compacto) -->
-                <div class="tactical-lower-dock" id="tactical-lower-dock">
+                <div class="tactical-lower-dock" id="tactical-lower-dock" style="margin: 2px 0 4px 0;">
                     <!-- Compact Reject Zone -->
-                    <div class="reject-zone-card flex items-center justify-between gap-2" id="zone-reject" style="padding: 6px 12px; margin: 0; min-height: 42px;" title="Zona de Rechazo RESPEL (Art. 20 Res. 773/2021)">
+                    <div class="reject-zone-card flex items-center justify-between gap-2" id="zone-reject" style="padding: 4px 10px; margin: 0; min-height: 36px;" title="Zona de Rechazo">
                         <div class="flex items-center gap-2 truncate">
-                            <span style="font-size: 1.15rem; flex-shrink: 0;">🚫🥤</span>
+                            <span style="font-size: 1.05rem; flex-shrink: 0;">🚫🥤</span>
                             <div class="truncate">
-                                <div class="flex items-center gap-1.5">
-                                    <strong class="reject-title" style="font-size: var(--font-xs); line-height: 1.1;">Rechazo RESPEL</strong>
-                                    <span class="norma-badge" style="background: rgba(239, 68, 68, 0.25); color: #fca5a5; border-color: rgba(239, 68, 68, 0.4); font-size: 0.65rem; padding: 1px 5px;">Art. 20</span>
-                                </div>
-                                <div id="reject-zone-status" class="truncate" style="font-size: 0.72rem; color: #cbd5e1;">Descarte botellas ilegales</div>
+                                <strong class="reject-title" style="font-size: 0.76rem; line-height: 1.1;">Zona de Rechazo</strong>
+                                <div id="reject-zone-status" class="truncate" style="font-size: 0.68rem; color: #cbd5e1;">Botellas ilegales</div>
                             </div>
                         </div>
-                        <span class="reject-status-badge" style="padding: 3px 8px; font-size: 0.72rem; white-space: nowrap; flex-shrink: 0;">Arrastra o Toca</span>
+                        <span class="reject-status-badge" style="padding: 4px 10px; font-size: 0.72rem; border-radius: var(--radius-full); white-space: nowrap; flex-shrink: 0;">Descartar</span>
                     </div>
 
                     <!-- Compact Matrix Quick Legend -->
-                    <div class="matrix-quick-legend-bar flex items-center justify-between gap-1.5" id="matrix-quick-legend-bar" style="margin: 0; padding: 5px 10px; min-height: 42px;" aria-label="Semáforo de compatibilidad química">
+                    <div class="matrix-quick-legend-bar flex items-center justify-between gap-1" id="matrix-quick-legend-bar" style="margin: 0; padding: 4px 8px; min-height: 36px;" aria-label="Semáforo de compatibilidad química">
                         <div class="flex items-center gap-1.5 flex-nowrap" style="flex-shrink: 0;">
-                            <span class="matrix-legend-chip legend-chip-green" style="font-size: 0.7rem; padding: 2px 7px;" title="Compatible"><span class="chip-dot dot-green"></span>Verde</span>
-                            <span class="matrix-legend-chip legend-chip-yellow" style="font-size: 0.7rem; padding: 2px 7px;" title="Separar"><span class="chip-dot dot-yellow"></span>Amarillo</span>
-                            <span class="matrix-legend-chip legend-chip-red" style="font-size: 0.7rem; padding: 2px 7px;" title="Incompatible"><span class="chip-dot dot-red"></span>Rojo</span>
+                            <span class="matrix-legend-chip legend-chip-green" title="Compatible"><span class="chip-dot dot-green"></span>Compatible</span>
+                            <span class="matrix-legend-chip legend-chip-yellow" title="Separar"><span class="chip-dot dot-yellow"></span>Separar</span>
+                            <span class="matrix-legend-chip legend-chip-red" title="Incompatible"><span class="chip-dot dot-red"></span>Incompatible</span>
                         </div>
-                        <button id="btn-quick-matrix-view" type="button" class="btn-matrix-shortcut" style="padding: 3px 8px; font-size: 0.7rem;" title="Consultar tabla completa NTC 4435">
+                        <button id="btn-quick-matrix-view" type="button" class="btn-matrix-shortcut" style="padding: 3px 8px; font-size: 0.68rem;" title="Consultar tabla completa NTC 4435">
                             <i class="fa-solid fa-table-cells" style="color: var(--bolivar-yellow);"></i>
-                            <span>NTC 4435</span>
+                            <span>Matriz</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- CHEMICAL ITEMS INVENTORY TRAY (Bottom horizontal scroller / grid) -->
-                <div class="tray-container">
-                    <div class="tray-header">
-                        <div class="tray-title">
-                            <i class="fa-solid fa-dolly" style="color: var(--bolivar-yellow);"></i>
-                            <span>Bandeja de Sustancias y Equipos</span>
-                        </div>
-                        <span class="tray-hint">
-                            <i class="fa-solid fa-hand-pointer" style="color: var(--bolivar-yellow);"></i>
-                            <span>Arrastra tarjetas o toca para ubicar</span>
-                        </span>
-                    </div>
+                <div class="tray-container" style="padding: 4px 6px 6px;">
 
                     <div id="items-tray" class="grid-4" style="overflow: visible;">
                         <!-- Populated dynamically via JS: 8 interactive pieces (2 filas de 4) -->

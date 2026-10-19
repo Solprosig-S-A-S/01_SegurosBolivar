@@ -1160,18 +1160,19 @@
         .hud-mission-steps-bar::-webkit-scrollbar { display: none; }
         .hud-step-chip {
             background: rgba(30, 41, 59, 0.85);
-            border: 1px solid rgba(148, 163, 184, 0.3);
+            border: 1px solid rgba(148, 163, 184, 0.35);
             color: #cbd5e1;
-            font-size: 0.6rem;
+            font-size: 0.68rem;
             font-weight: 800;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 999px;
             cursor: pointer;
             white-space: nowrap;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             transition: all 0.15s ease;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
         }
         .hud-step-chip.active {
             background: rgba(255, 199, 44, 0.22);
@@ -1268,23 +1269,23 @@
             gap: 6px;
             background: rgba(15, 23, 42, 0.85);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-sm);
-            padding: 3px;
+            border-radius: var(--radius-full);
+            padding: 4px;
         }
 
         .mission-pill-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 0.68rem;
+            font-size: 0.74rem;
             font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 4px;
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
 
         .mission-pill-btn.active {
@@ -1399,11 +1400,11 @@
         .hud-detector-card {
             background: rgba(15, 23, 42, 0.90);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-sm);
-            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            padding: 4px 12px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             box-shadow: var(--shadow-hud);
         }
 
@@ -1485,11 +1486,11 @@
         .hud-timer-card {
             background: rgba(15, 23, 42, 0.92);
             border: 1.5px solid var(--alerta-rojo);
-            border-radius: var(--radius-sm);
-            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            padding: 4px 12px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             box-shadow: 0 0 12px var(--alerta-rojo-glow);
         }
 
@@ -2049,17 +2050,20 @@
         }
 
         .step-num {
-            min-width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
             background: rgba(255, 199, 44, 0.15);
             border: 1px solid var(--amarillo-bolivar);
             color: var(--amarillo-bolivar);
-            font-size: 0.75rem;
-            font-weight: 800;
+            font-size: 0.76rem;
+            font-weight: 900;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            border-radius: 50%;
             flex-shrink: 0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
         }
 
         .briefing-controls-clean {
@@ -2126,19 +2130,21 @@
                 gap: 4px !important;
             }
             .hud-detector-card, .hud-timer-card {
-                padding: 2px 5px !important;
-                gap: 3px !important;
+                padding: 3px 8px !important;
+                gap: 5px !important;
+                border-radius: var(--radius-full) !important;
             }
             .hud-minimap-radar {
                 width: 38px !important;
                 height: 38px !important;
             }
             .gas-reading, .timer-digits {
-                font-size: 0.76rem !important;
+                font-size: 0.78rem !important;
             }
             .mission-pill-btn {
-                padding: 2px 6px !important;
-                font-size: 0.58rem !important;
+                padding: 3px 8px !important;
+                font-size: 0.65rem !important;
+                border-radius: var(--radius-full) !important;
             }
             .mouse-look-hint {
                 display: none !important;
@@ -2171,8 +2177,9 @@
                 display: none !important;
             }
             .hud-step-chip {
-                padding: 2px 6px !important;
-                font-size: 0.52rem !important;
+                padding: 3px 8px !important;
+                font-size: 0.62rem !important;
+                gap: 4px !important;
                 white-space: nowrap !important;
                 flex-shrink: 0 !important;
             }
@@ -2368,29 +2375,31 @@
                 height: 36px !important;
             }
             .hud-detector-card, .hud-timer-card {
-                padding: 1px 4px !important;
-                height: 26px !important;
+                padding: 2px 7px !important;
+                height: 28px !important;
+                border-radius: var(--radius-full) !important;
             }
             .gas-reading, .timer-digits {
-                font-size: 0.72rem !important;
+                font-size: 0.76rem !important;
             }
             .mission-pill-btn {
-                padding: 1px 5px !important;
-                font-size: 0.58rem !important;
+                padding: 2px 7px !important;
+                font-size: 0.62rem !important;
+                border-radius: var(--radius-full) !important;
             }
             .hud-mission-steps-bar {
                 top: 33px !important;
-                transform: translateX(-50%) scale(0.75) !important;
+                transform: translateX(-50%) scale(0.85) !important;
                 transform-origin: top center !important;
-                padding: 1px 4px !important;
-                gap: 2px !important;
-                max-width: 92vw !important;
+                padding: 2px 6px !important;
+                gap: 3px !important;
+                max-width: 94vw !important;
                 background: rgba(15, 23, 42, 0.95) !important;
             }
             .hud-step-chip {
-                padding: 1px 5px !important;
-                font-size: 0.52rem !important;
-                gap: 2px !important;
+                padding: 2px 7px !important;
+                font-size: 0.58rem !important;
+                gap: 3px !important;
             }
             .hud-left-stats {
                 top: 33px !important;
@@ -2600,22 +2609,21 @@
                     <!-- 3. PARED NORTE (Z = -700px): VÁLVULA PRINCIPAL Y ALARMA GENERAL -->
                     <div class="wall-3d cube-wall-north">
                         <!-- Estación de Alarma de Incendio y Corte Eléctrico General (Nivel 2) -->
-                        <div class="station-3d-node" id="node-fire-alarm" style="display: none;" title="Alarma de Incendio y Corte Eléctrico General">
+                        <div class="station-3d-node" id="node-fire-alarm" style="display: none;" title="Alarma de Incendio y Corte General">
                             <div class="station-badge-3d" id="badge-fire-alarm">
-                                <i class="fa-solid fa-bell"></i> 2. ALARMA / CORTE ELÉCTRICO
+                                <i class="fa-solid fa-bell"></i> 2. Alarma General
                             </div>
                             <div class="station-fire-alarm-3d" id="prop-fire-alarm">
-                                <div style="font-size: 0.55rem; font-weight: 900; color: #fff; letter-spacing: 0.04em; text-align: center;">ALARMA INCENDIO</div>
+                                <div style="font-size: 0.58rem; font-weight: 900; color: #fff; text-align: center;">ALARMA</div>
                                 <div class="alarm-pull-handle" id="alarm-pull-handle">
                                     <i class="fa-solid fa-bolt"></i>
                                 </div>
-                                <div style="font-size: 0.5rem; font-weight: 800; color: #fef08a;">CORTE GENERAL</div>
                             </div>
                         </div>
 
                         <div class="station-3d-node" id="node-valve" title="Válvula Principal de Corte">
                             <div class="station-badge-3d" id="badge-valve">
-                                <i class="fa-solid fa-wrench"></i> 1. VÁLVULA DE CORTE
+                                <i class="fa-solid fa-wrench"></i> 1. Válvula de Corte
                             </div>
                             <div class="pipe-manifold-3d">
                                 <div class="valve-wheel-3d" id="valve-wheel"></div>
@@ -2624,7 +2632,7 @@
                         </div>
 
                         <!-- Hallazgo 1: Extintor Vencido (Esquina Noreste) -->
-                        <div class="audit-marker-3d" id="hazard-extinguisher" style="right: 80px; top: 120px;" title="Auditoría: Extintor despresurizado (NFPA 10)">
+                        <div class="audit-marker-3d" id="hazard-extinguisher" style="right: 80px; top: 120px;" title="Auditoría: Extintor despresurizado">
                             <i class="fa-solid fa-fire-extinguisher" style="font-size: 2.5rem; color: #ef4444;"></i>
                             <div class="audit-pin">!</div>
                         </div>
@@ -2632,28 +2640,26 @@
 
                     <!-- 4. PARED SUR (Z = +700px): LAVAOJOS DE EMERGENCIA Y MANTA IGNÍFUGA -->
                     <div class="wall-3d cube-wall-south">
-                        <div class="station-3d-node" id="node-eyewash" title="Lavaojos de Emergencia ANSI Z358.1">
+                        <div class="station-3d-node" id="node-eyewash" title="Lavaojos de Emergencia">
                             <div class="station-badge-3d" id="badge-eyewash">
-                                <i class="fa-solid fa-eye"></i> LAVAOJOS 15 MIN
+                                <i class="fa-solid fa-eye"></i> Lavaojos
                             </div>
                             <div class="eyewash-station-3d">
                                 <div style="font-size: 3rem; color: #f8fafc;"><i class="fa-solid fa-user-injured"></i></div>
                                 <div class="eyewash-lever-3d" id="eyewash-lever">
                                     <i class="fa-solid fa-hand"></i> EMPUJAR
                                 </div>
-                                <div style="font-size: 0.72rem; color: #a7f3d0; font-weight: 800;">ANSI Z358.1</div>
                             </div>
                         </div>
 
                         <!-- Estación Manta Ignífuga / Prevención de Re-ignición (Nivel 2) -->
-                        <div class="station-3d-node" id="node-fire-blanket" style="display: none;" title="Manta Ignífuga y Arena para Prevención de Re-ignición">
+                        <div class="station-3d-node" id="node-fire-blanket" style="display: none;" title="Manta Ignífuga">
                             <div class="station-badge-3d" id="badge-fire-blanket">
-                                <i class="fa-solid fa-shield-halved"></i> 5. MANTA IGNÍFUGA
+                                <i class="fa-solid fa-shield-halved"></i> 5. Manta Ignífuga
                             </div>
                             <div class="station-fire-blanket-3d" id="prop-fire-blanket">
-                                <div style="font-size: 0.55rem; font-weight: 900; color: #fff; text-align: center;">MANTA IGNÍFUGA</div>
+                                <div style="font-size: 0.58rem; font-weight: 900; color: #fff; text-align: center;">MANTA</div>
                                 <i class="fa-solid fa-shield" style="font-size: 2rem; color: #fde047;"></i>
-                                <div style="font-size: 0.5rem; font-weight: 800; color: #fef08a;">ANTI RE-IGNICIÓN</div>
                             </div>
                         </div>
                     </div>
@@ -2720,36 +2726,34 @@
                         <!-- Caseta EPP -->
                         <div class="station-3d-node" id="node-epp" title="Caseta EPP: Guantes y Máscara">
                             <div class="station-badge-3d" id="badge-epp">
-                                <i class="fa-solid fa-shield-halved"></i> EPP: GUANTES + MÁSCARA
+                                <i class="fa-solid fa-shield-halved"></i> Caseta EPP
                             </div>
                             <div class="epp-locker-3d">
                                 <i class="fa-solid fa-mask-ventilator" style="font-size: 2.5rem; color: #38bdf8;"></i>
                                 <i class="fa-solid fa-mitten" style="font-size: 2.5rem; color: #38bdf8;"></i>
-                                <div style="font-size: 0.75rem; font-weight: 800; color: #fff;">FULL-FACE + NITRILO</div>
+                                <div style="font-size: 0.72rem; font-weight: 800; color: #fff;">EPP COMPLETO</div>
                             </div>
                         </div>
 
                         <!-- Acopio RESPEL -->
                         <div class="station-3d-node" id="node-respel" title="Punto de Acopio RESPEL">
                             <div class="station-badge-3d" id="badge-respel">
-                                <i class="fa-solid fa-recycle"></i> ACOPIO RESPEL
+                                <i class="fa-solid fa-recycle"></i> Acopio RESPEL
                             </div>
                             <div class="respel-holding-3d">
                                 <i class="fa-solid fa-biohazard" style="font-size: 2.5rem; color: #ef4444;"></i>
-                                <div style="font-size: 0.72rem; color: #fca5a5; font-weight: 900;">DEC. 4741/2005</div>
                             </div>
                         </div>
 
                         <!-- Caseta de Brigada de Incendio (Nivel 2): Traje Ignífugo Nomex + ERA -->
-                        <div class="station-3d-node" id="node-fire-gear" style="display: none;" title="Dotación Brigadista: Traje Ignífugo Nomex y ERA (NFPA 1971)">
+                        <div class="station-3d-node" id="node-fire-gear" style="display: none;" title="Dotación Brigadista: Traje Ignífugo">
                             <div class="station-badge-3d" id="badge-fire-gear">
-                                <i class="fa-solid fa-fire-burner"></i> 1. TRAJE IGNÍFUGO NOMEX + ERA
+                                <i class="fa-solid fa-fire-burner"></i> 1. Traje Ignífugo
                             </div>
                             <div class="fire-gear-locker-3d" id="prop-fire-gear">
                                 <i class="fa-solid fa-helmet-safety" style="font-size: 2.8rem; color: #facc15;"></i>
                                 <i class="fa-solid fa-vest" style="font-size: 3.2rem; color: #f59e0b;"></i>
-                                <div style="font-size: 0.72rem; font-weight: 900; color: #fff;">NFPA 1971 • NOMEX III</div>
-                                <div style="font-size: 0.58rem; color: #fde047; font-weight: 800;">PROTECCIÓN TÉRMICA</div>
+                                <div style="font-size: 0.72rem; font-weight: 900; color: #fff;">TRAJE TÉRMICO</div>
                             </div>
                         </div>
 
@@ -2803,7 +2807,7 @@
                     <div class="hud-detector-card">
                         <i class="fa-solid fa-radiation" style="color: #4ade80;"></i>
                         <div>
-                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 800;">DETECTOR PID</div>
+                            <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 800;">GAS</div>
                             <div class="gas-reading" id="gas-reading">25 PPM</div>
                         </div>
                     </div>
@@ -2838,7 +2842,7 @@
                         <div class="hud-timer-card">
                             <i class="fa-solid fa-stopwatch" style="color: #ef4444;"></i>
                             <div>
-                                <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 800;">CRONÓMETRO</div>
+                                <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 800;">TIEMPO</div>
                                 <div class="timer-digits" id="timer-digits">02:00</div>
                             </div>
                         </div>
