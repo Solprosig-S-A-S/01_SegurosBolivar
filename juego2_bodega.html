@@ -872,7 +872,9 @@
         }
 
         /* Contenedor Flotante de Notificaciones de Peligro (Oculto para no tapar el tablero 3D en ningún dispositivo) */
-        .hazard-floating-container {
+        .hazard-floating-container,
+        #exothermic-alert-strip,
+        #hazard-toast {
             display: none !important;
             visibility: hidden !important;
             pointer-events: none !important;
@@ -7431,44 +7433,6 @@
 
             renderActiveHazardToast() {
                 // Neutralizado
-            }
-                if (!this.activeHazards || this.activeHazards.length === 0) return;
-                const hazard = this.activeHazards[this.activeHazardIndex] || this.activeHazards[0];
-
-                if (this.dom.hazardToastPairNames) {
-                    this.dom.hazardToastPairNames.textContent = hazard.title;
-                }
-                if (this.dom.hazardToastFalla) {
-                    this.dom.hazardToastFalla.textContent = hazard.falla;
-                }
-                if (this.dom.hazardToastConsecuencia) {
-                    this.dom.hazardToastConsecuencia.textContent = hazard.consecuencia;
-                }
-                if (this.dom.hazardToastNorma) {
-                    this.dom.hazardToastNorma.innerHTML = `<i class="fa-solid fa-scale-balanced text-bolivar-yellow mr-1"></i>${hazard.norma}`;
-                }
-
-                if (this.activeHazards.length > 1) {
-                    if (this.dom.hazardToastCounter) {
-                        this.dom.hazardToastCounter.classList.remove('hidden');
-                        this.dom.hazardToastCounter.textContent = `${this.activeHazardIndex + 1} de ${this.activeHazards.length} riesgos`;
-                    }
-                    if (this.dom.hazardToastNav && !this.hazardToastCollapsed) {
-                        this.dom.hazardToastNav.classList.remove('hidden');
-                        this.dom.hazardToastNav.classList.add('flex');
-                        if (this.dom.hazardToastNavIndex) {
-                            this.dom.hazardToastNavIndex.textContent = `Riesgo ${this.activeHazardIndex + 1} de ${this.activeHazards.length}`;
-                        }
-                    }
-                } else {
-                    if (this.dom.hazardToastCounter) {
-                        this.dom.hazardToastCounter.classList.add('hidden');
-                    }
-                    if (this.dom.hazardToastNav) {
-                        this.dom.hazardToastNav.classList.add('hidden');
-                        this.dom.hazardToastNav.classList.remove('flex');
-                    }
-                }
             }
 
             nextHazardPair() {

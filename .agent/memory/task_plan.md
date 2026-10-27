@@ -501,3 +501,9 @@
 - [x] Juego 3: Extraer `#tech-feedback-toast` del arbol interno del viewport y reposicionarlo como hijo directo de `body`, con centrado horizontal garantizado `left: 50%; transform: translateX(-50%)` y ancho fluido sin recorte.
 - [x] Juego 4: Subir breakpoint responsive a 768px, ocultar subtitulo redundante y roadmap flotante, y compactar guia de operaciones a 3 columnas de 42px sin subtitulos pesados para desaturar el patio 3D.
 - [x] Reconstruir los 6 paquetes SCORM 1.2 (`build_scorm.py`).
+
+## Correccion Sintactica en Bodega y Enfoque Directo al Charco en Emergencias - 2026-10-27
+- [x] Juego 2: Corregir error de sintaxis JS (`Identifier expected` linea 7435 en `juego2_bodega.html`) retirando bloque de condicionales huerfanas y validando la clase `WarehouseApp`.
+- [x] Juego 2: Blindar selectores CSS `#exothermic-alert-strip, #hazard-toast { display: none !important; }` para asegurar que nunca se muestren avisos invasivos sobre el tablero 3D.
+- [x] Juego 5: Calibrar orientacion de camara ante el derrame a `pitch: -45°` (`posZ: 380`, `yaw: 0`) para enfocar de forma directa y frontal el charco quimico en el suelo en primer plano en smartphones, y ampliar el rango de inclinacion vertical hasta `-55°`.
+- [x] Reconstruir los 6 paquetes SCORM 1.2 (`build_scorm.py`).

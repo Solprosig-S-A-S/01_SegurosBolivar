@@ -3662,7 +3662,7 @@
                     valve:        { posX: 0,    posZ: -430, yaw: 0,   pitch: -6 },
                     eyewash:      { posX: 0,    posZ: 430,  yaw: 180, pitch: -6 },
                     kit:          { posX: 430,  posZ: 0,    yaw: 90,  pitch: -6 },
-                    spill:        { posX: 0,    posZ: 380,  yaw: 0,   pitch: -42 },
+                    spill:        { posX: 0,    posZ: 380,  yaw: 0,   pitch: -45 },
                     respel:       { posX: -370, posZ: -350, yaw: 270, pitch: -6 },
 
                     // Misión 2 (Incendio)
@@ -4239,7 +4239,7 @@
                         if (dx !== 0 || dy !== 0) {
                             this.yaw = (this.yaw + dx * 0.28) % 360;
                             if (this.yaw < 0) this.yaw += 360;
-                            this.pitch = Math.max(-45, Math.min(40, this.pitch - dy * 0.22));
+                            this.pitch = Math.max(-55, Math.min(40, this.pitch - dy * 0.22));
                             this.updateCamera();
                         }
                     }
@@ -4285,7 +4285,7 @@
 
                             this.yaw = (this.yaw + dx * 0.48) % 360;
                             if (this.yaw < 0) this.yaw += 360;
-                            this.pitch = Math.max(-45, Math.min(40, this.pitch - dy * 0.35));
+                            this.pitch = Math.max(-55, Math.min(40, this.pitch - dy * 0.35));
                             this.updateCamera();
                             break;
                         }
@@ -4888,7 +4888,7 @@
 
                         // Orientar siempre al personaje viendo directamente al charco en el suelo
                         this.yaw = 0;
-                        this.pitch = -42;
+                        this.pitch = -45;
                         if (this.posZ < 260 || this.posZ > 460) this.posZ = 380;
                         if (Math.abs(this.posX) > 120) this.posX = 0;
                         this.updateCamera();

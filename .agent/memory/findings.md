@@ -1127,3 +1127,12 @@ gba(148, 163, 184, 0.18)).
   2. `juego3_trasiego.html`: Se extrajo `#tech-feedback-toast` del arbol interno de viewport y se reubico como hijo directo del body (junto a los modales), con centrado absoluto `left: 50% !important; transform: translateX(-50%)` y ancho fluido `calc(100% - 24px)` tanto en desktop como en movil (<= 768px), eliminando cualquier recorte lateral.
   3. `juego4_taller.html`: Se elevo el breakpoint de ergonomia movil a `max-width: 768px`, garantizando que `.stage-status-wrapper` y `.workshop-roadmap-guide` queden ocultos, y que la bandeja inferior organice las 3 operaciones en columnas de 42px sin subtitulos invasivos, dejando el patio 3D con maximo espacio para respirar.
 - **Validacion**: 6 paquetes SCORM 1.2 reconstruidos exitosamente con `build_scorm.py`.
+
+## Correccion Sintactica en Bodega y Enfoque Directo al Charco en Emergencias (Juegos 2 y 5) - 2026-10-27
+- **Diagnostico**:
+  1. En `juego2_bodega.html`, se reporto error de sintaxis JS (`Identifier expected` en linea 7435): al neutralizar `renderActiveHazardToast()`, habia quedado un bloque huerfano de sentencias condicionales residuales fuera de cualquier metodo dentro del cuerpo de la clase `WarehouseApp`, lo cual causaba fallo de ejecucion en navegadores. Ademas se blindaron las reglas CSS con selectores directos `#exothermic-alert-strip, #hazard-toast { display: none !important; }`.
+  2. En `juego5_emergencias.html`, durante la secuencia de control de derrame (Mision 1), el jugador quedaba mirando horizontalmente hacia la pared norte por encima del charco (`pitch: -20` o `-42`), dejando el charco quimico fuera del encuadre central en pantallas de smartphones.
+- **Solucion implementada**:
+  1. `juego2_bodega.html`: Sintaxis depurada eliminando el bloque huerfano y dejando `renderActiveHazardToast() { // Neutralizado }` limpio. Clase `WarehouseApp` 100% valida y verificada.
+  2. `juego5_emergencias.html`: Angulo de pitch para la estacion de derrame calibrado a `-45°` (`pitch: -45`, `posZ: 380`, `yaw: 0`), encuadrando el charco quimico en el centro-primer plano del viewport, y rango maximo de inclinacion hacia el suelo ampliado hasta `-55°`.
+- **Validacion**: Sintaxis verificada y paquetes SCORM 1.2 reconstruidos con `build_scorm.py`.
