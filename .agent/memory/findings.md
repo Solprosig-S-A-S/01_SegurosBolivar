@@ -49,6 +49,13 @@
     1. Se desacopló el inspector del flujo vertical estático reemplazándolo por un banner compacto (`.matrix-instruction-banner`) que invita a pulsar cualquier casilla.
     2. El inspector se convirtió en un diálogo modal flotante independiente (`#modal-matrix-inspector`) con backdrop semitransparente (`z-index: 70`), botón de cierre `[×]`, botón inferior de retorno a matriz, soporte de tecla Escape y cierre al tocar fuera.
     3. Al hacer clic o tocar cualquier casilla [cuadradito] de la matriz, o al pulsar el botón "Consultar por Selectores", la ventana emergente se abre suavemente (`popInInspector`) cargando el cruce de las sustancias seleccionadas, sus rombos SGA vectoriales y la justificación técnica de la consecuencia real.
+- **Optimización de Rendimiento GPU 60 FPS en Conexiones Láser 3D (Juego 2)**:
+  - *Diagnóstico de lentitud*: Al colocar sustancias, aparecían líneas con `filter: drop-shadow(...)` animadas continuamente junto con `stroke-dashoffset` (`laserHazardDash`) e inflados de `box-shadow` (`pulseHazardBeam`, `hazardCellPulse`) dentro del contenedor isomórfico 3D (`transform-style: preserve-3d; transform: rotateX(60deg) rotateZ(-45deg)`). El rasterizador de WebKit/Chromium ejecutaba convoluciones de desenfoque gaussiano por software 60 veces/segundo en CPU, colapsando los FPS en móviles. Además, las vigas HTML `.beam-h`/`.beam-v` duplicaban el renderizado del SVG.
+  - *Solución*:
+    1. Sustitución de `filter: drop-shadow` por el patrón vectorial concéntrico "Halo + Núcleo" (línea gruesa translúcida + línea media intensa + núcleo blanco de plasma) renderizado 100% por GPU en un solo pase de geometría.
+    2. Supresión de vigas HTML duplicadas (`.beam-h, .beam-v { display: none !important; }`).
+    3. Sustitución de animaciones de trazo continuas por pulso suave de `opacity` en el compositor GPU (`will-change: opacity`).
+    4. Estabilización de sombras estáticas en casillas de peligro y sprites, garantizando 60 FPS estables sin tirones.
 
 ## Decisiones de Arquitectura - Suite Completa (CSS Nativo & Eliminación de Tailwind)
 - **Desacople 100% de Tailwind CSS**:
@@ -1082,3 +1089,29 @@ gba(148, 163, 184, 0.18)).
   2. Supresion de scroll anidado: `.modal-body` configurado con `overflow: hidden !important` y `flex: 1`. La region `.matrix-scroll-region` asume el desplazamiento unico de la tabla, manteniendo cabecera, pestanas, micro-chips de leyenda y barra de accion fijos y accesibles.
   3. Contencion interna de contornos: Reemplazado el contorno externo por sombra interior `boxShadow: inset 0 0 0 2px var(--bolivar-yellow)` y `outline-offset: -2px`.
 - **Validacion**: 6 paquetes SCORM 1.2 regenerados con `build_scorm.py`.
+
+## Correccion de Recorte Horizontal en Notificaciones Toast Movil (Juego 3) - 2026-10-27
+- **Diagnostico**: En juego3_trasiego.html, la notificacion de retroalimentacion tecnica (#tech-feedback-toast) en dispositivos moviles (<= 768px) sufria un recorte horizontal severo donde el 50% izquierdo del mensaje quedaba fuera de la pantalla. El bug se originaba porque la media query asignaba left: 6px; right: 6px; top: 52px; sin restablecer 	ransform: translateX(-50%) del estilo base (.show { transform: translateX(-50%) translateY(0); }), desplazando el contenedor -50% a la izquierda de la coordenada left: 6px.
+- **Solucion implementada**:
+  1. Rediseño del anclaje universal sin 	ranslateX(-50%): 	op: 56px; left: 12px; right: 12px; width: auto; max-width: 580px; margin: 0 auto;.
+  2. Animacion de entrada/salida basada exclusivamente en el eje vertical: 	ransform: translateY(-20px) -> translateY(0).
+  3. En pantallas moviles (<= 768px): anclaje 	op: 50px; left: 8px; right: 8px; con margen visual limpio, garantizando visualizacion 100% centrada y sin recorte.
+  4. Agregado boton de descarte [×] y cierre al tocar la notificacion.
+- **Validacion**: Paquetes SCORM 1.2 reconstruidos con uild_scorm.py.
+
+## Optimizacion Ergonomica y Supresion de Doble Caja en Matriz Movil (Juego 2) - 2026-10-27
+- **Diagnostico**: En juego2_bodega.html, la ejecucion automatica de inspectFromDropdowns(false) al cargar el modal forzaba la activacion de row-crosshair-active y header-crosshair-active sobre la Fila 4 (3. Liq. Inflamable), dejandola permanentemente seleccionada con un box-shadow interior amarillento. Al desplazarse horizontalmente, la celda fija colisionaba visualmente con la celda activa contigua, formando un artefacto de doble caja naranja. Ademas, existian bordes inline heterogeneos (border-left: 3px solid ...) en solo 5 de las 12 filas.
+- **Solucion implementada**:
+  1. Supresion de seleccion artificial al cargar: inspectFromDropdowns(false) inicializa las etiquetas y cartas en segundo plano sin alterar las clases de reticula en la tabla visual (#table-official-matrix). La tabla abre 100% limpia.
+  2. Sustitucion de contornos internos por acento lateral: td.sticky-col.header-crosshair-active utiliza ahora border-left: 3px solid var(--amarillo-bolivar) y fondo solido #1e293b, eliminando cualquier box-shadow interior que genere solapamiento visual con las celdas deslizantes.
+  3. Homogeneizacion de filas: Retirados los estilos inline border-left en las filas 2, 4, 10, 11 y 12, estandarizando toda la tabla con una tipografia limpia de 0.62rem.
+  4. Geometria de tabla adaptada: Columna fija ajustada a 96 px y celdas a 52 px (ancho total 720 px), garantizando que 5 columnas completas sean visibles a la vez en telefonos moviles.
+- **Validacion**: Paquetes SCORM 1.2 reconstruidos exitosamente con build_scorm.py.
+
+## Calificacion Plena de 100 y Optimizacion de Rendimiento en Juego 5 - 2026-10-27
+- **Diagnostico**: En juego5_emergencias.html, el puntaje final dependia de variables complejas (vitalidad restante, tiempo exacto en segundos, conteo de pines ocultos de auditoria), reduciendo la nota a 70-85 pts a pesar de haber completado las dos emergencias reglamentarias. En cuanto al rendimiento, la simulacion 3D FPV sufria caidas severas de FPS (lag) causadas por filtros CSS gaussianos intensivos (filter: brightness saturate aplicado a las 6 paredes de 1400 px durante el conato de incendio, blur en el chorro PQS y vapor de valvula, drop-shadow en nodos de fuego), sumado a la ejecucion redundante de checkProximity() y reescritura forzada de innerHTML en cada frame del bucle de fisicas.
+- **Solucion implementada**:
+  1. Calificacion garantizada de 100%: Si el usuario concluye el entrenamiento dentro del tiempo limite, la calificacion asignada a las misiones y transmitida a Moodle SCORM es estrictamente de 100 pts / 100%. Desglose simplificado y transparente: Control Operativo 100/100, Tiempo Conforme y Protocolo SST 100%. Solo se reprueba (0 pts) si el tiempo limite expira.
+  2. Supresion de filtros CSS pesados: Retirado roomFireGlow de las paredes tridimensionales, eliminado filter: blur de .pqs-spray-stream y .valve-steam-fx, y reemplazados los drop-shadows por sombreados GPU nativos (box-shadow).
+  3. Desacoplamiento del bucle de fisicas: Eliminada la llamada duplicada de checkProximity() en reposo, cacheo de elementos del DOM de reticula, y actualizacion del indicador de guia flecha solo ante cambio efectivo de orientacion.
+- **Validacion**: 6 paquetes SCORM 1.2 reconstruidos con build_scorm.py.

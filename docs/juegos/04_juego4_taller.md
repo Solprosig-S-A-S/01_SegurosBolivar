@@ -154,6 +154,11 @@ Para evitar que el usuario desplace la cámara por error cuando intenta caminar:
    - Temporizador de desafío calibrado en **90 segundos (01:30 minutos)** para simular presión operacional real en planta sin tolerancias blandas.
 4. **Cabecera Ergonómica de Dos Filas (`.header-bar`)**:
    - Para prevenir solapamientos en viewports reducidos (enmarcado a 500px o móviles), la cabecera se organiza en dos filas estables: Fila 1 superior (`.header-top-row`) con icono, título ("Taller Seguro"), subtítulo institucional y botones de control (pantalla completa y audio); Fila 2 inferior (`.header-stats`) con 3 badges simétricos (`flex: 1`): Racha, Cronómetro y Puntuación. Zero solapamiento, máxima legibilidad y eliminación de reglas CSS destructivas que ocultaban la marca en pantallas pequeñas.
+5. **Ergonomía Espaciosa y Despeje Vertical en Teléfonos Móviles**:
+   - **Descarte de elementos duplicados**: Ocultamiento en móviles de la barra `.stage-status-wrapper` (que duplicaba innecesariamente la pestaña activa) y del roadmap flotante `.workshop-roadmap-guide` dentro del 3D (cuyos 3 pasos ya se representan en la bandeja inferior).
+   - **Bandeja de operaciones compacta en 3 columnas**: La bandeja inferior en Zona 2 pasó de una columna vertical de 3 tarjetas apiladas (~230px de altura) a una grilla horizontal compacta de 3 columnas (~54px de altura) sin subtítulos redundantes, liberando más de 170px de espacio vertical directo para el diorama 3D.
+   - **Centrado de cámara isométrica**: Corrección del offset vertical `--pan-y` a 10px (en vez de 35px), impidiendo que el diorama se hunda contra la bandeja inferior.
+   - **Balizas y letreros compactos**: Balizas y carteles de estaciones escalados para eliminar colisiones en perspectiva isométrica.
 
 ---
 

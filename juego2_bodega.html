@@ -1609,17 +1609,20 @@
         .header-crosshair-active {
             background: #1e293b !important;
             color: var(--bolivar-yellow) !important;
-            box-shadow: inset 0 0 0 1.5px var(--bolivar-yellow) !important;
+            border-bottom: 2px solid var(--bolivar-yellow) !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8) !important;
             outline: none !important;
         }
         .row-crosshair-active {
-            background: rgba(255, 199, 44, 0.08);
+            background: rgba(255, 199, 44, 0.06);
         }
         .row-crosshair-active .sticky-col,
         .sticky-col.header-crosshair-active {
             background: #1e293b !important;
             color: var(--bolivar-yellow) !important;
-            box-shadow: inset 0 0 0 1.5px var(--bolivar-yellow), 4px 0 12px rgba(0, 0, 0, 0.8) !important;
+            border-left: 3px solid var(--bolivar-yellow) !important;
+            border-right: 2px solid var(--amarillo-bolivar) !important;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.8) !important;
             outline: none !important;
         }
 
@@ -2193,107 +2196,52 @@
             filter: drop-shadow(0 22px 16px rgba(0, 0, 0, 0.85));
         }
 
-        /* Dynamic Connector Beams */
+        /* Dynamic Connector Beams (Ocultar vigas HTML pesadas para evitar sobrecarga de sombras) */
         .beam-h, .beam-v {
-            position: absolute;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 28;
+            display: none !important;
         }
 
-        .beam-compatible {
-            opacity: 1 !important;
-            background: linear-gradient(90deg, #10B981, #34D399, #10B981) !important;
-            box-shadow: 0 0 16px #10B981, 0 0 28px rgba(16, 185, 129, 0.8) !important;
-            transform: translateZ(10px) !important;
+        /* Dynamic SVG Laser Connections (Ultra-Optimizadas GPU 60 FPS, sin filtros de desenfoque ráster) */
+        .beam-svg-compatible-group {
+            opacity: 0.95;
+            will-change: opacity;
         }
 
-        .beam-incompatible {
-            opacity: 1 !important;
-            background: linear-gradient(90deg, #EF4444, #FCA5A5, #EF4444) !important;
-            box-shadow: 0 0 22px #EF4444, 0 0 38px rgba(239, 68, 68, 0.95) !important;
-            animation: pulseHazardBeam 0.5s infinite alternate ease-in-out !important;
+        .beam-svg-hazard-group {
+            animation: laserHazardPulseGpu 0.7s infinite alternate ease-in-out;
+            will-change: opacity;
         }
 
-        @keyframes pulseHazardBeam {
-            0% { 
-                filter: brightness(1.1); 
-                transform: translateZ(14px) scale(1);
-                box-shadow: 0 0 18px #EF4444, 0 0 30px rgba(239, 68, 68, 0.8);
-            }
-            100% { 
-                filter: brightness(1.9); 
-                transform: translateZ(14px) scale(1.15);
-                box-shadow: 0 0 28px #EF4444, 0 0 45px rgba(239, 68, 68, 1);
-            }
+        @keyframes laserHazardPulseGpu {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
         }
 
-        /* Dynamic SVG Laser Connections */
-        .beam-svg-compatible {
-            filter: drop-shadow(0 0 6px #10B981) drop-shadow(0 0 14px #10B981);
-            animation: pulseCompatibleSvg 1.4s infinite alternate ease-in-out;
-        }
-        @keyframes pulseCompatibleSvg {
-            0% { opacity: 0.85; stroke-width: 4px; }
-            100% { opacity: 1; stroke-width: 6px; }
-        }
-
-        .beam-svg-incompatible {
-            filter: drop-shadow(0 0 8px #EF4444) drop-shadow(0 0 20px #EF4444);
-            animation: laserHazardDash 0.8s infinite linear, pulseHazardSvg 0.5s infinite alternate ease-in-out;
-        }
-        @keyframes laserHazardDash {
-            to { stroke-dashoffset: -30; }
-        }
-        @keyframes pulseHazardSvg {
-            0% { stroke: #EF4444; opacity: 0.9; }
-            100% { stroke: #FCA5A5; opacity: 1; filter: drop-shadow(0 0 14px #EF4444) drop-shadow(0 0 28px #EF4444); }
-        }
-
-        /* Incompatible Cell Hazard Highlighting (Peligro Visible en Tablero) */
-        @keyframes hazardCellPulse {
-            0%, 100% {
-                border-color: #EF4444 !important;
-                background-color: rgba(239, 68, 68, 0.38) !important;
-                box-shadow: 0 0 26px rgba(239, 68, 68, 0.85), inset 0 0 18px rgba(239, 68, 68, 0.45) !important;
-                transform: translateZ(6px);
-            }
-            50% {
-                border-color: #F87171 !important;
-                background-color: rgba(239, 68, 68, 0.2) !important;
-                box-shadow: 0 0 14px rgba(239, 68, 68, 0.5), inset 0 0 8px rgba(239, 68, 68, 0.2) !important;
-                transform: translateZ(3px);
-            }
-        }
+        /* Incompatible Cell Hazard Highlighting (Peligro Visible en Tablero - GPU Friendly) */
         .iso-cell.cell-hazard-danger {
-            animation: hazardCellPulse 0.75s infinite ease-in-out !important;
-            border-width: 2.5px !important;
+            border: 2px solid #EF4444 !important;
+            background-color: rgba(239, 68, 68, 0.28) !important;
+            box-shadow: inset 0 0 12px rgba(239, 68, 68, 0.45) !important;
+            animation: hazardCellGpuPulse 0.8s infinite alternate ease-in-out !important;
+            will-change: border-color, background-color;
         }
-        @keyframes dazedWobble3D {
-            0%, 100% {
-                transform: rotateZ(45deg) rotateX(-60deg) translateZ(14px) rotate(0deg) scale(1.05);
+
+        @keyframes hazardCellGpuPulse {
+            0% {
+                border-color: #EF4444;
+                background-color: rgba(239, 68, 68, 0.22);
             }
-            25% {
-                transform: rotateZ(45deg) rotateX(-60deg) translateZ(16px) rotate(-8deg) translateX(-3px) scale(1.08);
-            }
-            75% {
-                transform: rotateZ(45deg) rotateX(-60deg) translateZ(16px) rotate(8deg) translateX(3px) scale(1.08);
+            100% {
+                border-color: #F87171;
+                background-color: rgba(239, 68, 68, 0.35);
             }
         }
+
         .iso-cell.cell-hazard-danger .iso-sprite {
-            animation: dazedWobble3D 0.55s infinite alternate ease-in-out !important;
-            filter: drop-shadow(0 0 20px rgba(239, 68, 68, 1)) drop-shadow(0 14px 10px rgba(0, 0, 0, 0.85)) !important;
             transform-origin: 50% 80% !important;
+            filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.75)) !important;
         }
-        @keyframes badgePulse3D {
-            0%, 100% {
-                transform: rotateZ(45deg) rotateX(-60deg) translateZ(28px) scale(1);
-            }
-            50% {
-                transform: rotateZ(45deg) rotateX(-60deg) translateZ(32px) scale(1.1);
-            }
-        }
+
         .cell-hazard-badge {
             position: absolute;
             top: -12px;
@@ -2308,14 +2256,12 @@
             gap: 6px;
             font-size: var(--font-xs);
             font-weight: 900;
-            box-shadow: 0 4px 18px rgba(220, 38, 38, 0.7);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
             z-index: 50;
             pointer-events: none;
             white-space: nowrap;
             transform: rotateZ(45deg) rotateX(-60deg) translateZ(28px);
             transform-origin: 50% 50%;
-            animation: badgePulse3D 0.8s infinite ease-in-out !important;
-            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.8));
         }
 
         /* Blueprint Background Pattern */
@@ -2787,18 +2733,18 @@
             }
             #table-official-matrix {
                 table-layout: fixed;
-                width: 760px;
-                min-width: 760px;
+                width: 720px;
+                min-width: 720px;
                 border-collapse: separate;
                 border-spacing: 2px;
             }
             #table-official-matrix td.sticky-col {
-                width: 112px;
-                min-width: 112px;
-                max-width: 112px;
-                font-size: 0.66rem;
+                width: 96px;
+                min-width: 96px;
+                max-width: 96px;
+                font-size: 0.62rem;
                 line-height: 1.15;
-                padding: 3px 5px;
+                padding: 4px 6px;
                 background: #0b1120 !important;
                 border-right: 2px solid var(--amarillo-bolivar) !important;
                 box-shadow: 4px 0 10px rgba(0, 0, 0, 0.8) !important;
@@ -2809,11 +2755,11 @@
                 overflow-wrap: break-word;
             }
             #table-official-matrix th.sticky-col {
-                width: 112px;
-                min-width: 112px;
-                max-width: 112px;
-                padding: 3px 5px;
-                font-size: 0.66rem;
+                width: 96px;
+                min-width: 96px;
+                max-width: 96px;
+                padding: 4px 6px;
+                font-size: 0.62rem;
                 background: #040711 !important;
                 border-right: 2px solid var(--amarillo-bolivar) !important;
                 border-bottom: 2px solid var(--amarillo-bolivar) !important;
@@ -2824,9 +2770,9 @@
                 z-index: 12 !important;
             }
             #table-official-matrix th.col-header-sga {
-                width: 54px;
-                min-width: 54px;
-                max-width: 54px;
+                width: 52px;
+                min-width: 52px;
+                max-width: 52px;
                 padding: 3px 1px;
                 background: #090e1a !important;
                 border-bottom: 2px solid var(--border-subtle);
@@ -2849,9 +2795,9 @@
                 text-overflow: ellipsis;
             }
             #table-official-matrix .matrix-cell-visual {
-                width: 54px;
-                min-width: 54px;
-                max-width: 54px;
+                width: 52px;
+                min-width: 52px;
+                max-width: 52px;
                 height: 36px;
                 padding: 0;
                 outline-offset: -2px;
@@ -2860,15 +2806,16 @@
             #table-official-matrix tr.row-crosshair-active td.sticky-col {
                 background: #1e293b !important; /* 100% OPACA */
                 color: var(--bolivar-yellow) !important;
+                border-left: 3px solid var(--amarillo-bolivar) !important;
                 border-right: 2px solid var(--amarillo-bolivar) !important;
-                box-shadow: inset 0 0 0 1.5px var(--bolivar-yellow), 4px 0 10px rgba(0, 0, 0, 0.8) !important;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.8) !important;
                 outline: none !important;
             }
             #table-official-matrix th.col-header-sga.header-crosshair-active {
                 background: #1e293b !important; /* 100% OPACA */
                 color: var(--bolivar-yellow) !important;
                 border-bottom: 2px solid var(--amarillo-bolivar) !important;
-                box-shadow: inset 0 0 0 1.5px var(--bolivar-yellow), 0 4px 10px rgba(0, 0, 0, 0.8) !important;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8) !important;
                 outline: none !important;
             }
             #modal-matrix-inspector .inspector-top-bar {
@@ -3478,8 +3425,8 @@
                         <!-- Isometric Board 3x3 -->
                         <div id="warehouse-board" class="iso-board relative" style="width: 370px; height: 370px; max-width: 92vw; aspect-ratio: 1/1; background: rgba(7, 11, 20, 0.95); border-radius: var(--radius-lg); border: 4px solid var(--border-strong); box-shadow: 0 25px 50px rgba(0,0,0,0.9), 0 0 35px rgba(0,103,56,0.25); display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; padding: 10px;">
                             
-                            <!-- Capa SVG Vectorial de Conexiones Láser 3D (Ortogonales y Diagonales) -->
-                            <svg id="board-connections-svg" class="absolute" style="inset: 0; width: 100%; height: 100%; pointer-events: none; transform: translateZ(12px); z-index: 25; overflow: visible;" viewBox="0 0 300 300"></svg>
+                            <!-- Capa SVG Vectorial de Conexiones Láser 3D (Ortogonales y Diagonales - 60 FPS GPU) -->
+                            <svg id="board-connections-svg" class="absolute" style="inset: 0; width: 100%; height: 100%; pointer-events: none; transform: translateZ(12px); z-index: 25; overflow: visible; will-change: opacity; shape-rendering: geometricPrecision;" viewBox="0 0 300 300"></svg>
 
                             <!-- Dynamic Connection Beams (12 edges: 6 horizontal, 6 vertical) -->
                             <!-- Horizontal Beams -->
@@ -3827,7 +3774,7 @@
                                     </tr>
                                     <!-- Fila 2: Gases Inflamables (Acetileno) -->
                                     <tr data-row="1">
-                                        <td class="sticky-col" style="border-left: 3px solid #38bdf8;">
+                                        <td class="sticky-col">
                                             🔥 2.1 Gas Inflamable
                                             <span style="font-size: 0.65rem; color: #7dd3fc; display: block;">[Acetileno en Obra]</span>
                                         </td>
@@ -3878,7 +3825,7 @@
                                     </tr>
                                     <!-- Fila 5: Líquidos Inflamables (ACPM) -->
                                     <tr data-row="4">
-                                        <td class="sticky-col" style="border-left: 3px solid #f97316;">
+                                        <td class="sticky-col">
                                             🔥 3. Líq. Inflamable
                                             <span style="font-size: 0.65rem; color: #fdba74; display: block;">[ACPM / Diésel]</span>
                                         </td>
@@ -3961,7 +3908,7 @@
                                     </tr>
                                     <!-- Fila 10: Corrosivos ÁCIDOS (Ácido Muriático) -->
                                     <tr data-row="9">
-                                        <td class="sticky-col" style="border-left: 3px solid #ef4444;">
+                                        <td class="sticky-col">
                                             🧪 8A. Corrosivo Ácido
                                             <span style="font-size: 0.65rem; color: #fca5a5; display: block;">[Ácido Muriático]</span>
                                         </td>
@@ -3980,7 +3927,7 @@
                                     </tr>
                                     <!-- Fila 11: Corrosivos BÁSICOS / ÁLCALIS (Soda Cáustica) -->
                                     <tr data-row="10">
-                                        <td class="sticky-col" style="border-left: 3px solid #a855f7;">
+                                        <td class="sticky-col">
                                             🧼 8B. Corrosivo Álcali
                                             <span style="font-size: 0.65rem; color: #d8b4fe; display: block;">[Soda Cáustica]</span>
                                         </td>
@@ -3999,7 +3946,7 @@
                                     </tr>
                                     <!-- Fila 12: Misceláneos (Pintura Epóxica) -->
                                     <tr data-row="11">
-                                        <td class="sticky-col" style="border-left: 3px solid #10b981;">
+                                        <td class="sticky-col">
                                             ☣️ 9. Misceláneos / Salud
                                             <span style="font-size: 0.65rem; color: #6ee7b7; display: block;">[Pintura Epóxica]</span>
                                         </td>
@@ -5905,7 +5852,7 @@
                 ];
 
                 // Actualizar el HUD del Inspector por Tipo y Etiqueta
-                const updateInspector = (cell, syncSelects = true) => {
+                const updateInspector = (cell, syncSelects = true, highlightCrosshair = true) => {
                     if (!cell) return;
                     const c1 = cell.getAttribute('data-c1') || 'Tipo / Etiqueta A';
                     const c2 = cell.getAttribute('data-c2') || 'Tipo / Etiqueta B';
@@ -5965,7 +5912,7 @@
 
                     // Resaltar celdas activas e iluminación de retícula
                     const tableOfficial = document.getElementById('table-official-matrix');
-                    if (tableOfficial) {
+                    if (tableOfficial && highlightCrosshair) {
                         tableOfficial.querySelectorAll('.header-crosshair-active').forEach(el => el.classList.remove('header-crosshair-active'));
                         tableOfficial.querySelectorAll('.row-crosshair-active').forEach(el => el.classList.remove('row-crosshair-active'));
 
@@ -5978,7 +5925,8 @@
                             const colTh = tableOfficial.querySelector(`th[data-col="${cIdx}"]`);
                             if (colTh) colTh.classList.add('header-crosshair-active');
                         }
-
+                    }
+                    if (tableOfficial) {
                         // Sincronizar selectores si se solicitó
                         if (syncSelects && rIdx !== null && cIdx !== null && selectA && selectB) {
                             selectA.value = rIdx;
@@ -6026,10 +5974,12 @@
                         if (tr) {
                             const cell = tr.children[parseInt(cIdx, 10) + 1];
                             if (cell) {
-                                updateInspector(cell, false);
-                                cell.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
-                                cell.style.boxShadow = 'inset 0 0 0 2px var(--bolivar-yellow)';
-                                setTimeout(() => { cell.style.boxShadow = ''; }, 1200);
+                                updateInspector(cell, false, shouldOpen);
+                                if (shouldOpen) {
+                                    cell.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+                                    cell.style.boxShadow = '0 0 14px rgba(255, 199, 44, 0.95), inset 0 0 0 2px var(--bolivar-yellow)';
+                                    setTimeout(() => { cell.style.boxShadow = ''; }, 1400);
+                                }
                             }
                         }
                     }
@@ -7278,20 +7228,26 @@
                         incompatibleCells.add(`${r2}-${c2}`);
                         recordHazard(idA, idB);
 
-                        // Rayo láser rojo pulsante de peligro inmediato con nodos luminosos
+                        // Rayo láser rojo puro vector (halo + rayo + núcleo) 100% acelerado por GPU
                         svgLinesHtml += `
-                            <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" 
-                                  stroke="#EF4444" stroke-width="${isDiagonal ? '6' : '8'}" stroke-linecap="round" stroke-dasharray="10 6" 
-                                  class="beam-svg-incompatible" />
-                            <circle cx="${x1}" cy="${y1}" r="8" fill="#EF4444" opacity="0.85" />
-                            <circle cx="${x2}" cy="${y2}" r="8" fill="#EF4444" opacity="0.85" />
+                            <g class="beam-svg-hazard-group">
+                                <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(239, 68, 68, 0.35)" stroke-width="${isDiagonal ? '11' : '13'}" stroke-linecap="round" />
+                                <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#EF4444" stroke-width="${isDiagonal ? '4.5' : '5.5'}" stroke-linecap="round" />
+                                <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#FEE2E2" stroke-width="1.6" stroke-linecap="round" />
+                                <circle cx="${x1}" cy="${y1}" r="5.5" fill="#EF4444" />
+                                <circle cx="${x1}" cy="${y1}" r="2" fill="#FFFFFF" />
+                                <circle cx="${x2}" cy="${y2}" r="5.5" fill="#EF4444" />
+                                <circle cx="${x2}" cy="${y2}" r="2" fill="#FFFFFF" />
+                            </g>
                         `;
                     } else if (status === 'compatible' && !isDiagonal) {
-                        // Rayo verde esmeralda de compatibilidad
+                        // Rayo verde esmeralda puro vector (halo + rayo + núcleo) sin filtros CPU
                         svgLinesHtml += `
-                            <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" 
-                                  stroke="#10B981" stroke-width="5" stroke-linecap="round" 
-                                  class="beam-svg-compatible" />
+                            <g class="beam-svg-compatible-group">
+                                <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(16, 185, 129, 0.28)" stroke-width="9" stroke-linecap="round" />
+                                <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" />
+                                <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#D1FAE5" stroke-width="1.2" stroke-linecap="round" />
+                            </g>
                         `;
                     }
                 };

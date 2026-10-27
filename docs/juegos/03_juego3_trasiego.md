@@ -146,7 +146,7 @@ flowchart TD
 - **Flujo de Inicio Controlado**: Al cargar la página, se despliega el modal de contexto en obra (`#modal-briefing-overlay`). El temporizador permanece en espera (`01:10`) y el juego inactivo (`isGameActive = false`) para evitar consumir tiempo mientras el operador asimila la misión.
 - **Transición y Audio Seguro**: Al pulsar `#btn-start-briefing`, se ejecuta `ProceduralAudioEngine.playTap()`, se oculta el modal (`.hidden`), se activa la partida y se dispara el cronómetro (`this.startTimer()`), sincronizando la ruta de pasos y controles.
 
-- **Estabilización Flotante de Notificaciones**: El panel `#tech-feedback-toast` se configuró con `position: absolute; top: 68px; z-index: 50;`, garantizando que al mostrarse o desaparecer el feedback técnico normativo no altere las coordenadas ni empuje verticalmente la escena vectorial del camión cisterna ni el mazo de tarjetas.
+- **Estabilización y Centrado Universal de Notificaciones**: El panel `#tech-feedback-toast` se rediseñó con anclaje superior universal (`top: 56px; left: 12px; right: 12px; max-width: 580px; margin: 0 auto; transform: translateY(-20px);`), eliminando el bug de desplazamiento horizontal por `translateX(-50%)` en móvil que cortaba el 50 % del mensaje a la izquierda. Incorpora botón de cierre rápido `[×]`, descarte por toque en pantalla y tipografía adaptativa para advertencias de error y aciertos técnicos.
 
 ---
 

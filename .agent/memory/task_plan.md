@@ -32,6 +32,7 @@
       - [x] Transformación del Inspector en ventana modal flotante emergente (`#modal-matrix-inspector`): desacoplado del flujo estático para despejar la vista de la matriz 12x12, activándose exclusivamente al hacer clic o tocar cualquier casilla (cuadradito) de la matriz o pulsar el botón de consulta.
     - [x] Sistema de 3 pestañas: Matriz Oficial por Tipos y Etiquetas (NTC 4435 / SGA 12x12), Guía de Etiquetas SGA con fichas por clase, y Reglas de Buffers Neutros & RESPEL.
     - [x] Retícula activa (crosshair highlight) con iluminación coordinada de filas y columnas al pasar el mouse o tocar casillas en ambas tablas.
+    - [x] Optimización de rendimiento a 60 FPS en conexiones láser 3D: erradicación de filter: drop-shadow y vigas duplicadas, adopción de técnica vectorial pura Halo + Núcleo y pulso de opacidad en compositor GPU.
   - [x] Fase 3: Auditoría técnica y reporte de cumplimiento normativo (Res. 773/2021 y Dec. 4741/2005).
   - [x] Escalado tipográfico y accesibilidad visual (text-xs a text-base en todas las fases y catálogo de consecuencias).
 - [x] Juego 3: 'Inspector de Trasiego: Inspección de Campo y Corrección de Riesgos' (juego3_trasiego.html).
@@ -39,6 +40,7 @@
   - [x] 4 Puntos de Inspección / Hotspots parpadeantes en rojo: Cabina/Motor, Chasis/Masa, Acople/Manguera y Perímetro/Extintor.
   - [x] Mazo de 4 Tarjetas de Acción de Seguridad con soporte dual Drag & Drop (Pointer Events) y Tap-to-Place.
   - [x] Feedback técnico normativo automático (Dec. 1079/2015, Ley 55/1993, Dec. 4741/2005, Res. 773/2021).
+    - [x] Corrección de recorte horizontal en notificación Toast en móvil (eliminación de conflicto translateX(-50%) y anclaje superior centrado).
   - [x] Flujo de 3 Fases: Tutorial Bolívar Safety Bot, Desafío de 4 escenas en 120s y Auditoría final certificada.
 - [x] Migración de CSS nativo (sin Tailwind) para Juego 2 (juego2_bodega.html).
   - [x] Desacople total de Tailwind CDN y configuración script.

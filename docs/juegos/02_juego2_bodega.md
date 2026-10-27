@@ -149,9 +149,15 @@ El tablero se proyecta mediante CSS 3D Transforms puro sin canvas WebGL:
 ```
 Las piezas y sprites se proyectan perpendicularmente mediante contrarrotación angular para mantener el efecto diorama (Billboarding).
 
-### 4.2. Vecindad y evaluacion del esquema
+### 4.2. Vecindad y evaluación del esquema (Optimización GPU 60 FPS)
 
-Se evalua la vecindad inmediata: seis conexiones horizontales, seis verticales y ocho diagonales. Los recursos neutros no son barreras fisicas: solo ocupan una casilla del esquema. La matriz simplifica categorias; la compatibilidad real depende de las FDS de productos concretos.
+Se evalúa la vecindad inmediata: seis conexiones horizontales, seis verticales y ocho diagonales. Los recursos neutros no son barreras físicas: solo ocupan una casilla del esquema. La matriz simplifica categorías; la compatibilidad real depende de las FDS de productos concretos.
+
+- **Renderizado Vectorial Puro de Líneas Láser 3D:**
+  - Se eliminaron los filtros rasterizados `filter: drop-shadow()` y animaciones de `stroke-dashoffset` en SVG que saturaban el rasterizador CPU y causaban pérdida masiva de cuadros por segundo en navegadores móviles.
+  - Implementación de halo + núcleo vectorial concéntrico multicapa en SVG (`<g class="beam-svg-hazard-group">` y `<g class="beam-svg-compatible-group">`), proyectado en GPU con `will-change: opacity`.
+  - Supresión de vigas HTML `.beam-h` y `.beam-v` duplicadas para evitar sobrecarga de sombreados (`box-shadow`).
+  - Animación de pulsación de peligro optimizada en compositor GPU sin recálculo de geometría ni repintado del DOM.
 
 El inventario completo, rechazo de la botella, ausencia de incompatibilidades y respeto de A3/C1 son requisitos para aprobar. El puntaje parcial conserva utilidad formativa, pero no puede alcanzar 80 % si falta un requisito.
 
@@ -224,10 +230,8 @@ El inventario completo, rechazo de la botella, ausencia de incompatibilidades y 
 - **Ventana flotante de inspeccion por celda (`#modal-matrix-inspector`)**: Al tocar cualquier casilla, el veredicto oficial y la justificacion tecnica se presentan en primer lugar (CSS order: 2 y 3) para lectura instantanea sin obligar al usuario a hacer scroll por encima de los desplegables.
 
 
-### Correccion de Solapamiento y Opacidad en Sticky Column (Moviles) - 2026-10-24
-- **Diagnostico de la captura del usuario**: La columna fija `.sticky-col` recibia `background: rgba(255, 199, 44, 0.22) !important` al activarse la reticula (`.header-crosshair-active`), volviendose un 78% translucida. Al desplazarse horizontalmente, los iconos de las celdas deslizantes (circulos rojos y checkmarks verdes) se transparentaban bajo el texto del reactivo, generando un empastamiento visual severo. Asimismo, el doble scroll anidado (`.modal-body` + `.matrix-scroll-region`) desalineaba la tabla y recortaba la Fila 0 (`1. Explosivos`).
-- **Correcciones definitivas**:
-  1. **Opacidad total e inviolable (100% Opaque)**: Se fijo `background: #1e293b !important` en `.sticky-col.header-crosshair-active` y en `tr.row-crosshair-active .sticky-col`, garantizando que ninguna celda pueda transparentarse bajo la columna fija.
-  2. **Sombras de profundidad y borde continuo**: La columna fija proyecta una sombra solida (`box-shadow: 4px 0 10px rgba(0,0,0,0.8)`) con borde dorado Bolívar de 2 px, separando netamente el panel fijo de los datos deslizantes.
-  3. **Eliminacion de scroll anidado**: `.modal-body` queda con `overflow: hidden !important`, asignando a `.matrix-scroll-region` el 100% de la altura restante. Solo la tabla se desplaza, manteniendo fijas la cabecera, pestanas, leyenda y barra de accion.
-  4. **Contencion de contornos**: Las celdas activas usan `boxShadow: 'inset 0 0 0 2px var(--bolivar-yellow)'` y `outline-offset: -2px`, impidiendo que los contornos invadan casillas adyacentes.
+### Optimizacion Ergonomica y Correccion de Resaltado en Matriz Movil - 2026-10-27
+- **Eliminacion de pre-resaltado en carga**: `inspectFromDropdowns(false)` inicializa los campos en segundo plano sin activar `.header-crosshair-active` ni `.row-crosshair-active`, garantizando que la matriz abra limpia y sin celdas artificialmente seleccionadas.
+- **Supresion del artefacto de doble caja**: Se reemplazo `box-shadow: inset 0 0 0 1.5px` en la columna fija por un acento vertical limpio (`border-left: 3px solid var(--amarillo-bolivar)`) y fondo solido `#1e293b`, evitando que el contorno interior colisione visualmente con la celda activa contigua al hacer scroll horizontal.
+- **Normalizacion de encabezados de fila**: Se eliminaron los estilos inline heterogeneos `border-left: 3px solid #...` que se aplicaban solo a 5 de las 12 filas, estandarizando una tipografia compacta de 0.62rem y permitiendo que todas las filas sigan el mismo patron visual.
+- **Geometria optimizada para movil**: Ancho de columna fija reducido a 96 px y celdas a 52 px (total 720 px), permitiendo ver 5 columnas completas simultaneamente en pantallas de 360-390 px con desplazamiento inercial fluido.

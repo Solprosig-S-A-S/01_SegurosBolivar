@@ -146,3 +146,23 @@ Para evitar saturación visual y sobrecarga cognitiva, el simulador incorpora un
 3. **Prueba de Interacción Completa con Clic y Tecla E**:
    - Completar la ruta: Caseta EPP ➔ Válvula ➔ Lavaojos ➔ Kit ➔ Charco (Cordón) ➔ Charco (Paños) ➔ RESPEL. El informe de misión permite avanzar a Incendio; solo al completar ambas misiones se reporta la nota promedio al SCO (no necesariamente 100%).
 
+
+
+## 8. Calificación Garantizada y Optimización de Rendimiento a 60 FPS - 2026-10-27
+
+### 8.1. Calificación Plena de 100 Puntos
+- **Cero Deducciones Ocultas**: A menos que el jugador falle por agotamiento del tiempo reglamentario (	imeLeft <= 0), la calificación asignada al completar el entrenamiento es **estrictamente de 100% / 100 pts**.
+- **Desglose Limpio**:
+  - Control Operativo: 100 / 100 pts
+  - Tiempo de Respuesta: Conforme (Dentro de tiempo)
+  - Protocolo SST: 100% Verificado
+- **Reporte SCORM**: Se transmite un valor cmi.core.score.raw = 100 y cmi.core.lesson_status = passed a Moodle al concluir las misiones.
+
+### 8.2. Optimización Extrema del Motor 3D (60 FPS)
+- **Eliminación de Filtros en Paredes Tridimensionales**: Se eliminó la animación 
+oomFireGlow que aplicaba ilter: brightness(...) saturate(...) sobre las 6 caras del cubo de 1400x1400 px durante la Misión 2, liberando más de 11.7 millones de píxeles por frame de rasterización por software.
+- **Supresión de Filtros Blur y Drop-Shadow**: Reemplazados los filtros intensivos de CPU en .pqs-spray-stream, .valve-steam-fx, .fire-hazard-node-3d, .strobePulse y .asphyxiaFlash por gradientes radiales optimizados y cajas de sombra (ox-shadow), acelerados 100% por hardware GPU.
+- **Optimización del Bucle de Físicas y Render**:
+  - Eliminada la invocación redundante de checkProximity() por frame cuando el jugador está inmóvil o cuando ya fue actualizado por la cámara.
+  - Actualización condicional del indicador de dirección táctica (	his.dom.guideArrow) y del botón de comando táctil solo ante cambios efectivos de orientación u objetivo, erradicando el reflujo forzado (*layout thrashing*).
+  - Cacheo en memoria de referencias del cursor y etiquetas de interacción (ps-crosshair-prompt).
