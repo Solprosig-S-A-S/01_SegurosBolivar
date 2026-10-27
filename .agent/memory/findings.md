@@ -1136,3 +1136,41 @@ gba(148, 163, 184, 0.18)).
   1. `juego2_bodega.html`: Sintaxis depurada eliminando el bloque huerfano y dejando `renderActiveHazardToast() { // Neutralizado }` limpio. Clase `WarehouseApp` 100% valida y verificada.
   2. `juego5_emergencias.html`: Angulo de pitch para la estacion de derrame calibrado a `-45°` (`pitch: -45`, `posZ: 380`, `yaw: 0`), encuadrando el charco quimico en el centro-primer plano del viewport, y rango maximo de inclinacion hacia el suelo ampliado hasta `-55°`.
 - **Validacion**: Sintaxis verificada y paquetes SCORM 1.2 reconstruidos con `build_scorm.py`.
+
+## Desbloqueo de Matriz 12x12, Reduccion de Objeto al Mover y Simplificacion de Quimicos (Juego 2) - 2026-10-27
+- **Diagnostico**:
+  1. En `juego2_bodega.html`, el modal de matriz no mostraba la tabla 12x12 y no permitia scroll: tres bloques masivos de texto explicativo (Principios Tecnicos Fundamentales, Catalogo de Consecuencias y Marco Normativo) estaban sueltos directamente dentro de `.modal-body` fuera de cualquier pestaña. Al tener `.modal-body` `overflow: hidden`, estos textos empujaban `#view-matrix-official` fuera de la pantalla. Ademas, los titulos de las 3 pestañas eran tan largos que forzaban scroll horizontal en movil.
+  2. Al mover un objeto ya colocado en el tablero, `.sprite-selected` aumentaba de tamaño a `scale(1.12)` y `dragProxy` creaba una tarjeta gigante de 120x110 px que tapaba las casillas adyacentes del tablero 3D, dificultando ver la celda de destino.
+  3. El usuario solicito simplificar el puzzle retirando un quimico.
+- **Solucion implementada**:
+  1. Los 3 bloques de texto se reubicaron dentro de `<div id="view-matrix-tactical">` (Pestaña 3: Reglas & Buffers). En la Pestaña 1 (`#view-matrix-official`), la tabla `#table-official-matrix` ocupa ahora el 100% del espacio con scroll nativo bidireccional fluido. Titulos de pestañas compactados a `Matriz 12x12`, `Guía Etiquetas` y `Reglas & Buffers`.
+  2. Al seleccionar una pieza en el tablero para moverla, `.sprite-selected` se reduce a `scale(0.80)` con halo dorado. Al arrastrarla, `dragProxy` se convierte en una burbuja circular compacta de 48 px (`scale(0.92)`), dejando las casillas del suelo completamente despejadas.
+  3. Se retiro `item_paint` (Pintura Epoxica) de `CHEMICAL_ITEMS`, dejando 7 piezas en total (4 quimicos en tablero + 2 herramientas buffer + 1 botella ilegal para zona de rechazo), balanceando el tablero 3x3 y facilitando la resolucion del puzzle.
+- **Validacion**: Sintaxis verificada y paquetes SCORM 1.2 reconstruidos con `build_scorm.py`.
+
+## Enfoque Pedagogico Formativo en Taller Seguro: Ampliacion de Tiempo y Erradicacion de Penalizaciones (Juego 4) - 2026-10-27
+- **Diagnostico**:
+  1. En juego4_taller.html, el usuario evidencio una calificacion final punitiva y desmotivante (9% de auditoria tras completar 2 de 3 tareas con EPP aprobado) debido a penalizaciones acumulativas severas: cada intento fallido en casillero restaba 15s y 100 pts, la puerta restaba 15s y 100 pts, los desafios restaban hasta 20s y 150 pts, y en la segregacion RESPEL cada residuo depositado en un contenedor no coincidente restaba 5s y 40 pts.
+  2. El temporizador inicial era de apenas 90 segundos, lo cual provocaba que el tiempo se agotara rapidamente mientras el usuario leia la informacion tecnica en pantallas de smartphones, activando 	riggerAuditFinal() con puntaje reducido a minimos insostenibles (55 pts sobre 610 maximos = 9%).
+- **Solucion implementada**:
+  1. **Ampliacion de Tiempo**: Temporizador inicial incrementado de 90s a 240s (04:00 minutos), permitiendo lectura y aprendizaje formativo con total tranquilidad.
+  2. **Erradicacion de Penalizaciones Punitivas**:
+     - Se eliminaron todas las deducciones de tiempo (	imeLeft -= ...) ante cualquier error en casillero, esclusa biométrica, mesa de desengrase, motor y segregación RESPEL (0 deducciones de segundos).
+     - Se eliminaron todas las deducciones de puntos (ddScore(-...)) ante selecciones erróneas (0 deducciones de puntos).
+     - La retroalimentación de error se transformó en guías formativas SST («Aviso SST: EPP No Homologado», «Guía Ambiental RESPEL») con tono pedagógico y sin advertencias amenazantes de pérdida de puntos/segundos.
+  3. **Sistema de Auditoria Formativa (100% de Aprobacion al Completar)**:
+     - Si el participante completa las etapas de dotación EPP y las 3 estaciones (Desengrase, Motor y RESPEL), la calificación otorgada y reportada al LMS es **100%**.
+     - Si el tiempo finaliza antes de terminar, la calificación refleja fielmente el avance real completado de forma proporcional (25% EPP + 25% Desengrase + 25% Motor + 25% RESPEL), erradicando porcentajes arbitrarios como 9%.
+- **Validacion**: Sintaxis verificada y los 6 paquetes SCORM 1.2 reconstruidos con uild_scorm.py.
+
+## Optimizacion Extrema a 60 FPS en Simulador 3D (Juego 5) - 2026-10-27
+- **Diagnostico**:
+  1. En `juego5_emergencias.html`, se reportaron cortes y caidas de FPS severas (stuttering/jank) en telefonos moviles.
+  2. La causa raiz primaria: En el controlador tactil `touchmove`, cada micro-evento (emitido a 120Hz/240Hz en pantallas tactiles modernas) invocaba de manera sincrona `updateCamera()`, que a su vez ejecutaba `checkProximity()` y `updateObjectiveGuide()`. Estas funciones forzaban mutaciones directas en el arbol DOM (`crosshair.classList`, `actionBtn.classList`, `actionBtnLabel.textContent`, `promptText.textContent`, `guideTitle.textContent`), provocando recalculaciones de estilo y reflujos de diseno en el hilo principal durante el procesamiento de gestos.
+  3. Adicionalmente, cuando el jugador se encontraba lejos de cualquier estacion interactiva, `checkProximity()` reescribia `textContent = 'INTERACTUAR'` y manipulaba clases en cada frame. Y durante `animateMove` (despacho automatico), se recalculaba la proximidad de todas las estaciones en cada frame de la animacion de camara.
+- **Solucion implementada**:
+  1. **RAF Throttling & Coalescing en Controles Tactiles**: `touchmove` ya no ejecuta `updateCamera()` directamente; unicamente acumula deltas de `yaw`/`pitch` y activa `this.cameraDirty = true`. El loop `startPhysicsLoop` sincronizado con `requestAnimationFrame` actualiza la camara exactamente una vez por refresco de pantalla (60 FPS puros).
+  2. **Dirty Checking y Cache en `checkProximity`**: Las mutaciones DOM (`classList` y `textContent`) ahora solo se disparan cuando cambia la estacion en foco (`this.lastActiveStationId`) o el texto de accion (`this.lastActionText`), erradicando el DOM thrashing.
+  3. **Desacople en Despacho Tactico (`renderCameraTransform`)**: Durante el trayecto de auto-enrutamiento se aplica `renderCameraTransform()` que unicamente interpola la matriz CSS 3D de la camara, aplazando las evaluaciones de proximidad hasta el arribo a la estacion.
+  4. **Aislamiento GPU y Contencion CSS**: Se anadio `contain: strict;`, `touch-action: none;` y `user-select: none;` en `.fps-3d-viewport`, aligerando ademas la sombra estroboscopica del techo a un pulso de opacidad con `will-change: opacity, transform;`.
+- **Validacion**: Sintaxis verificada y los 6 paquetes SCORM 1.2 reconstruidos con `build_scorm.py`.

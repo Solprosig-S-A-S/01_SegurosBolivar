@@ -2035,8 +2035,8 @@
             pointer-events: none !important;
         }
         .sprite-selected {
-            filter: drop-shadow(0 0 16px rgba(255, 199, 44, 0.95)) drop-shadow(0 14px 10px rgba(0, 0, 0, 0.8)) !important;
-            transform: rotateZ(45deg) rotateX(-60deg) translateZ(24px) scale(1.12) !important;
+            filter: drop-shadow(0 0 14px rgba(255, 199, 44, 0.95)) drop-shadow(0 10px 8px rgba(0, 0, 0, 0.8)) !important;
+            transform: rotateZ(45deg) rotateX(-60deg) translateZ(20px) scale(0.80) !important;
         }
         .drop-target-hover {
             border-color: #FFC72C !important;
@@ -2715,6 +2715,14 @@
                 flex-direction: column;
                 overflow: hidden !important;
                 gap: 0;
+            }
+            #modal-matrix .matrix-intro-banner {
+                display: none !important;
+            }
+            #modal-matrix .matrix-scroll-hint {
+                font-size: 0.65rem !important;
+                margin: 2px 0 !important;
+                padding: 1px 4px !important;
             }
             #modal-matrix .matrix-scroll-region {
                 flex: 1;
@@ -3614,13 +3622,13 @@
                     <!-- Selector de Vistas / Pestañas de la Matriz -->
                     <div class="matrix-tabs-container">
                         <button id="tab-matrix-official" class="matrix-tab-btn active" type="button">
-                            <i class="fa-solid fa-table-cells-large"></i> Matriz Oficial por Tipos y Etiquetas (NTC 4435 / SGA)
+                            <i class="fa-solid fa-table-cells-large"></i> Matriz 12x12
                         </button>
                         <button id="tab-matrix-labels" class="matrix-tab-btn" type="button">
-                            <i class="fa-solid fa-tags"></i> Guía de Etiquetas SGA y Ejemplos de Obra
+                            <i class="fa-solid fa-tags"></i> Guía Etiquetas
                         </button>
                         <button id="tab-matrix-tactical" class="matrix-tab-btn" type="button">
-                            <i class="fa-solid fa-shield-halved"></i> Reglas de Buffers & RESPEL
+                            <i class="fa-solid fa-shield-halved"></i> Reglas & Buffers
                         </button>
                     </div>
 
@@ -4282,7 +4290,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
                     <!-- Principios Técnicos Fundamentales -->
                     <div style="background: rgba(11, 17, 32, 0.65); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 8px;">
@@ -4356,6 +4363,7 @@
                         <span>• <strong>Resolución 773 de 2021:</strong> Implementación del Sistema Globalmente Armonizado (SGA) en lugares de trabajo (Arts. 7, 12 y 20).</span>
                         <span>• <strong>Guía Técnica CISTEMA (ARL Sura) / Consejo Colombiano de Seguridad (CCS):</strong> Directrices de almacenamiento conjunto de reactivos.</span>
                         <span>• <strong>NFPA 55 / NFPA 30:</strong> Código de Gases Comprimidos y Líquidos Inflamables (distancias de 6m y muros cortafuego de 2 horas).</span>
+                    </div>
                     </div>
 
                 </div>
@@ -4645,31 +4653,6 @@
                 `,
                 desc: 'Gas combustible a presión para soldadura y oxicorte en taller de estructura metálica.',
                 norma: 'NFPA 55 / Res. 773/2021: Almacenar asegurado contra caídas y segregado de solventes y ácidos.'
-            },
-            {
-                id: 'item_paint',
-                name: 'Pintura Epóxica + Catalizador',
-                category: 'salud',
-                badgeText: 'Salud / Irrit.',
-                badgeColor: 'badge-health',
-                isLiquid: true,
-                isIllegal: false,
-                colorAccent: '#14B8A6',
-                svgIcon: `
-                    <svg viewBox="0 0 64 64" class="w-full h-full drop-shadow-md">
-                        <ellipse cx="28" cy="16" rx="14" ry="4" fill="#0284c7"/>
-                        <path d="M14 16 v28 c0 3 6 5 14 5 s14 -2 14 -5 v-28 Z" fill="#0369a1"/>
-                        <!-- Catalizador pequeño lateral -->
-                        <rect x="42" y="24" width="10" height="20" rx="2" fill="#0284c7"/>
-                        <rect x="45" y="20" width="4" height="4" fill="#e0f2fe"/>
-                        <!-- SGA Diamond Salud -->
-                        <polygon points="28,26 35,33 28,40 21,33" fill="#ffffff" stroke="#dc2626" stroke-width="1.5"/>
-                        <text x="28" y="35" font-size="7" fill="#1e293b" font-weight="black" text-anchor="middle">!</text>
-                        <text x="28" y="47" font-size="4.5" fill="#bae6fd" font-weight="bold" text-anchor="middle">EPÓXICA</text>
-                    </svg>
-                `,
-                desc: 'Resina de alto tráfico para señalización de vías internas y pisos de bodega.',
-                norma: 'Dec. 1496/2018: Químico sensibilizante. Compatible con recubrimientos bajo ventilación.'
             },
             {
                 id: 'item_pallet',
@@ -6398,27 +6381,27 @@
                             const itemData = CHEMICAL_ITEMS.find(it => it.id === itemId);
                             if (itemData) {
                                 dragProxy = document.createElement('div');
-                                dragProxy.className = 'tray-card is-dragging';
+                                dragProxy.className = 'iso-sprite-drag-proxy';
                                 dragProxy.style.position = 'fixed';
                                 dragProxy.style.left = '0';
                                 dragProxy.style.top = '0';
-                                dragProxy.style.width = '120px';
-                                dragProxy.style.minHeight = '110px';
+                                dragProxy.style.width = '48px';
+                                dragProxy.style.height = '48px';
+                                dragProxy.style.minHeight = '48px';
                                 dragProxy.style.margin = '0';
                                 dragProxy.style.zIndex = '99999';
                                 dragProxy.style.pointerEvents = 'none';
-                                dragProxy.style.boxShadow = '0 20px 40px -10px rgba(0, 0, 0, 0.9), 0 0 28px rgba(255, 199, 44, 0.85)';
+                                dragProxy.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.85), 0 0 20px rgba(255, 199, 44, 0.9)';
                                 dragProxy.style.border = '2px solid #FFC72C';
-                                dragProxy.style.borderRadius = 'var(--radius-md)';
-                                dragProxy.style.background = '#0f172a';
+                                dragProxy.style.borderRadius = '50%';
+                                dragProxy.style.background = 'rgba(15, 23, 42, 0.92)';
+                                dragProxy.style.padding = '4px';
+                                dragProxy.style.boxSizing = 'border-box';
+                                dragProxy.style.display = 'flex';
+                                dragProxy.style.alignItems = 'center';
+                                dragProxy.style.justifyContent = 'center';
                                 dragProxy.style.transformOrigin = 'center center';
-                                dragProxy.innerHTML = `
-                                    <div style="width: 44px; height: 44px; margin: 2px 0; display: flex; align-items: center; justify-content: center; pointer-events: none; flex-shrink: 0;">
-                                        ${itemData.svgIcon}
-                                    </div>
-                                    <span class="tray-card-name pointer-events-none">${itemData.name}</span>
-                                    <span class="tray-card-badge ${itemData.badgeColor} pointer-events-none">${itemData.badgeText}</span>
-                                `;
+                                dragProxy.innerHTML = itemData.svgIcon;
                                 document.body.appendChild(dragProxy);
                                 cardEl.style.opacity = '0.2';
                             }
@@ -6431,7 +6414,7 @@
                         const rot = Math.max(-8, Math.min(8, dx * 0.03));
 
                         if (dragProxy) {
-                            dragProxy.style.setProperty('transform', `translate3d(${e.clientX - 60}px, ${e.clientY - 55}px, 0) scale(1.04) rotate(${rot}deg)`, 'important');
+                            dragProxy.style.setProperty('transform', `translate3d(${e.clientX - 24}px, ${e.clientY - 24}px, 0) scale(0.92) rotate(${rot}deg)`, 'important');
                         } else if (!cardEl.classList.contains('iso-sprite')) {
                             cardEl.style.setProperty('transform', `translate3d(${dx}px, ${dy}px, 0) scale(1.04) rotate(${rot}deg)`, 'important');
                         }
@@ -6984,6 +6967,7 @@
                         this.selectedFromCell = { row, col };
                         sound.select();
                         this.updateActiveItemDisplay(currentItemInCell);
+                        this.renderGrid();
                         this.renderInventoryTray();
                         this.highlightBoardTargets();
                     }

@@ -4572,7 +4572,7 @@
                 this.score = 0;
                 this.streak = 0;
                 this.maxStreak = 0;
-                this.timeLeft = 90; // 90 segundos (01:30 minutos para protocolo riguroso SST)
+                this.timeLeft = 240; // 240 segundos (04:00 minutos para aprendizaje y exploracion sin presion)
                 this.timerInterval = null;
                 this.isGameActive = false;
                 this.isAvatarMoving = false;
@@ -5531,20 +5531,18 @@
                         this.audio.playWompWompError();
                         this.streak = 0;
                         this.updateStreakDisplay();
-                        this.addScore(-100);
-                        this.timeLeft = Math.max(0, this.timeLeft - 15);
 
                         this.dom.viewport.style.transform = 'translateX(-6px)';
                         this.scheduleAction(() => this.dom.viewport.style.transform = '', 250);
 
                         const trapInfo = {
-                            trap_cotton: "¡INFRACCIÓN CASILLERO (-15s / -100 pts)! Guantes de algodón absorben solvente y destruyen el tejido cutáneo.",
-                            trap_mask: "¡INFRACCIÓN CASILLERO (-15s / -100 pts)! Tapabocas quirúrgico no filtra vapores orgánicos de solvente (FDS Sec. 8).",
-                            trap_sunglasses: "¡INFRACCIÓN CASILLERO (-15s / -100 pts)! Gafas de sol carecen de sello hermético de impacto y salpicadura química.",
-                            trap_sneakers: "¡INFRACCIÓN CASILLERO (-15s / -100 pts)! Calzado deportivo de lona permeable a hidrocarburos y solventes."
+                            trap_cotton: "Prenda No Homologada: Guantes de algodón absorben solvente orgánico. Selecciona guantes de nitrilo resistente (FDS Sec. 8).",
+                            trap_mask: "Prenda No Homologada: Mascarilla quirúrgica no retiene vapores orgánicos. Usa respirador con cartucho químico.",
+                            trap_sunglasses: "Prenda No Homologada: Gafas de sol carecen de sello contra salpicaduras químicas. Usa monogafas herméticas.",
+                            trap_sneakers: "Prenda No Homologada: Calzado de tela es permeable a hidrocarburos. Usa botas de seguridad de cuero/puntera."
                         };
-                        this.showTechToast("¡EPP PROHIBIDO (-15s / -100 pts)!", trapInfo[eppId], true);
-                        this.setBotMessage(trapInfo[eppId], '🚫');
+                        this.showTechToast("Aviso SST: EPP No Homologado", trapInfo[eppId], true);
+                        this.setBotMessage(trapInfo[eppId], 'ℹ️');
                     }
                     this.updateSlotPills();
                     return;
@@ -5814,8 +5812,6 @@
                         this.dom.doorFrame.style.boxShadow = '0 0 25px rgba(239, 68, 68, 0.95)';
                         this.streak = 0;
                         this.updateStreakDisplay();
-                        this.addScore(-100);
-                        this.timeLeft = Math.max(0, this.timeLeft - 15);
 
                         const missingNames = missing.map(m => {
                             if (m === 'gloves') return 'Guantes de Nitrilo';
@@ -5825,10 +5821,10 @@
                             return m;
                         }).join(', ');
 
-                        const reason = missing.length > 0 ? `Falta equipar: ${missingNames}.` : `Tienes prendas no certificadas puestas en el casillero.`;
+                        const reason = missing.length > 0 ? `Falta equipar: ${missingNames}.` : `Tienes prendas no homologadas puestas en el casillero.`;
 
-                        this.setBotMessage(`¡ALARMA CHECKPOINT (-15s / -100 pts)! ${reason} Res. 773 de 2021 prohíbe el ingreso al patio sin dotación homologada completa.`, '🚫');
-                        this.showTechToast("¡ACCESO DENEGADO (-15s / -100 pts)!", `${reason} Infracción grave de bioseguridad SST.`, true);
+                        this.setBotMessage(`¡Paso 1 Pendiente! ${reason} Res. 773 de 2021 exige dotación completa para ingresar al patio.`, 'ℹ️');
+                        this.showTechToast("Acceso al Patio Pendiente", `${reason} Equípate en el casillero para continuar.`, true);
 
                         // Expulsar avatar hacia atrás alejándolo de la esclusa
                         this.moveAvatarTo(140, 180);
@@ -5926,18 +5922,13 @@
                             this.updateStreakDisplay();
 
                             if (opt.isEnvironmentalCrime) {
-                                // DELITO AMBIENTAL SEVERO (Ley 1333/2009 / Dec. 4741/2005)
-                                this.addScore(-150);
-                                this.timeLeft = Math.max(0, this.timeLeft - 20);
                                 const trayEl = document.querySelector('.engine-tray-base');
                                 if (trayEl) trayEl.classList.add('engine-spill-active');
-                                this.setBotMessage(opt.feedback || "¡DELITO AMBIENTAL SEVERO (-20s / -150 pts)! Derrame masivo de hidrocarburos en suelo.", '🚫');
-                                this.showTechToast("¡DELITO AMBIENTAL (-20s / -150 pts)!", "Derrame de hidrocarburos sin contención (Ley 1333/2009).", true);
+                                this.setBotMessage(opt.feedback || "Técnica No Conforme: Verter aceites contamina el suelo y las fuentes hídricas. Usa siempre la bandeja con paño.", '⚠️');
+                                this.showTechToast("Control Ambiental Requerido", "Dec. 4741/2005: Todo mantenimiento exige contención y bandeja antiderrame.", true);
                             } else {
-                                this.addScore(-50);
-                                this.timeLeft = Math.max(0, this.timeLeft - 10);
-                                this.setBotMessage(opt.feedback || "Técnica insegura según protocolo (-10s / -50 pts).", '⚠️');
-                                this.showTechToast("Procedimiento No Conforme (-10s / -50 pts)", opt.feedback || "Riesgo operacional en taller.", true);
+                                this.setBotMessage(opt.feedback || "Técnica No Conforme: Selecciona el método seguro estipulado en la FDS Sec. 8.", '⚠️');
+                                this.showTechToast("Procedimiento No Conforme", opt.feedback || "Revisa el procedimiento seguro en el taller.", true);
                             }
 
                             btn.style.borderColor = '#ef4444';
@@ -5975,7 +5966,7 @@
                             text: "Sopletear con pistola de aire a 90 PSI sobre un balde abierto de gasolina sin rotular.",
                             icon: "💨",
                             isCorrect: false,
-                            feedback: "¡Infracción SST (-10s / -50 pts)! El aire a presión dispersa vapores tóxicos en el aire y la gasolina abierta no rotulada es delito SST."
+                            feedback: "¡Procedimiento No Seguro! El aire a presión dispersa vapores tóxicos y la gasolina abierta no rotulada viola la norma. Aplica solvente con paño en área ventilada."
                         }
                     ],
                     onSuccess: () => {
@@ -6288,19 +6279,17 @@
                         }, 1200);
                     }
                 } else {
-                    // ERROR NORMATIVO (INCOMPATIBILIDAD O MEZCLA)
+                    // ERROR NORMATIVO (GUIA FORMATIVA SIN PENALIZACION)
                     this.audio.playWompWompError();
                     this.streak = 0;
                     this.updateStreakDisplay();
-                    this.addScore(-40);
-                    this.timeLeft = Math.max(0, this.timeLeft - 5);
 
                     const targetBinObj = RESPEL_BINS_CATALOG[targetBin];
                     const binLabel = targetBinObj ? `[${targetBinObj.name}: ${targetBinObj.sub}]` : "este contenedor";
-                    const errorToastMsg = `${waste.feedbackWrong} No puedes depositar [${waste.name}] en ${binLabel} (${waste.law}).`;
+                    const errorToastMsg = `${waste.feedbackWrong} Recuerda: [${waste.name}] no debe ir en ${binLabel} (${waste.law}). Reintenta en su contenedor específico.`;
 
-                    this.showTechToast("Infracción Ambiental RESPEL (-5s / -40 pts)", errorToastMsg, true);
-                    this.setBotMessage(errorToastMsg, '🚫');
+                    this.showTechToast("Guía Ambiental RESPEL", errorToastMsg, true);
+                    this.setBotMessage(errorToastMsg, 'ℹ️');
 
                     if (this.dom.viewport) {
                         this.dom.viewport.style.transform = 'translateX(-6px)';
@@ -6429,24 +6418,36 @@
                 clearInterval(this.timerInterval);
                 this.audio.playFanfare();
 
-                // Cálculo del score
+                // Cálculo formativo del score
                 const missingEPP = this.getMissingEPP().length;
                 const tasksDone = (this.tasksCompleted.degrease ? 1 : 0) + 
                                   (this.tasksCompleted.maintenance ? 1 : 0) + 
                                   (this.tasksCompleted.respel ? 1 : 0);
 
-                const maxPossible = 370 + this.activeRespelWastes.length * 60;
                 const prerequisitesMet = missingEPP === 0 && this.trapEPP.size === 0 && this.checkpointApproved && tasksDone === 3;
-                const ratio = Math.min(prerequisitesMet ? 100 : 79, Math.round((this.score / maxPossible) * 100));
-                document.getElementById('audit-headline').textContent = prerequisitesMet && ratio >= 80 ? 'Entrenamiento completado' : 'Refuerzo de mantenimiento pendiente';
-                document.getElementById('audit-subheadline').textContent = `${tasksDone}/3 operaciones completadas. La aprobación exige EPP validado y todos los residuos segregados.`;
+                
+                // Filosofía formativa: si completa las operaciones requeridas, la calificación siempre es 100%.
+                // Si el tiempo finaliza antes, se evalúa el progreso real completado proporcional (sin castigos ocultos).
+                let ratio = 100;
+                if (!prerequisitesMet) {
+                    const eppRatio = missingEPP === 0 ? 25 : Math.round(((4 - missingEPP) / 4) * 25);
+                    const tasksRatio = Math.round((tasksDone / 3) * 75);
+                    ratio = Math.max(10, Math.min(95, eppRatio + tasksRatio));
+                }
+
+                document.getElementById('audit-headline').textContent = ratio >= 80 ? '¡Entrenamiento SST Aprobado con Éxito!' : 'Refuerzo de Taller en Progreso';
+                document.getElementById('audit-subheadline').textContent = prerequisitesMet 
+                    ? 'Cumplimiento técnico homologado de la Resolución 773 de 2021 y Decreto 4741 de 2005.'
+                    : `${tasksDone} de 3 operaciones completadas. Completa todas las estaciones para certificación total.`;
 
                 this.dom.finalScorePercent.textContent = `${ratio}%`;
                 this.dom.auditStatEpp.textContent = missingEPP === 0 ? "4 de 4 Aprobados" : `${4 - missingEPP} de 4 Aprobados`;
                 this.dom.auditStatTasks.textContent = `${tasksDone} de 3 Completadas`;
                 const respelTotal = this.activeRespelWastes ? this.activeRespelWastes.length : 4;
                 this.dom.auditStatRespel.textContent = this.tasksCompleted.respel ? `${respelTotal} de ${respelTotal} Confinados` : "Pendiente";
-                this.dom.auditStatPoints.textContent = `${this.score} pts`;
+                
+                const finalPts = prerequisitesMet ? Math.max(this.score, 610) : Math.max(this.score, Math.round(ratio * 5.5));
+                this.dom.auditStatPoints.textContent = `${finalPts} pts`;
 
                 // Reporte Automático a Moodle LMS (SCORM 1.2 / 2004 y iFrame postMessage)
                 if (this.lmsBridge) {
@@ -6474,7 +6475,7 @@
                 this.score = 0;
                 this.streak = 0;
                 this.maxStreak = 0;
-                this.timeLeft = 90;
+                this.timeLeft = 240;
                 this.currentZone = 1;
                 this.isGameActive = true;
                 this.equippedEPP.clear();

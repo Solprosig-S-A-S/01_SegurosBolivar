@@ -31,6 +31,9 @@
       - [x] Inspector HUD estructurado con cabecera integrada, selectores directos, veredicto con tipografía homogénea y nota normativa de candados.
       - [x] Transformación del Inspector en ventana modal flotante emergente (`#modal-matrix-inspector`): desacoplado del flujo estático para despejar la vista de la matriz 12x12, activándose exclusivamente al hacer clic o tocar cualquier casilla (cuadradito) de la matriz o pulsar el botón de consulta.
     - [x] Sistema de 3 pestañas: Matriz Oficial por Tipos y Etiquetas (NTC 4435 / SGA 12x12), Guía de Etiquetas SGA con fichas por clase, y Reglas de Buffers Neutros & RESPEL.
+      - [x] Desbloqueo y visibilidad directa de Matriz 12x12 en móviles: reubicación de textos normativos a Pestaña 3, altura 100% y scroll táctil fluido (touch-action: pan-x pan-y).
+      - [x] Ergonomía al mover piezas: reducción visual de sprite seleccionado (scale 0.80) y proxy circular de 48px.
+      - [x] Simplificación de inventario químico: retiro de Pintura Epóxica (item_paint), balanceando cuadrícula a 7 ítems.
     - [x] Retícula activa (crosshair highlight) con iluminación coordinada de filas y columnas al pasar el mouse o tocar casillas en ambas tablas.
     - [x] Optimización de rendimiento a 60 FPS en conexiones láser 3D: erradicación de filter: drop-shadow y vigas duplicadas, adopción de técnica vectorial pura Halo + Núcleo y pulso de opacidad en compositor GPU.
   - [x] Fase 3: Auditoría técnica y reporte de cumplimiento normativo (Res. 773/2021 y Dec. 4741/2005).
@@ -53,6 +56,9 @@
   - [x] Componentes semánticos CSS para cabina, tutorial, examen, visor FDS de 16 secciones y globos cómic.
   - [x] Refactorización de cadenas de plantilla JS y dinamismo sin clases utilitarias.
 - [x] Juego 4: 'Taller Seguro: Desafío Isométrico de Equipamiento y Mantenimiento' (juego4_taller.html).
+  - [x] Enfoque pedagógico formativo: temporizador ampliado a 240s (4 minutos) y oportunidades ilimitadas de reintento.
+  - [x] Erradicación de penalizaciones punitivas: cero deducciones de tiempo (0s) y cero deducciones de puntos (0 pts) ante errores en casillero, esclusa o segregación RESPEL.
+  - [x] Calificación final formativa: 100% de aprobación al completar el taller, y cálculo proporcional justo de avance si finaliza el tiempo.
   - [x] Perspectiva Isométrica 2.5D en CSS Puro (rotateX(60deg) rotateZ(-45deg)) con billboarding de sprites.
   - [x] Dos escenarios completos autónomos e independientes: Vestidor (Zona 1) y Patio de Taller (Zona 2).
   - [x] Barra superior minimalista: Eliminación del exceso de controles de cámara, dejando únicamente el botón limpio `[ 🔄 Rotar 90° ]`.
@@ -88,6 +94,7 @@
   - [x] Cronómetro de desafío extendido a 240 segundos (04:00 minutos) para exploración pausada y aprendizaje sin estrés.
   - [x] Fase 3: Auditoría final SST, desglose técnico de puntaje (0%-100%) y certificado de Taller Seguro.
 - [x] Juego 5: 'Brigada de Emergencia: Simulador 1ª Persona de Control de Derrames' (juego5_emergencias.html).
+  - [x] Optimización de rendimiento a 60 FPS fluidos: coalescing de touchmove a RAF, dirty-checking de DOM en proximidad y renderCameraTransform desacoplado en despacho táctico.
   - [x] Perspectiva 100% en Primera Persona (FPS / First-Person POV) sin avatar de 3ª persona ni proyección isométrica.
   - [x] Visera de Casco de Seguridad y HUD Digital: Detector multigas PID en ppm, cronómetro de 120s, medidor de O2/Vitalidad y avance de derrame a drenaje.
   - [x] Capa de Manos en 1ª Persona (First-Person Hands): Manos interactivas animadas con balanceo y equipamiento de guantes de nitrilo.
