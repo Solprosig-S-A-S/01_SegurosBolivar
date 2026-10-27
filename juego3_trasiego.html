@@ -393,17 +393,18 @@
             color: #FFFFFF;
         }
 
-        /* Toast Técnico Normativo de Confirmación Flotante Superior (Universal Móvil y Desktop) */
+        /* Toast Técnico Normativo de Confirmación Flotante Superior (Universal Móvil y Desktop - Siempre Centrado) */
         .tech-feedback-toast {
-            position: fixed;
-            top: 56px;
-            bottom: auto;
-            left: 12px;
-            right: 12px;
-            width: auto;
-            max-width: 580px;
-            margin: 0 auto;
-            z-index: 9999;
+            position: fixed !important;
+            top: 14px !important;
+            bottom: auto !important;
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) translateY(-20px) !important;
+            width: calc(100% - 24px) !important;
+            max-width: 480px !important;
+            margin: 0 !important;
+            z-index: 99999 !important;
             background: rgba(15, 23, 42, 0.98);
             border: 1px solid rgba(148, 163, 184, 0.3);
             border-left: 4px solid var(--exito-verde);
@@ -418,7 +419,6 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             opacity: 0;
-            transform: translateY(-20px);
             transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
             box-sizing: border-box;
@@ -426,9 +426,9 @@
         }
 
         .tech-feedback-toast.show {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
+            opacity: 1 !important;
+            transform: translateX(-50%) translateY(0) !important;
+            pointer-events: auto !important;
         }
 
         .tech-feedback-toast.error-toast {
@@ -1535,11 +1535,17 @@
                 padding: 4px 8px;
             }
             .tech-feedback-toast {
-                left: 8px;
-                right: 8px;
-                top: 50px;
+                left: 50% !important;
+                right: auto !important;
+                top: 10px !important;
+                transform: translateX(-50%) translateY(-20px) !important;
+                width: calc(100% - 20px) !important;
+                max-width: 440px !important;
                 padding: 7px 10px;
                 font-size: 0.70rem;
+            }
+            .tech-feedback-toast.show {
+                transform: translateX(-50%) translateY(0) !important;
             }
         }
 
@@ -1766,18 +1772,6 @@
                         ¡Inspecciona los 6 puntos clave de seguridad en la zona de abastecimiento!
                     </div>
                 </div>
-            </div>
-
-            <!-- Toast Técnico Normativo de Confirmación Profunda -->
-            <div class="tech-feedback-toast" id="tech-feedback-toast" role="alert" aria-live="polite">
-                <i class="fa-solid fa-circle-check tech-toast-icon" id="toast-icon"></i>
-                <div class="toast-body">
-                    <strong id="toast-title">Polo a Tierra Conectado</strong>
-                    <span id="toast-desc">Disipación de cargas electrostáticas para evitar deflagración de vapor.</span>
-                </div>
-                <button type="button" class="toast-close-btn" id="btn-close-toast" aria-label="Cerrar notificación">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
             </div>
 
             <!-- ZONA A: Panel de Escena de Trasiego (Imagen/Esquema de Inspección) -->
@@ -2209,6 +2203,18 @@
                 </div>
             </section>
         </main>
+    </div>
+
+    <!-- Toast Técnico Normativo de Confirmación Profunda (Fijo y Siempre Centrado en Viewport) -->
+    <div class="tech-feedback-toast" id="tech-feedback-toast" role="alert" aria-live="polite">
+        <i class="fa-solid fa-circle-check tech-toast-icon" id="toast-icon"></i>
+        <div class="toast-body">
+            <strong id="toast-title">Polo a Tierra Conectado</strong>
+            <span id="toast-desc">Disipación de cargas electrostáticas para evitar deflagración de vapor.</span>
+        </div>
+        <button type="button" class="toast-close-btn" id="btn-close-toast" aria-label="Cerrar notificación">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
     </div>
 
     <!-- ==========================================================

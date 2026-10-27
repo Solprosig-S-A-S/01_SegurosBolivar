@@ -871,19 +871,14 @@
             box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
         }
 
-        /* Contenedor Flotante de Notificaciones de Peligro (Sin tapar el tablero ni alterar layout) */
+        /* Contenedor Flotante de Notificaciones de Peligro (Oculto para no tapar el tablero 3D en ningún dispositivo) */
         .hazard-floating-container {
-            position: absolute;
-            top: 48px;
-            left: 14px;
-            right: 14px;
-            z-index: 60;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            max-width: 680px;
-            margin: 0 auto;
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            opacity: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
         }
         .hazard-floating-container > * {
             pointer-events: auto;
@@ -2730,19 +2725,24 @@
                 -webkit-overflow-scrolling: touch;
                 touch-action: pan-x pan-y;
                 overscroll-behavior: contain;
+                user-select: none !important;
+                -webkit-user-select: none !important;
             }
             #table-official-matrix {
                 table-layout: fixed;
-                width: 720px;
-                min-width: 720px;
+                width: 730px;
+                min-width: 730px;
                 border-collapse: separate;
                 border-spacing: 2px;
+                user-select: none !important;
+                -webkit-user-select: none !important;
             }
             #table-official-matrix td.sticky-col {
-                width: 96px;
-                min-width: 96px;
-                max-width: 96px;
-                font-size: 0.62rem;
+                width: 104px;
+                min-width: 104px;
+                max-width: 104px;
+                box-sizing: border-box;
+                font-size: 0.61rem;
                 line-height: 1.15;
                 padding: 4px 6px;
                 background: #0b1120 !important;
@@ -2753,13 +2753,17 @@
                 z-index: 6;
                 white-space: normal;
                 overflow-wrap: break-word;
+                overflow: hidden;
+                user-select: none !important;
+                -webkit-user-select: none !important;
             }
             #table-official-matrix th.sticky-col {
-                width: 96px;
-                min-width: 96px;
-                max-width: 96px;
+                width: 104px;
+                min-width: 104px;
+                max-width: 104px;
+                box-sizing: border-box;
                 padding: 4px 6px;
-                font-size: 0.62rem;
+                font-size: 0.61rem;
                 background: #040711 !important;
                 border-right: 2px solid var(--amarillo-bolivar) !important;
                 border-bottom: 2px solid var(--amarillo-bolivar) !important;
@@ -2768,6 +2772,9 @@
                 top: 0;
                 left: 0;
                 z-index: 12 !important;
+                overflow: hidden;
+                user-select: none !important;
+                -webkit-user-select: none !important;
             }
             #table-official-matrix th.col-header-sga {
                 width: 52px;
@@ -7367,24 +7374,16 @@
                     }
                 }
 
-                // 5. Alerta de Reacción Exotérmica Activa y retroalimentación suave (sin sacudida brusca)
+                // 5. Señalización limpia sobre el tablero (sin banners superpuestos que tapen el visor)
                 if (hasIncompatibility) {
                     if (!this.hasActiveHazardAlert) {
                         sound.hazardAlarm();
-                        this.triggerScreenShake();
                         this.hasActiveHazardAlert = true;
                     }
-                    this.showDetailedHazardAlert(detectedHazards);
                     this.dom.liveSafetyBadge.className = 'safety-badge safety-badge-risk';
                     this.dom.liveSafetyBadge.textContent = 'RIESGO QUÍMICO';
-
-                    if (!this.exothermicInterval && !this.hasExothermicDetonated) {
-                        this.startExothermicCountdown();
-                    }
                 } else {
                     this.hasActiveHazardAlert = false;
-                    this.hideHazardToast();
-                    this.clearExothermicCountdown();
                     this.dom.liveSafetyBadge.className = 'safety-badge safety-badge-optimal';
                     this.dom.liveSafetyBadge.textContent = '100% ÓPTIMA';
                 }
@@ -7393,39 +7392,7 @@
             }
 
             startExothermicCountdown() {
-                if (this.exothermicInterval) return;
-                this.exothermicDeadline = Date.now() + 18000;
-                this.exothermicSecondsLeft = 18;
-                const strip = document.getElementById('exothermic-alert-strip');
-                if (strip) {
-                    strip.classList.remove('hidden');
-                    strip.classList.add('flex');
-                    strip.innerHTML = `
-                        <div class="flex items-center gap-2">
-                            <span class="exothermic-flame-icon">🔥</span>
-                            <div>
-                                <strong class="exothermic-title">¡REACCIÓN EXOTÉRMICA ACTIVA!</strong>
-                                <span class="exothermic-sub">Separa las sustancias incompatibles</span>
-                            </div>
-                        </div>
-                        <div class="exothermic-timer-box">
-                            <span id="exothermic-seconds-num">18</span>s
-                        </div>
-                    `;
-                }
-
-                this.exothermicInterval = setInterval(() => {
-                    if (this.phase !== 'challenge') { this.clearExothermicCountdown(); return; }
-                    this.exothermicSecondsLeft = Math.max(0, Math.ceil((this.exothermicDeadline - Date.now()) / 1000));
-                    const currSec = document.getElementById('exothermic-seconds-num');
-                    if (currSec) currSec.textContent = String(this.exothermicSecondsLeft).padStart(2, '0');
-
-                    if (this.exothermicSecondsLeft <= 0) {
-                        clearInterval(this.exothermicInterval);
-                        this.exothermicInterval = null;
-                        this.triggerExothermicDetonation();
-                    }
-                }, 1000);
+                // Desactivado: El usuario solicitó no tener banners de deflagración ni deducciones que tapen el juego
             }
 
             clearExothermicCountdown() {
@@ -7433,42 +7400,10 @@
                     clearInterval(this.exothermicInterval);
                     this.exothermicInterval = null;
                 }
-                const strip = document.getElementById('exothermic-alert-strip');
-                if (strip) {
-                    strip.classList.add('hidden');
-                    strip.classList.remove('flex');
-                }
-                if (this.hasExothermicDetonated) {
-                    this.hasExothermicDetonated = false;
-                }
             }
 
             triggerExothermicDetonation() {
-                this.hasExothermicDetonated = true;
-                this.exothermicIncidentsCount = (this.exothermicIncidentsCount || 0) + 1;
-                sound.illegalViolation();
-                this.triggerScreenShake();
-
-                const board = document.getElementById('warehouse-board');
-                if (board) {
-                    const rect = board.getBoundingClientRect();
-                    this.fx.sparks(rect.left + rect.width / 2, rect.top + rect.height / 2, 50);
-                }
-
-                const strip = document.getElementById('exothermic-alert-strip');
-                if (strip) {
-                    strip.innerHTML = `
-                        <div class="flex items-center gap-2">
-                            <span style="font-size: 1.4rem;">💥</span>
-                            <div>
-                                <strong style="color: #f87171; font-weight: 900; text-transform: uppercase;">¡INCIDENTE QUÍMICO REGISTRADO!</strong>
-                                <span style="color: #fca5a5; font-size: var(--font-xs); display: block;">Deflagración por falta de segregación (-15 pts de auditoría)</span>
-                            </div>
-                        </div>
-                        <span style="font-family: var(--font-mono); color: #f87171; font-weight: 900; font-size: 1.1rem;">-15 PTS</span>
-                    `;
-                }
-                this.showHazardToast('¡DEFLAGRACIÓN EN BODEGA! El tiempo de contención se agotó y ocurrió una reacción violenta (-15 pts).');
+                // Desactivado: El usuario solicitó no tener alertas de deflagración ni deducciones arbitrarias
             }
 
             updateCounters() {
@@ -7484,28 +7419,19 @@
             }
 
             triggerScreenShake() {
-                this.dom.viewport.classList.remove('shake-active');
-                void this.dom.viewport.offsetWidth; // Forzar reflow
-                this.dom.viewport.classList.add('shake-active');
-                setTimeout(() => this.dom.viewport.classList.remove('shake-active'), 500);
+                // Neutralizado para evitar reflows de diseño y mantener 60 FPS
             }
 
             /**
              * Muestra el panel interactivo con la explicación de qué sale mal y las consecuencias reales
              */
             showDetailedHazardAlert(hazards) {
-                if (!this.dom.hazardToast || !hazards || hazards.length === 0) return;
-                clearTimeout(this.hazardToastTimeout);
-                this.activeHazards = hazards;
-                if (this.activeHazardIndex >= hazards.length) {
-                    this.activeHazardIndex = 0;
-                }
-                this.renderActiveHazardToast();
-                this.dom.hazardToast.classList.remove('hidden');
-                this.dom.hazardToast.classList.add('flex');
+                // Neutralizado: El usuario indicó que solo se muestre qué está mal directamente en el tablero sin tapar
             }
 
             renderActiveHazardToast() {
+                // Neutralizado
+            }
                 if (!this.activeHazards || this.activeHazards.length === 0) return;
                 const hazard = this.activeHazards[this.activeHazardIndex] || this.activeHazards[0];
 

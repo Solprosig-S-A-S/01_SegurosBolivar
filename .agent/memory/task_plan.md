@@ -492,3 +492,12 @@
 - [x] Eliminar doble scroll vertical en .modal-body dejando desplazamiento unico en .matrix-scroll-region.
 - [x] Bloquear desbordamiento de contorno con boxShadow inset en casillas seleccionadas.
 - [x] Sincronizar paquetes SCORM y actualizar documentacion tecnica.
+
+
+## Despeje de Tablero 3D, Correccion de Toast y Desaturacion Movil (Juegos 2, 3 y 4) - 2026-10-27
+- [x] Juego 2: Ocultar permanentemente banners flotantes gigantes (`#hazard-floating-container`, `#exothermic-alert-strip`, `#hazard-toast`) que tapaban el tablero 3D en telefonos.
+- [x] Juego 2: Eliminar deducciones punitivas (-15 PTS), cuentas regresivas y `triggerScreenShake()` forzado, dejando la señalizacion visual de error limpia en el tablero (`Incompatible` laser y badge `PELIGRO`).
+- [x] Juego 2: Aplicar `user-select: none !important;` y ancho de 104px en columna sticky de la matriz para evitar selecciones de texto accidentales en Android.
+- [x] Juego 3: Extraer `#tech-feedback-toast` del arbol interno del viewport y reposicionarlo como hijo directo de `body`, con centrado horizontal garantizado `left: 50%; transform: translateX(-50%)` y ancho fluido sin recorte.
+- [x] Juego 4: Subir breakpoint responsive a 768px, ocultar subtitulo redundante y roadmap flotante, y compactar guia de operaciones a 3 columnas de 42px sin subtitulos pesados para desaturar el patio 3D.
+- [x] Reconstruir los 6 paquetes SCORM 1.2 (`build_scorm.py`).

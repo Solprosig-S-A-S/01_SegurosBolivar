@@ -1115,3 +1115,15 @@ gba(148, 163, 184, 0.18)).
   2. Supresion de filtros CSS pesados: Retirado roomFireGlow de las paredes tridimensionales, eliminado filter: blur de .pqs-spray-stream y .valve-steam-fx, y reemplazados los drop-shadows por sombreados GPU nativos (box-shadow).
   3. Desacoplamiento del bucle de fisicas: Eliminada la llamada duplicada de checkProximity() en reposo, cacheo de elementos del DOM de reticula, y actualizacion del indicador de guia flecha solo ante cambio efectivo de orientacion.
 - **Validacion**: 6 paquetes SCORM 1.2 reconstruidos con build_scorm.py.
+
+
+## Despeje Visual del Tablero 3D, Correccion de Toast Movil y Desaturacion Ergonomica (Juegos 2, 3 y 4) - 2026-10-27
+- **Diagnostico**:
+  1. En `juego2_bodega.html`, dos banners superpuestos masivos (`#exothermic-alert-strip` con `-15 PTS` y `#hazard-toast` de la Res. 773/2021) asfixiaban y tapaban la mitad superior del tablero isometria (casillas A1, A2, A3 y B1) en telefonos moviles. Ademas, existia lentitud por bucles `setInterval` a 1 Hz, reflows forzados en `triggerScreenShake` y seleccion nativa de texto tactil que desfasaba la matriz.
+  2. En `juego3_trasiego.html`, la notificacion de trampa/infraccion `#tech-feedback-toast` estaba anidada dentro de `<main class="game-viewport">` y `.app-viewport` (que tiene `backdrop-filter: blur(12px)`), provocando que en Android Chrome `position: fixed` quedara atrapada y desplazada fuera de la pantalla por la izquierda, cortandose el mensaje al 50%.
+  3. En `juego4_taller.html`, el breakpoint de `max-width: 640px` no cubria todos los smartphones modernos, dejando visibles la barra de subtitulo redundante (`Patio: Mantenimiento SST`), el roadmap flotante sobre el 3D y la guia de 3 operaciones apilada verticalmente en 1 columna con descripciones extensas, saturando toda la pantalla vertical.
+- **Solucion implementada**:
+  1. `juego2_bodega.html`: Neutralizados permanentemente `#hazard-floating-container`, `#exothermic-alert-strip` y `#hazard-toast` (`display: none !important;`). Se eliminaron deducciones de deflagracion punitivas (`-15 PTS`) y `triggerScreenShake()`. La retroalimentacion de error se mantiene limpia sobre el tablero (haz laser rojo GPU `Incompatible` y badge `PELIGRO` en casilla). En la matriz, se aplico `user-select: none !important;` y ancho de 104px en columna sticky para evitar selecciones accidentales de Android.
+  2. `juego3_trasiego.html`: Se extrajo `#tech-feedback-toast` del arbol interno de viewport y se reubico como hijo directo del body (junto a los modales), con centrado absoluto `left: 50% !important; transform: translateX(-50%)` y ancho fluido `calc(100% - 24px)` tanto en desktop como en movil (<= 768px), eliminando cualquier recorte lateral.
+  3. `juego4_taller.html`: Se elevo el breakpoint de ergonomia movil a `max-width: 768px`, garantizando que `.stage-status-wrapper` y `.workshop-roadmap-guide` queden ocultos, y que la bandeja inferior organice las 3 operaciones en columnas de 42px sin subtitulos invasivos, dejando el patio 3D con maximo espacio para respirar.
+- **Validacion**: 6 paquetes SCORM 1.2 reconstruidos exitosamente con `build_scorm.py`.

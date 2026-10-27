@@ -3662,14 +3662,14 @@
                     valve:        { posX: 0,    posZ: -430, yaw: 0,   pitch: -6 },
                     eyewash:      { posX: 0,    posZ: 430,  yaw: 180, pitch: -6 },
                     kit:          { posX: 430,  posZ: 0,    yaw: 90,  pitch: -6 },
-                    spill:        { posX: 0,    posZ: 260,  yaw: 0,   pitch: -20 },
+                    spill:        { posX: 0,    posZ: 380,  yaw: 0,   pitch: -42 },
                     respel:       { posX: -370, posZ: -350, yaw: 270, pitch: -6 },
 
                     // Misión 2 (Incendio)
                     fire_gear:    { posX: -390, posZ: 0,    yaw: 270, pitch: -6 },
                     fire_alarm:   { posX: 0,    posZ: -390, yaw: 0,   pitch: -6 },
                     extinguisher: { posX: 390,  posZ: 0,    yaw: 90,  pitch: -6 },
-                    fire:         { posX: 0,    posZ: 260,  yaw: 0,   pitch: -16 },
+                    fire:         { posX: 0,    posZ: 360,  yaw: 0,   pitch: -32 },
                     fire_blanket: { posX: 0,    posZ: 390,  yaw: 180, pitch: -6 }
                 };
 
@@ -4885,6 +4885,14 @@
                             this.setBotMessage("Primero debes tomar los cordones y paños del Kit Antiderrame (Pared Este).", '⚠️');
                             return;
                         }
+
+                        // Orientar siempre al personaje viendo directamente al charco en el suelo
+                        this.yaw = 0;
+                        this.pitch = -42;
+                        if (this.posZ < 260 || this.posZ > 460) this.posZ = 380;
+                        if (Math.abs(this.posX) > 120) this.posX = 0;
+                        this.updateCamera();
+
                         if (!this.gameState.boomPlaced) {
                             this.gameState.boomPlaced = true;
                             this.dom.spillBoom.classList.add('deployed');
