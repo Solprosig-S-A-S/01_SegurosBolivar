@@ -59,6 +59,7 @@
   - [x] Enfoque pedagógico formativo: temporizador ampliado a 240s (4 minutos) y oportunidades ilimitadas de reintento.
   - [x] Erradicación de penalizaciones punitivas: cero deducciones de tiempo (0s) y cero deducciones de puntos (0 pts) ante errores en casillero, esclusa o segregación RESPEL.
   - [x] Calificación final formativa: 100% de aprobación al completar el taller, y cálculo proporcional justo de avance si finaliza el tiempo.
+  - [x] Descarte ágil de toast de confirmación: duración reducida a 1200ms, cierre automático antes de auditoría, z-index calibrado a 95 y tap-to-dismiss.
   - [x] Perspectiva Isométrica 2.5D en CSS Puro (rotateX(60deg) rotateZ(-45deg)) con billboarding de sprites.
   - [x] Dos escenarios completos autónomos e independientes: Vestidor (Zona 1) y Patio de Taller (Zona 2).
   - [x] Barra superior minimalista: Eliminación del exceso de controles de cámara, dejando únicamente el botón limpio `[ 🔄 Rotar 90° ]`.
@@ -95,6 +96,7 @@
   - [x] Fase 3: Auditoría final SST, desglose técnico de puntaje (0%-100%) y certificado de Taller Seguro.
 - [x] Juego 5: 'Brigada de Emergencia: Simulador 1ª Persona de Control de Derrames' (juego5_emergencias.html).
   - [x] Optimización de rendimiento a 60 FPS fluidos: coalescing de touchmove a RAF, dirty-checking de DOM en proximidad y renderCameraTransform desacoplado en despacho táctico.
+  - [x] Corrección de colapso de HUD: reversión de contain: strict y touch-action: none en viewport, despeje de focos de fuego secundarios y extinción en 2 descargas.
   - [x] Perspectiva 100% en Primera Persona (FPS / First-Person POV) sin avatar de 3ª persona ni proyección isométrica.
   - [x] Visera de Casco de Seguridad y HUD Digital: Detector multigas PID en ppm, cronómetro de 120s, medidor de O2/Vitalidad y avance de derrame a drenaje.
   - [x] Capa de Manos en 1ª Persona (First-Person Hands): Manos interactivas animadas con balanceo y equipamiento de guantes de nitrilo.

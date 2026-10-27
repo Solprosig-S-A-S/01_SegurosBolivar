@@ -1174,3 +1174,25 @@ gba(148, 163, 184, 0.18)).
   3. **Desacople en Despacho Tactico (`renderCameraTransform`)**: Durante el trayecto de auto-enrutamiento se aplica `renderCameraTransform()` que unicamente interpola la matriz CSS 3D de la camara, aplazando las evaluaciones de proximidad hasta el arribo a la estacion.
   4. **Aislamiento GPU y Contencion CSS**: Se anadio `contain: strict;`, `touch-action: none;` y `user-select: none;` en `.fps-3d-viewport`, aligerando ademas la sombra estroboscopica del techo a un pulso de opacidad con `will-change: opacity, transform;`.
 - **Validacion**: Sintaxis verificada y los 6 paquetes SCORM 1.2 reconstruidos con `build_scorm.py`.
+
+## Aceleracion y Descarte Inmediato de Toast de Confirmacion (Juego 4) - 2026-10-27
+- **Diagnostico**:
+  1. En `juego4_taller.html`, al completar la ultima accion o la segregacion de residuos RESPEL, el toast flotante de confirmacion («Segregacion RESPEL Conforme») permanecia en pantalla durante 3800 ms y con `z-index: 1000;`, superando a la ventana modal de auditoria final (`z-index: 100;`). Esto provocaba que el toast tapara la parte inferior de la tarjeta de certificacion y los botones de accion en smartphones.
+  2. Ademas, el toast no permitia descarte manual al toque.
+- **Solucion implementada**:
+  1. **Duracion Agil**: Se redujo el temporizador de permanencia de 3800 ms a 1200 ms para confirmaciones y 2000 ms para advertencias.
+  2. **Descarte al Toque (Tap-to-Dismiss)**: Se anadio listener interactivo `click` sobre `#tech-toast` con `cursor: pointer;` para que el usuario pueda cerrarlo al instante si lo desea.
+  3. **Jerarquia Visual de Modales (z-index)**: Se calibro el `z-index` del toast a `95`, garantizando que cualquier modal (`z-index: 100`) quede siempre por encima sin solapamientos.
+  4. **Cierre Inmediato al Entrar a Auditoria**: En `triggerAuditFinal()`, el toast se remueve y cancela de inmediato, dejando la pantalla de certificacion 100% limpia.
+- **Validacion**: Sintaxis verificada y los 6 paquetes SCORM 1.2 reconstruidos con `build_scorm.py`.
+
+## Correccion de Colapso de Layout y Despeje de Escena en Incendio (Juego 5) - 2026-10-27
+- **Diagnostico**:
+  1. En `juego5_emergencias.html`, la inclusion previa de `contain: strict;` y `touch-action: none;` en `.fps-3d-viewport` provoco el colapso de dimension intrinseca del contenedor padre, empujando y ocultando la cabecera del visor HUD (`.hud-header`, barra de tiempo, stats y avatar) fuera de la pantalla visible.
+  2. Ademas, en la Mision 2 (Incendio), existian 5 focos de fuego secundarios simultaneos (`.fire-hazard-node-3d`), con uno en particular (`#fire-spot-south`) situado en primer plano a escasos centimetros de la camara, tapando casi la totalidad de la pantalla con una llama gigante y sumandole 6 chispas y sombras de 110px de `box-shadow` que colapsaban los FPS del telefono.
+- **Solucion implementada**:
+  1. **Restauracion del Layout HUD**: Se revirtio `contain: strict;` y `touch-action: none;` de `.fps-3d-viewport`, garantizando que `.fps-visor-hud` cubra el 100% del viewport sin colapsar la cabecera.
+  2. **Despeje Visual Total**: Se ocultaron permanentemente los 5 focos secundarios ruidosos (`.fire-hazard-node-3d { display: none !important; }`) y las chispas continuas (`.fire-sparks-container { display: none !important; }`), dejando unicamente el conato central (#fire-cluster-3d) nitido y enfocado.
+  3. **Aligeramiento de Sombras y Animaciones**: Se eliminaron los `box-shadow` pesados de 110px/85px en las llamas y se suavizo la frecuencia de animacion a 0.6s, retirando el parpadeo de las paredes de la habitacion.
+  4. **Extincion Agil**: Se calibro la potencia de descarga a 50% por disparo (extincion en 2 toques) y se removio el dano continuo letal por radiacion.
+- **Validacion**: Sintaxis verificada y los 6 paquetes SCORM 1.2 reconstruidos con `build_scorm.py`.

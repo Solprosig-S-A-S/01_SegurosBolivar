@@ -2503,11 +2503,12 @@
             border-radius: var(--radius-md);
             padding: 10px 14px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.85), 0 0 20px rgba(16, 185, 129, 0.4);
-            z-index: 1000;
+            z-index: 95; /* Menor que modales (z-index: 100) para no tapar auditorías ni botones */
             transform: translateY(140%);
             opacity: 0;
-            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
+            cursor: pointer;
         }
 
         .tech-feedback-toast.show {
@@ -4767,6 +4768,14 @@
                     auditStatPoints: document.getElementById('audit-stat-points')
                 };
 
+                // Descarte instantáneo del toast al tocarlo
+                if (this.dom.techToast) {
+                    this.dom.techToast.addEventListener('click', () => {
+                        clearTimeout(this.toastTimeout);
+                        this.dom.techToast.classList.remove('show');
+                    });
+                }
+
                 // Integración Moodle LMS & SCORM
                 this.lmsBridge = new BolivarLmsBridge('juego4_taller', 80);
                 setupMoodleFullscreen('btn-moodle-fullscreen');
@@ -6274,9 +6283,11 @@
                         this.updateScenario2Guide();
 
                         this.scheduleAction(() => {
+                            clearTimeout(this.toastTimeout);
+                            if (this.dom.techToast) this.dom.techToast.classList.remove('show');
                             this.dom.modalRespel.classList.remove('open');
                             this.triggerAuditFinal();
-                        }, 1200);
+                        }, 500);
                     }
                 } else {
                     // ERROR NORMATIVO (GUIA FORMATIVA SIN PENALIZACION)
@@ -6325,9 +6336,11 @@
 
                 this.dom.techToast.classList.add('show');
                 clearTimeout(this.toastTimeout);
+                // Duración ágil: 1200ms para confirmaciones rápidas y 2000ms para advertencias formativas
+                const toastDuration = isError ? 2000 : 1200;
                 this.toastTimeout = this.scheduleAction(() => {
                     this.dom.techToast.classList.remove('show');
-                }, 3800);
+                }, toastDuration);
             }
 
             setBotMessage(msg, face = '👨‍🔧') {
@@ -6411,6 +6424,13 @@
                 if (this.auditClosed) return;
                 this.auditClosed = true;
                 this.movementId++;
+                
+                // Ocultar inmediatamente el toast flotante para que la pantalla de auditoría quede 100% despejada
+                clearTimeout(this.toastTimeout);
+                if (this.dom.techToast) {
+                    this.dom.techToast.classList.remove('show');
+                }
+
                 for (const id of ['modal-locker', 'modal-respel', 'modal-workshop-challenge']) {
                     document.getElementById(id)?.classList.remove('open');
                 }
