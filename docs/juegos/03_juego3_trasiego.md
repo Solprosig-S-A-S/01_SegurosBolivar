@@ -1,4 +1,7 @@
 # Documentación Técnica Exclusiva - Juego 3
+
+> **Contrato vigente 2026-10-22:** Trasiego: seis medidas por equipo (cuñas, tierra, motor, bandeja, kit, extintor), cuatro equipos. Presupuesto inicial 70 s, +8 s por equipo hasta 100 s restantes. Nota por equipos completos, independiente de racha. Cierre único y duración real; solo 4/4 aprueba. Aprobación desde 80 % y todos los hitos. [Contrato y validaciones](../CORRECCIONES_2026-10-22.md).
+> Las referencias normativas y detalles del diseño original que siguen son contexto histórico, no instrucciones de campo ni acreditación de cumplimiento; prevalece este contrato. Recursos externos incrustados, sin CDN en ejecución. QA visual, lector de pantalla y SST profesional pendientes.
 ## Inspector de Trasiego: Inspección de Campo y Corrección de Riesgos
 
 ---
@@ -14,7 +17,7 @@
 | **Resolución y Layout** | Diseño responsivo (Zona A: Escena Técnica SVG; Zona B: Mazo de Acción Táctica) |
 | **Stack Tecnológico** | HTML5, SVG Nativo, CSS3 Puro (`:root`), JavaScript ES6, GSAP v3, Web Audio API |
 | **Efectos Visuales** | GSAP v3 (animación de tarjetas y transiciones) + Canvas 2D Particle Engine |
-| **Dependencias CDN** | GSAP 3.12.2, Google Fonts ('Outfit'), FontAwesome v6 |
+| **Recursos offline** | Fuentes, Font Awesome 6.4.0 y GSAP 3.12.2 (juegos 3-5) incrustados en HTML |
 | **Empaquetador / Build** | Cero dependencias / Vanilla JS (Ejecución standalone directa en navegador) |
 
 El **Juego 3** posiciona al usuario en el rol de un Inspector Técnico de Seguridad durante la operación más crítica de abastecimiento de combustible en obras de infraestructura vial: el **trasiego de hidrocarburos (ACPM UN 1202)** desde el camión cisterna nodriza hacia la maquinaria pesada de movimiento de tierras y generadores eléctricos.

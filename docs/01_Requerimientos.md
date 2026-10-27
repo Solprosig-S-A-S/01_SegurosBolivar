@@ -1,5 +1,7 @@
 # 01. Requerimientos Técnicos y Normativos - Suite Seguridad Química Seguros Bolívar
 
+> Contrato vigente desde 2026-10-22: [evaluación, tiempos y alcance didáctico](CORRECCIONES_2026-10-22.md). Las referencias normativas son contexto del material; no acreditan cumplimiento legal ni sustituyen revisión SST/FDS.
+
 ## 1. Contexto y Objetivos del Negocio
 Desarrollo de una suite interactiva de micro-juegos de simulación técnica y arcade pedagógico para la capacitación de trabajadores de obra, contratistas y personal operativo de **Seguros Bolívar**, enfocado en la prevención del riesgo químico y cumplimiento de la normatividad colombiana de Seguridad y Salud en el Trabajo (SST).
 
@@ -25,7 +27,7 @@ Desarrollo de una suite interactiva de micro-juegos de simulación técnica y ar
 - **Público Objetivo**: Trabajadores y supervisores de obra.
 - **Mecánica**: 
   - Tutorial guiado paso a paso con el avatar institucional *Bolívar Safety Bot*.
-  - Examen cronometrado (120 segundos) con 6 sustancias químicas representativas de obra (Thinner, Ácido Muriático, Acetileno, ACPM, Soda Cáustica, Pintura Epóxica).
+  - Tres niveles sin reloj de examen: cuatro asociaciones legales, seis familias de peligro, tres envases con varios pictogramas y seis casos FDS.
   - Interacción táctil dual: Drag & Drop (Pointer Events nativos con física y rotación) y Tap-to-Select.
   - Visor modal interactivo de Ficha de Datos de Seguridad (FDS) con sus 16 secciones normativas.
   - Retroalimentación pedagógica detallada ante errores de clasificación.
@@ -48,13 +50,13 @@ Desarrollo de una suite interactiva de micro-juegos de simulación técnica y ar
 - **Mecánica**:
   - **Zona A: Escenario de Inspección Vectorial SVG**:
     - Camión cisterna UN 1202 y maquinaria de obra secuencial (Excavadora CAT, Volqueta Kenworth, Bulldozer D6T, Generador Caterpillar).
-    - 4 Puntos de Inspección / Hotspots parpadeantes en rojo:
+    - Seis medidas secuenciales: cuñas, conexión a tierra, motor/celulares, bandeja, kit y extintor. La relación de cuatro puntos siguiente corresponde al diseño inicial:
       1. Cabina/Motor: Motor encendido / teléfonos celulares activos.
       2. Chasis/Masa: Ausencia de cable equipotencial de polo a tierra.
       3. Acople/Manguera: Ausencia de bandeja de goteo antiderrame.
       4. Perímetro: Ausencia de extintor satélite ABC a 5 metros.
   - **Zona B: Mazo de Tarjetas de Acción de Seguridad**:
-    - 4 tarjetas arrastrables (Pointer Events Drag & Drop) o seleccionables (Tap-to-Place):
+    - Seis tarjetas correctas más distractores, con arrastre, selección por toque y teclado. Las cuatro tarjetas iniciales se ampliaron con cuñas y kit:
       1. Desconectar Motor & Aislar Celulares (`fa-power-off`).
       2. Conectar Cable de Polo a Tierra (`fa-bolt`).
       3. Posicionar Bandeja de Goteo Antiderrame (`fa-fill-drip`).
@@ -62,7 +64,7 @@ Desarrollo de una suite interactiva de micro-juegos de simulación técnica y ar
   - **Feedback y Reglas Normativas**:
     - Acierto: Hotspot cambia a verde certificado, el elemento vectorial SVG se acopla dinámicamente y se emite toast normativo explicativo (Dec. 1079/2015, Ley 55/1993, Dec. 4741/2005, Res. 773/2021).
     - Error: Animación GSAP Shake y alerta técnica.
-  - **Flujo de 3 Fases**: Tutorial Bolívar Safety Bot, Desafío cronometrado (120s) de 4 equipos y Auditoría Final con certificado.
+  - **Evaluación vigente**: 70 s iniciales y +8 s por equipo; solo cuatro equipos completos satisfacen aprobación. Informe formativo, sin acreditación legal.
 
 ### 3.4. Juego 4: Taller Seguro: Desafío Isométrico de Equipamiento y Mantenimiento - `juego4_taller.html`
 > 📄 **Documentación Técnica Exclusiva**: [`docs/juegos/04_juego4_taller.md`](juegos/04_juego4_taller.md)
@@ -86,7 +88,7 @@ Desarrollo de una suite interactiva de micro-juegos de simulación técnica y ar
     - Controles de traslación direccional (`[⬅️]`, `[➡️]`, `[⬆️]`, `[⬇️]`) y botón `[🎯 Centrar]` calibrado en `--pan-x: 0px; --pan-y: 35px;`.
     - Controles de zoom óptico (`[🔍 +]`, `[🔍 -]`) y soporte de arrastre táctil/ratón.
   - **Feedback y Reglas Normativas**: Tarjetas explicativas de Res. 773/2021 (Sección 8 FDS) y Dec. 4741/2005 (Manejo integral de RESPEL).
-  - **Flujo de 3 Fases**: Tutorial Bolívar Safety Bot, Desafío de operación (240s / 4 minutos de exploración y mantenimiento) y Auditoría final SST con certificado.
+  - **Evaluación vigente**: 90 s; EPP validado, checkpoint y tres operaciones obligatorias, incluidos cuatro residuos aleatorios. Premios únicos; máximo habitual 610 puntos.
 
 ### 3.5. Juego 5: Brigada de Emergencia: Simulador 1ª Persona de Control de Derrames - `juego5_emergencias.html`
 > 📄 **Documentación Técnica Exclusiva**: [`docs/juegos/05_juego5_emergencias.md`](juegos/05_juego5_emergencias.md)
@@ -114,11 +116,11 @@ Desarrollo de una suite interactiva de micro-juegos de simulación técnica y ar
 - **Reglas de Crisis**:
   - Exposición a vapores sin máscara reduce el medidor de O2/Vitalidad con parpadeo de asfixia en el visor.
   - Expansión del charco hacia el drenaje pluvial: si alcanza el 100% antes de confinarlo con el cordón, la misión fracasa por desastre ecológico.
-- **Flujo de 3 Fases**: Inducción del Bolívar Safety Bot, Desafío de crisis en 1ª persona (120s) y Auditoría final con certificado de brigadista.
+- **Evaluación vigente**: Derrame 120 s e Incendio 90 s, secuenciales y obligatorios. Un solo resultado SCO al completar ambas; el informe representa entrenamiento, no una certificación de brigadista.
 
 ## 4. Requerimientos No Funcionales
 - **Cero dependencias externas**: Eliminación de Tailwind CDN; diseño 100% nativo con variables CSS (`:root`).
-- **Accesibilidad visual y ergonomía**: Escala tipográfica ergonómica (13px a 30px) y contraste superior a 4.5:1 para visualización óptima en dispositivos móviles, tablets de campo y kioscos de capacitación.
+- **Accesibilidad**: controles de teclado, foco y retorno de modales, feedback accesible y movimiento reducido. Tokens tipográficos con textos compactos menores; contraste, lectores y ergonomía táctil requieren validación real y no se declaran certificados.
 - **Audio procedimental**: Efectos de sonido generados en tiempo real mediante la Web Audio API nativa sin requerir archivos de audio externos.
 
 ## 5. Requerimientos de Plataforma LMS (Moodle) y Despliegue SCORM

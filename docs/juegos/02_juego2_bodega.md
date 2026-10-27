@@ -1,4 +1,7 @@
 # Documentación Técnica Exclusiva - Juego 2
+
+> **Contrato vigente 2026-10-22:** Bodega: presupuesto de 120 s y alerta de 18 s. Para aprobar: siete elementos legales ubicados, botella rechazada, cero incompatibilidades y respeto A3/C1. Inventario incompleto limita score a 79. Se revisan 12 enlaces ortogonales y ocho diagonales. Estiba y extintor son recursos del puzzle, no barreras ni prueba de retención física. Aprobación desde 80 % y todos los hitos. [Contrato y validaciones](../CORRECCIONES_2026-10-22.md).
+> Las referencias normativas y detalles del diseño original que siguen son contexto histórico, no instrucciones de campo ni acreditación de cumplimiento; prevalece este contrato. Recursos externos incrustados, sin CDN en ejecución. QA visual, lector de pantalla y SST profesional pendientes.
 ## Bodega Segura: Puzzle Isométrico de Compatibilidad Química
 
 ---
@@ -14,7 +17,7 @@
 | **Dimensiones de Matriz** | Tablero 3x3 de celdas isométricas con 12 conexiones ortogonales dinámicas |
 | **Stack Tecnológico** | HTML5, CSS3 Nativo (`:root`), JavaScript ES6, Web Audio API, Canvas 2D Engine |
 | **Efectos y Partículas** | Canvas 2D Particles (`FxEngine`: chispas de ignición y confeti triunfal) |
-| **Dependencias CDN** | Google Fonts ('Outfit', 'JetBrains Mono'), FontAwesome v6 |
+| **Recursos offline** | Fuentes, Font Awesome 6.4.0 y GSAP 3.12.2 (juegos 3-5) incrustados en HTML |
 | **Empaquetador / Build** | Cero dependencias / Vanilla JS (Ejecución standalone directa en navegador) |
 
 El **Juego 2** simula la gestión de almacenamiento y estibado seguro en una bodega de químicos de obra. Utilizando una proyección isométrica 2.5D matemática en CSS puro, el jugador debe ubicar reactivos industriales en una cuadrícula de 3x3, garantizando que los productos adyacentes sean mutuamente compatibles y evitando reacciones violentas, ignición por contacto o contaminación ambiental.
@@ -112,7 +115,7 @@ El modal `#modal-matrix` replica fielmente la matriz oficial original organizada
 | **`item_acetylene`**| Cilindro de Acetileno (Gas) | Gas a Presión | Gas | Extremadamente inflamable a presión. Requiere barrera ante líquidos. |
 | **`item_paint`** | Pintura Epóxica + Catalizador | Salud / Irritante | Líquido | Sensibilizante. Incompatible con catalizadores ácidos descontrolados. |
 | **`item_soda_caustic`**| Soda Cáustica Líquida (Base) | Base / Álcali | Líquido | Álcali corrosivo fuerte. Prohibido adyacente a ácidos (neutralización violenta). |
-| **`item_pallet`** | Estiba Antiderrame 110% | Contención | Prop Físico | Rejilla de retención. Valida contención secundaria de líquidos. |
+| **`item_pallet`** | Estiba Antiderrame 110% | Contención | Prop Físico | Rejilla de retención. Recurso identificado en el esquema; no demuestra contención real. |
 | **`item_extinguisher`**| Extintor PQS / Barrera | Buffer Físico | Prop Físico | Actúa como pared cortafuego/buffer que aísla químicos no compatibles. |
 | **`item_soda`** | Botella de Gaseosa con Químico | **¡ILEGAL!** | Líquido | **Infracción Art. 20 Res. 773**. Debe enviarse a la Zona de Rechazo / RESPEL. |
 
@@ -146,39 +149,11 @@ El tablero se proyecta mediante CSS 3D Transforms puro sin canvas WebGL:
 ```
 Las piezas y sprites se proyectan perpendicularmente mediante contrarrotación angular para mantener el efecto diorama (Billboarding).
 
-### 4.2. Algoritmo de Evaluación de Enlaces Ortogonales (12 Conexiones)
-La cuadrícula 3x3 posee 9 celdas $(r, c)$ y 12 conexiones entre vecinos inmediatos:
-- **6 Enlaces Horizontales**: $(r, c) \leftrightarrow (r, c+1)$ para $r \in [0, 2], c \in [0, 1]$.
-- **6 Enlaces Verticales**: $(r, c) \leftrightarrow (r+1, c)$ para $r \in [0, 1], c \in [0, 2]$.
+### 4.2. Vecindad y evaluacion del esquema
 
-```javascript
-// Pseudocódigo del Validador de Conexiones
-for (let link of ORTHOGONAL_LINKS) {
-    let itemA = grid[link.r1][link.c1];
-    let itemB = grid[link.r2][link.c2];
-    
-    if (!itemA || !itemB) continue;
-    
-    // Si uno es buffer (extintor o estiba), actúa como aislante seguro
-    if (itemA.category === 'buffer' || itemB.category === 'buffer') {
-        markConnection(link, 'compatible');
-        continue;
-    }
-    
-    // Verificación en la matriz de reactividad
-    let pairKey = `${itemA.category}_${itemB.category}`;
-    if (CHEMICAL_CONSEQUENCES[pairKey]) {
-        markConnection(link, 'hazard');
-        triggerHazardAlert(pairKey);
-        shakeScreen();
-        sound.hazardAlarm();
-    } else {
-        markConnection(link, 'compatible');
-    }
-}
-```
+Se evalua la vecindad inmediata: seis conexiones horizontales, seis verticales y ocho diagonales. Los recursos neutros no son barreras fisicas: solo ocupan una casilla del esquema. La matriz simplifica categorias; la compatibilidad real depende de las FDS de productos concretos.
 
----
+El inventario completo, rechazo de la botella, ausencia de incompatibilidades y respeto de A3/C1 son requisitos para aprobar. El puntaje parcial conserva utilidad formativa, pero no puede alcanzar 80 % si falta un requisito.
 
 ## 5. Experiencia de Usuario y Flujo de 3 Fases
 
@@ -187,23 +162,23 @@ for (let link of ORTHOGONAL_LINKS) {
 - **Situación Operativa**: *"Acabas de recibir la bodega central de obra desorganizada. Hay reactivos incompatibles en riesgo de reacción exotérmica y recipientes no conformes. Debes organizar el almacenamiento cumpliendo la norma técnica antes de que ocurra un incidente."*
 - **Directiva Operativa en 3 Pasos**:
   1. *Segregación NTC 4435*: Separa sustancias incompatibles (Ácidos lejos de Álcalis).
-  2. *Buffers y Contención*: Usa estibas y extintores como barreras seguras.
+  2. *Buffers y Contención*: Identifica recursos de respuesta; no representan barreras físicas.
   3. *Zona de Rechazo*: Envía de inmediato el refresco ilegal a la caneca RESPEL.
 - **Instrucciones Directas de Control**: `PC: Arrastrar o Clic a celda` / `Móvil: Tocar sustancia y tocar celda`.
 - **Botón de Despliegue (`btn-start-briefing`)**: Inicia la bodega y activa el tablero.
 
 1. **Fase 1: Tutorial Guiado (3 Pasos de Inducción)**:
    - *Paso 1*: Ubicación segura de un reactivo en la celda central.
-   - *Paso 2*: Demostración de incompatibilidad y uso del Extintor/Buffer para neutralizar el peligro entre reactivos.
+   - *Paso 2*: Demostración de vecindad del esquema; un extintor no neutraliza incompatibilidades químicas reales.
    - *Paso 3*: Detección de la botella ilegal de gaseosa y descarte en la **Zona de Rechazo / RESPEL**.
-2. **Fase 2: Desafío de Bodega (90 Segundos de Tensión Arcade)**:
+2. **Fase 2: Desafío de Bodega (120 Segundos)**:
    - Tablero 3x3 con restricciones espaciales reales de infraestructura industrial y bandeja de inventario.
    - **Restricciones de Infraestructura de Bodega (Peligros Ambientales Fijos)**:
      - **Celda A3 (Tablero Eléctrico de Potencia 440V)**: Marcador visual `⚡ 440V`. Prohibido almacenar combustible (`item_acpm`: ACPM) o gas inflamable (`item_gas`: Acetileno) en esta casilla debido a riesgo de ignición por arco eléctrico (NFPA 70 / Res. 2400).
      - **Celda C1 (Radiación Solar Directa / Claraboya)**: Marcador visual `☀️ CALOR`. Prohibido almacenar cilindros de gas comprimido (`item_gas`) o combustibles (`item_acpm`) por riesgo de sobrepresión térmica y ruptura (NFPA 55).
-   - **Reacción Exotérmica Activa con Cuenta Regresiva de Crisis (6 Segundos)**:
-     - Si dos sustancias incompatibles quedan adyacentes, o si se vulnera una restricción ambiental, se activa una alarma crítica y una barra de peligro en tiempo real con cuenta regresiva de 6 segundos.
-     - Si el jugador no separa los reactivos antes de que expire el tiempo, ocurre una **Deflagración Química** con sacudida, chispas y penalización irreversible de **-150 puntos** en la auditoría.
+   - **Reacción Exotérmica Activa con Cuenta Regresiva de Crisis (18 Segundos)**:
+     - Si dos sustancias incompatibles quedan adyacentes, o si se vulnera una restricción ambiental, se activa una alarma crítica y una barra de peligro en tiempo real con cuenta regresiva de 18 segundos.
+     - Si el jugador no separa los reactivos antes de que expire el tiempo, ocurre una **Deflagración Química** con sacudida, chispas y penalización irreversible de **-15 puntos por incidente (máximo -30)** en la auditoría.
    - **Mecánica Dual de Interacción (Drag & Drop + Tap-to-Select & Tap-to-Place)**:
      - **Pointer Events con Pointer Capture Universal**: Implementación de setPointerCapture y releasePointerCapture para seguimiento inmune a cancelaciones por gestos de scroll del contenedor padre (overflow-y-auto). Umbral calibrado de 6px que discrimina toques simples de arrastre intencionado.
      - **Estabilidad Dimensional**: Dimensiones constantes de 98px de alto en la bandeja (transition restringida a colores y sombras sin alterar layout), supresión de aspect-ratio 1:1 y scale(1.02) sutil durante el vuelo de la tarjeta.
@@ -231,3 +206,28 @@ for (let link of ORTHOGONAL_LINKS) {
 3. **Prueba de Concurrencia Táctil**:
    - Arrastre táctil en teléfonos móviles y selección Tap-to-Place verificados sin bloqueos ni distorsiones de perspectiva.
 
+
+
+## Adaptación móvil de la matriz — 2026-10-24
+- Modal e inspector limitados a la altura dinámica del dispositivo hasta 768 px; cabecera y cierre permanecen fuera del cuerpo desplazable.
+- Pestañas con desplazamiento horizontal, leyendas en dos columnas (una hasta 420 px) y botones principales/cierre con área táctil mínima de 44 px.
+- Tabla con desplazamiento propio en ambos ejes, encabezado y primera columna fijos; columna de nombres de 140 px y celdas de 44 px de alto en móvil. Aviso visible de desplazamiento y región accesible por teclado.
+- Inspector con selectores y fichas apilados; guía de etiquetas en una columna. No cambia el contenido de compatibilidad ni la evaluación.
+- Validación: 22/22 regresiones; `python tools/verify_games.py` correcto; paquetes Bodega y suite sincronizados. Pendiente inspección visual en teléfono: inventario de navegadores conectados vacío.
+
+
+### Optimizacion Ergonomica de la Matriz en Telefonos - 2026-10-24
+- **Despeje inmediato de la tabla**: Se eliminaron los bloques de texto redundantes superiores que empujaban la tabla fuera del viewport inicial en telefonos.
+- **Leyenda compacta en pills**: Las 4 convenciones (C, P, I, E) se convirtieron en micro-chips horizontales (32 px de alto) ocultando textos largos de parrafo para que la tabla sea visible de inmediato al abrir el modal.
+- **Barra de accion unificada**: Fusionado el aviso de deslizamiento con el acceso directo a selectores en una toolbar compacta.
+- **Geometria de tabla adaptada**: Columna fija (`.sticky-col`) ajustada a 124 px con texto legible de productos y celdas tactiles de 54x44 px (4.2 columnas visibles simultaneamente en pantallas de 375-390 px).
+- **Ventana flotante de inspeccion por celda (`#modal-matrix-inspector`)**: Al tocar cualquier casilla, el veredicto oficial y la justificacion tecnica se presentan en primer lugar (CSS order: 2 y 3) para lectura instantanea sin obligar al usuario a hacer scroll por encima de los desplegables.
+
+
+### Correccion de Solapamiento y Opacidad en Sticky Column (Moviles) - 2026-10-24
+- **Diagnostico de la captura del usuario**: La columna fija `.sticky-col` recibia `background: rgba(255, 199, 44, 0.22) !important` al activarse la reticula (`.header-crosshair-active`), volviendose un 78% translucida. Al desplazarse horizontalmente, los iconos de las celdas deslizantes (circulos rojos y checkmarks verdes) se transparentaban bajo el texto del reactivo, generando un empastamiento visual severo. Asimismo, el doble scroll anidado (`.modal-body` + `.matrix-scroll-region`) desalineaba la tabla y recortaba la Fila 0 (`1. Explosivos`).
+- **Correcciones definitivas**:
+  1. **Opacidad total e inviolable (100% Opaque)**: Se fijo `background: #1e293b !important` en `.sticky-col.header-crosshair-active` y en `tr.row-crosshair-active .sticky-col`, garantizando que ninguna celda pueda transparentarse bajo la columna fija.
+  2. **Sombras de profundidad y borde continuo**: La columna fija proyecta una sombra solida (`box-shadow: 4px 0 10px rgba(0,0,0,0.8)`) con borde dorado Bolívar de 2 px, separando netamente el panel fijo de los datos deslizantes.
+  3. **Eliminacion de scroll anidado**: `.modal-body` queda con `overflow: hidden !important`, asignando a `.matrix-scroll-region` el 100% de la altura restante. Solo la tabla se desplaza, manteniendo fijas la cabecera, pestanas, leyenda y barra de accion.
+  4. **Contencion de contornos**: Las celdas activas usan `boxShadow: 'inset 0 0 0 2px var(--bolivar-yellow)'` y `outline-offset: -2px`, impidiendo que los contornos invadan casillas adyacentes.

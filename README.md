@@ -1,5 +1,7 @@
 # Suite Arcade de Seguridad Química - Seguros Bolívar
 
+> Reglas vigentes: [contrato de evaluación y correcciones](docs/CORRECCIONES_2026-10-22.md). Entrenamiento con reintentos, aprobación desde 80 % y todos los hitos obligatorios. Escenarios didácticos: el resultado no acredita cumplimiento legal ni reemplaza las FDS reales y la evaluación SST.
+
 Plataforma interactiva de micro-juegos de entrenamiento técnico y prevención del riesgo químico en obras y operaciones industriales, desarrollada bajo los lineamientos de la **Resolución 773 de 2021**, **Decreto 1496 de 2018**, **Decreto 1079 de 2015** y **Decreto 4741 de 2005**.
 
 ---
@@ -11,7 +13,7 @@ Plataforma interactiva de micro-juegos de entrenamiento técnico y prevención d
 - **Objetivo**: Identificar los pictogramas SGA correctos para sustancias químicas de obra utilizando su Ficha de Datos de Seguridad (FDS).
 - **Mecánicas**:
   - Tutorial guiado paso a paso con el avatar *Bolívar Safety Bot*.
-  - Examen cronometrado de 120 segundos con 6 reactivos industriales.
+  - Tres niveles: marco legal, seis casos de familias y rotulado de tres envases más seis consultas FDS, sin reloj de examen.
   - Interacción táctil fluida (Drag & Drop con física de arrastre y Tap-to-Select).
   - Modal interactivo con las 16 secciones oficiales de la FDS (énfasis en Secciones 2 y 8).
   - Informe pedagógico final y opción de re-inspección de errores.
@@ -29,10 +31,10 @@ Plataforma interactiva de micro-juegos de entrenamiento técnico y prevención d
 - **Documentación Exclusiva**: [📖 `docs/juegos/03_juego3_trasiego.md`](docs/juegos/03_juego3_trasiego.md)
 - **Objetivo**: Detectar e intervenir riesgos de ignición, electrostática, derrames e incendios en el punto de trasiego de combustibles de obra mediante Drag & Drop y Tap-to-Place.
 - **Mecánicas**:
-  - Zona A (Escena Vectorial SVG): Camión cisterna ACPM UN 1202 y 4 equipos en secuencia con 4 hotspots parpadeantes en rojo (Cabina/Motor, Chasis/Masa, Acople/Manguera y Perímetro).
-  - Zona B (Mazo de Tarjetas): 4 tarjetas de seguridad de corrección inmediata (Motor/Celulares, Polo a Tierra, Bandeja Antiderrame y Extintor ABC a 5m).
+  - Zona A: camión cisterna y cuatro equipos secuenciales; seis medidas por equipo: cuñas, tierra, motor, bandeja, kit y extintor.
+  - Zona B: tarjetas de acción con selección por puntero o teclado y validación de secuencia.
   - Feedback normativo en tiempo real: Confirmación técnica de la medida preventiva con respaldo legal (Dec. 1079/2015, Dec. 4741/2005, Ley 55/1993 y Res. 773/2021).
-  - Desafío cronometrado de 120 segundos para 4 equipos y auditoría técnica con certificado de inspector seguro.
+  - Presupuesto inicial de 70 s y bonificación de 8 s por equipo; aprobación requiere 4/4 equipos. Racha y nota se calculan por separado.
 
 ### 4. Taller Seguro: Desafío Isométrico de Equipamiento y Mantenimiento (`juego4_taller.html`)
 - **Documentación Exclusiva**: [📖 `docs/juegos/04_juego4_taller.md`](docs/juegos/04_juego4_taller.md)
@@ -42,7 +44,7 @@ Plataforma interactiva de micro-juegos de entrenamiento técnico y prevención d
   - Zona 2 (Patio de Taller): Control Tap-to-Move para desplazamiento del avatar por baldosas en perspectiva isométrica 2.5D.
   - Barra HUD de Control y Cámara: Botón de cambio de escenario inmediato (`#btn-toggle-scene`), traslación direccional (`[⬅️]`, `[➡️]`, `[⬆️]`, `[⬇️]`), botón `[🎯 Centrar]`, alternancia de perspectiva `[📐 3D]`, zoom y arrastre táctil / mouse.
   - 3 Tareas Operativas: Desengrase de piezas mecánicas, cambio de filtro y aceite lubricante, y segregación técnica de residuos (filtros, trapos con grasa y aceite usado en estiba).
-  - Auditoría final SST con calificación porcentual, racha y certificado descargable.
+  - Desafío de 90 s con autorización EPP, premios únicos y cuatro residuos aleatorios. Informe calculado desde las operaciones realizadas.
 
 ### 5. Brigada de Emergencia: Simulador 1ª Persona de Control de Derrames (`juego5_emergencias.html`)
 - **Documentación Exclusiva**: [📖 `docs/juegos/05_juego5_emergencias.md`](docs/juegos/05_juego5_emergencias.md)
@@ -52,7 +54,7 @@ Plataforma interactiva de micro-juegos de entrenamiento técnico y prevención d
   - Manos en 1ª Persona (First-Person Hands Layer): Brazos interactivos que ejecutan giros de válvula, postura de guantes, despliegue de cordones y paños, accionamiento de lavaojos y embolse RESPEL.
   - Navegación Panorámica 360°: Control libre de rumbo (Yaw) mediante arrastre táctil/ratón y brújula cardinal hacia los 6 sectores de la planta.
   - 4 Hallazgos Ocultos de Auditoría SST: Inspección de extintor vencido (NFPA 10), reenvase no rotulado (Res. 773), FDS faltante (Ley 55) y aceite sin estiba (Dec. 4741).
-  - Auditoría final con certificado oficial de Brigadista de Emergencia.
+  - Derrame (120 s) seguido de Incendio (90 s), ambos obligatorios. Solo al completar las dos misiones se envía la nota promedio al SCO; no constituye certificación operativa.
 
 ---
 
@@ -61,7 +63,10 @@ Plataforma interactiva de micro-juegos de entrenamiento técnico y prevención d
 - **Arquitectura**: Single File HTML5/JS autocontenido, ejecutable directamente en el navegador sin dependencias ni empaquetadores.
 - **Estilos**: Sistema de diseño nativo en CSS puro con variables `:root` corporativas (Verde Bolívar `#006738`, Amarillo `#FFC72C`) y escala tipográfica ergonómica (13px a 30px). Cero dependencias de frameworks externos como Tailwind.
 - **Audio**: Web Audio API nativa para síntesis en tiempo real de tonos, alertas y fanfarrias sin necesidad de archivos de audio externos.
-- **Animaciones**: GSAP 3.12 y Canvas 2D Particle Engine para retroalimentación táctil y visual.
+- **Recursos offline**: fuentes, Font Awesome 6.4.0 y GSAP 3.12.2 incrustados en los HTML; sin peticiones a CDN. Procedencia en [THIRD_PARTY_ASSETS.md](docs/THIRD_PARTY_ASSETS.md).
+- **Accesibilidad**: teclado para acciones principales, foco de diálogos y movimiento reducido. La comprobación visual y con lector de pantalla sigue pendiente.
+
+Validación de lógica y distribución: `node --test tests/game_regressions.cjs` y, después de regenerar ZIP, `python tools/verify_games.py`.
 
 ---
 

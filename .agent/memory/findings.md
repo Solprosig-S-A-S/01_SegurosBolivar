@@ -995,3 +995,90 @@ gba(148, 163, 184, 0.18)).
 - **Corrección de la Activación del Extintor (Hotspot 4)**:
   - *Causa 1 (Colisión)*: El hotspot 4 y el hotspot 6 estaban prácticamente en las mismas coordenadas, por lo que el hit testing capturaba el kit en lugar del extintor. Al reubicar el extintor al perímetro a 5m (X=840) y reducir los hitboxes, la detección es unívoca.
   - *Causa 2 (Sobrescritura destructiva de Transform en GSAP)*: `applySvgSceneFix(4)` ejecutaba `gsap.fromTo(this.dom.svgExtinguisher, { opacity: 0, x: -80, rotation: -15 }, { opacity: 1, x: 0 })`. En SVG, GSAP sustituye el atributo `transform` por una matriz de coordenadas relativas a `x: 0`, reseteando el elemento a X=0 (fuera de la pantalla a la izquierda). Se corrigió aplicando animación de escala elástica `{ opacity: 0, scale: 0.3, transformOrigin: "14px 40px" }` a `{ opacity: 1, scale: 1, duration: 0.55, ease: "back.out(2)" }` y se actualizó el reset en `resetHotspotsAndCards` a `{ opacity: 0, scale: 1 }`.
+
+## Revisión integral de los cinco juegos — 2026-10-22
+- Informe: `docs/reviews/2026-10-22_revision_cinco_juegos.md` (18 hallazgos priorizados, R01–R18).
+- Confirmado por ejecución aislada con Node.js vm: Trasiego obtiene 100% con 2/4 equipos (3600 puntos); Taller permite sumar 200 puntos alternando 16 veces los guantes y terminar sin EPP; Emergencias permite victoria sin válvula ni lavaojos; dos ciclos de crisis descuentan dos segundos por ronda; SGA acepta respuestas antes del render siguiente y conserva subfase 3B tras reset.
+- Bodega: 96 distribuciones completas sin incompatibilidades ni infracción A3/C1; una auditoría sin ACPM almacenado obtiene 98%. No hay bloqueo por inexistencia de solución.
+- Sintaxis JS válida en los cinco HTML; manifiestos individuales XML bien formado. Los seis paquetes coinciden con las fuentes tras normalizar CRLF/LF. La diferencia binaria inicial en Bodega no era desactualización.
+- Limitaciones: ningún navegador conectado; sin QA visual/táctil ni Moodle real; simulación de DOM/audio no prueba renderizado. Contenido normativo no auditado exhaustivamente; referencias técnicas oficiales y riesgos pedagógicos consignados en R15.
+- No se modificaron HTML, paquetes, pruebas existentes, dependencias ni historial Git. Próximo bloque recomendado: R01, evaluación de Trasiego independiente de rachas y condicionada a completar los cuatro equipos.
+
+## Segunda profundización de la revisión — 2026-10-22
+- Informe ampliado a 25 hallazgos: 10 P1, 14 P2, 1 P3; añadidos R19–R25, matriz de correcciones con aceptación y decisiones de evaluación pendientes.
+- R19 confirmado con handlers reales simulados: drag RESPEL de Taller escribe selectedWasteItem y entrega un objeto DOM donde se exige selectedWaste e ID string; arrastre directo no confina, con selección previa penaliza -40 puntos/-5s sobre destino correcto.
+- R20 confirmado: cuatro interacciones sobre fuego extinguen y activan alarma/extintor/pasador automáticamente; quinta interacción gana sin recoger manta en su estación.
+- R21 confirmado: transición diferida de Trasiego después de timeout emite segundo reporte LMS (equipos 3 y después 4). R22: titulares de certificación de Trasiego/Taller son estáticos incluso con 0%. R23: auditar Trasiego al inicio muestra 00:50 de duración por mezclar base 120 y presupuesto 70.
+- R24: FPS carece de limpieza de teclas por pérdida de foco (riesgo pendiente de reproducción UI). R25 confirmado con callback de movimiento: cambio de Vestidor a Patio guarda coordenadas en Patio y ejecuta callback anterior.
+- Causa común: guía visual, estado operativo, puntaje y veredicto no comparten validación de precondiciones. Corrección posible dentro de los HTML actuales; no se propone migración de stack.
+- Decisiones pendientes antes de cambiar reglas: modo formativo/evaluativo, agregación de dos misiones en un SCO, pausa/presupuestos, política de reintentos LMS y escenario SST/offline.
+- No se modificó código ni paquetes. Navegadores conectados: inventario vacío al verificar de nuevo. Próximo bloque: resultado de Trasiego (cobertura 4/4, cierre único, veredicto y duración).
+
+## Correcciones implementadas y verificadas — 2026-10-22
+- El usuario aprobó: entrenamiento con reintentos, umbral 80% más todos los hitos, ambas misiones de Emergencias para completar el único SCO.
+- Contrato vigente y estado R01–R25: docs/CORRECCIONES_2026-10-22.md. El informe de revisión conserva reproducciones históricas; sus líneas no describen las fuentes corregidas.
+- SGA: bloqueo de respuesta por caso, botones FDS realmente deshabilitados, reinicio completo 3A, callbacks por intento y cierre solo con todas las fases.
+- Bodega: inventario/rechazo/compatibilidad/A3-C1 obligatorios; incompletos como máximo 79%; reloj real y alerta de 18s. Retiradas afirmaciones de extintor como barrera y proximidad como contención real.
+- Trasiego: nota por cobertura completa de equipos, racha separada, registro inmediato de hito, cierre único, callbacks invalidados y duración por reloj real.
+- Taller: autorización EPP vigente, premios únicos, máximo habitual610 y tareas obligatorias; contrato drag/tap corregido, cancelación sin depósito, movimiento ligado a zona e intento. Las penalizaciones no regeneran tiempo.
+- Emergencias: ambas misiones secuenciales, sin pasos automáticos; un reloj/deadline por misión, daño estacionario, física por delta normalizada, limpieza de teclas/mirada y promedio final reportado una vez.
+- Bridge idéntico en los cinco juegos: preserva estados previos, review/browse sin escritura, verifica retornos SCORM1.2/2004 y muestra fallos con reintento de guardado. La agregación entre intentos sigue la política del LMS.
+- Accesibilidad: runtime incrustado desde tools/accessibility_runtime.html, controles semánticos por teclado, foco/retorno/trampa de diálogos, anuncios y movimiento reducido. Observador filtra animaciones de estilo para evitar trabajo de foco por frame.
+- Offline: dependencias ya existentes incrustadas mediante tools/bundle_offline.py (red aprobada por usuario); 22 recursos, versiones/procedencia/hashes en docs/THIRD_PARTY_ASSETS.md. Sin dependencias nuevas instaladas. El tamaño aumenta por las fuentes incrustadas (ZIP individuales ~2.2–2.5MB).
+- Validación final: node --test tests/game_regressions.cjs =21/21; python build_scorm.py =6 ZIP regenerados; python tools/verify_games.py =sintaxis de todos los scripts, recursos offline, IDs, XML y coincidencia de los seis paquetes OK; git diff --check limpio tras corregir espacios de cabecera vendor y líneas nuevas.
+- Pendientes externos explícitos: navegador/Moodle reales, lector/contraste/táctil y validación profesional SST de FDS/citas/escenarios. Las pruebas usan DOM/audio/tiempo simulados y no acreditan cumplimiento legal. No hubo commits, pushes, staging ni cambios de ramas.
+
+## Ajuste visual del HUD superior de Emergencias — 2026-10-22
+- Captura del usuario: pestañas de misión partidas, pasos/objetivo/bot/estadísticas superpuestos en cabecera estrecha.
+- Causa: altura fija de cabecera 32/36px combinada con offsets absolutos top33/42/72px y transformaciones de escalado en media queries.
+- Corrección localizada en juego5_emergencias.html: flujo vertical del HUD, cabecera grid (dos filas hasta768px), grupo hud-header-actions, misiones sin salto de texto, pasos con scroll horizontal, objetivo multilínea y estadísticas en dos columnas. Se retiró O2 de la etiqueta visible de vitalidad.
+- Checks: los cinco bloques del HUD sin position:absolute/top/bottom/transform; sintaxis/recursos/paquetes verificados con python tools/verify_games.py; git diff --check correcto. ZIP regenerados y coincidentes con fuentes.
+- Una verificación anterior coincidió con el empaquetado; se identificó su finalización y se repitió guardado/build/verificación secuencialmente. El paquete final de Emergencias es ~2.4MB, no el ZIP incompleto transitorio.
+- Sin navegador conectado (inventario vacío); no se afirma revisión visual real. Recargar el juego y comprobar el HUD al ancho de la captura es el siguiente paso.
+
+## Briefing breve de Emergencias — 2026-10-22
+- A petición del usuario, explicación inicial reducida a un párrafo corto por misión, títulos Derrame120s/Incendio90s, una frase de objetivo y controles existentes. Aviso didáctico condensado; se mantiene que vitalidad no mide oxígeno.
+- Solo contenido del briefing de juego5_emergencias.html; sin cambios de mecánica. ZIP regenerados y python tools/verify_games.py correcto; git diff --check sin errores.
+
+## Simplificación efectiva de la cabecera de Emergencias — 2026-10-22
+- El usuario pidió quitar elementos, no redistribuirlos. Se retiraron del HTML gas/temperatura, pestañas M1/M2, radar y barra completa de pasos. Arriba permanecen tiempo, sonido y fullscreen; debajo el objetivo vigente.
+- Cabecera flex de un único grupo; retiradas reglas CSS de los componentes eliminados. updateCamera ya no accede a radar y checkProximity mantiene daño sin el indicador de gas. updateMissionStepsBar actualiza solo el objetivo actual.
+- Nueva regresión con referencias DOM ausentes comprueba cámara, exposición y actualización de objetivo. 22/22 pruebas pasan; paquetes regenerados, verificador completo y diff --check correctos.
+- Documentación de juego5 actualizada; no se afirma validación visual real por falta de navegador conectado.
+
+
+## Matriz de Bodega en móviles — 2026-10-24
+- La tabla exigía 900 px y la adaptación móvil anterior no contemplaba `.modal-dialog`. Se agregaron reglas específicas de matriz e inspector hasta 768 px, altura dinámica y controles táctiles de 44 px.
+- Se conserva la matriz completa mediante scroll interno, primera columna de 140 px y encabezados sticky; leyenda adaptable, pestañas desplazables, fichas y selectores apilados.
+- Cambios limitados a presentación y accesibilidad del contenedor; no se modifican cruces ni reglas del juego. Se respetaron los cambios preexistentes del árbol de trabajo.
+- 22/22 regresiones pasan; verificador de sintaxis/offline/XML y fuentes empaquetadas correcto. Solo se regeneraron ZIP de Bodega y suite. Sin navegador conectado para inspección visual real; pendiente comprobar 320/390/768 px y orientación horizontal en dispositivo.
+
+## Corrección de colapso en cabecera de Taller Seguro (Juego 4) — 2026-10-24
+- **Diagnóstico**: En `juego4_taller.html`, el contenedor `.app-viewport` tiene un ancho máximo de 500 px. La cabecera `.header-bar` ubicaba en una sola fila sin envoltura el cluster de marca con un título de 45 caracteres ("Taller Seguro: Equipamiento y Mantenimiento") junto a la norma ("Res. 773/2021 & Dec. 4741/2005") y la barra de estadísticas (racha, cronómetro, puntos, pantalla completa y audio, ~330 px). Al no haber `min-width: 0` ni espacio suficiente en 500 px, los badges de racha y cronómetro colisionaban y se superponían directamente sobre el texto del título y subtítulo. Adicionalmente, una media query destructiva (`@media (max-width: 640px)`) ocultaba completamente `.brand-cluster` con `display: none !important;` en móviles.
+- **Solución implementada**:
+  1. **Estructura en dos filas limpias (`.header-top-row` + `.header-stats`)**:
+     - *Fila 1 (Marca y Acciones)*: A la izquierda el icono de taller, título simplificado `Taller Seguro` y subtítulo `Seguros Bolívar • KMA`. A la derecha los botones de acción (`btn-moodle-fullscreen` y `btn-sound-toggle`). Ocupa ~230 px, garantizando total holgura en cualquier pantalla desde 320 px hasta 500 px.
+     - *Fila 2 (Estadísticas y Desempeño)*: Tres badges distribuidos equitativamente (`flex: 1` con `justify-content: center`): `combo-badge` (RACHA: x1), `stat-timer` (tiempo) y `stat-badge` (puntos).
+  2. **Eliminación del colapso y de la regla destructiva**: Se retiró `.brand-cluster { display: none !important; }` y el `.norma-pill` saturante, permitiendo que la cabecera respire con perfecta legibilidad, simetría y sin superposición alguna tanto en escritorio (enmarcado 500 px) como en dispositivos móviles.
+  3. **Validación**: Paquetes SCORM 1.2 regenerados limpiamente con `build_scorm.py`.
+
+
+
+## Verificacion y Optimizacion Ergonomica de la Matriz en Telefonos (Juego 2) - 2026-10-24
+- **Diagnostico**: En pantallas moviles (360-430 px), la Matriz Oficial NTC 4435 en `juego2_bodega.html` quedaba sepultada verticalmente bajo cuatro tarjetas de leyenda de parrafo completo y tres banners repetitivos de instrucciones (~435 px de altura previa), forzando al usuario a realizar scroll vertical antes de poder ver una sola fila de la tabla. Al abrir el inspector de celda, los desplegables se posicionaban antes del veredicto, obligando a desplazar la pantalla para leer la justificacion tecnica.
+- **Solucion implementada**:
+  1. **Despeje inmediato de la tabla**: La leyenda de 4 convenciones (Compatible, Precaucion, Incompatible, Exclusivo) se transformo en un grid 4x1/2x2 de micro-chips sobrios (ocultando descripciones largas que ya existen en la pestana 3 y en las fichas).
+  2. **Barra de herramientas compacta**: Fusionada la instruccion y el boton de selectores en una sola linea de 36 px.
+  3. **Visualizacion directa**: La tabla NTC 4435 aparece inmediatamente en pantalla al abrir el modal, ocupando el 70% del viewport vertical sin necesidad de scroll hacia abajo.
+  4. **Geometria tactil optimizada**: Sticky column ajustada a 124 px y celdas a 54x44 px (permitiendo ver mas de 4 columnas a la vez en iPhone/Android) con `touch-action: pan-x pan-y` y `overscroll-behavior: contain`.
+  5. **UX del Inspector Flotante**: Reordenado mediante CSS flexbox order para que el Duelo de Sustancias (A vs B), el Veredicto Luminoso (`[I] INCOMPATIBLE CRITICO`) y la Justificacion Tecnica aparezcan en primer lugar de lectura, dejando los desplegables de cambio manual en la seccion inferior.
+- **Validacion**: Paquetes SCORM 1.2 regenerados con `build_scorm.py`.
+
+
+## Correccion de Solapamiento Fantasma en la Matriz Movil (Juego 2) - 2026-10-24
+- **Diagnostico**: En `juego2_bodega.html`, la clase `.header-crosshair-active` aplicaba un fondo translucido `rgba(255, 199, 44, 0.22) !important`. Al activarse sobre la columna fija lateral (`td.sticky-col`), esta perdia su opacidad oscura solida, permitiendo que las celdas deslizantes subyacentes (iconos de advertencia, prohibicion y compatibilidad) se transparentaran debajo del texto de las sustancias ("3. Liq. Inflamable [ACPM / Diesel]"), colisionando visualmente en un borron ilegible. Adicionalmente, el contenedor `.modal-body` presentaba scroll vertical propio simultaneo al de `.matrix-scroll-region`, generando un doble scroll anidado que recortaba la fila superior de explosivos y ocultaba las pestanas.
+- **Solucion implementada**:
+  1. Opacidad obligatoria del 100%: `.header-crosshair-active` y `.row-crosshair-active .sticky-col` utilizan ahora fondo solido `#1e293b !important` con borde continuo de 2 px y sombra perimetral de 10 px. Ningun elemento deslizante puede verse a traves de la columna fija.
+  2. Supresion de scroll anidado: `.modal-body` configurado con `overflow: hidden !important` y `flex: 1`. La region `.matrix-scroll-region` asume el desplazamiento unico de la tabla, manteniendo cabecera, pestanas, micro-chips de leyenda y barra de accion fijos y accesibles.
+  3. Contencion interna de contornos: Reemplazado el contorno externo por sombra interior `boxShadow: inset 0 0 0 2px var(--bolivar-yellow)` y `outline-offset: -2px`.
+- **Validacion**: 6 paquetes SCORM 1.2 regenerados con `build_scorm.py`.

@@ -1,5 +1,7 @@
 # 02. Arquitectura de Software - Suite de Micro-Juegos Seguros Bolívar
 
+> Contratos vigentes: [correcciones de evaluación, estado y LMS](CORRECCIONES_2026-10-22.md). Recursos de terceros incrustados con procedencia y hashes en [THIRD_PARTY_ASSETS.md](THIRD_PARTY_ASSETS.md).
+
 ## 1. Visión General de la Arquitectura
 La suite se diseñó bajo una filosofía de **cero dependencias de empaquetado** y **máxima portabilidad offline** (Self-Contained Single File HTML/JS). Cada juego puede ejecutarse de manera autónoma en cualquier navegador moderno sin requerir servidores Node.js, compiladores Sass o conexiones a CDNs externos.
 
@@ -100,8 +102,8 @@ Generación procedural de efectos sonoros sin archivos `.mp3` ni `.wav`:
   - Calibración del centro de gravedad visual mediante variables CSS dinámicas en `:root`: `--pan-x: 0px; --pan-y: 35px; --rot-x: 60deg; --rot-z: -45deg; --scene-scale: 1;`.
   - Botón `[🎯 Centrar]` reajusta instantáneamente el encuadre exacto sin pérdida de contexto. Arrastre táctil y ratón con Pointer Events fluidos.
 - **Auditoría Técnica y Certificación SST**:
-  - Cronómetro de desafío en 240 segundos (04:00 minutos) para exploración pausada y mantenimiento seguro.
-  - Evaluación integral con cálculo porcentual (0%-100%), racha técnica, tiempo restante y emisión de certificado de Taller Seguro conforme a Res. 773/2021 y Dec. 4741/2005.
+  - Presupuesto de 90 segundos medido por tiempo transcurrido, con ajustes arcade independientes.
+  - Evaluación formativa con máximo habitual 610, autorización EPP y tres tareas obligatorias. El informe no certifica cumplimiento normativo.
 
 ### 2.7. Brigada de Emergencia: Motor de Simulación en Primera Persona (FPS POV), Habitación Cúbica 3D y HUD (Juego 5)
 - **Perspectiva y Cámara en Primera Persona (FPS / First-Person POV)**:

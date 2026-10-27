@@ -1,4 +1,7 @@
 # Documentación Técnica Exclusiva - Juego 1
+
+> **Contrato vigente 2026-10-22:** SGA: tres niveles sin reloj de examen; cuatro asociaciones legales, seis casos de familias, tres envases (Thinner, HCl, pintura) y seis casos FDS. Las respuestas quedan bloqueadas durante feedback; el reinicio restaura rotulado 3A. Se permite corregir el rotulado en modo entrenamiento. Aprobación desde 80 % y todos los hitos. [Contrato y validaciones](../CORRECCIONES_2026-10-22.md).
+> Las referencias normativas y detalles del diseño original que siguen son contexto histórico, no instrucciones de campo ni acreditación de cumplimiento; prevalece este contrato. Recursos externos incrustados, sin CDN en ejecución. QA visual, lector de pantalla y SST profesional pendientes.
 ## Desafío SGA: Clasificación de Peligros y Lectura de FDS
 
 ---
@@ -13,7 +16,7 @@
 | **Perspectiva / Vista** | UI High-Tech 2D Responsive (Cabina digital con vista vertical tipo tableta industrial) |
 | **Viewport Objetivo** | 100vh / Responsive (Enfocado en móviles y tablets, enmarcado ergonómico en PC) |
 | **Stack Tecnológico** | HTML5 Semántico, CSS3 Nativo (`:root`), JavaScript ES6 Puro, Web Audio API |
-| **Dependencias CDN** | Google Fonts ('Outfit', 'JetBrains Mono'), FontAwesome v6 (`all.min.css`) |
+| **Recursos offline** | Fuentes, Font Awesome 6.4.0 y GSAP 3.12.2 (juegos 3-5) incrustados en HTML |
 | **Empaquetador / Build** | Cero dependencias / Vanilla JS (Ejecución standalone directa en navegador) |
 
 El **Juego 1** es un simulador interactivo de evaluación y aprendizaje para el Sistema Globalmente Armonizado (SGA). Su objetivo es entrenar la habilidad del personal de construcción e industria para interpretar fichas técnicas FDS (Sección 2: Identificación de Peligros y Sección 8: Controles de Exposición y EPP) y asociar de manera certera el pictograma de peligro oficial correspondiente a sustancias químicas reales utilizadas en frentes de obra.
@@ -49,69 +52,22 @@ El simulador incorpora vectores SVG nativos con rombos de borde rojo y fondo bla
 - **`toxicidad`**: Calavera y tibias cruzadas (Toxicidad aguda severa oral, dérmica o por inhalación Cat. 1-3).
 - **`irritante`**: Signo de exclamación grueso (Irritación cutánea/ocular, sensibilización, narcótico Cat. 2).
 
-### 3.2. Reactivos Químicos Evaluados en Obra
+### 3.2. Envases del nivel de rotulado vigente
 
-| ID | Nombre Comercial / Químico | Pictograma Correcto | Indicación H / FDS | Base Normativa Aplicada |
-| :--- | :--- | :--- | :--- | :--- |
-| **`tut_0`** | Desengrasante Industrial Alcalino | **Corrosivo** | H314 (Quemaduras graves) / H290 | Res. 773/2021 Art. 6 (pH > 11.5) |
-| **`chem_1`** | Ácido Muriático (HCl 28%) | **Corrosivo** | H314 / H290 (Cat. 1B) / H335 | Dec. 1496/2018 & Res. 773/2021 |
-| **`chem_2`** | Thinner / Solvente Corriente | **Peligro Salud** | H304 (Mortal por aspiración) / H373 (STOT RE) | Dec. 1496/2018 (Toxicidad sistémica) |
-| **`chem_3`** | ACPM / Combustible Diésel | **Inflamable** | H226 (Líq. inflamable Cat. 3) / H351 | Res. 773/2021 Art. 12 (Trasiego seguro) |
-| **`chem_4`** | Cilindro de Acetileno | **Gas Presión** | H280 (Gas comprimido) / H220 | Dec. 1079/2015 & Res. 773/2021 |
-| **`chem_5`** | Soda Cáustica en Escamas (98%) | **Corrosivo** | H314 (Cat. 1A) / H318 | Res. 773/2021 Art. 7 (Álcalis puros) |
-| **`chem_6`** | Pintura Epóxica Alto Tráfico | **Peligro Salud** | H317 (Sensibilizante) / H341 | Dec. 1496/2018 (Aminas y resinas) |
+| ID | Ejemplo ficticio | Pictogramas requeridos por los datos del escenario |
+| --- | --- | --- |
+| chem_2 | Thinner | Inflamable, salud, irritante |
+| chem_1 | HCl | Corrosivo, irritante, toxicidad |
+| chem_6 | Pintura epoxica | Inflamable, salud, irritante, ambiente |
 
----
+Las FDS incluidas son ejemplos didacticos, no fichas de un fabricante.
 
-## 4. Experiencia de Usuario y Flujo de 3 Fases
+## 4. Recorrido vigente
 
-```mermaid
-flowchart TD
-    Z[Apertura: Briefing Situacional de Obra] -->|Botón Iniciar Despliegue| A[Cabina Digital High-Tech]
-    A --> B[Fase 1: Tutorial Bolívar Safety Bot]
-    B -->|Aprender lectura FDS e interactuar con reactivo demo| C[Fase 2: Desafío Cronometrado 75s]
-    C -->|Clasificar 6 reactivos con drag & drop o tap| D[Fase 3: Auditoría y Resultados SST]
-    D --> E{Puntaje Obtenido}
-    E -->|>= 80%| F[Certificado de Inspector SGA Aprobado]
-    E -->|< 80%| G[Modo Re-inspección Pedagógica de Errores]
-```
-
-### Pantalla Previa de Contexto Situacional (Briefing Táctico Datapad)
-- **Overlay Previo (`#modal-briefing-overlay`)**: Antes de que inicie la partida o corra cualquier cronómetro, se presenta una pantalla estilo Datapad de Star Wars simplificada y limpia.
-- **Situación Operativa**: Explica el contexto real de obra: *"Acaba de llegar un cargamento químico al frente de obra. Como inspector SST debes verificar cada insumo con su FDS oficial y asignar el pictograma reglamentario antes de dar aval de ingreso a almacén."*
-- **Directiva Operativa en 3 Pasos**:
-  1. *FDS Sección 2*: Consulta indicaciones de peligro y frases H de la sustancia.
-  2. *Asignación SGA*: Arrastra o toca el pictograma oficial de peligro.
-  3. *Tolerancia Cero*: Clasifica los 6 productos en 75s; cada fallo resta 10s.
-- **Instrucciones Directas de Control**: Indica claramente cómo operar en PC (`Ratón / Clic: Arrastrar o tocar`) y en Móvil (`Táctil: Tocar o arrastrar`).
-- **Botón de Despliegue (`btn-start-briefing`)**: Inicia la cabina y activa la interacción del usuario.
-
-### Fase 1: Inducción Interactiva (Bolívar Safety Bot)
-- Diálogo pedagógico asistido por el avatar institucional *Bolívar Safety Bot*.
-- Enseña la estructura de la FDS y demuestra cómo una sustancia (Desengrasante alcalino) se clasifica a través de sus frases H y controles de EPP en Sección 8.
-
-### Fase 2: Desafío de Clasificación Rigurosa (75 Segundos)
-- Cronómetro regresivo calibrado a **75 segundos** de alta intensidad táctica.
-- **Tolerancia Cero e Intento Único Táctico por Reactivo**:
-  - *Cero intentos blandos*: Cualquier error en la asignación del pictograma penaliza inmediatamente con **-10 segundos** al cronómetro, rompe la racha técnica a 0, bloquea la tarjeta en rojo y detona sacudida de pantalla con humo y sonido de error.
-- **Flujo Reactivo Arcade Puro (Sin Bloqueos de Modales de Preguntas)**:
-  - Eliminación total de modales de preguntas y respuestas durante la partida. La interacción es 100% reactiva e instantánea: al emparejar una tarjeta con un pictograma se obtiene retroalimentación inmediata (confeti/ding o sacudida/buzz/-10s) y se avanza de inmediato sin detener al operario.
-  - La inspección pedagógica y auditoría detallada de errores (Frases H, normativa y FDS oficial) se consolida en la **Fase 3 (Resultados y Certificación)** mediante el botón interactivo `[Ver FDS]`.
-- **Sistema de Racha Arcade (Combo Multiplier)**:
-  - Multiplicador visual en tiempo real (`x1`, `x2`, `x3`) en el HUD que premia la consistencia técnica impecable.
-- Muestra los 6 reactivos aleatorizados secuencialmente con tarjeta de producto que incluye:
-  - Nombre técnico y alias de uso en obra.
-  - Botón interactivo `[Inspeccionar FDS]`: Despliega un modal flotante con las 16 secciones oficiales reglamentarias, destacando en dorado las Secciones 2 y 8.
-- Soporte dual de control:
-  1. **Drag & Drop**: Arrastre físico de la tarjeta hacia el pictograma destino con Pointer Events.
-  2. **Tap-to-Select**: Toque en la tarjeta y toque en el pictograma para máxima accesibilidad móvil.
-
-### Fase 3: Auditoría Técnica y Certificación
-- Cálculo de calificación porcentual (0% a 100%), racha técnica de aciertos y tiempo restante.
-- Desglose analítico de cada reactivo con detalle de intentos empleados (1er intento vs 2do intento).
-- Herramienta de **Re-inspección Correctiva**: Permite al operario revisar sus fallos sin reiniciar el juego completo, consolidando la curva de aprendizaje.
-
----
+1. Asociar cuatro normas y conceptos.
+2. Clasificar seis situaciones por familia de peligro; una respuesta por caso presentado.
+3. Rotular tres envases con varios pictogramas y resolver seis consultas FDS.
+4. Mostrar resultado solo tras completar todo. Aprobacion desde 80 %, con reintentos completos y sin reloj de examen.
 
 ## 5. Arquitectura de Software y Código
 

@@ -1,0 +1,119 @@
+<!-- BEGIN GAME ACCESSIBILITY -->
+<style>
+    .training-scope-note { font-size: 0.875rem; line-height: 1.5; padding: 10px 12px; color: #e2e8f0; background: #0f172a; border-left: 3px solid #FFC72C; border-radius: 6px; }
+    [data-keyboard-action]:focus-visible, button:focus-visible, a:focus-visible {
+        outline: 3px solid #FFC72C !important;
+        outline-offset: 3px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+</style>
+<script data-accessibility-runtime>
+/**
+ * Adds keyboard equivalents and focus management to the existing game controls.
+ * Dynamic cards are observed without replacing their click/validation handlers.
+ * @returns {void} No external resources or persistent storage are required.
+ */
+function setupGameAccessibility() {
+    const controls = '.patch-card, .hazard-bucket, .iso-cell, .hotspot-target, .epp-item-card, .iso-prop[id], .respel-source-card, .respel-dest-card, .audit-marker-3d, .station-3d-node';
+    const dialogs = '.modal-overlay, .fps-modal-overlay, .briefing-backdrop';
+    const returnFocus = new WeakMap();
+    let activeDialog = null;
+    const visible = element => {
+        const style = getComputedStyle(element);
+        return !element.closest('.hidden') && style.display !== 'none' &&
+            style.visibility !== 'hidden' && style.opacity !== '0' && element.getClientRects().length > 0;
+    };
+    const focusable = dialog => [...dialog.querySelectorAll('button, a[href], input, select, textarea, [tabindex="0"]')]
+        .filter(element => !element.disabled && visible(element));
+    const synchronize = () => {
+        document.querySelectorAll(controls).forEach(element => {
+            if (!element.hasAttribute('data-keyboard-action')) {
+                element.setAttribute('data-keyboard-action', 'true');
+                element.setAttribute('tabindex', '0');
+                element.setAttribute('role', 'button');
+            }
+            if (element.classList.contains('iso-cell')) {
+                const content = element.textContent.replace(/\s+/g, ' ').trim().slice(0, 100) || 'vacía';
+                element.setAttribute('aria-label', `Casilla ${Number(element.dataset.row) + 1}, ${Number(element.dataset.col) + 1}: ${content}. Seleccionar, colocar o retirar`);
+            }
+            const resolved = element.classList.contains('is-confined') || element.classList.contains('is-certified');
+            element.setAttribute('aria-disabled', String(resolved));
+            element.setAttribute('tabindex', resolved ? '-1' : '0');
+        });
+        document.querySelectorAll('button').forEach(button => {
+            if (!button.textContent.trim() && !button.getAttribute('aria-label')) {
+                button.setAttribute('aria-label', button.title || 'Activar control');
+            }
+        });
+        const openDialogs = [...document.querySelectorAll(dialogs)].filter(visible);
+        openDialogs.forEach(dialog => {
+            dialog.setAttribute('role', 'dialog');
+            dialog.setAttribute('aria-modal', 'true');
+            dialog.setAttribute('tabindex', '-1');
+            if (!dialog.hasAttribute('aria-label') && !dialog.hasAttribute('aria-labelledby')) {
+                dialog.setAttribute('aria-label', dialog.querySelector('h2, h3')?.textContent.trim() || 'Información del entrenamiento');
+            }
+        });
+        const next = openDialogs.at(-1) || null;
+        if (next !== activeDialog) {
+            const previous = activeDialog;
+            activeDialog = next;
+            if (next) {
+                if (!returnFocus.has(next)) returnFocus.set(next, document.activeElement);
+                (focusable(next)[0] || next).focus();
+            } else if (previous) {
+                const opener = returnFocus.get(previous);
+                returnFocus.delete(previous);
+                if (opener?.isConnected && visible(opener)) opener.focus();
+            }
+        }
+        document.querySelectorAll('#lucho-quote, #bot-dialog-text, #bot-message-text, #bot-dialog-message').forEach(element => {
+            element.setAttribute('role', 'status');
+            element.setAttribute('aria-live', 'polite');
+        });
+    };
+    document.addEventListener('keydown', event => {
+        if (activeDialog && event.key === 'Tab') {
+            const items = focusable(activeDialog);
+            const index = items.indexOf(document.activeElement);
+            if (!items.length) {
+                event.preventDefault(); activeDialog.focus();
+            } else if (event.shiftKey && index <= 0) {
+                event.preventDefault(); items.at(-1).focus();
+            } else if (!event.shiftKey && (index < 0 || index === items.length - 1)) {
+                event.preventDefault(); items[0].focus();
+            }
+            event.stopPropagation();
+            return;
+        }
+        if (activeDialog && event.key === 'Escape') {
+            const close = activeDialog.querySelector('button[id*="close"], button[id*="dismiss"], button[id*="understood"]');
+            if (close) { event.preventDefault(); event.stopPropagation(); close.click(); }
+            return;
+        }
+        const target = event.target.closest('[data-keyboard-action]');
+        if (target && (event.key === 'Enter' || event.key === ' ')) {
+            event.preventDefault(); event.stopPropagation();
+            if (!event.repeat && target.getAttribute('aria-disabled') !== 'true') {
+                target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+            }
+        }
+    });
+    new MutationObserver(records => {
+        const relevant = records.some(record => record.type === 'childList' || record.attributeName === 'class' ||
+            record.attributeName === 'disabled' || (record.attributeName === 'style' && record.target.matches(dialogs)));
+        if (relevant) synchronize();
+    }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'style', 'disabled'] });
+    document.addEventListener('transitionend', synchronize);
+    synchronize();
+}
+document.addEventListener('DOMContentLoaded', setupGameAccessibility);
+</script>
+<!-- END GAME ACCESSIBILITY -->

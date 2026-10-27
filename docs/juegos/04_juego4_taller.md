@@ -1,4 +1,7 @@
 # Documentación Técnica Exclusiva - Juego 4
+
+> **Contrato vigente 2026-10-22:** Taller: presupuesto 90 s, cuatro EPP y checkpoint vigentes para operar; cambiar EPP revoca autorización. Premios únicos. Desengrase, mantenimiento y cuatro residuos aleatorios obligatorios; máximo habitual 610. Arrastre/toque comparten selección e ID de contenedor; cancelar no deposita. Aprobación desde 80 % y todos los hitos. [Contrato y validaciones](../CORRECCIONES_2026-10-22.md).
+> Las referencias normativas y detalles del diseño original que siguen son contexto histórico, no instrucciones de campo ni acreditación de cumplimiento; prevalece este contrato. Recursos externos incrustados, sin CDN en ejecución. QA visual, lector de pantalla y SST profesional pendientes.
 ## Taller Seguro: Desafío Isométrico de Equipamiento y Mantenimiento
 
 ---
@@ -14,7 +17,7 @@
 | **Espacio de Escenario** | Mundo 500x500px, Viewport de 640px de altura, cuadrícula 5x5 (baldosas de 100x100px) |
 | **Stack Tecnológico** | HTML5, CSS3 Nativo (`:root`), JavaScript ES6, GSAP v3, Web Audio API |
 | **Sistema de Cámara** | Rotación 3D en 90° con Billboarding dinámico y Paneo/Zoom con 2 dedos en móviles |
-| **Dependencias CDN** | GSAP 3.12.2, Google Fonts ('Outfit'), FontAwesome v6 |
+| **Recursos offline** | Fuentes, Font Awesome 6.4.0 y GSAP 3.12.2 (juegos 3-5) incrustados en HTML |
 | **Empaquetador / Build** | Cero dependencias / Vanilla JS (Ejecución standalone directa en navegador) |
 
 El **Juego 4** es un simulador isométrico 2.5D de alta fidelidad que entrena al personal en dos etapas obligatorias del trabajo en talleres industriales: primero, el correcto **equipamiento y dotación de EPP químico en el vestidor** con validación biométrica de acceso; segundo, la **ejecución segura de mantenimientos mecánicos y segregación integral de residuos peligrosos (RESPEL)** en el patio exterior.
@@ -149,6 +152,8 @@ Para evitar que el usuario desplace la cámara por error cuando intenta caminar:
    - Reemplazo de Flexbox dinámico por CSS Grid 3x1 rígido con badges de visibilidad fija, impidiendo que la tarjeta de aceite se desborde o altere su tamaño al ser depositada.
 3. **Cronómetro Táctico de Alta Exigencia**:
    - Temporizador de desafío calibrado en **90 segundos (01:30 minutos)** para simular presión operacional real en planta sin tolerancias blandas.
+4. **Cabecera Ergonómica de Dos Filas (`.header-bar`)**:
+   - Para prevenir solapamientos en viewports reducidos (enmarcado a 500px o móviles), la cabecera se organiza en dos filas estables: Fila 1 superior (`.header-top-row`) con icono, título ("Taller Seguro"), subtítulo institucional y botones de control (pantalla completa y audio); Fila 2 inferior (`.header-stats`) con 3 badges simétricos (`flex: 1`): Racha, Cronómetro y Puntuación. Zero solapamiento, máxima legibilidad y eliminación de reglas CSS destructivas que ocultaban la marca en pantallas pequeñas.
 
 ---
 

@@ -404,3 +404,89 @@
         - [x] Eliminada interferencia de colisión con el kit antiderrame mediante separación a X=840 (perímetro a 5m).
         - [x] Sustituida la animación GSAP destructiva `{ opacity: 0, x: -80, rotation: -15 }` por escala elástica `{ opacity: 0, scale: 0.3 }` a `{ opacity: 1, scale: 1 }`, preservando intacto el `transform="translate(820, 220)"`.
       - [x] Verificación automatizada con `verify_juego3.js` (10 checks exitosos) y reconstrucción de paquetes SCORM 1.2 vía `python build_scorm.py`.
+
+## Revisión integral de los cinco juegos — 2026-10-22
+- [x] Inspeccionar fuentes de los cinco juegos, documentación, evaluación y ciclo de estado/temporizadores.
+- [x] Comprobar sintaxis de los cinco scripts y coincidencia normalizada de los seis paquetes SCORM.
+- [x] Reproducir fallos de evaluación y estado con métodos reales en Node.js vm y DOM simulado.
+- [x] Comprobar existencia de soluciones completas del puzzle de Bodega y aprobación con inventario incompleto.
+- [x] Documentar 18 hallazgos y sus límites en docs/reviews/2026-10-22_revision_cinco_juegos.md.
+- [x] Mantener el código de los juegos y los paquetes sin cambios durante la revisión.
+- [ ] R01: corregir primero evaluación de Trasiego, separando nota de rachas y exigiendo cobertura de 4/4 equipos.
+- [ ] Validar visual/táctil, accesibilidad completa, uso offline y ejecución en Moodle con navegador disponible.
+
+## Segunda profundización — 2026-10-22
+- [x] Revisar contratos de arrastre/selección, callbacks pendientes, transición entre escenas y certificación final.
+- [x] Reproducir R19 (arrastre Taller), R20 (pasos automáticos Incendio), R21 (doble reporte), R23 (duración falsa) y R25 (avatar de zona equivocada).
+- [x] Inspeccionar titulares estáticos y ausencia de limpieza de teclado (R22/R24).
+- [x] Ampliar informe a 25 hallazgos con correcciones mínimas, aceptación y decisiones que no deben asumirse.
+- [x] Verificar de nuevo disponibilidad de navegador: inventario conectado vacío.
+- [ ] Primer bloque recomendado: corregir solo el resultado de Trasiego (R01/R21/R22-parcial/R23).
+- [ ] Acordar criterios formativos, agregación de misiones y políticas de tiempo/reintentos antes de cambiar sus reglas.
+
+## Cierre de correcciones técnicas — 2026-10-22 (sustituye pendientes técnicos de la revisión)
+- [x] Confirmar con usuario modo entrenamiento, 80% más hitos y ambas misiones por SCO.
+- [x] Corregir evaluación/estado de Trasiego, Taller, Emergencias, SGA y Bodega por bloques.
+- [x] Unificar umbral, cierre idempotente, callbacks por intento y presupuestos temporales reales.
+- [x] Reparar contrato de arrastre/cancelación y movimientos entre zonas de Taller.
+- [x] Corregir persistencia/review SCORM, comprobación de retornos y reintento de guardado.
+- [x] Incrustar recursos existentes offline, agregar procedencia y conservar avisos upstream.
+- [x] Agregar teclado, gestión de foco y movimiento reducido; mitigar afirmaciones SST no respaldadas.
+- [x] Sincronizar contrato, README, requisitos, arquitectura y documentación por juego.
+- [x] Ejecutar 21 pruebas de regresión con caminos negativos y válidos (21/21).
+- [x] Regenerar y verificar seis paquetes SCORM, sintaxis, recursos offline y XML.
+- [x] Verificar diff sin errores de espacios y preparar propuesta de commit sin ejecutar Git de escritura.
+- [ ] Validar en navegador real móvil/desktop, gestos, fullscreen, audio, lectores y contraste (no hay sesión conectada).
+- [ ] Importar en Moodle de prueba y comprobar políticas reales de intentos/revisión y notas.
+- [ ] Obtener validación profesional SST de productos/FDS y afirmaciones normativas antes de utilizarlo como capacitación operativa.
+
+## HUD superior de Emergencias — 2026-10-22
+- [x] Diagnosticar solapamientos de la captura y localizar offsets/alturas en media queries.
+- [x] Pasar filas superiores a flujo, cabecera móvil de dos filas y objetivo multilínea.
+- [x] Regenerar ZIP y validar sintaxis, correspondencia y diff sin errores de espacios.
+- [x] Documentar ajuste en docs/juegos/05_juego5_emergencias.md.
+- [ ] Verificar visualmente en el navegador del usuario después de recargar; no hay navegador conectado disponible.
+
+## Simplificación del briefing de Emergencias — 2026-10-22
+- [x] Reducir explicación inicial a un resumen breve por misión y conservar controles/tiempos.
+- [x] Condensar aviso didáctico sin cambiar la lógica.
+- [x] Regenerar y verificar paquetes; documentar el ajuste.
+
+## Cabecera mínima del juego 5 — 2026-10-22
+- [x] Quitar detector, pestañas, radar e índice de pasos del HTML.
+- [x] Conservar solo controles esenciales y objetivo actual; desacoplar referencias JS eliminadas.
+- [x] Comprobar 22 regresiones, regenerar ZIP y verificar fuentes/paquetes.
+- [x] Documentar el diseño mínimo solicitado por el usuario.
+
+
+## Adaptación móvil de matriz del juego 2 — 2026-10-24
+- [x] Localizar restricciones de ancho, alto y desplazamiento del modal y su tabla.
+- [x] Adaptar modal, leyendas, pestañas, tabla e inspector para pantallas móviles.
+- [x] Conservar encabezados/primera columna y facilitar controles táctiles.
+- [x] Ejecutar 22 regresiones y verificar sintaxis, recursos y paquetes SCORM sincronizados.
+- [x] Actualizar documentación del juego y memoria técnica.
+- [ ] Comprobar visualmente en teléfono a 320/390/768 px y en horizontal; sin navegador conectado en la sesión.
+
+
+## Descolapso y Reestructuracion de Cabecera en Taller Seguro (Juego 4) - 2026-10-24
+- [x] Diagnosticar colision entre .brand-cluster (titulo largo + subtitulo normativo) y .header-stats (badges y botones) en viewport de 500 px.
+- [x] Reestructurar .header-bar en dos filas independientes: fila superior con marca y botones de accion (pantalla completa/audio); fila inferior con 3 badges distribuidos equitativamente.
+- [x] Retirar pildora normativa redundante y simplificar titulo a "Taller Seguro".
+- [x] Eliminar regla destructiva @media (max-width: 640px) { .brand-cluster { display: none !important; } }.
+- [x] Regenerar paquetes SCORM 1.2 (build_scorm.py).
+- [x] Actualizar memoria tecnica y documentacion.
+
+
+## Verificacion y Refinamiento de la Matriz en Moviles (Juego 2) - 2026-10-24
+- [x] Diagnosticar saturacion vertical por banners y leyendas en viewports <= 768px.
+- [x] Compactar leyenda en chips respirables de 32 px y suprimir descripciones redundantes en movil.
+- [x] Reorganizar orden del inspector flotante (Duelo y Veredicto primero, desplegables despues).
+- [x] Calibrar columna fija a 124 px y celdas a 54x44 px con scroll nativo fluido y sin stutter.
+- [x] Regenerar paquetes SCORM 1.2 y documentar la arquitectura ergonomica.
+
+
+## Erradicacion de Translucidez y Scroll Anidado en Matriz de Bodega - 2026-10-24
+- [x] Corregir fondo transparente en .header-crosshair-active que provocaba solapamiento fantasma en la columna fija.
+- [x] Eliminar doble scroll vertical en .modal-body dejando desplazamiento unico en .matrix-scroll-region.
+- [x] Bloquear desbordamiento de contorno con boxShadow inset en casillas seleccionadas.
+- [x] Sincronizar paquetes SCORM y actualizar documentacion tecnica.

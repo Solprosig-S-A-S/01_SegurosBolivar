@@ -1,4 +1,6 @@
 # Guía Oficial de Integración y Despliegue en Moodle LMS
+
+> Contrato vigente (2026-10-22): [evaluación y persistencia](CORRECCIONES_2026-10-22.md). Umbral 80 % más hitos obligatorios; Emergencias reporta al completar ambas misiones. Revisitar no rebaja el estado a `incomplete`; modo revisión no escribe notas. Un error de guardado se muestra con opción de reintentar. La integración real con Moodle sigue pendiente de validación en esta sesión.
 ## Suite Arcade de Seguridad Química (Seguros Bolívar & KMA Construcciones)
 
 ---

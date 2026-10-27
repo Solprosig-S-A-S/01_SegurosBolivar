@@ -1,5 +1,14 @@
 # Documentación Técnica Exclusiva - Juego 5
+
+> **Contrato vigente 2026-10-22:** Emergencias: Derrame (120 s) e Incendio (90 s), en ese orden y ambos obligatorios. Selección de extintor, pasador y manta son acciones separadas. Solo tras ambas misiones se reporta promedio al SCO. Un intervalo por misión, exposición aun quieto, velocidad por tiempo y entradas limpiadas al perder foco. Vitalidad no mide oxígeno. Aprobación desde 80 % y todos los hitos. [Contrato y validaciones](../CORRECCIONES_2026-10-22.md).
+> Las referencias normativas y detalles del diseño original que siguen son contexto histórico, no instrucciones de campo ni acreditación de cumplimiento; prevalece este contrato. Recursos externos incrustados, sin CDN en ejecución. QA visual, lector de pantalla y SST profesional pendientes.
 ## Brigada de Emergencia: Simulador 1ª Persona de Control de Derrames
+
+### Ajuste del HUD superior — 2026-10-22
+
+El briefing inicial presenta un resumen breve por misión, sus tiempos y una línea de controles. La explicación detallada se proporciona mediante los objetivos durante el juego; el aviso de alcance didáctico también se condensó.
+
+La cabecera simplificada conserva únicamente tiempo, sonido y pantalla completa. Se retiraron del HTML el detector de gas/temperatura, las pestañas de misión, el radar y la barra de pasos. Debajo se muestra el objetivo actual; las estadísticas y el feedback siguen disponibles. El avance es secuencial y la exposición se calcula sin depender de esos indicadores. Verificado por regresiones y empaquetado; comprobación visual pendiente de navegador conectado.
 
 ---
 
@@ -15,7 +24,7 @@
 | **Espacio de Habitación** | Habitación cúbica 3D estática de 1400x1400px en CSS3 Puro (`perspective: 750px`) |
 | **Sistema de Cámara** | Rig Ocular Euler con Pitch Vertical ($-45^\circ$ a $+40^\circ$) y Yaw Horizontal ($360^\circ$) |
 | **Stack Tecnológico** | HTML5, CSS3 Nativo (`:root`), JavaScript ES6, GSAP v3, Pointer Lock API, Web Audio API |
-| **Dependencias CDN** | GSAP 3.12.2, Google Fonts ('Outfit'), FontAwesome v6 |
+| **Recursos offline** | Fuentes, Font Awesome 6.4.0 y GSAP 3.12.2 (juegos 3-5) incrustados en HTML |
 | **Empaquetador / Build** | Cero dependencias / Vanilla JS (Ejecución standalone directa en navegador) |
 
 El **Juego 5** es un simulador inmersivo en primera persona que traslada al jugador a una situación real de emergencia química en un cuarto de almacenamiento industrial: una fuga activa de solvente inflamable y corrosivo con un operario afectado, riesgo inminente de asfixia por vapores orgánicos y expansión de un charco químico hacia el drenaje pluvial ambiental.
@@ -124,16 +133,16 @@ Para evitar saturación visual y sobrecarga cognitiva, el simulador incorpora un
 - **Detector PID de Gases en Vivo (PPM)**: Calcula la concentración de vapores orgánicos según la distancia real al charco y estado de la válvula. Si supera los 90 PPM emite alerta roja estroboscópica.
 - **Reloj de Crisis (120 Segundos)**: Cuenta regresiva digital de alta tensión.
 - **Barra de Expansión hacia Drenaje**: Crece a 1.2% por segundo si no se ha colocado el cordón delimitador. Si llega al 100%, la misión fracasa de inmediato por **Desastre Ecológico**.
-- **Barra de O2 / Vitalidad**: Si el operario se acerca a menos de $260\text{px}$ del charco sin máscara, sufre parpadeo rojo por asfixia y daño continuo.
+- **Barra de Vitalidad Simulada**: Si el operario se acerca a menos de $260\text{px}$ del charco sin máscara, sufre parpadeo rojo por asfixia y daño continuo.
 
 ---
 
 ## 7. Pruebas y Casos de Validación
 
 1. **Prueba de Inhalación Tóxica**:
-   - Acercarse al charco inmediatamente al iniciar sin pasar por la caseta EPP: el visor debe parpadear en rojo por asfixia y la vitalidad de O2 debe decrecer.
+   - Acercarse al charco inmediatamente al iniciar sin pasar por la caseta EPP: el visor debe parpadear en rojo por asfixia y la vitalidad simulada debe decrecer.
 2. **Prueba de Targeting en Retícula**:
    - Situarse a $Z = 400$ mirando al Norte ($yaw = 0^\circ$): la mira debe mostrar exclusivamente `ZONA DE DERRAME` con glow amarillo sobre el charco; el Lavaojos detrás del jugador ($Z = 620$) debe estar 100% descartado.
 3. **Prueba de Interacción Completa con Clic y Tecla E**:
-   - Completar la ruta: Caseta EPP ➔ Válvula ➔ Lavaojos ➔ Kit ➔ Charco (Cordón) ➔ Charco (Paños) ➔ RESPEL. El modal de certificación debe desplegarse con calificación del 100%.
+   - Completar la ruta: Caseta EPP ➔ Válvula ➔ Lavaojos ➔ Kit ➔ Charco (Cordón) ➔ Charco (Paños) ➔ RESPEL. El informe de misión permite avanzar a Incendio; solo al completar ambas misiones se reporta la nota promedio al SCO (no necesariamente 100%).
 
