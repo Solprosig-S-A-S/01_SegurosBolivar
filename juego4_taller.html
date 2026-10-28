@@ -221,18 +221,28 @@
         .header-stats {
             display: flex !important;
             align-items: center !important;
+            width: auto !important;
+            flex: 0 0 auto !important;
             position: static !important;
+            margin: 0 !important;
         }
 
         .stat-badge.stat-timer {
             background: rgba(15, 23, 42, 0.92) !important;
             border: 1.5px solid var(--amarillo-bolivar) !important;
             border-radius: 999px !important;
-            padding: 4px 10px !important;
-            font-size: 0.8rem !important;
+            padding: 2px 8px !important;
+            font-size: 0.72rem !important;
             font-weight: 800 !important;
             color: #fff !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6) !important;
+            flex: 0 0 auto !important;
+            width: auto !important;
+            max-width: fit-content !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            white-space: nowrap !important;
         }
 
         #toast-fullscreen-info,
@@ -309,13 +319,13 @@
         .header-stats {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 100%;
+            justify-content: flex-end;
+            width: auto;
             gap: 6px;
         }
 
         .stat-badge {
-            flex: 1;
+            flex: 0 0 auto;
             background: rgba(15, 23, 42, 0.85);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-full);
@@ -2659,10 +2669,24 @@
             }
             /* Cabecera compacta que respira */
             .header-bar {
+                height: 38px !important;
+                min-height: 38px !important;
+                padding: 0 10px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+                overflow: hidden !important;
+            }
+            .brand-cluster,
+            .header-stats .stat-badge:not(.stat-timer) {
                 display: none !important;
             }
             .header-stats {
                 display: flex !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+                gap: 6px !important;
+                width: auto !important;
             }
             /* Barra de Fase unificada en una sola fila (eliminando el subtítulo amarillo redundante) */
             .stage-indicator-bar {

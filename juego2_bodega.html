@@ -264,11 +264,14 @@
             background: rgba(15, 23, 42, 0.92) !important;
             border: 1.5px solid var(--bolivar-yellow) !important;
             border-radius: 999px !important;
-            padding: 4px 10px !important;
-            font-size: 0.8rem !important;
+            padding: 2px 8px !important;
+            font-size: 0.72rem !important;
             font-weight: 800 !important;
             color: #fff !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6) !important;
+            flex: 0 0 auto !important;
+            width: auto !important;
+            white-space: nowrap !important;
         }
 
         #toast-fullscreen-info,
@@ -3018,14 +3021,33 @@
                 justify-content: flex-start !important;
             }
             .header-bar {
-                padding: 8px 10px !important;
-                flex-wrap: wrap;
-                gap: 6px;
+                height: 38px !important;
+                min-height: 38px !important;
+                padding: 0 8px !important;
+                flex-wrap: nowrap !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+                overflow: hidden !important;
+            }
+            .header-controls {
+                flex-wrap: nowrap !important;
+                gap: 4px !important;
+                width: 100% !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+            }
+            #btn-open-matrix {
+                padding: 3px 6px !important;
+                font-size: 0.72rem !important;
+                white-space: nowrap !important;
             }
             .challenge-status-bar {
-                flex-wrap: wrap;
-                padding: 6px 8px !important;
-                gap: 6px !important;
+                flex-wrap: nowrap !important;
+                padding: 4px 8px !important;
+                gap: 4px !important;
+                overflow: hidden !important;
             }
             #phase-challenge .iso-viewport {
                 min-height: 235px !important;

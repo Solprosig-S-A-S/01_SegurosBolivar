@@ -159,7 +159,7 @@
             backdrop-filter: blur(12px);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
             overflow: hidden !important;
             position: relative;
             box-sizing: border-box;
@@ -212,11 +212,14 @@
             background: rgba(15, 23, 42, 0.92) !important;
             border: 1.5px solid var(--amarillo-bolivar) !important;
             border-radius: 999px !important;
-            padding: 4px 10px !important;
-            font-size: 0.8rem !important;
+            padding: 2px 8px !important;
+            font-size: 0.72rem !important;
             font-weight: 800 !important;
             color: #fff !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6) !important;
+            flex: 0 0 auto !important;
+            width: auto !important;
+            white-space: nowrap !important;
         }
 
         #toast-fullscreen-info,
@@ -350,7 +353,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
             overflow: hidden !important;
             position: relative;
         }
@@ -549,7 +552,7 @@
 
         /* ZONA A: Panel de Escena de Trasiego */
         .stage-section {
-            margin: 10px 16px;
+            margin: 6px 12px;
             background: #090e1a;
             border: 2px solid var(--border-subtle);
             border-radius: var(--radius-lg);
@@ -558,6 +561,8 @@
             position: relative;
             display: flex;
             flex-direction: column;
+            flex: 1;
+            min-height: 0;
         }
 
         .stage-header {
@@ -745,9 +750,9 @@
         /* Contenedor del Lienzo SVG con Alto Zoom (Espacioso y Confortable) */
         .svg-canvas-wrap {
             width: 100%;
-            aspect-ratio: 480 / 260;
-            min-height: 230px;
-            max-height: min(390px, 46vh);
+            flex: 1;
+            min-height: 0;
+            max-height: none;
             position: relative;
             background: radial-gradient(circle at 50% 30%, #1e293b 0%, #070d18 85%);
             display: flex;
@@ -917,10 +922,12 @@
 
         /* ZONA B: Mazo de Tarjetas de Acción de Seguridad */
         .tray-section {
-            padding: 8px 16px 14px 16px;
+            padding: 6px 14px 10px 14px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
+            flex-shrink: 0;
+            margin-top: 0;
         }
 
         .tray-header {
@@ -1422,6 +1429,10 @@
             .stage-section {
                 margin: 4px 6px;
                 border-radius: var(--radius-md);
+                flex: 1;
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
             }
             .stage-header {
                 padding: 4px 8px;
@@ -1449,13 +1460,16 @@
                 flex-shrink: 0;
             }
             .svg-canvas-wrap {
-                aspect-ratio: 280 / 220;
-                min-height: 150px;
-                max-height: 245px;
-                flex: 1;
+                width: 100% !important;
+                flex: 1 !important;
+                min-height: 0 !important;
+                max-height: none !important;
+                aspect-ratio: auto !important;
             }
             .tray-section {
-                padding: 4px 6px 18px 6px;
+                padding: 4px 6px 10px 6px;
+                flex-shrink: 0;
+                margin-top: 0;
             }
             .tray-header {
                 font-size: 0.72rem;
@@ -1533,39 +1547,23 @@
                 word-break: break-word;
             }
             .header-bar {
-                padding: 6px 8px;
-                gap: 5px;
+                height: 38px !important;
+                min-height: 38px !important;
+                padding: 0 10px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+                overflow: hidden !important;
             }
-            .brand-badge {
-                width: 30px;
-                height: 30px;
-                font-size: 0.9rem;
-            }
-            .brand-text h1 {
-                font-size: 0.8rem;
-            }
-            .brand-sub {
-                font-size: 0.62rem;
-            }
-            .norma-pill {
-                display: none;
+            .brand-cluster,
+            .combo-badge,
+            .header-stats .stat-badge:not(.stat-timer) {
+                display: none !important;
             }
             .header-stats {
-                gap: 4px;
-                width: 100%;
-                justify-content: space-between;
-            }
-            .stat-badge {
-                padding: 4px 9px;
-                font-size: 0.74rem;
-                gap: 5px;
-                border-radius: var(--radius-full);
-            }
-            .combo-badge {
-                padding: 4px 9px;
-                font-size: 0.72rem;
-                gap: 5px;
-                border-radius: var(--radius-full);
+                gap: 6px !important;
+                width: auto !important;
+                justify-content: flex-end !important;
             }
             .bot-banner {
                 padding: 5px 8px;
