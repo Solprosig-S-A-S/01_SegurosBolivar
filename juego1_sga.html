@@ -244,20 +244,20 @@
             background-size: 100% 100%, 32px 32px, 32px 32px;
         }
 
-        /* Header Industrial Minimizado / Flotante */
+        /* Header Industrial Slim (Cero Solapamiento) */
         .header-bar {
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 0 !important;
-            padding: 0 !important;
+            height: 38px !important;
+            min-height: 38px !important;
+            padding: 0 10px !important;
             margin: 0 !important;
-            border: none !important;
-            background: transparent !important;
-            pointer-events: none !important;
-            z-index: 120 !important;
-            overflow: visible !important;
+            background: rgba(15, 23, 42, 0.95) !important;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-end !important;
+            flex-shrink: 0 !important;
+            z-index: 30 !important;
+            position: relative !important;
         }
 
         .header-bar .brand-badge {
@@ -265,13 +265,11 @@
         }
 
         .header-controls {
-            position: absolute !important;
-            top: 8px !important;
-            right: 8px !important;
             display: flex !important;
             align-items: center !important;
+            justify-content: flex-end !important;
             gap: 6px !important;
-            pointer-events: auto !important;
+            position: static !important;
         }
 
         .timer-pill {
