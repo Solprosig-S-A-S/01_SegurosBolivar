@@ -3647,6 +3647,21 @@
                 const st = this.stations ? this.stations.find(s => s.id === stId) : null;
                 if (!stance || !st) return;
 
+                const startX = this.posX;
+                const startZ = this.posZ;
+                const startYaw = this.yaw;
+                const startPitch = this.pitch;
+
+                const targetX = stance.posX;
+                const targetZ = stance.posZ;
+                const targetYaw = stance.yaw;
+                const targetPitch = stance.pitch;
+
+                // Rotación angular más corta
+                let diffYaw = (targetYaw - startYaw) % 360;
+                if (diffYaw > 180) diffYaw -= 360;
+                if (diffYaw < -180) diffYaw += 360;
+
                 const diffPitch = targetPitch - startPitch;
                 const dist = Math.hypot(targetX - startX, targetZ - startZ);
 
