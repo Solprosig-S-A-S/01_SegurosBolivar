@@ -250,7 +250,8 @@
            2. VIEWPORT 3D Y CUADRADO TRIDIMENSIONAL (HABITACIÓN INDUSTRIAL CSS 3D)
            ========================================================================== */
         .fps-3d-viewport {
-            position: relative;
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
@@ -260,6 +261,7 @@
             cursor: grab;
             user-select: none;
             -webkit-user-select: none;
+            z-index: 1;
         }
 
         /* Rig de Cámara en Primera Persona */
@@ -342,13 +344,6 @@
             border-radius: 50%;
             border: 3px solid #fecaca;
             box-shadow: 0 0 18px rgba(239, 68, 68, 0.8), inset 0 0 10px #fff;
-            will-change: opacity, transform;
-            animation: strobePulse 1.1s infinite alternate;
-        }
-
-        @keyframes strobePulse {
-            0% { opacity: 0.35; transform: translate(-50%, -50%) scale(0.96); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
         }
 
         /* ESTILOS COMUNES DE LAS 4 PAREDES: PANELES METÁLICOS Y ZÓCALO INDUSTRIAL */
@@ -357,62 +352,38 @@
             height: 700px;
             left: -700px;
             top: -350px;
-            background-color: #0a0f1d;
-            background-image:
-                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                radial-gradient(ellipse 650px 320px at 50% 30%, rgba(30, 58, 102, 0.3) 0%, transparent 80%),
-                linear-gradient(180deg, #050810 0%, #0f172a 40%, #1e293b 85%, #050810 100%);
-            background-size: 140px 140px, 140px 140px, 100% 100%, 100% 100%;
+            background-color: #0d1527;
+            background-image: linear-gradient(180deg, #070b14 0%, #0f172a 45%, #1e293b 85%, #070b14 100%);
             border-bottom: 14px solid transparent;
             border-image: repeating-linear-gradient(45deg, #FFC72C, #FFC72C 16px, #000 16px, #000 32px) 14;
-            box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.9);
             display: flex;
             align-items: center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
 
         /* 3. PARED NORTE (Z = -700px): VÁLVULA PRINCIPAL Y TUBERÍAS */
         .cube-wall-north {
             transform: translateZ(-700px);
             justify-content: center;
-            background-image: 
-                radial-gradient(ellipse 500px 300px at 50% 35%, rgba(56, 189, 248, 0.22) 0%, transparent 75%),
-                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(180deg, #050810 0%, #0f172a 40%, #1e293b 85%, #050810 100%);
         }
 
         /* 4. PARED SUR (Z = +700px): LAVAOJOS DE EMERGENCIA Y SALIDA */
         .cube-wall-south {
             transform: rotateY(180deg) translateZ(-700px);
             justify-content: center;
-            background-image: 
-                radial-gradient(ellipse 500px 300px at 50% 35%, rgba(16, 185, 129, 0.22) 0%, transparent 75%),
-                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(180deg, #050810 0%, #0f172a 40%, #1e293b 85%, #050810 100%);
         }
 
         /* 5. PARED ESTE (X = +700px): ESTANTE KIT ANTIDERRAME */
         .cube-wall-east {
             transform: rotateY(-90deg) translateZ(-700px);
             justify-content: center;
-            background-image: 
-                radial-gradient(ellipse 500px 300px at 50% 35%, rgba(234, 179, 8, 0.22) 0%, transparent 75%),
-                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(180deg, #050810 0%, #0f172a 40%, #1e293b 85%, #050810 100%);
         }
 
         /* 6. PARED OESTE (X = -700px): CASETA EPP Y ACOPIO RESPEL */
         .cube-wall-west {
             transform: rotateY(90deg) translateZ(-700px);
             justify-content: space-around;
-            background-image: 
-                radial-gradient(ellipse 700px 300px at 50% 35%, rgba(14, 165, 233, 0.2) 0%, transparent 75%),
-                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                linear-gradient(180deg, #050810 0%, #0f172a 40%, #1e293b 85%, #050810 100%);
         }
 
         /* ==========================================================================
@@ -983,6 +954,8 @@
             box-shadow: 0 0 28px rgba(239, 68, 68, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.25);
             cursor: pointer;
             transition: transform 0.2s ease, filter 0.2s ease;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
         .station-fire-alarm-3d:hover {
             transform: scale(1.08) translateY(-4px);
@@ -1025,6 +998,8 @@
             box-shadow: 0 0 24px rgba(250, 204, 21, 0.4);
             cursor: pointer;
             transition: transform 0.2s ease;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
         .station-fire-blanket-3d:hover {
             transform: scale(1.08) translateY(-4px);
@@ -1083,23 +1058,17 @@
             border-color: #facc15 !important;
         }
 
-        /* Humo en Techo (Ceiling Smoke) */
+        /* Humo en Techo (Ceiling Smoke) - Sin mix-blend-mode para evitar artefactos negros */
         .ceiling-smoke-layer {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle, rgba(15, 23, 42, 0.88) 0%, rgba(3, 7, 18, 0.96) 70%, transparent 100%);
+            background: radial-gradient(circle, rgba(15, 23, 42, 0.75) 0%, rgba(3, 7, 18, 0.88) 70%, transparent 100%);
             pointer-events: none;
             opacity: 0;
             transition: opacity 1s ease;
-            mix-blend-mode: multiply;
         }
         .ceiling-smoke-layer.active {
             opacity: 0.85;
-            animation: smokePulse 4s infinite alternate ease-in-out;
-        }
-        @keyframes smokePulse {
-            0% { transform: scale(1); opacity: 0.75; }
-            100% { transform: scale(1.05); opacity: 0.92; }
         }
 
         /* Extintor 3D en Primera Persona (Equipa en Mano Derecha) */
@@ -1381,32 +1350,28 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 50;
-            border: 20px solid rgba(15, 23, 42, 0.88);
-            border-top-width: 28px;
-            border-bottom-width: 35px;
-            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95), inset 0 0 130px rgba(0, 103, 56, 0.2);
+            z-index: 100;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             gap: 6px;
-            padding: 6px;
+            padding: 8px 10px;
             box-sizing: border-box;
-            transition: all 0.4s ease;
+            border: none;
+            box-shadow: none;
+            transition: all 0.3s ease;
         }
 
-        .hud-header, .hud-objective-guide, .btn-action-interact, .btn-tactical-dispatch, .dpad-container {
+        .hud-header, .hud-objective-guide, .btn-action-interact, .btn-tactical-dispatch, .dpad-container, .hud-bot-dialog {
             pointer-events: auto !important;
         }
 
         .fps-visor-hud.fullface-active {
-            border-color: rgba(6, 78, 59, 0.95);
-            box-shadow: inset 0 0 80px rgba(16, 185, 129, 0.35), inset 0 0 160px rgba(0, 0, 0, 0.95);
+            box-shadow: inset 0 0 60px rgba(16, 185, 129, 0.35);
         }
 
         .fps-visor-hud.asphyxia-warning {
-            border-color: rgba(220, 38, 38, 0.95) !important;
-            box-shadow: inset 0 0 100px rgba(239, 68, 68, 0.8), inset 0 0 200px rgba(0, 0, 0, 0.95) !important;
+            box-shadow: inset 0 0 80px rgba(239, 68, 68, 0.8) !important;
             animation: asphyxiaFlash 0.5s infinite alternate;
         }
 
@@ -1518,27 +1483,21 @@
 
         /* Diálogo del Bolívar Safety Bot - Mobile First en Zona Superior */
         .hud-bot-dialog {
-
-
-
-
-
-
-
-            background: rgba(11, 18, 32, 0.94);
-            backdrop-filter: blur(8px);
+            background: rgba(11, 18, 32, 0.96);
             border: 1px solid rgba(255, 199, 44, 0.8);
-            border-radius: 20px;
+            border-radius: 12px;
             padding: 4px 10px;
             display: flex;
             align-items: center;
             gap: 6px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
             pointer-events: all;
-
             transition: all 0.25s ease;
-
-            position: static; width: 100%; max-width: none; min-width: 0; flex-shrink: 0; border-radius: 12px;
+            position: static;
+            width: 100%;
+            max-width: none;
+            min-width: 0;
+            flex-shrink: 0;
         }
 
         .hud-bot-dialog.minimized {
@@ -1631,7 +1590,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: min(94%, 460px);
-            z-index: 65;
+            z-index: 110;
             pointer-events: all;
         }
 
@@ -2085,10 +2044,8 @@
                 perspective-origin: 50% 45% !important;
             }
             .fps-visor-hud {
-                border-top-width: 3px !important;
-                border-bottom-width: 3px !important;
-                border-left-width: 3px !important;
-                border-right-width: 3px !important;
+                border: none !important;
+                padding: 6px 8px !important;
             }
 
             .hud-timer-card {
@@ -2292,7 +2249,8 @@
                 bottom: -8px !important;
             }
             .fps-visor-hud {
-                border-width: 2px !important;
+                border: none !important;
+                padding: 4px 6px !important;
             }
 
 
@@ -2715,11 +2673,12 @@
                 </div>
                 <div class="pqs-spray-stream" id="pqs-spray-stream"></div>
             </div>
+        </div>
 
-            <!-- ==============================================================
-                 2. VISERA Y HUD DIGITAL EN 1ª PERSONA
-                 ============================================================== -->
-            <div class="fps-visor-hud" id="fps-visor-hud">
+        <!-- ==============================================================
+             2. VISERA Y HUD DIGITAL EN 1ª PERSONA (CAPA 2D FIJA INMUNE A 3D)
+             ============================================================== -->
+        <div class="fps-visor-hud" id="fps-visor-hud">
                 
                 <!-- Barra Superior -->
                 <div class="hud-header">
@@ -2805,8 +2764,6 @@
                     </div>
                 </button>
             </div>
-
-        </div>
 
         <!-- ==============================================================
              4. MODAL TÁCTICO DE CONTEXTO Y BRIEFING DE EMERGENCIA
