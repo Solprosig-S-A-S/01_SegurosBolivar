@@ -290,7 +290,7 @@
             box-sizing: border-box;
         }
 
-        /* 1. SUELO TRIDIMENSIONAL (Piso Epóxico Industrial con Señalización de Seguridad a Y = +350px) */
+        /* 1. SUELO TRIDIMENSIONAL (Piso Epóxico Industrial a Y = +350px) */
         .cube-floor {
             width: 1400px;
             height: 1400px;
@@ -299,13 +299,12 @@
             transform: rotateX(90deg) translateZ(-350px);
             background-color: #0b1326;
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.18) 0%, transparent 65%),
-                linear-gradient(rgba(56, 189, 248, 0.25) 2px, transparent 2px),
-                linear-gradient(90deg, rgba(56, 189, 248, 0.25) 2px, transparent 2px),
-                radial-gradient(circle at 25% 50%, rgba(255, 199, 44, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 75% 50%, rgba(239, 68, 68, 0.08) 0%, transparent 40%);
-            background-size: 100% 100%, 140px 140px, 140px 140px, 100% 100%, 100% 100%;
-            box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.95);
+                linear-gradient(rgba(56, 189, 248, 0.16) 1.5px, transparent 1.5px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.16) 1.5px, transparent 1.5px);
+            background-size: 140px 140px;
+            box-shadow: none;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
 
         /* Franjas Perimetrales de Seguridad Amarilla/Negra en el Suelo */
@@ -399,8 +398,7 @@
         }
 
         .station-3d-node:hover, .station-3d-node.in-range {
-            transform: scale(1.08);
-            box-shadow: 0 0 25px rgba(255, 199, 44, 0.6);
+            transform: scale(1.06);
         }
 
         .station-badge-3d {
@@ -572,30 +570,21 @@
         }
 
         .floor-spill-zone.in-range .chemical-puddle-3d {
-            box-shadow: 0 0 70px var(--amarillo-bolivar), inset 0 0 35px rgba(0,0,0,0.8);
+            box-shadow: 0 0 20px var(--amarillo-bolivar);
             border-color: var(--amarillo-bolivar);
         }
 
         .chemical-puddle-3d {
             width: 100%;
             height: 100%;
-            border-radius: 50% 60% 40% 50% / 40% 50% 60% 50%;
-            background: radial-gradient(circle at 45% 45%, #4ade80 0%, #16a34a 50%, #14532d 90%);
-            border: 4px solid #86efac;
-            box-shadow: 0 0 50px var(--peligro-quimico-glow), inset 0 0 25px rgba(0,0,0,0.8);
+            border-radius: 50% 55% 45% 50% / 45% 50% 55% 50%;
+            background: radial-gradient(circle at 45% 45%, #4ade80 0%, #16a34a 55%, #14532d 100%);
+            border: 3px solid #86efac;
+            box-shadow: 0 0 16px rgba(74, 222, 128, 0.5);
             position: relative;
             transform-origin: center center;
-            transition: opacity 0.5s ease, border-radius 0.5s ease;
-            animation: puddleSlosh 4s infinite ease-in-out;
-        }
-
-        @keyframes puddleSlosh {
-            0%, 100% {
-                border-radius: 50% 60% 40% 50% / 40% 50% 60% 50%;
-            }
-            50% {
-                border-radius: 54% 46% 52% 48% / 46% 54% 48% 52%;
-            }
+            will-change: transform, opacity;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .spill-boom-3d {
@@ -660,9 +649,9 @@
             pointer-events: auto;
             z-index: 20;
             transform-style: preserve-3d;
-            background: radial-gradient(circle, rgba(239, 68, 68, 0.42) 0%, rgba(234, 88, 12, 0.28) 45%, rgba(0, 0, 0, 0.65) 70%, transparent 80%);
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, rgba(234, 88, 12, 0.2) 50%, transparent 75%);
             border-radius: 50%;
-            box-shadow: 0 0 90px rgba(239, 68, 68, 0.65), inset 0 0 60px rgba(249, 115, 22, 0.5);
+            box-shadow: 0 0 24px rgba(239, 68, 68, 0.4);
         }
 
         /* Foco Central Levantado Verticalmente en 3D (rotateX -90deg respecto al piso) */
@@ -951,15 +940,14 @@
             align-items: center;
             justify-content: space-between;
             padding: 8px 6px;
-            box-shadow: 0 0 28px rgba(239, 68, 68, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
             cursor: pointer;
-            transition: transform 0.2s ease, filter 0.2s ease;
+            transition: transform 0.2s ease;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
         }
         .station-fire-alarm-3d:hover {
-            transform: scale(1.08) translateY(-4px);
-            box-shadow: 0 0 25px rgba(252, 165, 165, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            transform: scale(1.06) translateY(-4px);
         }
         .alarm-pull-handle {
             width: 42px;
@@ -1058,14 +1046,18 @@
             border-color: #facc15 !important;
         }
 
-        /* Humo en Techo (Ceiling Smoke) - Sin mix-blend-mode para evitar artefactos negros */
+        /* Humo Atmosférico Fijo 2D (Sin interferencia ni recortes 3D con paredes) */
         .ceiling-smoke-layer {
             position: absolute;
-            inset: 0;
-            background: radial-gradient(circle, rgba(15, 23, 42, 0.75) 0%, rgba(3, 7, 18, 0.88) 70%, transparent 100%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 38%;
+            background: linear-gradient(180deg, rgba(3, 7, 18, 0.72) 0%, rgba(15, 23, 42, 0.35) 60%, transparent 100%);
             pointer-events: none;
             opacity: 0;
             transition: opacity 1s ease;
+            z-index: 10;
         }
         .ceiling-smoke-layer.active {
             opacity: 0.85;
@@ -2480,7 +2472,6 @@
                     <!-- 2. TECHO TRIDIMENSIONAL (Y = -350px) -->
                     <div class="wall-3d cube-ceiling">
                         <div class="ceiling-strobe-beacon"></div>
-                        <div class="ceiling-smoke-layer" id="ceiling-smoke-layer"></div>
                     </div>
 
                     <!-- 3. PARED NORTE (Z = -700px): VÁLVULA PRINCIPAL Y ALARMA GENERAL -->
@@ -2674,6 +2665,9 @@
                 <div class="pqs-spray-stream" id="pqs-spray-stream"></div>
             </div>
         </div>
+
+        <!-- Capa de Humo Atmosférico (2D Fijo desacoplado de perspectiva 3D) -->
+        <div class="ceiling-smoke-layer" id="ceiling-smoke-layer"></div>
 
         <!-- ==============================================================
              2. VISERA Y HUD DIGITAL EN 1ª PERSONA (CAPA 2D FIJA INMUNE A 3D)
@@ -3342,6 +3336,7 @@
                 this.reignitionSealed = false;
                 this.extinguisherCharge = 100;
                 this.m2Step = 1;
+                this.lastBotMsg = null;
 
                 // Estado General
                 this.gameState = {
@@ -3997,6 +3992,7 @@
                     this.reignitionSealed = false;
                     this.extinguisherCharge = 100;
                     this.m2Step = 1;
+                this.lastBotMsg = null;
 
                     this.dom.crisisStatLabel.textContent = "INTENSIDAD FUEGO";
                     this.dom.meterDrain.style.width = "100%";
@@ -5038,6 +5034,8 @@
             }
 
             setBotMessage(text, icon = '🤖') {
+                if (this.lastBotMsg === text) return;
+                this.lastBotMsg = text;
                 if (this.dom.botText) {
                     this.dom.botText.innerHTML = text;
                     if (this.dom.hudBotDialog) {
@@ -5047,7 +5045,7 @@
                             if (this.dom.hudBotDialog) this.dom.hudBotDialog.classList.add('minimized');
                         }, 5000);
                     }
-                    if (window.gsap) gsap.fromTo(this.dom.botText, { opacity: 0.3, y: 4 }, { opacity: 1, y: 0, duration: 0.3 });
+                    if (window.gsap) gsap.fromTo(this.dom.botText, { opacity: 0.3, y: 4 }, { opacity: 1, y: 0, duration: 0.2 });
                     else this.dom.botText.style.opacity = '1';
                 }
             }

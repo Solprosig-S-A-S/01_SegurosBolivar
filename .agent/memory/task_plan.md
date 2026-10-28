@@ -96,6 +96,9 @@
   - [x] Fase 3: Auditoría final SST, desglose técnico de puntaje (0%-100%) y certificado de Taller Seguro.
 - [x] Juego 5: 'Brigada de Emergencia: Simulador 1ª Persona de Control de Derrames' (juego5_emergencias.html).
   - [x] Optimización de rendimiento a 60 FPS fluidos: coalescing de touchmove a RAF, dirty-checking de DOM en proximidad y renderCameraTransform desacoplado en despacho táctico.
+  - [x] Erradicación de congelamiento/parálisis al mirar el charco químico en 1ª persona: guarda anti-spam en botMessage (`if (this.lastBotMsg === text) return;`), eliminación de mutación continua de border-radius (`puddleSlosh`), supresión de sombras blur excesivas (70px/50px e inset) y aligeramiento del piso 3D a retícula de 1.5px.
+  - [x] Erradicación de recorte negro rectangular en pared norte: desacople de `#ceiling-smoke-layer` del plano interior del techo 3D a capa fija 2D desacoplada, eliminando el fallo de FBO/Blink en compositing 3D.
+  - [x] Juego 4: Toast de confirmación con cierre autónomo vía setTimeout (800ms/1300ms) y descarte inmediato al finalizar partida o tocar pantalla.
   - [x] Corrección de colapso de HUD: reversión de contain: strict y touch-action: none en viewport, despeje de focos de fuego secundarios y extinción en 2 descargas.
   - [x] Perspectiva 100% en Primera Persona (FPS / First-Person POV) sin avatar de 3ª persona ni proyección isométrica.
   - [x] Visera de Casco de Seguridad y HUD Digital: Detector multigas PID en ppm, cronómetro de 120s, medidor de O2/Vitalidad y avance de derrame a drenaje.

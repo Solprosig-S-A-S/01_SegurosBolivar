@@ -1196,3 +1196,18 @@ gba(148, 163, 184, 0.18)).
   3. **Aligeramiento de Sombras y Animaciones**: Se eliminaron los `box-shadow` pesados de 110px/85px en las llamas y se suavizo la frecuencia de animacion a 0.6s, retirando el parpadeo de las paredes de la habitacion.
   4. **Extincion Agil**: Se calibro la potencia de descarga a 50% por disparo (extincion en 2 toques) y se removio el dano continuo letal por radiacion.
 - **Validacion**: Sintaxis verificada y los 6 paquetes SCORM 1.2 reconstruidos con `build_scorm.py`.
+
+
+## Erradicación de Congelamiento por Charco Químico y Recorte Negro en Alarma (Juego 5) y Toast en Juego 4 - 2026-10-28
+- **Diagnóstico**:
+  1. En `juego5_emergencias.html`, al mirar o aproximarse al charco químico (`distToCenter < 180`), el bucle de físicas ejecutaba `setBotMessage()` en cada frame. Dicha función invocaba `gsap.fromTo()`, acumulando más de 60 instancias concurrentes de tweens de GSAP y desatando una tormenta de recolección de basura que paralizaba por completo el hilo principal de JavaScript.
+  2. En el aspecto gráfico, `.chemical-puddle-3d` mantenía activa la animación CSS `puddleSlosh` que deformaba `border-radius` continuamente con `box-shadow` difuminado de 70px/50px e inset de 35px/25px sobre un plano 3D de 1400x1400 px, forzando a la GPU móvil a re-calcular curvas vectoriales y shaders en cada cuadro. Además, `.cube-floor` apilaba 5 degradados y una sombra interior de 120px que agotaba el fill-rate.
+  3. En la Misión 2, aparecía un bloque negro rectangular recortando la pared norte junto a la estación de alarma. La causa raíz fue la presencia de `#ceiling-smoke-layer` dentro del plano 3D del techo (`.wall-3d.cube-ceiling`) con `opacity < 1` y degradado radial; al intersectar la pared en Z = -700px, el motor de composición 3D de Blink generaba un plano de oclusión negro (FBO clear artifact).
+  4. En `juego4_taller.html`, `showTechToast()` dependía de `scheduleAction()`, la cual aborta sus callbacks cuando `isGameActive = false`. Al ganar la partida y llamar a `finishGame()`, el callback de cierre era ignorado y el toast quedaba congelado de forma permanente sobre la auditoría final.
+- **Solución implementada**:
+  1. **Guarda de Estado en Bot de Juego 5**: `if (this.lastBotMsg === text) return;` en `setBotMessage()`, erradicando la generación descontrolada de tweens en GSAP y manteniendo el hilo de JS en reposo.
+  2. **Supresión de puddleSlosh y Optimización del Charco**: Se removió la animación de `border-radius` y las sombras pesadas, dejándolo como elemento estático acelerado por GPU con resplandor ligero de 16px.
+  3. **Piso Epóxico Industrial Liviano**: Reducción de `.cube-floor` a una retícula de 1.5px sin sombras inset de 120px ni degradados radiales pesados.
+  4. **Desacople 2D del Humo Atmosférico**: `#ceiling-smoke-layer` fue extraído del interior del cubo 3D y reubicado como capa 2D fija (`z-index: 10`) en `.fps-container`, erradicando de raíz el recorte negro rectangular en la pared norte.
+  5. **Toast Autónomo en Juego 4**: `showTechToast()` migrado a `setTimeout` autónomo (800ms éxito / 1300ms error), descarte en `finishGame()`, soporte `pointerdown` y modales blindados a `z-index: 9999`.
+- **Validación**: Bucle SCORM reconstruido con 6 paquetes actualizados y validación de 60 FPS limpios.
