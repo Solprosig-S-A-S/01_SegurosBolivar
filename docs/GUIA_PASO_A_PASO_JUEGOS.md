@@ -143,29 +143,33 @@ En el patio debes realizar 3 estaciones de trabajo en orden lógico (guiado por 
 
 ---
 
-## 6. JUEGO 5: BRIGADA DE EMERGENCIA (SIMULADOR DE RESCATE QUÍMICO EN 3D)
+## 6. JUEGO 5: BRIGADA DE EMERGENCIA (SIMULADOR 1ª PERSONA 3D - DOS MISIONES)
 **Archivo:** `juego5_emergencias.html`  
-**Objetivo:** Simular en primera persona (caminando dentro de la planta) la atención inmediata de un derrame químico con compañero salpicado, cumpliendo los 5 pasos de rescate en menos de 120 segundos.
+**Objetivo:** Simular en primera persona (caminando dentro de una planta industrial en 3D real) la atención operativa de dos emergencias químicas de alto impacto: Misión 1 (Derrame y Lesionado Químico) y Misión 2 (Conato de Incendio Clase B de Líquidos Inflamables).
 
 ### ¿Cómo se juega paso a paso?
 
-1. **Paso 1 - Lectura del Briefing Táctico:**
-   - Al abrir el juego verás una pantalla de comando estilo terminal táctico con las instrucciones de la misión y los controles.
-   - Tienes **120 segundos** para controlar la emergencia. Presiona **[INICIAR MISIÓN]** para empezar.
+1. **Paso 1 - Controles y Movimiento (PC y Móvil):**
+   - **En Computador:** Teclas `W`, `A`, `S`, `D` para desplazarse • Mover el ratón para girar la mirada • Tecla `E` o Clic para interactuar.
+   - **En Celular / Tableta:** D-Pad virtual a la izquierda para caminar • Deslizar con el dedo sobre la pantalla para orientar la vista • Botón central de acción para interactuar.
+   - **Botón de Despacho Táctico (1-Toque):** En la parte inferior de la pantalla encontrarás el botón táctico (`ORDENAR / IR`). Si tocas este botón, tu personaje se orientará y caminará automáticamente hacia la estación del objetivo actual, haciendo que la experiencia en teléfonos sea ágil y sin pérdidas de orientación.
 
-2. **Paso 2 - Controles de Movimiento:**
-   - **En Computador:** Teclas `W`, `A`, `S`, `D` para caminar • Mover el ratón para mirar alrededor • Tecla `E` o Clic para interactuar con objetos.
-   - **En Celular / Tableta:** Palanca táctil virtual (joystick) a la izquierda para caminar • Deslizar la pantalla a la derecha para mirar • Botón de mano para interactuar.
+2. **MISIÓN 1: FUGA Y DERRAME QUÍMICO (Reloj de 120 segundos):**
+   - **Paso 1 (Caseta EPP - Pared Oeste):** Camina hacia los casilleros y equipa el respirador para vapores orgánicos y los guantes de nitrilo. *¡Si te acercas al charco sin la máscara, el aire contaminado reducirá tu barra de vitalidad!*
+   - **Paso 2 (Válvula de Corte - Pared Norte):** Acércate a la tubería con fuga y gira la manivela roja para aislar el flujo del químico.
+   - **Paso 3 (Lavaojos de Emergencia - Pared Sur):** Empuja la palanca del lavaojos para activar la irrigación continua de 15 minutos (norma ANSI Z358.1).
+   - **Paso 4 (Kit Antiderrame y Contención - Suelo Centro):** Abre el tambor del kit, despliega el cordón absorbente alrededor del charco para bloquear el avance hacia el drenaje pluvial y aplica los paños absorbentes.
+   - **Paso 5 (Acopio RESPEL - Pared Oeste):** Confinar los absorbentes saturados en la bolsa roja sobre la estiba de residuos peligrosos (Decreto 4741 de 2005).
 
-3. **Paso 3 - Los 5 Pasos de Rescate en Orden:**
-   - **Paso 1 (Caseta EPP):** Camina hacia la caseta de emergencias amarilla y equipa el traje químico de protección (Nivel B). *¡Si te acercas al químico sin el traje, tu nivel de salud bajará por los vapores!*
-   - **Paso 2 (Válvula de Emergencia):** Corre hacia la tubería rota y gira la válvula de cierre para cortar el flujo del químico que alimenta el charco.
-   - **Paso 3 (Lavaojos y Compañero Salpicado):** Acércate a tu compañero afectado y guíalo hasta la estación de lavaojos y ducha de emergencia para iniciar la descontaminación inmediata.
-   - **Paso 4 (Contención del Derrame):** Ve a la estación del kit antiderrame, toma las salchichas absorbentes y colócalas alrededor del charco para que el líquido no llegue a los drenajes.
-   - **Paso 5 (Acopio RESPEL):** Recoge los absorbentes empapados y deposítalos dentro de la caneca roja de residuos peligrosos.
+3. **MISIÓN 2: CONATO DE INCENDIO QUÍMICO CLASE B (Reloj de 90 segundos):**
+   - **Paso 1 (Traje Térmico y ERA - Pared Oeste):** Equipa el traje de Nomex y el equipo de respiración autónoma (ERA) para protegerte de la radiación térmica extrema.
+   - **Paso 2 (Alarma General y Corte Eléctrico - Pared Norte):** Tira de la palanca de la alarma para activar la sirena de evacuación y aislar la energía eléctrica del sector.
+   - **Paso 3 (Selección de Extintor NFPA 10 - Pared Este):** En el panel verás 3 extintores. Debes seleccionar **PQS ABC (Polvo Químico Seco)** para hidrocarburos líquidos. *¡Cuidado! Usar agua provocaría un boilover violento que propaga el fuego.* Tira del pasador de seguridad.
+   - **Paso 4 (Descarga Controlada PASS al Fuego - Suelo Centro):** Apunta hacia la base de las llamas y presiona el gatillo para efectuar dos descargas de barrido que sofocan el triángulo del fuego.
+   - **Paso 5 (Manta Ignífuga y Sellado - Pared Sur):** Toma la manta ignífuga de fibra de vidrio y extiéndela sobre el área sofocada para enfriar los vapores y sellar el conato con 0% de riesgo de re-ignición.
 
-4. **Paso 4 - Victoria y Certificación:**
-   - Al concluir los 5 pasos antes de los 120 segundos, la alarma de la planta se silenciará, el ambiente quedará seguro y recibirás la certificación oficial como **Brigadista Químico Certificado**.
+4. **Paso 4 - Evaluación y Certificación de Brigadista:**
+   - Al completar ambas misiones exitosamente, el sistema emite el certificado oficial de **Brigadista Técnico en Emergencias Químicas SST** con el desglose del puntaje promedio homologado para el SCORM de Moodle.
 
 ---
 

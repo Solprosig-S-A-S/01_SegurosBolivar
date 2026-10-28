@@ -1211,3 +1211,18 @@ gba(148, 163, 184, 0.18)).
   4. **Desacople 2D del Humo Atmosférico**: `#ceiling-smoke-layer` fue extraído del interior del cubo 3D y reubicado como capa 2D fija (`z-index: 10`) en `.fps-container`, erradicando de raíz el recorte negro rectangular en la pared norte.
   5. **Toast Autónomo en Juego 4**: `showTechToast()` migrado a `setTimeout` autónomo (800ms éxito / 1300ms error), descarte en `finishGame()`, soporte `pointerdown` y modales blindados a `z-index: 9999`.
 - **Validación**: Bucle SCORM reconstruido con 6 paquetes actualizados y validación de 60 FPS limpios.
+
+## Erradicación de Parpadeo y Congelamiento al Apagar el Fuego en Móvil (Juego 5) - 2026-10-28
+- **Diagnóstico**:
+  1. **Parpadeo Violento ("Parpadea")**: Al accionar el extintor PQS, `.pqs-spray-stream.active` ejecutaba la animación `@keyframes sprayJitter` a 0.06s (16.6 ms de ciclo, 16 Hz). Oscilaba rápidamente escala, rotación y opacidad sobre un elemento de 440x190 px, generando una vibración estroboscópica que saturaba la pantalla y colapsaba la GPU móvil.
+  2. **Sobrecarga de Filtro en Extintor FPV**: `.fps-extinguisher-fpv` tenía asignado `filter: drop-shadow(0 12px 24px rgba(0,0,0,0.85))`. Cada vez que el jugador caminaba, se movía o pulsaba descargar (`.action-active`), el transform se animaba, obligando al compositor móvil a recalcular un desenfoque gaussiano de 24px en cada frame.
+  3. **Latencia Artificial de 500ms al Descargar ("Se pone lento")**: Cuando el usuario pulsaba el botón táctico "DESCARGAR PQS (FUEGO)" estando ya frente al fuego, `dispatchToStation('fire')` calculaba `duration = Math.max(500, ...)` y activaba un recorrido de 500ms (`isDispatching = true` con texto "EN RUTA...") antes de ejecutar el disparo, bloqueando la respuesta táctil inmediata.
+  4. **Degradación de Audio Web API**: `playExtinguisherDischarge()` instanciaba un nuevo `AudioBuffer` de 9,600 muestras y ejecutaba un bucle con `Math.random()` en cada pulsación, provocando picos de recolección de basura.
+  5. **Ocultamiento de Badge Informativo**: Al llegar a `fireIntensity <= 0`, el script ocultaba el contenedor completo `#fire-cluster-3d` (`style.display = 'none'`), provocando que su hijo directo `#badge-fire` desapareciera en lugar de mostrar `✔ FUEGO APAGADO (PASO 5: MANTA SUR)`.
+- **Solución implementada**:
+  1. **Supresión de sprayJitter y Flujo PQS Limpio**: Se eliminó `sprayJitter` y se configuró `.pqs-spray-stream.active` con escala y opacidad estables y transiciones suaves (`opacity 0.08s ease, transform 0.12s ease`). Se ajustó su dimensión en la media query móvil a 240x120 px.
+  2. **Eliminación de filter: drop-shadow**: Se sustituyó el filtro pesado por un `box-shadow` local en `.fpv-ext-cylinder`, eliminando el pase de rasterizado en GPU.
+  3. **Disparo Inmediato con Cero Latencia**: En `dispatchToStation(stId)`, si la distancia a la estación es menor a 80 y el desfase de ángulo es menor a 25°, se invoca de inmediato `triggerActiveInteraction()`, permitiendo disparos instantáneos al toque sin transiciones de marcha artificiales.
+  4. **Caché de Buffer de Ruido**: `playExtinguisherDischarge()` almacena el búfer en `this.pqsNoiseBuffer`, reutilizándolo en todas las descargas sin crear basura en memoria.
+  5. **Persistencia del Badge de Fuego Apagado**: Al extinguir las llamas, se ocultan únicamente los elementos hijos `.flame-element` y se remueve el brillo perimetral de la zona, permitiendo que `#badge-fire` mute a verde esmeralda con `✔ FUEGO APAGADO (PASO 5: MANTA SUR)` y guíe hacia la manta ignífuga.
+- **Validación**: Paquetes SCORM 1.2 reconstruidos con `py build_scorm.py` y suite completa de 5 juegos verificada.

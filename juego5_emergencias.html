@@ -685,7 +685,6 @@
             height: 160px;
             margin-left: -45px;
             background: linear-gradient(to top, #ffffff 0%, #fef08a 30%, #f59e0b 75%, transparent 100%);
-            box-shadow: 0 0 18px rgba(245, 158, 11, 0.8);
             animation-duration: 0.5s;
             z-index: 3;
         }
@@ -696,7 +695,6 @@
             margin-left: -80px;
             background: linear-gradient(to top, #ea580c 0%, #ef4444 65%, transparent 100%);
             opacity: 0.88;
-            box-shadow: 0 0 14px rgba(234, 88, 12, 0.5);
             animation-duration: 0.7s;
             z-index: 2;
         }
@@ -844,8 +842,8 @@
         }
 
         @keyframes flameFlicker {
-            0% { transform: scale(0.95, 0.93) rotate(-2deg); opacity: 0.92; }
-            100% { transform: scale(1.05, 1.1) rotate(2deg); opacity: 1; }
+            0% { transform: scale(0.96, 0.95) rotate(-2deg); }
+            100% { transform: scale(1.04, 1.05) rotate(2deg); }
         }
 
         /* Estación de Extintores en Pared Este */
@@ -1076,7 +1074,6 @@
             z-index: 58;
             pointer-events: none;
             transform: rotate(-8deg);
-            filter: drop-shadow(0 12px 24px rgba(0,0,0,0.85));
             transition: transform 0.15s ease;
         }
         .fps-hands-layer.holding-extinguisher .fps-extinguisher-fpv {
@@ -1126,7 +1123,7 @@
             align-items: center;
             justify-content: center;
             padding: 8px 4px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.6);
         }
         .fpv-ext-badge {
             background: #facc15;
@@ -1167,14 +1164,8 @@
         }
 
         .pqs-spray-stream.active {
-            opacity: 1;
-            transform: rotate(16deg) scale(1.25);
-            animation: sprayJitter 0.06s infinite alternate;
-        }
-
-        @keyframes sprayJitter {
-            0% { transform: rotate(14deg) scale(1.18, 1.05); opacity: 0.92; }
-            100% { transform: rotate(19deg) scale(1.32, 1.18); opacity: 1; }
+            opacity: 0.95;
+            transform: rotate(16deg) scale(1.15);
         }
 
         /* Barra Táctica de Pasos Interactiva (Navegación Rápida Móvil y PC) */
@@ -2158,6 +2149,12 @@
                 width: 32px !important;
                 height: 20px !important;
             }
+            .pqs-spray-stream {
+                width: 240px !important;
+                height: 120px !important;
+                bottom: 55px !important;
+                right: 14% !important;
+            }
 
             /* Estadísticas de Vitalidad en Mobile */
             .hud-left-stats {
@@ -2948,12 +2945,14 @@
                 if (this.isMuted) return;
                 this.init();
                 try {
-                    const bufferSize = this.ctx.sampleRate * 0.2;
-                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-                    const output = buffer.getChannelData(0);
-                    for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+                    if (!this.pqsNoiseBuffer) {
+                        const bufferSize = Math.floor(this.ctx.sampleRate * 0.2);
+                        this.pqsNoiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                        const output = this.pqsNoiseBuffer.getChannelData(0);
+                        for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+                    }
                     const whiteNoise = this.ctx.createBufferSource();
-                    whiteNoise.buffer = buffer;
+                    whiteNoise.buffer = this.pqsNoiseBuffer;
                     const filter = this.ctx.createBiquadFilter();
                     filter.type = 'lowpass';
                     filter.frequency.value = 1600;
@@ -3648,26 +3647,26 @@
                 const st = this.stations ? this.stations.find(s => s.id === stId) : null;
                 if (!stance || !st) return;
 
+                const diffPitch = targetPitch - startPitch;
+                const dist = Math.hypot(targetX - startX, targetZ - startZ);
+
+                // Si ya estamos posicionados frente a la estación (distancia y orientación mínimas), interactuar inmediatamente sin retraso
+                if (dist < 80 && Math.abs(diffYaw) < 25) {
+                    if (navigator.vibrate) navigator.vibrate(35);
+                    this.posX = targetX;
+                    this.posZ = targetZ;
+                    this.yaw = targetYaw;
+                    this.pitch = targetPitch;
+                    this.updateCamera();
+                    this.gameState.activeStation = st;
+                    this.triggerActiveInteraction();
+                    this.updateTacticalDispatchButton();
+                    return;
+                }
+
                 this.isDispatching = true;
                 if (navigator.vibrate) navigator.vibrate(35);
 
-                const startX = this.posX;
-                const startZ = this.posZ;
-                const startYaw = this.yaw;
-                const startPitch = this.pitch;
-
-                const targetX = stance.posX;
-                const targetZ = stance.posZ;
-                const targetYaw = stance.yaw;
-                const targetPitch = stance.pitch;
-
-                // Rotación angular más corta
-                let diffYaw = (targetYaw - startYaw) % 360;
-                if (diffYaw > 180) diffYaw -= 360;
-                if (diffYaw < -180) diffYaw += 360;
-
-                const diffPitch = targetPitch - startPitch;
-                const dist = Math.hypot(targetX - startX, targetZ - startZ);
                 const duration = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 1 : Math.max(500, Math.min(850, dist * 1.2 + 350));
                 const startTime = performance.now();
 
@@ -4028,7 +4027,11 @@
                     if (this.dom.nodeExtinguisher) this.dom.nodeExtinguisher.style.display = 'flex';
                     if (this.dom.nodeFireBlanket) this.dom.nodeFireBlanket.style.display = 'flex';
 
-                    if (this.dom.fireCluster) this.dom.fireCluster.style.display = 'block';
+                    if (this.dom.floorFireZone) this.dom.floorFireZone.style.boxShadow = '';
+                    if (this.dom.fireCluster) {
+                        this.dom.fireCluster.style.display = 'block';
+                        this.dom.fireCluster.querySelectorAll('.flame-element').forEach(el => el.style.display = 'block');
+                    }
                     if (this.dom.fireBarrelLeft) {
                         this.dom.fireBarrelLeft.style.display = 'flex';
                         this.dom.fireBarrelLeft.style.opacity = '1';
@@ -4702,7 +4705,11 @@
                             this.updateMissionStepsBar();
 
                             if (this.fireIntensity <= 0) {
-                                if (this.dom.fireCluster) this.dom.fireCluster.style.display = 'none';
+                                if (this.dom.fireCluster) {
+                                    this.dom.fireCluster.querySelectorAll('.flame-element').forEach(el => el.style.display = 'none');
+                                    this.dom.fireCluster.style.transform = 'translate3d(-50%, -100%, 0px) rotateX(-90deg) scale(1)';
+                                }
+                                if (this.dom.floorFireZone) this.dom.floorFireZone.style.boxShadow = 'none';
                                 if (this.dom.fireBarrelLeft) this.dom.fireBarrelLeft.style.display = 'none';
                                 if (this.dom.firePoolRight) this.dom.firePoolRight.style.display = 'none';
                                 if (this.dom.fireSpotNorth) this.dom.fireSpotNorth.style.display = 'none';
@@ -4714,13 +4721,15 @@
                                 this.m2Step = 5;
                                 if (this.dom.badgeFire) {
                                     this.dom.badgeFire.classList.add('completed');
-                                    this.dom.badgeFire.innerHTML = '<i class="fa-solid fa-check"></i> FUEGO APAGADO (RESCOLDOS ACTIVOS)';
+                                    this.dom.badgeFire.style.background = '#064e3b';
+                                    this.dom.badgeFire.style.borderColor = '#10b981';
+                                    this.dom.badgeFire.innerHTML = '<i class="fa-solid fa-check"></i> FUEGO APAGADO (PASO 5: MANTA SUR)';
                                 }
                                 this.updateMissionStepsBar();
-                                this.setBotMessage("¡Todos los focos de incendio han sido extinguidos por sofocación química! ATENCIÓN: Toma la MANTA IGNÍFUGA en Pared Sur (o toca '5. Manta Sur' arriba) para sellar contra re-ignición.", '🔥');
+                                this.setBotMessage("¡Todos los focos de incendio han sido extinguidos por sofocación química! ATENCIÓN: Toma la MANTA IGNÍFUGA en Pared Sur (o toca el botón táctico) para sellar contra re-ignición.", '🔥');
                                 this.checkProximity();
                             } else {
-                                this.setBotMessage(`¡Descarga efectiva en abanico sobre la base (Técnica PASS)! Fuego reducido al ${Math.round(this.fireIntensity)}%. Continúa tocando las llamas o pulsando [INTERACTUAR].`, '🧯');
+                                this.setBotMessage(`¡Descarga efectiva en abanico sobre la base (Técnica PASS)! Fuego reducido al ${Math.round(this.fireIntensity)}%. Continúa tocando las llamas o pulsando [DESCARGAR].`, '🧯');
                             }
                             return;
                         }
