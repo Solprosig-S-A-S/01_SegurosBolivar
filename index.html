@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KMA | Juegos de Seguridad</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #090e17;
+            color: #fff;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            overflow-x: hidden;
+        }
+
+        .lobby-container {
+            width: 100%;
+            max-width: 440px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px;
+            flex: 1;
+        }
+
+        /* Cabecera Tipo Arcade Minimalista */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 4px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .kma-badge {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: #fff;
+            font-weight: 900;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 8px;
+            letter-spacing: 0.05em;
+            box-shadow: 0 0 14px rgba(249, 115, 22, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .brand-text h1 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #f8fafc;
+            line-height: 1.1;
+        }
+
+        .brand-text span {
+            font-size: 0.68rem;
+            color: #f59e0b;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .lobby-hint {
+            font-size: 0.65rem;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        /* Lista Táctil de Juegos */
+        .games-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .game-btn {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1.5px solid var(--btn-border);
+            border-radius: 14px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            text-decoration: none;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s ease, filter 0.1s ease, border-color 0.1s ease;
+        }
+
+        .game-btn::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: var(--btn-glow);
+        }
+
+        .game-btn:active {
+            transform: scale(0.97);
+            filter: brightness(1.25);
+            border-color: #fff;
+        }
+
+        .game-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .game-num {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--btn-glow-soft);
+            border: 1px solid var(--btn-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            color: var(--btn-glow);
+            flex-shrink: 0;
+        }
+
+        .game-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            min-width: 0;
+        }
+
+        .game-name {
+            font-size: 0.92rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .game-desc {
+            font-size: 0.68rem;
+            color: #94a3b8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .game-play-badge {
+            background: var(--btn-glow);
+            color: #000;
+            font-weight: 900;
+            font-size: 0.72rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+            letter-spacing: 0.04em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        /* Colores Arcade por Juego */
+        .g-sga {
+            --btn-glow: #fbbf24;
+            --btn-glow-soft: rgba(251, 191, 36, 0.15);
+            --btn-border: rgba(251, 191, 36, 0.4);
+        }
+        .g-bodega {
+            --btn-glow: #38bdf8;
+            --btn-glow-soft: rgba(56, 189, 248, 0.15);
+            --btn-border: rgba(56, 189, 248, 0.4);
+        }
+        .g-trasiego {
+            --btn-glow: #f97316;
+            --btn-glow-soft: rgba(249, 115, 22, 0.15);
+            --btn-border: rgba(249, 115, 22, 0.4);
+        }
+        .g-taller {
+            --btn-glow: #a855f7;
+            --btn-glow-soft: rgba(168, 85, 247, 0.15);
+            --btn-border: rgba(168, 85, 247, 0.4);
+        }
+        .g-emergencias {
+            --btn-glow: #ef4444;
+            --btn-glow-soft: rgba(239, 68, 68, 0.15);
+            --btn-border: rgba(239, 68, 68, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.62rem;
+            color: #475569;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lobby-container">
+        <!-- Barra Superior -->
+        <header class="header">
+            <div class="brand">
+                <div class="kma-badge">KMA</div>
+                <div class="brand-text">
+                    <h1>KMA Construcciones</h1>
+                    <span>Entrenamiento SST</span>
+                </div>
+            </div>
+            <div class="lobby-hint">
+                <i class="fa-solid fa-gamepad" style="color: #f59e0b;"></i> 5 Juegos
+            </div>
+        </header>
+
+        <!-- Grilla de Juegos Directos -->
+        <nav class="games-list">
+            
+            <a href="juego1_sga.html" class="game-btn g-sga">
+                <div class="game-left">
+                    <div class="game-num"><i class="fa-solid fa-flask"></i></div>
+                    <div class="game-info">
+                        <div class="game-name">1. Desafío SGA</div>
+                        <div class="game-desc">Peligros químicos y lectura FDS</div>
+                    </div>
+                </div>
+                <div class="game-play-badge">JUGAR <i class="fa-solid fa-play"></i></div>
+            </a>
+
+            <a href="juego2_bodega.html" class="game-btn g-bodega">
+                <div class="game-left">
+                    <div class="game-num"><i class="fa-solid fa-cubes-stacked"></i></div>
+                    <div class="game-info">
+                        <div class="game-name">2. Bodega Segura</div>
+                        <div class="game-desc">Almacenamiento y compatibilidad 3D</div>
+                    </div>
+                </div>
+                <div class="game-play-badge">JUGAR <i class="fa-solid fa-play"></i></div>
+            </a>
+
+            <a href="juego3_trasiego.html" class="game-btn g-trasiego">
+                <div class="game-left">
+                    <div class="game-num"><i class="fa-solid fa-truck-droplet"></i></div>
+                    <div class="game-info">
+                        <div class="game-name">3. Inspector de Trasiego</div>
+                        <div class="game-desc">Abastecimiento seguro de combustible</div>
+                    </div>
+                </div>
+                <div class="game-play-badge">JUGAR <i class="fa-solid fa-play"></i></div>
+            </a>
+
+            <a href="juego4_taller.html" class="game-btn g-taller">
+                <div class="game-left">
+                    <div class="game-num"><i class="fa-solid fa-wrench"></i></div>
+                    <div class="game-info">
+                        <div class="game-name">4. Taller Seguro</div>
+                        <div class="game-desc">Equipamiento EPP y residuos RESPEL</div>
+                    </div>
+                </div>
+                <div class="game-play-badge">JUGAR <i class="fa-solid fa-play"></i></div>
+            </a>
+
+            <a href="juego5_emergencias.html" class="game-btn g-emergencias">
+                <div class="game-left">
+                    <div class="game-num"><i class="fa-solid fa-fire-extinguisher"></i></div>
+                    <div class="game-info">
+                        <div class="game-name">5. Brigada de Emergencia</div>
+                        <div class="game-desc">Simulador 1ª persona: fugas e incendio</div>
+                    </div>
+                </div>
+                <div class="game-play-badge">JUGAR <i class="fa-solid fa-play"></i></div>
+            </a>
+
+        </nav>
+
+        <!-- Pie de página mínimo -->
+        <footer class="footer">
+            KMA Construcciones • Toca un juego para empezar
+        </footer>
+    </div>
+
+</body>
+</html>
